@@ -1,0 +1,227 @@
+# Zhou's Clerk, who works in the Zhou shop. Anxious to please and quick to defer, he calls himself
+# "your servant", hides behind the master's name, and is afraid of being blamed.
+person: zhou_huoji
+voice:
+  zh: 周家伙计。唯唯诺诺，自称小的，凡事搬出掌柜，最怕担责任。
+  en: Clerk of the Zhou shop. Anxious to please, defers to everyone, hides behind the master's name, afraid of being blamed.
+lines:
+  asleep:
+    - {zh: "呼……掌柜……货清点好了……（睡熟了）", en: "Zzz... master... the goods are counted... (fast asleep)"}
+    - {zh: "唔……这就去……这就去……（睡熟了）", en: "Mm... right away... right away... (fast asleep)"}
+  busy:
+    - {zh: "小的手上有活。实在走不开。您晚些再来。", en: "I've work in hand and can't get away. If you could come later."}
+    - {zh: "掌柜的吩咐了活。小的不敢耽搁。", en: "The master gave me work. I dare not delay."}
+  timeout:
+    - {zh: "小的得回去干活了。不然掌柜要骂的。", en: "I must get back to work. Otherwise the master will scold me."}
+    - {zh: "铺子里还等着小的。告退了。", en: "The shop is waiting for me. I'll take my leave."}
+  unknown:
+    - {zh: "这个小的不知道。", en: "I wouldn't know about that."}
+    - {zh: "小的没听说过。真不敢乱猜。", en: "I've not heard of it. I wouldn't dare guess."}
+  evade:
+    - {zh: "这事……小的不敢说。", en: "That... I dare not say."}
+    - {zh: "您就别为难小的了。", en: "Please, don't put me in a difficult spot."}
+  not_said:
+    - {zh: "小的没说过这话。您可别冤枉我。", en: "I never said that. Please don't blame me."}
+    - {zh: "这不是小的说的。", en: "That wasn't me who said it."}
+  not_so:
+    - {zh: "不是的。您误会了。", en: "No, that's not it. You've misunderstood."}
+    - {zh: "小的看不是这样。", en: "I don't think it was like that."}
+  keeper_no:
+    - {zh: "咱们不熟。小的不敢做主。", en: "We hardly know each other. It's not for me to say."}
+    - {zh: "掌柜吩咐过，生人不能让进。", en: "The master said not to let strangers in."}
+  took_in:
+    - {zh: "是是，小的记下了。", en: "Yes, yes, I'll remember it."}
+    - {zh: "原来如此。多谢您告诉小的。", en: "I see. Thank you for telling me."}
+  knew:
+    - {zh: "这个小的早听说了。", en: "I'd heard about that already."}
+    - {zh: "您说的这事，小的知道。", en: "That matter you mention, I know of it."}
+  doubted:
+    - {zh: "小的听到的……不是这样。", en: "What I heard... wasn't like that."}
+    - {zh: "这和小的听的不太一样。", en: "That's not quite what I was told."}
+  caught:
+    - {zh: "您骗了小的！往后您的话，小的不敢再信了！", en: "You deceived me! I dare not believe your words again!"}
+    - {zh: "原来您说的是假话！小的以后不信您了！", en: "So what you said was false! I won't believe you from now on!"}
+  deal:
+    - {zh: "是，就这么办。", en: "Yes, so it shall be."}
+    - {zh: "好的好的，一言为定。", en: "Very well, very well, it's agreed."}
+  empty:
+    - {zh: "光说无用。小的可不敢信。", en: "Words alone are no use. I dare not believe them."}
+    - {zh: "没有凭证，小的不敢当真。", en: "Without proof, I dare not take it seriously."}
+  kept_thanks:
+    - {zh: "总管讲信用。小的记下了。", en: "The Manager keeps their word. I'll remember it."}
+    - {zh: "您真的办到了。小的感激不尽。", en: "You really did it. I'm ever so grateful."}
+  will_do:
+    - {zh: "是，小的这就去办。", en: "Yes, I'll see to it at once."}
+    - {zh: "您放心。交给小的。", en: "Rest assured, leave it to me."}
+  cannot:
+    - {zh: "这个忙，小的实在帮不上。", en: "This favour is really beyond me."}
+    - {zh: "小的没这个本事。", en: "I haven't the ability for it."}
+  turned_down:
+    - {zh: "对不住，这个小的不敢答应。", en: "I'm sorry, I dare not agree to that."}
+    - {zh: "这事小的做不了主。请见谅。", en: "It isn't mine to decide. Please forgive me."}
+  said_already:
+    - {zh: "小的刚才已禀告过了。", en: "I reported that to you a moment ago."}
+    - {zh: "已经说过了，真的。", en: "Already told you, truly."}
+  closed:
+    - {zh: "这会儿不方便。请您换个时辰来。", en: "It's not convenient at the moment. If you could come at another hour."}
+    - {zh: "这个时辰不便。您晚些再来。", en: "This hour is inconvenient. Please come back later."}
+  needs_nod:
+    - {zh: "得先请示掌柜的。", en: "I must ask the master first."}
+    - {zh: "没有掌柜点头，小的不敢应。", en: "The master hasn't nodded. I dare not say yes."}
+  nothing_to_say:
+    - {zh: "小的没什么可说的。", en: "I've nothing to say."}
+    - {zh: "这事小的不便多嘴。", en: "It isn't for me to say more."}
+  testified:
+    - {zh: "小的说的，都是亲眼看见的。", en: "What I say, I saw with my own eyes."}
+    - {zh: "没看见的事，小的不敢乱讲。", en: "I dare not speak of things I didn't see."}
+  too_late:
+    - {zh: "天色晚了。请您明早再来。", en: "It's late. Please come in the morning."}
+    - {zh: "该打烊了。您明天再来吧。", en: "It's closing time. Please come tomorrow."}
+  will_ask:
+    - {zh: "是，小的去替您问一声。", en: "Yes, I'll go and ask on your behalf."}
+    - {zh: "小的去传个话。", en: "I'll pass the word along."}
+  will_call:
+    - {zh: "是，小的这就去请大家到祠堂。", en: "Yes, I'll go and invite everyone to the hall right away."}
+    - {zh: "小的去挨家通知。", en: "I'll go house to house and tell them."}
+  hard_hc_li_bamboo:
+    - {zh: "那桩谣言没当众说清楚，小的不敢作主。", en: "The slander hasn't been cleared in public. It isn't mine to decide."}
+    - {zh: "掌柜说了。谣言不澄清，什么都免谈。", en: "The master said so. Until the slander is cleared, nothing is up for discussion."}
+  hard_hc_li_bamboo_rumour:
+    - {zh: "镇上都在传谣言，总管又一声不吭。小的不敢答应。", en: "The whole town is spreading the rumour, and the Manager says nothing. I dare not agree."}
+    - {zh: "谣言闹成这样。总管不发话，小的哪敢作主。", en: "The rumour has got this bad. With the Manager silent, it is not for me to decide."}
+  hard_other:
+    - {zh: "这个万万不行。", en: "That is quite out of the question."}
+    - {zh: "小的不敢应这个。", en: "I dare not agree to that."}
+  elder_yes:
+    - {zh: "小的听明白了。就这样办。", en: "I understand. Let it be done so."}
+    - {zh: "您说得对。小的服气。", en: "You are right. I am convinced."}
+  elder_no:
+    - {zh: "光这些，小的还不敢信。", en: "On this alone, I can't believe it yet."}
+    - {zh: "还得请您多说几句。", en: "You'll have to say a little more, please."}
+  objection_withdrawn:
+    - {zh: "当众说清了，小的不敢再拦。", en: "It has been cleared in public, and I dare not hold you back any longer."}
+    - {zh: "掌柜点了头。小的这就让路。", en: "The master has nodded. I will get out of the way."}
+  witness_in_public:
+    - {zh: "小的只看见他在桥边找灯笼。", en: "I only saw him at the bridge looking for his lantern."}
+    - {zh: "小的只看见李二在桥边找灯笼，别的小的没看见。", en: "I only saw Li Er at the bridge looking for his lantern, and nothing else."}
+  batch_promised:
+    - {zh: "是，明早小的就给送到桥边。", en: "Yes, I will have it at the bridge tomorrow morning."}
+    - {zh: "您放心。明早一准送到，小的不敢误事。", en: "Rest assured. It will be there in the morning, and I would not dare be late."}
+  bamboo_arrived:
+    - {zh: "竹料到桥边了，小的已经看过了。", en: "The bamboo is at the bridge. I have had a look."}
+    - {zh: "小的禀报，竹料送到桥边了。", en: "Reporting, Manager: the bamboo has been delivered to the bridge."}
+  promise_open:
+    - {zh: "小的已经应下了。{when}，{amount}根{item}送到桥边。", en: "I already said yes. I will bring {amount} poles of {item} to the bridge {when}."}
+    - {zh: "回您的话，小的答应过了。{when}送{amount}根{item}。", en: "To answer you, I have promised already, and {amount} poles of {item} come {when}."}
+  goods_enough:
+    - {zh: "回您的话，桥边的{item}够了。", en: "To answer you, the {item} at the bridge is enough."}
+    - {zh: "小的看过了。{item}够数，不敢再多送。", en: "I checked. The {item} is a full count, and I would not dare send more."}
+  point_heard:
+    - {zh: "小的不知道，不敢乱说。听{name}提过，您去问问吧。", en: "I wouldn't know, and I dare not guess. I heard {name} mention it, so please ask them."}
+    - {zh: "这事小的真没听说，别怪小的。{name}好像讲过。", en: "I've really not heard of it, so please don't blame me. I think {name} spoke of it."}
+  point_hub:
+    - {zh: "小的不敢乱说。镇上的消息{name}那里最多，您去问吧。", en: "I dare not say. The most news in town is with {name}, so please ask them."}
+    - {zh: "小的答不上来，求您别怪。您问{name}吧，那边什么都听得到。", en: "I can't answer, so please don't blame me. Ask {name}, who hears everything."}
+frames:
+  seen:
+    - {zh: "小的亲眼看见的：{line}。", en: "I saw it with my own eyes, if you please: {line}."}
+    - {zh: "小的当时在场：{line}。", en: "I was present at the time: {line}."}
+  heard:
+    - {zh: "{teller}对小的讲过：{line}。", en: "{teller} said to me that {line}."}
+    - {zh: "小的是听{teller}说的：{line}。", en: "I only heard it from {teller}: {line}."}
+  unknown:
+    - {zh: "小的听人说：{line}。", en: "I overheard that {line}."}
+    - {zh: "外头有这么个说法：{line}。", en: "There's a rumour going round that {line}."}
+  own:
+    - {zh: "依小的看：{line}。", en: "As I see it, if I may say so, {line}."}
+    - {zh: "小的斗胆说一句：{line}。", en: "If I may be so bold: {line}."}
+  guess_own:
+    - {zh: "小的不敢肯定。{hedge}{line}。", en: "I can't be sure of it. {hedge} {line}."}
+    - {zh: "也许说错了。{hedge}{line}。", en: "I may be wrong. {hedge} {line}."}
+  guess_heard:
+    - {zh: "{teller}说起过一句。{hedge}{line}。", en: "{teller} said a word about it. {hedge} {line}."}
+    - {zh: "依{teller}那番话，{hedge}{line}。", en: "After what {teller} said, {hedge} {line}."}
+  guess_unknown:
+    - {zh: "不知是哪位说的。{hedge}{line}。", en: "I couldn't say who said it. {hedge} {line}."}
+    - {zh: "小的只是听来的。{hedge}{line}。", en: "I only heard it in passing. {hedge} {line}."}
+  rival:
+    - {zh: "不过小的也听{teller}说过别的：{line}。", en: "Only, I also heard something else from {teller}, if you please: {line}."}
+    - {zh: "小的不敢瞒着，{teller}还说过另一回事：{line}。", en: "I dare not hide that {teller} also said something different: {line}."}
+hedges:
+  - {zh: 小的想, en: I would say}
+  - {zh: 许是, en: I imagine}
+# What he says by the state of the game (world/bridge/roles.py): a greeting as a talk opens, a last
+# word as the manager leaves, and the epilogue of the ending page. The first entry whose conditions
+# all hold is the one. He is the clerk whose one sentence the rumour grew from, so his greeting
+# turns on whether he has heard it set straight, and his epilogue on whether it was.
+greet:
+  - id: new
+    when: [{kind: acquainted, is: new}]
+    lines:
+      - {zh: "您是新来的总管吧？小的……小的什么都没做错。", en: "You are the new Manager? I... I have done nothing wrong."}
+  - id: broken
+    when: [{kind: promised, state: broken}]
+    lines:
+      - {zh: "您应过小的事。小的不敢提，也不敢忘。", en: "You promised me something. I dare not mention it and I dare not forget it."}
+  - id: festival
+    when: [{kind: after, day: 5, hour: 15}]
+    lines:
+      - {zh: "今夜掌柜的让小的守铺子。您自去看灯。", en: "The master has me minding the shop tonight. You go and see the lanterns."}
+  - id: truth
+    when: [{kind: flag, flag: truth_told}]
+    lines:
+      - {zh: "桥的事讲明白了。小的当初真没乱说。", en: "The bridge matter is told plainly. I truly said nothing wrong back then."}
+  - id: peace
+    when: [{kind: flag, flag: reconcile_seen}]
+    lines:
+      - {zh: "两家和气了，小的肩上也轻了。", en: "The two houses are at peace, and a weight is off my shoulders."}
+  - id: kept
+    when: [{kind: promised, state: kept}]
+    lines:
+      - {zh: "您说到做到。小的没想到。", en: "You did what you said. I did not expect it."}
+  - id: cleared
+    when: [{kind: knows, props: [pr_set_straight]}]
+    lines:
+      - {zh: "小的只说过看见李二在桥边，就这一句。大伙儿都听见了。", en: "I only said I saw Li Er by the bridge. That one sentence. Everyone heard it."}
+  - id: again
+    when: [{kind: acquainted, is: today}]
+    lines:
+      - {zh: "您又来了？小的在。", en: "You're back? I'm here."}
+      - {zh: "还有吩咐吗？", en: "Any more instructions?"}
+  - id: plain
+    lines:
+      - {zh: "掌柜的说了算。您要问什么，小的得先请示。", en: "The master decides. For anything you ask, I must ask leave first."}
+      - {zh: "小的嘴笨，您问慢些。", en: "I am slow of tongue. Please ask slowly."}
+chat:
+  - id: broken
+    when: [{kind: promised, state: broken}]
+    lines:
+      - {zh: "您别忘了对小的说的话。", en: "Please do not forget what you said to me."}
+  - id: festival
+    when: [{kind: after, day: 5, hour: 15}]
+    lines:
+      - {zh: "小的守铺子去了，您慢走。", en: "I'll go and mind the shop. Mind your step."}
+  - id: truth
+    when: [{kind: flag, flag: truth_told}]
+    lines:
+      - {zh: "您当众说了，小的就不怕了。", en: "You said it in front of everyone, and I am not afraid now."}
+  - id: cleared
+    when: [{kind: knows, props: [pr_set_straight]}]
+    lines:
+      - {zh: "小的只说了那一句，您记着。", en: "That was the only thing I said. Please remember it."}
+  - id: plain
+    lines:
+      - {zh: "小的告退。", en: "I'll take my leave."}
+      - {zh: "您慢走，小的还有活。", en: "Mind your step. I have work to do."}
+epilogue:
+  - id: word_broken
+    when: [{kind: promised, state: broken}]
+    text: {zh: "周家伙计记着总管没兑现的话。再有人问起，只说一句掌柜的说了算。", en: "Zhou's Clerk remembered the promise that was not kept, and when asked about it said only that the master decides."}
+  - id: told
+    when: [{kind: cleared}, {kind: flag, flag: truth_told}]
+    text: {zh: "周家伙计照旧在铺子里搬木料。再没有人拦住伙计，追问那晚看见了什么。", en: "Zhou's Clerk went on hauling timber at the shop. Nobody stopped the clerk to ask what had been seen that night."}
+  - id: cleared
+    when: [{kind: cleared}]
+    text: {zh: "周家伙计总算讲清了：自己只看见李二在桥边找灯笼，别的没有。", en: "Zhou's Clerk told it plainly at last: all the clerk had seen was Li Er at the bridge looking for a lantern."}
+  - id: hiding
+    text: {zh: "周家伙计躲在铺子后头。一听有人提桥，就低下了头。", en: "Zhou's Clerk kept to the back of the shop and looked at the floor whenever the bridge came up."}

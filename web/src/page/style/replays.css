@@ -1,0 +1,239 @@
+/* The gallery of recordings, and the page of a recording. */
+
+.live-root {
+  display: contents;
+}
+
+/* A page that lies over the game: the gallery, and the recording that is watched. */
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--bg);
+  overflow: auto;
+}
+
+.layer-replay {
+  z-index: 41;
+}
+
+.layer-replay > .shell {
+  min-height: 100%;
+}
+
+/* The gallery -------------------------------------------------------------------------------- */
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.gallery-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 18px;
+  min-height: var(--topbar-h);
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.gallery-head h2 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 19px;
+}
+
+.gallery-head-icon {
+  display: flex;
+  color: var(--accent);
+}
+
+.gallery-gap {
+  flex: 1 1 0;
+}
+
+.gallery-body {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 18px 18px 40px;
+}
+
+.gallery-intro {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+.gallery-failure {
+  margin: 0 0 14px;
+  padding: 9px 12px;
+  border: 1px solid var(--bad);
+  border-radius: 0;
+  background: var(--seal-soft);
+  color: var(--bad);
+}
+
+.gallery-section {
+  margin-top: 18px;
+}
+
+.gallery-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+:root:lang(zh) .gallery-heading {
+  letter-spacing: 0.3em;
+}
+
+.gallery-heading .count {
+  padding: 0 7px;
+  border-radius: 0;
+  background: var(--panel-3);
+  color: var(--ink);
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+.gallery-empty {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 0;
+  color: var(--muted);
+}
+
+.gallery-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gallery-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--panel);
+}
+
+.gallery-icon {
+  display: flex;
+  flex: none;
+  color: var(--accent);
+}
+
+.gallery-text {
+  display: grid;
+  flex: 1 1 auto;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gallery-name {
+  overflow: hidden;
+  color: var(--ink-strong);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gallery-meta {
+  color: var(--muted);
+  font-size: 12.5px;
+  overflow-wrap: anywhere;
+}
+
+/* The page of a recording ----------------------------------------------------------------- */
+
+.replay-badge {
+  padding: 2px 11px;
+  border: 1px solid var(--accent);
+  border-radius: 0;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-replay-playing {
+  color: var(--good);
+}
+
+.status-replay-paused,
+.status-replay-ended,
+.status-replay-loading {
+  color: var(--accent);
+}
+
+.status-replay-failed {
+  color: var(--bad);
+}
+
+.replay-bar {
+  grid-area: dialogue;
+  position: relative;
+  z-index: 12;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 10px 14px 12px;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+}
+
+.replay-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.replay-seek {
+  flex: 1 1 260px;
+  min-width: 160px;
+  accent-color: var(--accent);
+}
+
+.replay-readout {
+  display: grid;
+  min-width: 9.5em;
+  color: var(--ink);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-busy {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.replay-speed {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.replay-error {
+  flex: 1 1 100%;
+  margin: 0;
+  color: var(--bad);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}

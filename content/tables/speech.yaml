@@ -1,0 +1,421 @@
+# What the checker of a model's reply knows (lantern_core.cognition.contract): the closed lists
+# of words it looks for in a free line, the mood and the form of address a reply may carry, and
+# the words that name an entity, an act or a motive in other ways than the table of lines does.
+#
+# Every list is closed and short on purpose. The check is a match of words, so it stops the
+# usual ways of saying a thing and not every way. A word is matched as written, in either
+# language: Chinese by substring, English by whole word, ignoring case. A longer word wins over
+# a shorter one inside it, and a text is first stripped of full-width forms and curly quotes.
+#
+# words    the six classes of words that need an act behind them (see the module docstring of
+#          the contract). `mask` lists the harmless compounds that hold a word of the class, such
+#          as 不错 for 不, which are ignored when the class is scanned.
+# events   for each predicate of the table, the words that say the act itself. A word may sit
+#          under several predicates (broke says damaged and broken), and it is licensed by any.
+#          A predicate whose act is carried by the names it holds (at, located) may have few.
+# motives  for each motive of the table, the words that give that reason.
+# aliases  other names for an entity: how people really say it. The labels of the table of
+#          lines are known already. `player` is the festival manager.
+# secrets  words that a person keeps to themselves, over and above what the core works out from
+#          what they guard.
+# moods    the mood words a reply may carry, each with the interjection the core opens its own
+#          sentence with. addresses: the forms of address, put at the end of the sentence.
+
+moods:
+  plain: {zh: "", en: ""}
+  warm: {zh: "呵呵。", en: "Ha."}
+  wary: {zh: "嗯。", en: "Hm."}
+  sad: {zh: "唉。", en: "Alas."}
+  curt: {zh: "哼。", en: "Hmph."}
+  eager: {zh: "哎呀！", en: "Oh!"}
+
+addresses:
+  none: {zh: "", en: ""}
+  manager: {zh: "总管", en: "Manager"}
+  friend: {zh: "朋友", en: "friend"}
+
+words:
+  # Causal, consequence and sequence links, the agent of "it was X who did it", and purpose.
+  connective:
+    zh: [
+      "因为", "因而", "因此", "所以", "由于", "以致", "以至于", "导致", "致使", "害得", "弄得",
+      "搞得", "造成", "引起", "使得", "才会", "于是", "结果", "从而", "之所以", "是为了", "以便",
+      "免得", "以免", "要不是", "否则", "不然", "弄的", "搞的", "撞的", "踢的", "冲的", "砸的",
+      "闹的", "然后", "接着", "随后", "后来", "之后", "此后", "紧接着", "就这样", "这才",
+    ]
+    en: [
+      "because", "since", "therefore", "thus", "hence", "consequently", "as a result",
+      "as a consequence", "due to", "owing to", "thanks to", "on account of", "caused", "causes",
+      "causing", "led to", "leads to", "leading to", "resulted in", "results in", "resulting in",
+      "that's why", "that is why", "which is why", "so that", "so as to", "in order to", "and so",
+      "so", "then", "afterwards", "afterward", "after that", "subsequently", "whereupon",
+      "for that reason", "otherwise",
+    ]
+    mask:
+      zh: []
+      en: ["so much", "so many", "so far", "so long", "so little", "so few", "so very", "so what",
+           "so be it", "not so", "or so", "so-so", "since last night", "since this morning"]
+  # Saying that something is not so, or did not happen.
+  negation:
+    zh: [
+      "不", "没", "无", "未", "别", "莫", "非", "勿", "休想", "并非", "绝非", "否认",
+    ]
+    en: [
+      "not", "no", "never", "none", "nobody", "nothing", "nowhere", "neither", "nor", "without",
+      "cannot", "can't", "won't", "don't", "doesn't", "didn't", "isn't", "aren't", "wasn't",
+      "weren't", "hasn't", "haven't", "hadn't", "wouldn't", "couldn't", "shouldn't", "mustn't",
+      "ain't", "deny", "denied", "denies", "denying", "hardly", "barely", "scarcely",
+    ]
+    mask:
+      zh: [
+        "不错", "不过", "不用", "不少", "不如", "不妨", "不得了", "不好意思", "不停", "不断",
+        "不仅", "不光", "不管", "不得不", "不要紧", "没事", "没关系", "没问题", "无论", "无聊",
+        "无事", "未来", "未免", "别人", "别的", "别处", "别家", "特别", "告别", "区别", "分别",
+        "差别", "离别", "非常", "莫名",
+      ]
+      en: ["no problem", "no worries", "not bad", "not at all"]
+  # Saying that it may be so, or is thought to be: the hedge of a guess.
+  hedge:
+    zh: [
+      "可能", "或许", "也许", "大概", "大约", "约莫", "约摸", "兴许", "许是", "怕是", "恐怕",
+      "我猜", "猜想", "猜测", "估计", "估摸", "估算", "说不定", "八成", "十有八九", "多半",
+      "似乎", "好像", "仿佛", "应该是", "想必", "想来", "料想", "未必", "保不齐", "没准", "说不准",
+      "不一定", "难说", "看样子", "依我看", "我以为", "我觉得是", "我感觉", "我想", "我寻思",
+      "我推算", "我敢打赌", "我拿茶壶担保", "在下以为", "小的想", "老夫料想", "老身想来", "准是",
+      "我看八成", "我看多半是",
+    ]
+    en: [
+      "maybe", "perhaps", "possibly", "probably", "might", "may have", "could be", "could have",
+      "would have", "i guess", "i suppose", "i bet", "i fear", "i think", "i believe", "i feel",
+      "i figure", "i reckon", "i imagine", "i presume", "i suspect", "i surmise", "i conjecture",
+      "i estimate", "i calculate", "i judge", "i sense", "i take it", "i would say",
+      "i would think", "i would infer", "i'd say", "i'd guess", "i'd bet", "i'll bet", "i'll say",
+      "i'd think", "i'd imagine", "i'd judge", "i'd reckon", "i'd wager", "i'll wager",
+      "i'd lay odds", "i'd lay money", "seems", "seemed", "seem to", "looks like", "sounds like",
+      "likely", "unlikely", "presumably", "wouldn't be surprised",
+    ]
+    mask:
+      zh: []
+      en: []
+  # Saying that it is surely so. Nothing in a free line can stand behind it.
+  certain:
+    zh: [
+      "一定", "肯定", "绝对", "必定", "必然", "无疑", "毫无疑问", "千真万确", "显然", "当然",
+      "明明", "铁定", "板上钉钉", "准没错", "没错", "错不了", "保证",
+    ]
+    en: [
+      "definitely", "certainly", "surely", "undoubtedly", "obviously", "of course", "for sure",
+      "no doubt", "without a doubt", "must have", "must be", "for certain", "guarantee",
+      "guaranteed", "i'm sure", "i am sure", "i know for a fact", "no question",
+    ]
+    mask:
+      zh: ["当然可以", "当然好", "当然行"]
+      en: []
+  # Saying that it was heard, or that it is going round.
+  hearsay:
+    zh: [
+      "听说", "听人说", "听人讲", "听别人说", "听旁人说", "听来的", "据说", "据传", "传言",
+      "传闻", "听闻", "有人说", "有人讲", "人家说", "人们说", "大伙说", "都说", "街上说", "街坊说",
+      "说是", "据我所知", "有人看见", "有人瞧见", "有人见过",
+    ]
+    en: [
+      "i heard", "i've heard", "i have heard", "people say", "they say", "folk say", "folks say",
+      "word is", "word has it", "rumour", "rumours", "rumor", "rumors", "gossip", "apparently",
+      "supposedly", "allegedly", "reportedly", "told me", "tells me", "said that", "says that",
+      "heard from", "according to", "as far as i know", "so they say", "someone said",
+      "somebody said", "someone saw", "somebody saw", "i was told",
+    ]
+    mask:
+      zh: []
+      en: []
+  # Saying that the speaker saw or heard it themselves.
+  seen:
+    zh: [
+      "亲眼", "亲耳", "亲口", "我看见", "我看到", "我瞧见", "我瞧到", "我见到", "我见过", "我听见",
+      "我听到", "我撞见", "我碰见", "我发现", "看见了", "瞧见了", "撞见", "碰见", "眼见", "眼睁睁",
+      "目睹", "目击",
+    ]
+    en: [
+      "i saw", "i've seen", "i have seen", "i watched", "i noticed", "i witnessed", "i spotted",
+      "i caught sight", "with my own eyes", "with my own ears", "saw it myself", "myself saw",
+      "i was there", "i was right there", "i observed", "i looked",
+    ]
+    mask:
+      zh: []
+      en: []
+
+events:
+  at:
+    zh: ["路过", "经过", "出现", "待在", "守在", "站在", "蹲在", "溜到", "来过", "去过"]
+    en: ["passed", "walked past", "went by", "stood at", "showed up", "appeared at", "hung around",
+         "was seen at"]
+  came_from:
+    zh: ["来自", "打哪来", "从哪来"]
+    en: ["came from", "arrived from", "coming from"]
+  fled_from:
+    zh: ["逃走", "逃跑", "逃了", "逃离", "溜走", "跑掉", "躲开"]
+    en: ["fled", "escaped", "ran away", "ran off", "slipped away"]
+  looked_for:
+    zh: ["寻找", "在找", "找过", "找寻", "打听"]
+    en: ["looking for", "searching for", "looked for", "searched for", "hunting for"]
+  wanted:
+    zh: ["有人在找", "通缉", "悬赏"]
+    en: ["someone is looking for", "someone's looking for", "wanted"]
+  damaged:
+    zh: ["弄坏", "碰坏", "撞坏", "踢坏", "砸坏", "打坏", "搞坏", "毁坏", "损坏", "撞了", "踢了",
+         "砸了"]
+    en: ["damaged", "broke", "smashed", "wrecked", "kicked", "rammed", "crashed into",
+         "banged into", "bumped into", "knocked"]
+  flood_damaged:
+    zh: ["被汛水冲坏", "冲坏", "冲垮", "冲走", "冲断", "水冲"]
+    en: ["washed out by the flood", "washed out", "washed away", "swept away", "flood damage"]
+  repaired:
+    zh: ["修补", "修好", "修了", "修理", "补好", "补了", "修缮"]
+    en: ["repaired", "fixed", "mended", "patched"]
+  took:
+    zh: ["拿走", "拿了", "取走", "带走", "领走"]
+    en: ["took", "took away", "carried off"]
+  stole:
+    zh: ["偷走", "偷了", "盗走"]
+    en: ["stole", "stolen", "steal", "swiped", "pinched", "nicked"]
+  hid:
+    zh: ["藏起来", "藏了", "藏好", "藏在"]
+    en: ["hid", "hidden", "hide", "stashed", "tucked away"]
+  made:
+    zh: ["亲手", "扎了", "编了", "制作"]
+    en: ["built", "crafted", "by hand"]
+  gave:
+    zh: ["给了", "递给", "交给", "送给", "塞给"]
+    en: ["gave", "handed", "gave to"]
+  refused:
+    zh: ["拒绝", "回绝", "推掉", "不肯"]
+    en: ["turned down", "refused", "rejected", "declined"]
+  drank:
+    zh: ["喝酒", "喝了酒", "喝醉", "醉酒", "灌了酒", "酒醉"]
+    en: ["drank", "drinking", "drunk", "had a drink"]
+  broken:
+    zh: ["坏了", "塌了", "断了", "裂了", "垮了", "折了", "塌下来"]
+    en: ["broken", "broke", "snapped", "collapsed", "fell down", "gave way", "caved in"]
+  missing:
+    zh: ["不见了", "丢了", "失踪", "找不到", "丢失"]
+    en: ["missing", "gone missing", "lost", "vanished", "disappeared"]
+  scratched:
+    zh: ["刮痕", "划痕", "擦痕", "刮花", "擦伤"]
+    en: ["scratches", "scratched", "scrapes", "scuffs", "gouges"]
+  flooded:
+    zh: ["涨水", "发大水", "水位", "汛水", "水涨", "淹了", "发水"]
+    en: ["flood", "flooded", "the water is up", "high water", "water level", "rising water"]
+  located:
+    zh: ["位于", "坐落于"]
+    en: ["located", "situated"]
+  owns:
+    zh: ["属于", "的主人", "物主"]
+    en: ["belongs to", "owns", "owned by", "the owner"]
+  lied:
+    zh: ["撒谎", "说谎", "骗人", "扯谎"]
+    en: ["lied", "lying", "a lie", "liar", "fibbed", "deceived"]
+  broke_promise:
+    zh: ["食言", "说话不算数", "不守信", "违约", "失信"]
+    en: ["broke a promise", "broke his promise", "broke her promise", "went back on", "reneged"]
+  left_at:
+    zh: ["落在", "丢在", "掉在", "遗落", "忘在", "留在"]
+    en: ["left at", "dropped at", "left behind", "forgot at"]
+  set_straight:
+    zh: ["当众说清", "说清了", "只看见"]
+    en: ["said in public", "set straight", "only saw", "looking for"]
+
+motives:
+  accident:
+    zh: ["不小心", "意外", "失手", "无心"]
+    en: ["by accident", "accidentally", "unintentionally", "by mistake"]
+  debt:
+    zh: ["欠债", "欠了债", "还债"]
+    en: ["debt", "in debt", "owed money"]
+  fear:
+    zh: ["怕担责任", "怕被怪罪", "怕担"]
+    en: ["for fear of", "afraid of the blame", "fear of the blame"]
+  greed:
+    zh: ["贪财", "贪心", "见钱眼开", "图钱"]
+    en: ["greed", "greedy", "out of greed", "for money"]
+  jealousy:
+    zh: ["眼红", "嫉妒", "吃醋", "出风头"]
+    en: ["envy", "envious", "jealous", "jealousy", "out of envy"]
+  on_purpose:
+    zh: ["故意", "存心", "蓄意", "成心", "有意为之"]
+    en: ["on purpose", "deliberately", "intentionally", "purposely"]
+  play:
+    zh: ["贪玩", "闹着玩", "玩闹"]
+    en: ["just for fun", "for fun", "playing around", "messing around"]
+  pride:
+    zh: ["傲气", "逞能"]
+    en: ["out of pride", "too proud"]
+  protect:
+    zh: ["护着", "包庇", "袒护"]
+    en: ["to protect", "protecting", "covering for", "shielding"]
+  reckless:
+    zh: ["喝了酒胡闹", "胡闹", "莽撞", "鲁莽", "醉醺醺"]
+    en: ["reckless", "recklessly", "while drunk", "drunk and reckless"]
+  save_face:
+    zh: ["遮丑", "保面子", "要面子", "掩盖"]
+    en: ["save face", "saving face", "to cover up", "to hide the shame"]
+  spite:
+    zh: ["使坏", "泄愤", "记仇"]
+    en: ["spite", "out of spite", "to spite", "nasty"]
+
+aliases:
+  player:
+    zh: ["总管"]
+    en: ["Festival Manager", "Manager"]
+  fam_li:
+    zh: ["李家人"]
+    en: ["Lis", "Li household"]
+  fam_zhou:
+    zh: ["周家人"]
+    en: ["Zhous", "Zhou household"]
+  li_laotai:
+    zh: ["老太", "李家老太", "李老太太"]
+    en: ["Old Madam Li"]
+  li_xiaomei:
+    zh: ["小妹", "李小妹"]
+    en: []
+  zhou_zhanggui:
+    zh: ["掌柜", "周老板"]
+    en: ["shopkeeper", "Mr Zhou", "Old Zhou"]
+  zhou_huoji:
+    zh: ["伙计", "周家的伙计"]
+    en: ["clerk"]
+  zhou_dalang:
+    zh: ["大郎", "周大郎"]
+    en: ["Dalang"]
+  zhou_niangzi:
+    zh: ["周家娘子", "娘子"]
+    en: ["Mrs Zhou"]
+  zhou_erlang:
+    zh: ["二郎", "周二郎"]
+    en: ["Erlang"]
+  old_he:
+    zh: ["老何", "船夫", "何船夫"]
+    en: ["Old He", "boatman", "ferryman"]
+  gengfu:
+    zh: ["打更的", "打更人"]
+    en: ["watchman"]
+  zhangfang:
+    zh: ["账房先生"]
+    en: ["bookkeeper"]
+  cha_laoban:
+    zh: ["老板娘", "茶馆老板"]
+    en: ["teahouse owner"]
+  miaozhu:
+    zh: []
+    en: ["keeper", "temple caretaker"]
+  zuzhang:
+    zh: ["老族长"]
+    en: ["elder", "clan head"]
+  mujiang:
+    zh: ["木匠师傅"]
+    en: []
+  zhadeng_shifu:
+    zh: ["扎灯师父", "灯匠"]
+    en: ["lantern master", "lantern craftsman"]
+  sishu_xiansheng:
+    zh: ["教书先生"]
+    en: ["teacher"]
+  apprentice:
+    zh: ["阿福", "学徒"]
+    en: ["Afu", "apprentice"]
+  stranger:
+    zh: ["陌生人", "外乡客"]
+    en: []
+  huolang:
+    zh: ["货郎"]
+    en: ["peddler"]
+  t_rail:
+    zh: ["栏杆", "桥栏", "石栏"]
+    en: ["railing", "rail", "bridge railing", "handrail"]
+  t_he_boat:
+    zh: ["船", "小船"]
+    en: ["boat", "skiff"]
+  t_li_er_lantern:
+    zh: ["李二的灯笼"]
+    en: ["Li Er's lantern"]
+  t_repair_ledger:
+    zh: ["修船记录", "账本"]
+    en: ["ledger", "repair ledger"]
+  t_apprentice_towel:
+    zh: ["蓝布巾", "布巾"]
+    en: ["blue cloth", "cloth", "towel"]
+  t_toy_horse:
+    zh: ["竹马"]
+    en: ["bamboo horse", "toy horse"]
+  t_zhou_tassel:
+    zh: ["灯穗"]
+    en: ["tassel", "lantern tassel"]
+  t_sample_lantern:
+    zh: ["样灯"]
+    en: ["sample lantern"]
+  t_deposit:
+    zh: ["订金"]
+    en: ["down payment"]
+  p_bridge:
+    zh: ["桥", "桥上", "桥边", "桥头"]
+    en: ["bridge"]
+  p_under_bridge:
+    zh: ["桥下", "桥洞"]
+    en: ["under the bridge", "beneath the bridge", "below the bridge", "underneath the bridge"]
+  p_riverbank:
+    zh: ["河岸", "岸边", "河边"]
+    en: ["riverbank", "bank", "river bank", "shore"]
+  p_ferry:
+    zh: ["渡头"]
+    en: ["ferry", "ferry crossing"]
+  p_he_home:
+    zh: []
+    en: ["Old He's home"]
+  p_tavern:
+    zh: ["酒馆", "酒楼", "酒店"]
+    en: ["pub", "wine shop"]
+  p_teahouse:
+    zh: ["茶楼", "茶铺"]
+    en: ["tea house"]
+  p_temple:
+    zh: ["庙里", "庙宇", "寺庙"]
+    en: ["temple"]
+  p_clan_hall:
+    zh: ["宗祠"]
+    en: ["clan hall", "hall"]
+  p_workshop:
+    zh: ["灯坊", "工坊"]
+    en: ["workshop"]
+  p_loft:
+    zh: ["阁楼"]
+    en: ["loft"]
+  p_inn:
+    zh: ["旅店"]
+    en: ["inn"]
+  p_town_gate:
+    zh: ["镇门"]
+    en: ["gate"]
+  p_next_town:
+    zh: ["隔壁镇"]
+    en: ["next town"]
+  p_cloud_workshop:
+    zh: ["云锦"]
+    en: ["Cloud Brocade"]
+  p_river_port:
+    zh: ["下游"]
+    en: ["downstream port", "port"]
+
+secrets:
+  old_he:
+    zh: ["撑船", "撑篙", "划船", "出船", "撞上", "刮痕", "补船", "修船", "夜里出去"]
+    en: ["punted", "punting", "poled", "rowed", "went out on the river", "scratches", "scraped",
+         "patched the boat", "mended the boat", "repaired the boat"]
+  zhou_dalang:
+    zh: ["喝多", "喝醉", "醉酒", "醉醺醺", "酒气", "踢了", "夜里出门"]
+    en: ["drunk", "got drunk", "drank too much", "staggered", "kicked", "went out at night"]
+  zhou_zhanggui:
+    zh: ["大郎出去", "大郎喝酒", "大郎喝醉", "大郎夜里出门"]
+    en: ["Dalang went out", "Dalang was drinking", "Dalang got drunk", "my son was out"]
+  li_er:
+    zh: ["灯笼掉", "掉进水里", "掉了灯笼", "找灯笼", "去桥边"]
+    en: ["dropped the lantern", "lost my lantern", "looking for my lantern", "went to the bridge"]

@@ -1,0 +1,767 @@
+/* The talk, as a strip of paper at the bottom of the map. The seal of the surname of the person talked to stands at its corner; what has been said
+   is written on it; what can be said is a row of words with a stroke of the brush under each. The lists that a word opens (what to ask about,
+   what to tell, what to ask for) and the request with its preview are slips of paper above the strip. A picked person has a note beside it.
+   Nothing here has a shadow, a radius (apart from seals) or an entrance. */
+
+.talk-dock {
+  position: absolute;
+  right: 270px; /* the three things of the corner stand to the right of it */
+  bottom: calc(26px + var(--side-h, 0px)); /* over the strip of the acts around the manager, which strip.tsx measures */
+  left: 28px;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  pointer-events: none;
+}
+
+.talk-dock > *,
+.talk-dock .talk-strip > * {
+  pointer-events: auto;
+}
+
+/* The strip is there while the player talks. Out of a talk its line is kept for the ear, out of sight, and what an answer left stays. */
+
+.talk-strip {
+  position: relative;
+  order: 1;
+  width: min(820px, 100%);
+  min-height: 112px;
+  padding: 4px 8px 2px 24px;
+  font-size: 18px;
+}
+
+.talk-strip[data-talking="true"] {
+  padding-left: 62px;
+}
+
+.talk-strip[data-talking="false"] {
+  min-height: 0;
+}
+
+.around {
+  display: grid;
+}
+
+.talk-strip[data-open="false"] {
+  display: contents;
+}
+
+.talk-strip[data-open="false"] > .dialogue-line,
+.talk-strip[data-talking="true"]:not([data-empty="true"]) > .dialogue-line:not([data-thinking="true"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.dialogue-line {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.talk-strip > .dialogue-line {
+  display: block;
+  flex: none;
+  min-height: 0;
+  color: var(--ink);
+  font-size: 19px;
+}
+
+.dialogue-line[data-thinking="true"] {
+  animation: thinking-breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes thinking-breathe {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialogue-line[data-thinking="true"] {
+    animation: none;
+  }
+}
+
+/* The seal of a surname: a block of 黛蓝 ink with the character cut out of it, pressed a little crooked. */
+
+.surname-seal {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  background: var(--dailan);
+  color: var(--paper);
+  font-family: var(--brush);
+  font-size: 30px;
+  line-height: 1;
+  outline: 1.5px solid var(--paper);
+  outline-offset: -4px;
+  clip-path: polygon(2% 5%, 38% 0, 71% 3%, 99% 1%, 100% 36%, 97% 70%, 100% 98%, 62% 100%, 30% 97%, 1% 100%, 0 64%, 3% 31%);
+  transform: rotate(-4deg);
+}
+
+.talk-strip > .surname-seal {
+  position: absolute;
+  top: -12px;
+  left: -10px;
+  width: 58px;
+  height: 58px;
+  font-size: 40px;
+}
+
+/* What is said while the world is held, and for how long: one line, small, at the top of the strip. */
+
+.talk-badge {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+  align-items: baseline;
+  margin: 0 0 2px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.talk-badge strong {
+  font-weight: 500;
+}
+
+.talk-badge-text {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+}
+
+.talk-badge[data-paying="true"] .talk-badge-text span {
+  font-weight: 500;
+}
+
+.talk-clock {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The note under the badge is for the ear: the words say how the minutes are spent. */
+
+.talk-area {
+  display: block;
+}
+
+.talk-area-note {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* What has been said: what the player asked, and what came back, the newest at the bottom. */
+
+.talk-log {
+  display: grid;
+  gap: 2px;
+  max-height: 6.6em;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.talk-you {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.talk-them {
+  line-height: 1.5;
+}
+
+.pointer {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.pointer:hover,
+.pointer:focus-visible {
+  text-decoration-thickness: 3px;
+}
+
+.pointer-rest {
+  font-size: 0.85em;
+}
+
+/* What can be said: words, each with its stroke. The minutes it takes are written after it. */
+
+.verbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 24px;
+  margin-top: 6px;
+}
+
+.verbs .verb {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 6px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.verb-cost {
+  font-size: 13px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.verb-late {
+  flex-basis: 100%;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.verbs .verb.is-open > svg.underline {
+  opacity: 1;
+}
+
+.verbs .verb:hover:not(:disabled) {
+  border-color: transparent;
+}
+
+.verbs .verb:disabled {
+  border-style: none;
+  color: inherit;
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* The slips above the strip ----------------------------------------------------------------------------- */
+
+.slips {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: min(64vh, 520px, var(--slips-room, 520px));
+  pointer-events: none;
+}
+
+.slips > * {
+  pointer-events: auto;
+}
+
+.around > .slips {
+  position: static;
+  max-height: none;
+  margin-top: 8px;
+}
+
+.chips,
+.picker,
+.request {
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 4px 8px 2px;
+  overflow-y: auto;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.chips {
+  max-height: min(40vh, 320px);
+}
+
+/* With a request open under them the tags are a short list that scrolls, and the request has the room. */
+
+.slips:has(.request) .chips {
+  max-height: 8.5em;
+}
+
+.chips-title,
+.picker-title,
+.request-title {
+  margin: 0 0 2px;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.chips-note,
+.chips-empty,
+.chips-late,
+.request-leaves,
+.request-stale,
+.request-loading,
+.request-failed,
+.picker-empty,
+.picker-note {
+  margin: 0 0 4px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  align-items: baseline;
+  padding: 4px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.chips-title + .chips-note + .chip-group,
+.chips-title + .chip-group {
+  border-top: 0;
+}
+
+.chip-group-label {
+  flex: none;
+  min-width: 2.6em;
+  font-weight: 500;
+}
+
+.chip-row {
+  display: flex;
+  flex: 1 1 16em;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip-more {
+  flex-basis: 100%;
+  margin-left: 3.5em;
+}
+
+.chip-more summary {
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.topic-chip {
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.topic-chip-note {
+  margin-left: 6px;
+  font-size: 13px;
+}
+
+.chips.is-flash .topic-chip > svg.underline,
+.chips.is-signal .topic-chip > svg.underline {
+  opacity: 1;
+}
+
+/* A list of what to tell, to ask about, to ask for: one under another, ruled. */
+
+.picker-head {
+  padding-right: 30px;
+}
+
+.picker-group {
+  padding: 2px 0;
+}
+
+.picker-group + .picker-group {
+  border-top: 1px solid var(--rule);
+}
+
+.picker-heading {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.picker-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.picker-option.ink-act {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+  width: 100%;
+  padding: 5px 0 7px;
+  font-weight: 400;
+}
+
+.picker-option > svg.underline {
+  opacity: 0;
+}
+
+.picker-option:hover > svg.underline,
+.picker-option:focus-visible > svg.underline {
+  opacity: 1;
+}
+
+.picker-badge {
+  font-size: 14px;
+}
+
+/* The phrase that turns the page reaches up from the foot of the paper to the last row that is whole above it (--turn-h, which picker.tsx measures as the list is turned), so that no row is cut in half at the foot. */
+.picker .turn-bar {
+  align-items: flex-end;
+  height: var(--turn-h, 40px);
+}
+
+/* A request: what is asked, what stands in the way, how likely, and the words to send it. */
+
+.request-facts {
+  display: grid;
+  margin: 0;
+}
+
+.request-facts > div {
+  display: grid;
+  grid-template-columns: 5.6em minmax(0, 1fr);
+  gap: 10px;
+  padding: 4px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.request-facts dt {
+  font-weight: 500;
+}
+
+.request-facts dd {
+  margin: 0;
+}
+
+.request-blockers,
+.request-reasons,
+.request-facts-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.request-reasons {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--rule);
+}
+
+.request-reasons li {
+  display: grid;
+  grid-template-columns: 1.2em minmax(0, 1fr);
+  font-size: 15px;
+}
+
+.reason-sign {
+  font-weight: 500;
+}
+
+.request-buttons {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  align-items: center;
+  margin-top: 6px;
+  padding: 2px 0 4px;
+  background: var(--paper);
+}
+
+.request-buttons .ink-frame {
+  display: inline-flex;
+  gap: 8px;
+  align-items: baseline;
+  min-width: 0;
+  min-height: 40px;
+  padding: 6px 18px;
+  font-size: 17px;
+}
+
+.request-buttons .verb-cost {
+  letter-spacing: 0;
+}
+
+.request-result {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin: 0;
+  font-weight: 500;
+}
+
+.result-mark svg {
+  width: 20px;
+  height: 16px;
+  color: var(--tick);
+}
+
+.request-reply {
+  margin: 4px 0 0;
+  font-style: normal;
+  line-height: 1.55;
+}
+
+.request-reply::before {
+  content: "「";
+}
+
+.request-reply::after {
+  content: "」";
+}
+
+:root:lang(en) .request-reply::before {
+  content: "“";
+}
+
+:root:lang(en) .request-reply::after {
+  content: "”";
+}
+
+.request-facts-list {
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.request-spent {
+  margin: 4px 0 0;
+  font-size: 15px;
+}
+
+/* An answer that stays when the person has had to go: the strip is gone, the slip is not. */
+
+.talk-ended {
+  order: 1;
+  width: min(640px, 100%);
+}
+
+/* The note of the person who is picked ----------------------------------------------------------------- */
+
+.person-note {
+  order: 2;
+  width: min(330px, 100%);
+  max-height: min(34vh, 280px);
+  padding: 6px 10px 0; /* no padding at the foot: the buttons have it, so that no line of the note shows under them */
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Every word of the note is in the ink of its paper: a grey for a lesser line is not read on this paper. */
+
+.talk-dock .person-note *:not(svg, svg *, .stamp, .tally, .struck, .lantern, .circle) {
+  color: inherit;
+}
+
+.person-note .card-actions {
+  position: sticky;
+  bottom: 0;
+  padding: 2px 0 4px;
+  background: var(--paper);
+}
+
+/* The book lies where the note would be seen: the note waits under it. */
+
+.shell[data-notebook="true"] .person-note {
+  visibility: hidden;
+}
+
+.person-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.person-head .surname-seal {
+  width: 42px;
+  height: 42px;
+  font-size: 28px;
+}
+
+.person-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+
+.person-role {
+  margin: 0;
+  font-size: 14px;
+}
+
+.person-bio {
+  margin: 8px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+}
+
+.person-bio-fold > summary,
+.facts-fold > summary {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.person-bio-text {
+  margin: 2px 0 0;
+  line-height: 1.55;
+}
+
+.person-subtitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.person-lean {
+  margin: 6px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+  line-height: 1.55;
+}
+
+.lean-label {
+  font-weight: 500;
+}
+
+.lean-by {
+  font-weight: 500;
+}
+
+.person-leaves {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin: 6px 0 0;
+  font-size: 15px;
+}
+
+.person-leaves strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.person-note .facts {
+  display: grid;
+  margin: 6px 0 0;
+}
+
+.person-note .facts > div {
+  display: grid;
+  grid-template-columns: 5.2em minmax(0, 1fr);
+  gap: 10px;
+  padding: 4px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.person-note .facts dt {
+  font-weight: 500;
+}
+
+.person-note .facts dd {
+  margin: 0;
+}
+
+.routine-list,
+.agreed-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.routine-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+}
+
+.routine-when {
+  font-variant-numeric: tabular-nums;
+}
+
+.routine-act {
+  font-style: normal;
+}
+
+.want {
+  display: block;
+}
+
+.agreed-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 8px;
+}
+
+.agreed-text {
+  flex: 1 1 100%;
+}
+
+.stance-text,
+.stance-when {
+  display: block;
+}
+
+.stance-when {
+  font-size: 14px;
+}
+
+.person-actions,
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 22px;
+  margin-top: 8px;
+  font-size: 17px;
+}
+
+/* A window that is not wide: the note of the person sits above the strip and not beside it. */
+
+@media (max-width: 1180px) {
+  .talk-dock {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .person-note {
+    order: 1;
+  }
+
+  .talk-strip,
+  .talk-ended {
+    order: 2;
+    width: 100%;
+  }
+}

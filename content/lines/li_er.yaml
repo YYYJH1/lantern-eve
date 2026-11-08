@@ -1,0 +1,230 @@
+# Li Er, the second Li son, who works in the lantern workshop and lost his lantern in the river.
+# Easygoing and a little sheepish, quick to laugh at himself, trails off when he is unsure.
+person: li_er
+voice:
+  zh: 李家次子。随和，爱自嘲，拿不准的时候话会拖长，带着点不好意思。
+  en: The second Li son. Easygoing, laughs at himself, trails off when unsure, a little sheepish.
+lines:
+  asleep:
+    - {zh: "嘿嘿……灯笼……我的灯笼……（睡熟了）", en: "Heh... my lantern... where's my lantern... (fast asleep)"}
+    - {zh: "呼……再睡一会儿……就一会儿……（睡熟了）", en: "Zzz... just five more minutes... (fast asleep)"}
+  busy:
+    - {zh: "哎呀，我这儿正忙着呢。回头聊！", en: "Oh, I'm in the middle of something here. Catch you later!"}
+    - {zh: "总管，等我把手上这点弄完。行不行？", en: "Manager, let me finish this bit first. All right?"}
+  timeout:
+    - {zh: "糟了，活儿还没干完！我得走了！", en: "Oh no, I haven't finished my work! I have to go!"}
+    - {zh: "工坊那边等着呢。回头再聊啊。", en: "They're waiting for me at the workshop. We'll talk later."}
+  unknown:
+    - {zh: "嗯……这个我真不清楚。", en: "Hmm... I honestly don't know about that."}
+    - {zh: "这我哪知道啊。", en: "No idea about that, sorry."}
+  evade:
+    - {zh: "呃……这个就别问了吧。", en: "Uh... let's not get into that."}
+    - {zh: "哎，这事不提也罢。", en: "Ah, best not to bring that up."}
+  not_said:
+    - {zh: "我没说过这话啊。", en: "I never said that, you know."}
+    - {zh: "哎，我可没这么讲。", en: "Hey, I didn't put it like that."}
+  not_so:
+    - {zh: "不是的不是的。", en: "No, no, that's not it."}
+    - {zh: "不对啦。你听岔了。", en: "Not quite. You've misheard."}
+  keeper_no:
+    - {zh: "咱们才刚认识呢。下回吧。", en: "We've only just met. Next time."}
+    - {zh: "这个……我不太好给陌生人看。", en: "That's... not something I show to strangers."}
+  took_in:
+    - {zh: "哦哦，原来是这样。我记着了。", en: "Oh, I see. I'll keep that in mind."}
+    - {zh: "好嘞，我晓得了。", en: "Right, got it."}
+  knew:
+    - {zh: "这个啊，我早听说了。", en: "Oh, that. I'd heard already."}
+    - {zh: "嘿，这事我知道。", en: "Heh, I know about that."}
+  doubted:
+    - {zh: "不对吧，我听的可不是这样。", en: "That doesn't sound right. It's not what I heard."}
+    - {zh: "咦，跟我听说的不一样啊。", en: "Huh, that's different from what I heard."}
+  caught:
+    - {zh: "你骗我！亏我还信你！往后别想我再信了！", en: "You lied to me! And I trusted you! Don't expect it again!"}
+    - {zh: "好哇，原来你在糊弄我！我不信你了！", en: "So you were fooling me! I'm done believing you!"}
+  deal:
+    - {zh: "行啊，就这么说定了！", en: "Sure, it's a deal!"}
+    - {zh: "好嘞，一言为定！", en: "You got it, a deal!"}
+  empty:
+    - {zh: "光说不练，谁信啊。", en: "All talk. Who'd believe that."}
+    - {zh: "空口白话的，我可不上当。", en: "Just empty words. I won't fall for it."}
+  kept_thanks:
+    - {zh: "总管真守信用！这份情我记着！", en: "The Manager really keeps their word! I won't forget this!"}
+    - {zh: "说到做到啊，佩服！李家欠你一个人情。", en: "You did what you said. Respect! The Li family owes you one."}
+  will_do:
+    - {zh: "行，包在我身上！", en: "Sure, leave it to me!"}
+    - {zh: "好嘞，我这就去办。", en: "On it, I'll do it right away."}
+  cannot:
+    - {zh: "哎呀，这个我真帮不上。", en: "Oh dear, I really can't help with that."}
+    - {zh: "这忙我帮不了，抱歉啊。", en: "Can't help with that one, sorry."}
+  turned_down:
+    - {zh: "对不住啊，这个我不能答应。", en: "Sorry, I can't agree to that one."}
+    - {zh: "唉，这事真不行。", en: "Ah, this one really can't be done."}
+  said_already:
+    - {zh: "哎，这个我说过了呀。", en: "Hey, I did say that already."}
+    - {zh: "刚才讲过啦。别再问我了。", en: "I just said it. Don't ask me again."}
+  closed:
+    - {zh: "这会儿不行。换个时候吧。", en: "Not now, come back another time."}
+    - {zh: "现在不方便呢。过会儿再来。", en: "It's not a good moment. Try later."}
+  needs_nod:
+    - {zh: "这个得先问我娘。", en: "I have to ask my mother about that first."}
+    - {zh: "我哥还没点头呢。我不敢做主。", en: "My brother hasn't nodded yet. I can't decide on my own."}
+  nothing_to_say:
+    - {zh: "这个嘛，我没什么可说的。", en: "As for that, I've nothing to say."}
+    - {zh: "没啥说的。真的没有。", en: "There's nothing to say. Really."}
+  testified:
+    - {zh: "我说的都是我亲眼看到的！", en: "Everything I say is what I saw with my own eyes!"}
+    - {zh: "我不瞎编。看见的我都讲。", en: "I don't make things up. What I saw, I'll tell."}
+  too_late:
+    - {zh: "太晚啦。明天早上再说吧。", en: "It's too late now. Let's do it tomorrow morning."}
+    - {zh: "天都黑了。明早再来找我。", en: "It's dark already. Find me tomorrow morning."}
+  will_ask:
+    - {zh: "行，我去跟对方说说看。", en: "Okay, I'll go talk to them."}
+    - {zh: "好嘞，我去传个话。", en: "Right, I'll pass the word."}
+  will_call:
+    - {zh: "好，我这就去喊大伙儿到祠堂。", en: "Okay, I'll go call everybody to the hall now."}
+    - {zh: "我去叫人！都来祠堂！", en: "I'll go get people! Everyone to the hall!"}
+  hard_hc_li_bamboo:
+    - {zh: "谣言没说清楚之前，竹子一根都别想借。", en: "Until the rumour's cleared up, we're not lending a single pole."}
+    - {zh: "那个谣言得当众说清楚。不然竹子免谈。", en: "The rumour has to be cleared up in public first. Otherwise, forget the bamboo."}
+  hard_hc_li_bamboo_rumour:
+    - {zh: "大伙都说是我弄坏的桥……总管你也不吭声，这忙我就不好帮了。", en: "Everyone says I wrecked the bridge... and you said nothing either, Manager. So I can't really help."}
+    - {zh: "都说桥是我弄坏的，总管也一声不吭。我哪还好意思答应呢？", en: "They all say I broke the bridge, and you stay quiet too. How could I say yes now?"}
+  hard_other:
+    - {zh: "这个真不行。", en: "That really won't work."}
+    - {zh: "没得谈。", en: "Nothing to talk about."}
+  elder_yes:
+    - {zh: "嗯嗯，我听明白了。就这样吧。", en: "Mm-hm, I get it. Let's go with that."}
+    - {zh: "有道理啊。我服了。", en: "Makes sense. You've convinced me."}
+  elder_no:
+    - {zh: "光这些我还是拿不准。", en: "That alone doesn't settle it for me."}
+    - {zh: "唔，还差点意思。", en: "Hmm, it's still not quite there."}
+  objection_withdrawn:
+    - {zh: "这下总算说清楚了……我不拦了，真的。", en: "So it's finally cleared up... I won't get in the way any more, really."}
+    - {zh: "哈，原来误会解开了。那我也不挡着啦。", en: "Ha, so the misunderstanding's cleared. Then I won't stand in the way either."}
+  witness_in_public:
+    - {zh: "我就看到这些……真的，没添油加醋。", en: "That's all I saw... honestly, I haven't padded it."}
+    - {zh: "我只说我见着的，多一句都不敢编啦。", en: "I only say what I saw. I wouldn't dare invent one word more."}
+  batch_promised:
+    - {zh: "行啊，明早我帮着送到桥边！", en: "Sure, I'll help carry it to the bridge in the morning!"}
+    - {zh: "明早准到，这回我可不会再弄丢了。", en: "It will be there tomorrow morning, and I won't lose this one."}
+  bamboo_arrived:
+    - {zh: "竹料到桥边啦。总算帮上一点忙了。", en: "The bamboo's at the bridge. At least I helped a little."}
+    - {zh: "看，竹子到了！这下桥有救了吧？", en: "Look, the bamboo's here! The bridge might be saved now, no?"}
+  promise_open:
+    - {zh: "呃，我答应过了呀。{when}，{amount}根{item}送到桥边。", en: "Uh, I did promise already. It's {amount} poles of {item} for the bridge {when}."}
+    - {zh: "这事儿应下了，我可没忘。{when}把{amount}根{item}送去。", en: "I said yes and I haven't forgotten. I'll bring {amount} poles of {item} to the bridge {when}."}
+  goods_enough:
+    - {zh: "嘿，桥边的{item}已经够啦。", en: "Hey, the {item} at the bridge is plenty already."}
+    - {zh: "{item}够了够了，再送我都不好意思了。", en: "That's enough {item}, honestly. Any more and I'd feel sheepish."}
+  point_heard:
+    - {zh: "嗯……我不清楚。不过我听{name}提起过，你去问问？", en: "Hmm... I don't know. I did hear {name} mention it, though. Maybe ask?"}
+    - {zh: "我真不知道啊……好像{name}说起过，你去问问吧。", en: "I really don't know... I think {name} talked about it, so go and ask."}
+  point_hub:
+    - {zh: "这我哪知道啊？{name}什么消息都听得到，你去问问。", en: "How would I know? Ask {name}, who hears everything."}
+    - {zh: "嗯……我答不上来。镇上的事，{name}比我清楚多了。", en: "Hmm... I can't answer that. When it comes to town talk, {name} knows far more than me."}
+frames:
+  seen:
+    - {zh: "我亲眼瞧见的，没骗你：{line}！", en: "I saw it with my own eyes, honest: {line}!"}
+    - {zh: "这事我在场嘛：{line}。", en: "I was right there, see: {line}."}
+  heard:
+    - {zh: "{teller}跟我说的：{line}。", en: "{teller} told me this: {line}."}
+    - {zh: "我是听{teller}讲的：{line}。", en: "I got it from {teller}: {line}."}
+  unknown:
+    - {zh: "我听人说啊：{line}。", en: "Somebody said that {line}."}
+    - {zh: "有人这么讲：{line}。", en: "That's what they're saying: {line}."}
+  own:
+    - {zh: "我觉着吧：{line}。", en: "My honest take: {line}."}
+    - {zh: "要我说：{line}。", en: "My two cents: {line}."}
+  guess_own:
+    - {zh: "嘿，我瞎猜啊。{hedge}{line}。", en: "Just a hunch, mind. {hedge} {line}."}
+    - {zh: "没准儿啊。{hedge}{line}。", en: "Could be wrong. {hedge} {line}."}
+  guess_heard:
+    - {zh: "{teller}提了一嘴。{hedge}{line}。", en: "{teller} dropped a hint. {hedge} {line}."}
+    - {zh: "听{teller}那意思，{hedge}{line}。", en: "The way {teller} told it, {hedge} {line}."}
+  guess_unknown:
+    - {zh: "不知道谁讲的。{hedge}{line}。", en: "Can't say who told me. {hedge} {line}."}
+    - {zh: "道听途说啊。{hedge}{line}。", en: "Just hearsay. {hedge} {line}."}
+  rival:
+    - {zh: "不过吧，{teller}跟我说的又不一样：{line}。", en: "Though, well, {teller} told me something different: {line}."}
+    - {zh: "{teller}还说过别的，我就拿不准了：{line}。", en: "{teller} said something else too, so I'm not sure now: {line}."}
+hedges:
+  - {zh: 我猜吧, en: I'd guess}
+  - {zh: 没准儿是, en: I'd wager}
+# What he says by the state of the game (world/bridge/roles.py): a greeting as a talk opens, a last
+# word as the manager leaves, and the epilogue of the ending page. The first entry whose conditions
+# all hold is the one. The town blames him for the rail until it is set straight in public, so his
+# greeting turns on whether it has been, and his epilogue on whether it was.
+greet:
+  - id: new
+    when: [{kind: acquainted, is: new}]
+    lines:
+      - {zh: "我是李二，在扎灯坊糊灯的。镇上怎么说我，你该听说了吧？", en: "I'm Li Er, I paste lanterns at the workshop. You'll have heard what the town says about me, won't you?"}
+  - id: broken
+    when: [{kind: promised, state: broken}]
+    lines:
+      - {zh: "你说过的事……算了，我也不好意思催。", en: "You said you would... never mind. I'd feel awkward pressing you."}
+  - id: festival
+    when: [{kind: after, day: 5, hour: 15}]
+    lines:
+      - {zh: "今晚的灯，我糊了十二盏。一盏也不许灭！", en: "I pasted twelve lanterns for tonight. Not one of them is allowed to go out!"}
+  - id: truth
+    when: [{kind: flag, flag: truth_told}]
+    lines:
+      - {zh: "桥的事说开了。我这脸，总算抬得起来。", en: "The bridge business is out in the open. I can hold my head up at last."}
+  - id: peace
+    when: [{kind: flag, flag: reconcile_seen}]
+    lines:
+      - {zh: "两家坐一桌了！我这心里，也敞亮些了。", en: "The two houses sat at one table! I feel lighter for it."}
+  - id: kept
+    when: [{kind: promised, state: kept}]
+    lines:
+      - {zh: "你应我的事办了。嘿，我欠你一回。", en: "You did what you promised. Heh, I owe you one."}
+  - id: cleared
+    when: [{kind: cleared}]
+    lines:
+      - {zh: "我那天只是找灯笼，大伙儿总算信了。嘿，不容易。", en: "I was only looking for my lantern, and folks finally believe it. Heh, it wasn't easy."}
+  - id: again
+    when: [{kind: acquainted, is: today}]
+    lines:
+      - {zh: "哎，又是我？", en: "Oh, me again?"}
+      - {zh: "还有事？你说。", en: "Something more? Go on."}
+  - id: plain
+    lines:
+      - {zh: "镇上的话我都听见了。你要问什么，尽管问。", en: "I've heard everything the town says. Ask me whatever you like."}
+      - {zh: "我在这儿呢，有话就说。", en: "I'm right here. Say what you need."}
+chat:
+  - id: broken
+    when: [{kind: promised, state: broken}]
+    lines:
+      - {zh: "没事没事，我等着。", en: "No trouble at all, I'll wait."}
+  - id: festival
+    when: [{kind: after, day: 5, hour: 15}]
+    lines:
+      - {zh: "晚上来看灯啊！", en: "Come and see the lanterns tonight!"}
+  - id: truth
+    when: [{kind: flag, flag: truth_told}]
+    lines:
+      - {zh: "说开了真好。", en: "It's good to have it said."}
+  - id: cleared
+    when: [{kind: cleared}]
+    lines:
+      - {zh: "谢谢你替我说话啊。", en: "Thanks for speaking up for me."}
+  - id: plain
+    lines:
+      - {zh: "回见啊，总管。", en: "See you, Manager."}
+      - {zh: "我回工坊了，糨糊要干了。", en: "I'm off to the workshop before the paste dries."}
+epilogue:
+  - id: full
+    when: [{kind: cleared}, {kind: flag, flag: bridge_fixed}, {kind: flag, flag: truth_told}]
+    text: {zh: "李二糊的灯排在游灯最前头。再没有人提起毁桥的闲话。", en: "The lanterns Li Er pasted led the parade. Nobody spoke of the slander any more."}
+  - id: cleared_bridge
+    when: [{kind: cleared}, {kind: flag, flag: bridge_fixed}]
+    text: {zh: "李二提着自己糊的灯过了桥。街坊看见了，都点头打招呼。", en: "Li Er crossed the bridge carrying a lantern pasted by Li Er's own hands. The neighbours looked up and nodded."}
+  - id: cleared_detour
+    when: [{kind: cleared}, {kind: flag, flag: detour_done}]
+    text: {zh: "李二举着灯走进夹道，一路都有人打招呼。", en: "Li Er walked into the lane with a lantern raised, and people called out greetings all the way."}
+  - id: blamed
+    when: [{any: [{kind: flag, flag: bridge_fixed}, {kind: flag, flag: detour_done}]}]
+    text: {zh: "李二也提了灯。街边还有人压低声音，议论毁桥的事。", en: "Li Er carried a lantern too, but at the roadside some still lowered their voices over the broken rail."}
+  - id: apart
+    text: {zh: "李二守在扎灯坊里，把没点的灯一盏盏收了起来。", en: "Li Er stayed in the workshop and put away the unlit lanterns one by one."}

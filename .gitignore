@@ -1,0 +1,28 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+dist/
+build/
+*.egg-info/
+.env
+.env.*
+node_modules/
+runs/
+test-results/
+playwright-report/
+.DS_Store
+
+# web: build outputs and generated assets
+web/dist/
+web/dist-e2e/
+web/public/pyodide/
+web/public/core/
+web/public/licenses/npm/
+web/.vite/
+
+# a provider file made from configs/providers.example.toml
+configs/providers.toml

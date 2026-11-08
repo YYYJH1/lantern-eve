@@ -1,0 +1,64 @@
+/* Playing: what the town says back, the calm of a talk, and the button that brings the ending back.
+   Colours are tokens from tokens.css, so both themes work from the same rules. */
+
+/* What the town says back ------------------------------------------------------------------ */
+
+.toast-game {
+  min-width: min(300px, 100%);
+}
+
+.toast-refused,
+.toast-bad {
+  border-color: color-mix(in srgb, var(--bad) 55%, var(--line-strong));
+}
+
+.toast-refused::before,
+.toast-bad::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bad);
+}
+
+.toast-info::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* The calm of a talk ------------------------------------------------------------------------ */
+
+.map-ui > .calm {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+
+.map-ui > .calm::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--wuhei) 9%, transparent);
+}
+
+.map-ui > .calm[data-on="true"] {
+  opacity: 1;
+}
+
+/* The button that brings the ending back (the ending itself is in ending.css). */
+
+/* It hangs in the middle of the foot of the map, over the strip of the acts and clear of the three things at the right. (The rule needs the weight of two classes: the frame of ink is `position: relative`, which would put the tab in the flow, at the corner of the page.) */
+.ink-frame.ending-tab {
+  position: absolute;
+  bottom: 104px;
+  left: 50%;
+  transform: translateX(-50%);
+}

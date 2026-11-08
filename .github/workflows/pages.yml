@@ -1,0 +1,59 @@
+name: Pages
+
+# Builds the web client and publishes it to GitHub Pages at https://yyyjh1.github.io/lantern-eve/. It runs on
+# every push to main and when someone starts it, and only in YYYJH1/lantern-eve, so that a fork does not try to
+# deploy. The repository's Pages setting must be "GitHub Actions" (Settings, Pages, Build and deployment,
+# Source).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time. A deployment that is running is allowed to finish and the newest waiting one follows.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build the site (Node 22, uv)
+    if: ${{ github.repository == 'YYYJH1/lantern-eve' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      # uv builds the core wheel the page loads.
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - run: npm ci
+      # Copies the Pyodide runtime from node_modules, builds the core wheel, type-checks, builds the page and
+      # copies the licence texts of what the page carries into dist/licenses.
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: web/dist
+
+  deploy:
+    name: deploy to GitHub Pages
+    needs: build
+    if: ${{ github.repository == 'YYYJH1/lantern-eve' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

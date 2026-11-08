@@ -1,0 +1,152 @@
+# The Lantern Maker, a woman, master of the lantern workshop. Warm and absorbed: she talks in paste,
+# paper and light, cares for the festival more than for the quarrel, and is happiest when things glow.
+person: zhadeng_shifu
+voice:
+  zh: 扎灯坊的女师傅。热心、专注，开口闭口是糨糊、纸和光，更在乎灯会，不在乎两家的口角。
+  en: The woman master of the lantern workshop. Warm and absorbed, talks in paste, paper and light, cares more for the festival than for the quarrel.
+lines:
+  asleep:
+    - {zh: "呼……灯骨……还没扎好……（睡熟了）", en: "Zzz... the ribs... not yet bound... (fast asleep)"}
+    - {zh: "唔……主灯……亮起来了……（睡熟了）", en: "Mm... the main lantern... it's lit... (fast asleep)"}
+  busy:
+    - {zh: "糨糊还没干。我腾不出手。", en: "The paste isn't dry. I can't spare a hand."}
+    - {zh: "总管，我正糊灯面。等我忙完再聊。", en: "Manager, I'm pasting a lantern face. Let's talk when I'm done."}
+  timeout:
+    - {zh: "灯还等着我收尾。得回去了。", en: "A lantern is waiting for its last touch. I have to get back."}
+    - {zh: "灯会在即。活儿不等人。我先去了。", en: "The festival is near. The work won't wait. I'll go on ahead."}
+  unknown:
+    - {zh: "这件事我没听说过。", en: "I haven't heard about that."}
+    - {zh: "灯里的事我懂。这个我不懂。", en: "I know what's in a lantern. This I don't know."}
+  evade:
+    - {zh: "这个话头，我不接。", en: "That thread of talk, I won't take up."}
+    - {zh: "灯下只要亮堂。不要吵闹。这事别提。", en: "I want light, not trouble. Let's not raise it."}
+  not_said:
+    - {zh: "我没讲过。别把话糊到我身上。", en: "I never said it. Don't paste those words on me."}
+    - {zh: "这不是我的话。", en: "Those aren't my words."}
+  not_so:
+    - {zh: "不是这样的。再想想。", en: "It isn't so. Think again."}
+    - {zh: "错了。事情不是这么回事。", en: "Wrong. It wasn't like that."}
+  keeper_no:
+    - {zh: "咱们不熟。下回再来吧。", en: "We aren't acquainted. Come again some time."}
+    - {zh: "工坊重地。生人不给看。", en: "The workshop is private. No showing strangers."}
+  took_in:
+    - {zh: "好，这话我收进心里。", en: "Good, I'll tuck that away."}
+    - {zh: "明白了。多谢告诉我。", en: "Understood. Thanks for telling me."}
+  knew:
+    - {zh: "灯还没点，这事我就知道了。", en: "I knew about this before a single lantern was lit."}
+    - {zh: "这点我早有数。", en: "I'd got that already."}
+  doubted:
+    - {zh: "我听来的另有说法。", en: "What I heard tells it differently."}
+    - {zh: "灯影对不上。听着有些不对。", en: "The shadows don't match. That sounds a little off."}
+  caught:
+    - {zh: "你竟骗我！往后你说什么，我都不信了！", en: "You deceived me! Whatever you say from now on, I won't believe it!"}
+    - {zh: "原来你一直在说谎。灯都照不亮你的心！", en: "So you've been lying all along. No lantern could light up your heart!"}
+  deal:
+    - {zh: "好，这事就这么扎紧了。", en: "Good, then it's bound tight."}
+    - {zh: "行，成交。", en: "All right, agreed."}
+  empty:
+    - {zh: "光说不扎灯，是不会亮的。", en: "Talk without binding a lantern gives no light."}
+    - {zh: "没有实物。话不能当灯点。", en: "Nothing in hand. Words can't be lit like a lantern."}
+  kept_thanks:
+    - {zh: "你说到做到了。灯火为证。", en: "You did as you said. The lanterns are my witness."}
+    - {zh: "多谢总管守信。灯会上一定相报。", en: "Thank you for keeping your word. I'll repay it at the festival."}
+  will_do:
+    - {zh: "好，这活我来扎。", en: "Good, I'll bind this one."}
+    - {zh: "交给我吧。保证亮堂。", en: "Leave it to me. I promise it'll shine."}
+  cannot:
+    - {zh: "这忙我帮不上。手里全是灯。", en: "I can't help with that. My hands are full of lanterns."}
+    - {zh: "做不到。灯骨扎不了这个。", en: "Can't be done. A lantern frame can't hold this."}
+  turned_down:
+    - {zh: "请见谅，这个我答应不了。", en: "Forgive me, I can't promise that."}
+    - {zh: "恕我不能点这个头。", en: "I'm afraid I can't nod to that."}
+  said_already:
+    - {zh: "我刚才说过了。", en: "I said so a moment ago."}
+    - {zh: "这话说过了。别再问。", en: "That's been said. Don't ask again."}
+  closed:
+    - {zh: "灯房这会儿不接待。晚些来。", en: "The workshop isn't receiving now. Come later."}
+    - {zh: "现在不行。等灯糊好再来。", en: "Not now. Come back once the lanterns are pasted."}
+  needs_nod:
+    - {zh: "灯会的事，要族长点头。", en: "For festival matters, the elder must nod."}
+    - {zh: "族长要是没发话，我不敢动手。", en: "The elder has not spoken, so I won't set to work."}
+  nothing_to_say:
+    - {zh: "对此我没什么好说。", en: "I have nothing to say about it."}
+    - {zh: "灯不会说话。我也一样。", en: "A lantern doesn't speak. Neither do I."}
+  testified:
+    - {zh: "我讲的，都是灯下亲眼所见。", en: "What I say, I saw with my own eyes under the lamplight."}
+    - {zh: "没见到的，我不说一个字。", en: "Of what I did not see, I say not a word."}
+  too_late:
+    - {zh: "天黑透了。明天白天再来。", en: "It's pitch dark. Come in the daylight tomorrow."}
+    - {zh: "夜里灯要看守。明早再说。", en: "The lanterns need watching tonight. Let's speak in the morning."}
+  will_ask:
+    - {zh: "好，我去问个明白。", en: "Good, I'll go and find out."}
+    - {zh: "我替你去一趟。", en: "I'll make the trip for you."}
+  will_call:
+    - {zh: "好，我提着灯去叫大家。", en: "Good, I'll take a lantern and go and call everyone."}
+    - {zh: "我去喊人。祠堂里点灯等你们。", en: "I'll go and call them. Lamps will be lit in the hall."}
+  hard_hc_li_bamboo:
+    - {zh: "谣言没当众澄清，这灯就扎不起来。", en: "Until the slander is cleared in public, this lantern can't be built."}
+    - {zh: "先把谣言说清楚。灯才好点亮。", en: "Clear the slander first. Then the lantern can be lit."}
+  hard_hc_li_bamboo_rumour:
+    - {zh: "谣言像潮纸，糊不上去。总管一声不吭，这灯我没法扎。", en: "That rumour is damp paper and it will not stick. The Manager says nothing, so I cannot bind this lantern."}
+    - {zh: "谣言遮了灯光，总管又不吭声。这忙我帮不上。", en: "The rumour dims the light, and the Manager stays quiet. I cannot help with this."}
+  hard_other:
+    - {zh: "这事灭了吧。", en: "Let that idea go out."}
+    - {zh: "不行。我心意已定。", en: "No. My mind is made up."}
+  elder_yes:
+    - {zh: "说得透亮。我服了。", en: "You put it clearly. I'm persuaded."}
+    - {zh: "你说得在理。我心里亮堂了。", en: "You make sense. My mind is clear now."}
+  elder_no:
+    - {zh: "光这些，灯芯还没点着。", en: "On this alone, the wick isn't lit yet."}
+    - {zh: "还不够亮堂。我再想想。", en: "It isn't clear enough yet. Let me think more."}
+  objection_withdrawn:
+    - {zh: "话说开了，像糊平的灯面。我不拦了。", en: "Now it's said, like a lantern face pasted smooth. I won't stop you."}
+    - {zh: "亮堂了。我这边再没有阻碍。", en: "It's bright now. I have no objection on my side."}
+  witness_in_public:
+    - {zh: "我就看到这点光，多的我不瞎糊。", en: "I only saw this little light, and I won't paste on more."}
+    - {zh: "看见的我说，没见的我不糊弄。", en: "I tell what I saw, and I won't paper over what I didn't."}
+  batch_promised:
+    - {zh: "成！明早就送到桥边，灯等着用呢。", en: "Done! It goes to the bridge tomorrow morning, for the lanterns are waiting on it."}
+    - {zh: "明天一早送到，一点不耽误扎灯。", en: "It arrives first thing tomorrow, and the lantern work loses no time."}
+  bamboo_arrived:
+    - {zh: "竹料到了！篾条韧得很，好扎灯！", en: "The bamboo's here! The strips are tough, perfect for binding lanterns!"}
+    - {zh: "桥边亮堂起来了，料都到了。", en: "It's brightening at the bridge, and the stock has all come."}
+  promise_open:
+    - {zh: "应下啦！{when}就把{amount}根{item}送到桥边，灯等着呢。", en: "Promised! I'll have {amount} poles of {item} at the bridge {when}, and the lanterns are waiting."}
+    - {zh: "说好的事忘不了。{amount}根{item}，{when}送到桥边。", en: "A promise isn't something I forget. It's {amount} poles of {item}, at the bridge {when}."}
+  goods_enough:
+    - {zh: "桥边的{item}够啦！别再添了。", en: "There's enough {item} at the bridge! Don't add more."}
+    - {zh: "{item}够用了，剩下的留着扎灯。", en: "The {item} is enough, so keep the rest for the lanterns."}
+  point_heard:
+    - {zh: "灯里的事我懂，这个我不懂。不过听{name}提起过，去问问吧。", en: "I know what's in a lantern, not this. But I heard {name} speak of it, so go and ask."}
+    - {zh: "这事我没留意，手里的灯顾不过来。{name}好像知道，你去问问。", en: "I haven't noticed, with all these lanterns on my hands. I think {name} knows, so go and ask."}
+  point_hub:
+    - {zh: "我只管糊灯，不管闲话。镇上的消息，找{name}吧。", en: "I only paste lanterns and mind no gossip. For news of the town, see {name}."}
+    - {zh: "这个我答不上来。{name}那里人来人往，消息比灯火还亮堂。你去问问。", en: "I can't answer that. Folk come and go at {name}'s, and the news there is brighter than any lantern. Go and ask."}
+frames:
+  seen:
+    - {zh: "灯下亲眼所见：{line}。", en: "I saw it by lamplight with my own eyes: {line}."}
+    - {zh: "我就在场。看得分明：{line}。", en: "I was there and saw it clearly: {line}."}
+  heard:
+    - {zh: "{teller}来灯坊时提起：{line}。", en: "{teller} brought it up at the workshop: {line}."}
+    - {zh: "我是听{teller}说起的：{line}。", en: "I heard {teller} speak of it: {line}."}
+  unknown:
+    - {zh: "张罗灯会的人都在说：{line}。", en: "Everyone getting the festival ready says that {line}."}
+    - {zh: "听人闲谈：{line}。", en: "I heard some idle talk that {line}."}
+  own:
+    - {zh: "我这双做灯的眼看：{line}。", en: "To my lantern-maker's eye, {line}."}
+    - {zh: "依我手艺人的想法：{line}。", en: "As a craftsman sees it, {line}."}
+  guess_own:
+    - {zh: "灯影摇晃。{hedge}{line}。", en: "The lamplight flickers. {hedge} {line}."}
+    - {zh: "还没看真切。{hedge}{line}。", en: "I haven't seen it clearly. {hedge} {line}."}
+  guess_heard:
+    - {zh: "{teller}说得影影绰绰。{hedge}{line}。", en: "{teller} was dim on the details. {hedge} {line}."}
+    - {zh: "凭{teller}那几句话，{hedge}{line}。", en: "From those few words of {teller}'s, {hedge} {line}."}
+  guess_unknown:
+    - {zh: "出处像灯雾一样模糊。{hedge}{line}。", en: "The source is as hazy as lantern smoke. {hedge} {line}."}
+    - {zh: "不晓得谁起的头。{hedge}{line}。", en: "I couldn't say who began it. {hedge} {line}."}
+  rival:
+    - {zh: "可{teller}也说过另一种光景：{line}。", en: "But {teller} has painted another picture for me: {line}."}
+    - {zh: "{teller}糊出来的又是另一个样：{line}。", en: "What {teller} told me was cut from different paper: {line}."}
+hedges:
+  - {zh: 依我看, en: I'd think}
+  - {zh: 大约, en: I'd say}

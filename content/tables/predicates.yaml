@@ -1,0 +1,149 @@
+# Closed predicate table. Slot names are shared across predicates on purpose: who (acting
+# person), whom (person acted on), what (thing), where (place). Operators that change a
+# proposition (level, assimilate) rely on that to line a parent up with its child.
+#
+# A slot has one type, or a list of the types it takes. The actor of damaged and took takes a
+# person or a family, so that the assimilate operator can swap a person for the person's family
+# (李二 to 李家) without changing the predicate.
+#
+# Two optional hints are written to tables.json with the rest:
+#   level_to  the more general predicate that a level (flatten) step may move to; the child
+#             then needs the required slots of that predicate
+#   heavier   the next predicate up the severity ladder, for a sharpen step; it has the same
+#             slot names
+predicates:
+  # presence and movement
+  - id: at
+    label: 在
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: where, type: place, required: true}
+  - id: came_from
+    label: 来自
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: where, type: place, required: true}
+  - id: fled_from
+    label: 逃离
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: where, type: place, required: true}
+  - id: looked_for
+    label: 寻找
+    level_to: at
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: what, type: thing, required: true}
+      - {name: where, type: place, required: false}
+  - id: wanted
+    label: 被人寻找
+    slots:
+      - {name: who, type: person, required: true}
+  # acts on things
+  - id: damaged
+    label: 弄坏
+    slots:
+      - {name: who, type: [person, family], required: true}
+      - {name: what, type: thing, required: true}
+      - {name: where, type: place, required: false}
+  - id: flood_damaged
+    label: 汛水冲坏
+    slots:
+      - {name: what, type: thing, required: true}
+  - id: repaired
+    label: 修补
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: what, type: thing, required: true}
+  - id: took
+    label: 拿走
+    heavier: stole
+    slots:
+      - {name: who, type: [person, family], required: true}
+      - {name: what, type: thing, required: true}
+      - {name: where, type: place, required: false}
+  - id: stole
+    label: 偷走
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: what, type: thing, required: true}
+      - {name: where, type: place, required: false}
+  - id: hid
+    label: 藏起
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: what, type: thing, required: true}
+      - {name: where, type: place, required: false}
+  - id: made
+    label: 亲手做
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: what, type: thing, required: true}
+  - id: gave
+    label: 给
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: whom, type: person, required: true}
+      - {name: what, type: thing, required: true}
+  - id: refused
+    label: 拒绝
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: whom, type: person, required: true}
+  - id: drank
+    label: 喝酒
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: where, type: place, required: false}
+  # states and standing relations of things
+  - id: broken
+    label: 坏了
+    slots:
+      - {name: what, type: thing, required: true}
+  - id: missing
+    label: 不见了
+    slots:
+      - {name: what, type: thing, required: true}
+  - id: scratched
+    label: 有刮痕
+    slots:
+      - {name: what, type: thing, required: true}
+  - id: flooded
+    label: 涨水
+    slots:
+      - {name: where, type: place, required: true}
+  - id: located
+    label: 位于
+    slots:
+      - {name: what, type: thing, required: true}
+      - {name: where, type: place, required: true}
+  - id: owns
+    label: 属于
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: what, type: thing, required: true}
+  - id: left_at
+    label: 遗落在
+    slots:
+      - {name: what, type: thing, required: true}
+      - {name: where, type: place, required: true}
+  # what is said in public, at the teahouse or at the hall, when the manager clarifies a rumour: the
+  # witness only saw the one who was talked about do this much, and the prop is the claim that the
+  # audience takes in
+  - id: set_straight
+    label: 当众说清
+    slots:
+      - {name: who, type: person, required: true}
+      - {name: whom, type: person, required: true}
+      - {name: what, type: thing, required: true}
+      - {name: where, type: place, required: true}
+  # what the town can come to say about the festival manager, a person who is not of the cast:
+  # the manager is named in the slot by the id "player", and the props are made in play
+  - id: lied
+    label: 撒谎
+    slots:
+      - {name: who, type: person, required: true}
+  - id: broke_promise
+    label: 食言
+    slots:
+      - {name: who, type: person, required: true}

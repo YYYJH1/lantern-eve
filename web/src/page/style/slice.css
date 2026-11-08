@@ -1,0 +1,76 @@
+/* The person and the talk, the notebook as a workspace, the sheets of the morning and of a
+   clarification. The frame of the page (the roof line, the placard, the slip, the
+   ledger, the corner) is in layout.css. Colours are tokens from tokens.css. */
+
+/* Chips, small stamps beside a word ------------------------------------------------------------------ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 0 9px;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.7;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+.chip-open,
+.chip-promised {
+  color: var(--accent);
+}
+
+.chip-blocked,
+.chip-broken,
+.chip-withdrawn {
+  color: var(--bad);
+}
+
+.chip-done,
+.chip-delivered {
+  color: var(--good);
+}
+
+.chip-stale {
+  color: var(--faint);
+}
+
+.chip-job {
+  margin-left: auto;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.chip .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.btn-small {
+  padding: 2px 11px;
+  font-size: 12.5px;
+}
+
+/* The person, and the talk with them --------------------------------------------------------------- */
+
+.side {
+  /* The things in the column keep their order, except that a talk comes first. */
+  scroll-padding-top: 8px;
+}
+
+/* An act that would run to the hour the person has to go says so, under its label. */
+
+.verb-other {
+  border-style: dashed;
+}
+
+.around {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}

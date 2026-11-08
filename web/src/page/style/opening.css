@@ -1,0 +1,190 @@
+/* The opening page: the base colour of the day or of the night, and on it one sheet of paper with the name of the game in the brush face, the one line
+   of what the five days are for, the three things, and the words that start the game or pick up the last one. */
+
+.opening {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  overflow-y: auto;
+  background: var(--base);
+  color: var(--base-ink);
+}
+
+.opening-corner {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.opening-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(640px, 100%);
+  padding: 14px clamp(10px, 4vw, 34px) 10px;
+  text-align: center;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.opening-title {
+  margin: 4px 0 0;
+  font-family: var(--brush);
+  font-size: clamp(54px, 11vw, 84px);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  line-height: 1.15;
+}
+
+.opening-title[data-lang="en"] {
+  font-size: clamp(46px, 9vw, 68px);
+  letter-spacing: 0.04em;
+}
+
+.opening-chapter {
+  margin: 0;
+  letter-spacing: 0.14em;
+}
+
+.opening-goal {
+  margin: 4px 0 6px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.opening-things {
+  display: grid;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  list-style: none;
+}
+
+.opening-things li {
+  display: grid;
+  grid-template-columns: 4.4em minmax(0, 1fr);
+  gap: 4px 16px;
+  align-items: baseline;
+  padding: 7px 0;
+  border-top: 1px solid var(--structure);
+}
+
+.opening-things li:last-child {
+  border-bottom: 1px solid var(--structure);
+}
+
+.opening-things li strong {
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.opening-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 28px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  font-size: 19px;
+}
+
+.opening-start.ink-frame {
+  min-width: 9em;
+  min-height: 48px;
+  padding: 8px 30px;
+  font-size: 21px;
+}
+
+.opening-note {
+  min-height: 1.4em;
+  margin: 0;
+  font-size: 15px;
+}
+
+.opening-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 28px;
+  justify-content: center;
+}
+
+.opening-settings {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 6px 0 2px;
+  border-top: 2px solid var(--ink);
+  text-align: left;
+}
+
+.opening-settings-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 34px;
+}
+
+.opening-settings-head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.opening-settings-head > .ink-close {
+  top: -4px;
+  right: -6px;
+}
+
+.setting {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 40px;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.setting input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  accent-color: var(--ink);
+}
+
+.setting-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+}
+
+.setting-text strong {
+  font-weight: 500;
+}
+
+.setting-text span {
+  font-size: 15px;
+}
+
+.opening-status {
+  margin: 0;
+  font-size: 15px;
+}
+
+/* A window that is smaller than the page is laid out for: the card says so in place of the game, and the words that open it anyway are under it. */
+
+.size-notice-text {
+  margin: 8px 0 6px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.7;
+}

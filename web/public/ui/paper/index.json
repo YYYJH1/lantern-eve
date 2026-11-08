@@ -1,0 +1,95 @@
+{
+  "schema": "lantern-eve/paper-edges@1",
+  "grades": {
+    "slip": {
+      "slice": 12,
+      "period": 64,
+      "size": 88
+    },
+    "page": {
+      "slice": 20,
+      "period": 160,
+      "size": 200
+    }
+  },
+  "palettes": {
+    "day-ink": {
+      "paper": "#f3f9f1",
+      "line": "#392f41"
+    },
+    "day-grey": {
+      "paper": "#f3f9f1",
+      "line": "#758a99"
+    },
+    "night": {
+      "paper": "#eedeb0",
+      "line": "#758a99"
+    }
+  },
+  "scales": [
+    1,
+    2
+  ],
+  "files": {
+    "slip-day-ink-1x.png": {
+      "width": 88,
+      "height": 88,
+      "bytes": 2759
+    },
+    "slip-day-ink-2x.png": {
+      "width": 176,
+      "height": 176,
+      "bytes": 6551
+    },
+    "slip-day-grey-1x.png": {
+      "width": 88,
+      "height": 88,
+      "bytes": 2712
+    },
+    "slip-day-grey-2x.png": {
+      "width": 176,
+      "height": 176,
+      "bytes": 6244
+    },
+    "slip-night-1x.png": {
+      "width": 88,
+      "height": 88,
+      "bytes": 2608
+    },
+    "slip-night-2x.png": {
+      "width": 176,
+      "height": 176,
+      "bytes": 5894
+    },
+    "page-day-ink-1x.png": {
+      "width": 200,
+      "height": 200,
+      "bytes": 7802
+    },
+    "page-day-ink-2x.png": {
+      "width": 400,
+      "height": 400,
+      "bytes": 17972
+    },
+    "page-day-grey-1x.png": {
+      "width": 200,
+      "height": 200,
+      "bytes": 7290
+    },
+    "page-day-grey-2x.png": {
+      "width": 400,
+      "height": 400,
+      "bytes": 16869
+    },
+    "page-night-1x.png": {
+      "width": 200,
+      "height": 200,
+      "bytes": 7110
+    },
+    "page-night-2x.png": {
+      "width": 400,
+      "height": 400,
+      "bytes": 16284
+    }
+  }
+}

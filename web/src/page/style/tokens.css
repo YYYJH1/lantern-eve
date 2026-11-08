@@ -1,0 +1,149 @@
+/* The colours of the page, in two layers. The first is the named colours of the ink-and-paper look, taken from the
+   traditional colours of China, and nothing in the style sheets is a colour that is not one of them (or a mix of
+   two of them). The second is the roles the style sheets ask for: the page, the paper, the ink, the lines, the
+   structure (the roof line, the bookmarks, the rules of the ledger), the slip, the seal, the tick.
+
+   Day is the light theme and night is the dark one. Dark is the default. The light set follows the system setting
+   unless the player chose a theme, and a chosen theme is written on <html> as data-theme. The map has its own
+   palette and its own day and night and ignores these.
+
+   The rules of the look:
+   - 墨灰 (--mohui) is for lines. It is 3.35 to 1 on the paper, so no text is set in it. Smaller text is set in the
+     ink as well, and the size and the weight tell it from the rest.
+   - 胭脂 is the one accent: the slip of the task in hand, the seal of a job done, and the red pen of the manager.
+     By night the slip is the colour of the lamp and the seal is 酡红.
+   - 竹青 is for ticks and tallies, and never for a fill or for text.
+   - 缃色 is light: the window of a house, the lamp of a card. By day it is not used. */
+
+:root {
+  /* The named colours. */
+  --qianbai: #f0f0f4; /* 铅白, the wall: the base of the day */
+  --chabai: #f3f9f1; /* 荼白, paper */
+  --wuhei: #392f41; /* 乌黑, ink */
+  --mohui: #758a99; /* 墨灰, the light ink of a line */
+  --dailan: #425066; /* 黛蓝, roof tile: the structure */
+  --yanzhi: #9d2933; /* 胭脂, the one accent */
+  --zhuqing: #789262; /* 竹青, ticks and tallies */
+  --xiangse: #f0c239; /* 缃色, lamp light */
+  --xuanqing: #3d3b4f; /* 玄青, the tile at night: the base of the night */
+  --yase: #eedeb0; /* 牙色, paper under a lamp */
+  --tuohong: #dc3023; /* 酡红, the seal at night */
+  --xiekeqing: #bbcdc5; /* 蟹壳青, the structure at night */
+
+  /* What the older style sheets call things, in terms of the roles below. */
+  --bg: var(--base);
+  --panel: var(--paper);
+  --panel-2: var(--paper);
+  --panel-3: var(--paper);
+  --ink-strong: var(--ink);
+  --muted: var(--ink);
+  --faint: var(--ink);
+  --line: var(--rule);
+  --line-strong: var(--ink);
+  --accent: var(--ink);
+  --accent-soft: transparent;
+  --accent-ink: var(--paper);
+  --focus: var(--ink);
+  --good: var(--ink);
+  --bad: var(--ink);
+  --blame: #e0483e; /* the lights that travel over the map keep the colours of the map */
+  --clear: #3b82d6;
+  --other: #e9d9a6;
+  --paper-deep: var(--paper);
+  --paper-edge: var(--rule);
+  --paper-ink: var(--ink);
+  --paper-muted: var(--ink);
+  --paper-line: color-mix(in srgb, var(--mohui) 60%, transparent);
+  --seal-ink: color-mix(in srgb, var(--seal) 70%, var(--ink)); /* the seal colour for text: the lamp red is 3.5 to 1 on the lamp paper, this is 4.9 */
+  --seal-soft: transparent;
+  --seen: var(--dailan);
+  --heard: var(--ink);
+  --fam-li: var(--dailan);
+  --fam-zhou: var(--ink);
+  --veil: color-mix(in srgb, var(--wuhei) 34%, transparent);
+  --shadow: none;
+  --serif: "WenKai", "LXGW WenKai", "Kaiti SC", "STKaiti", "KaiTi", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --brush: "Brush", "Ma Shan Zheng", "STKaiti", "KaiTi", "Noto Serif CJK SC", serif;
+
+  /* The sizes of the frame of the page. */
+  --topbar-h: 26px; /* the roof line, which what hangs from it and what lies under it is measured from */
+  --panel-top: 90px; /* where the drawer of the menu starts, under the two drawings at the top right */
+  --line-width: max(220px, min(380px, calc(100vw - 130px - clamp(168px, 23vw, 300px) - min(430px, 100vw - 330px) - 16px))); /* the line of the help (the tutorial, a hint) stands right of the open note of the slip, left of the two drawings */
+  --side-w: 344px;
+  --notebook-w: 540px;
+  --placard-w: 118px;
+  --marks-w: 64px;
+  --corner-bottom: 22px;
+}
+
+/* Night, the dark theme, is the default. */
+:root {
+  color-scheme: dark;
+  --base: var(--xuanqing);
+  --base-ink: var(--yase);
+  --paper: var(--yase);
+  --ink: var(--wuhei);
+  --rule: var(--mohui);
+  --structure: var(--xiekeqing);
+  --on-structure: var(--wuhei); /* what is drawn on the structure colour: the thread of a stitch */
+  --eave: color-mix(in srgb, var(--xiekeqing) 40%, var(--xuanqing)); /* the roof under a lamp is the tile blue with the crab-shell blue on it, not a pale band */
+  --slip: var(--xiangse);
+  --on-slip: var(--wuhei);
+  --seal: var(--tuohong);
+  --rouge: var(--tuohong);
+  --tick: var(--zhuqing);
+  --lamp: var(--xiangse);
+  --on-map: var(--yase); /* a drawing on the map: the fill, and the halo that sets it off */
+  --on-map-halo: var(--wuhei);
+  --edge-slip: url("/ui/paper/slip-night-1x.png");
+  --edge-slip-2x: url("/ui/paper/slip-night-2x.png");
+  --edge-page: url("/ui/paper/page-night-1x.png");
+  --edge-page-2x: url("/ui/paper/page-night-2x.png");
+}
+
+/* Day, the light theme: the system's, unless the player chose the dark one. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --base: var(--qianbai);
+    --base-ink: var(--wuhei);
+    --paper: var(--chabai);
+    --ink: var(--wuhei);
+    --rule: var(--mohui);
+    --structure: var(--dailan);
+    --on-structure: var(--chabai);
+    --eave: var(--dailan);
+    --slip: var(--yanzhi);
+    --on-slip: var(--chabai);
+    --seal: var(--yanzhi);
+    --rouge: var(--yanzhi);
+    --on-map: var(--wuhei);
+    --on-map-halo: var(--chabai);
+    --edge-slip: url("/ui/paper/slip-day-ink-1x.png");
+    --edge-slip-2x: url("/ui/paper/slip-day-ink-2x.png");
+    --edge-page: url("/ui/paper/page-day-ink-1x.png");
+    --edge-page-2x: url("/ui/paper/page-day-ink-2x.png");
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --base: var(--qianbai);
+  --base-ink: var(--wuhei);
+  --paper: var(--chabai);
+  --ink: var(--wuhei);
+  --rule: var(--mohui);
+  --structure: var(--dailan);
+  --on-structure: var(--chabai);
+  --eave: var(--dailan);
+  --slip: var(--yanzhi);
+  --on-slip: var(--chabai);
+  --seal: var(--yanzhi);
+  --rouge: var(--yanzhi);
+  --on-map: var(--wuhei);
+  --on-map-halo: var(--chabai);
+  --edge-slip: url("/ui/paper/slip-day-ink-1x.png");
+  --edge-slip-2x: url("/ui/paper/slip-day-ink-2x.png");
+  --edge-page: url("/ui/paper/page-day-ink-1x.png");
+  --edge-page-2x: url("/ui/paper/page-day-ink-2x.png");
+}

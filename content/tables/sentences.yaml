@@ -1,0 +1,219 @@
+# What the townsfolk say, in Chinese and English: one line per predicate of the closed table, a
+# phrase per motive, and the frames that mark how a thing is known (seen, heard from somebody,
+# heard from nobody, worked out, guessed). The core joins them (lantern_core.cognition.lines),
+# so a line never says more than the prop it comes from.
+#
+# A line is a template. {who} {whom} {what} {where} are the slots of the predicate, filled with
+# the names of the entities, and {when} is the time of the span, if the prop has one that has a
+# word here (see `when`). Text in [square brackets] is dropped when a slot inside it has no
+# value, which is how an optional slot, or a missing time, leaves no trace in the sentence.
+# Every required slot of a predicate is written outside the brackets, every optional one inside.
+# `neg` is the line for a denial. A motive is added to the end of a line.
+#
+# A frame wraps a finished line: {line}, and {teller} (the person who told the speaker) and
+# {hedge} where the frame has them. English lines start in lower case so that a frame can put
+# them after "that"; the core capitalises the sentence it hands out.
+
+predicates:
+  at:
+    zh: "{who}[{when}]在{where}"
+    en: "{who} was at {where}[ {when}]"
+    neg:
+      zh: "{who}[{when}]没在{where}"
+      en: "{who} was not at {where}[ {when}]"
+    # said in place of the line when the place is the home of the person (``Lines.homes``)
+    home:
+      zh: "{who}[{when}]在家"
+      en: "{who} was at home[ {when}]"
+      neg:
+        zh: "{who}[{when}]没在家"
+        en: "{who} was not at home[ {when}]"
+  came_from:
+    zh: "{who}[{when}]是从{where}来的"
+    en: "{who} came from {where}[ {when}]"
+    neg:
+      zh: "{who}不是从{where}来的"
+      en: "{who} did not come from {where}"
+  fled_from:
+    zh: "{who}[{when}]从{where}逃走了"
+    en: "{who} fled from {where}[ {when}]"
+    neg:
+      zh: "{who}没有从{where}逃走"
+      en: "{who} did not flee from {where}"
+  looked_for:
+    zh: "{who}[{when}][在{where}]找{what}"
+    en: "{who} was looking for {what}[ at {where}][ {when}]"
+    neg:
+      zh: "{who}[{when}][在{where}]没找{what}"
+      en: "{who} was not looking for {what}[ at {where}][ {when}]"
+  wanted:
+    zh: "有人在找{who}"
+    en: "someone is looking for {who}"
+    neg:
+      zh: "没人在找{who}"
+      en: "nobody is looking for {who}"
+  damaged:
+    zh: "{who}[{when}][在{where}]弄坏了{what}"
+    en: "{who} damaged {what}[ at {where}][ {when}]"
+    neg:
+      zh: "{who}[{when}][在{where}]没有弄坏{what}"
+      en: "{who} did not damage {what}[ at {where}][ {when}]"
+  flood_damaged:
+    zh: "{what}是被汛水冲坏的"
+    en: "{what} was washed out by the flood"
+    neg:
+      zh: "{what}不是被汛水冲坏的"
+      en: "{what} was not washed out by the flood"
+  repaired:
+    zh: "{who}[{when}]修补了{what}"
+    en: "{who} repaired {what}[ {when}]"
+    neg:
+      zh: "{who}没有修补{what}"
+      en: "{who} did not repair {what}"
+  took:
+    zh: "{who}[{when}][在{where}]拿走了{what}"
+    en: "{who} took {what}[ at {where}][ {when}]"
+    neg:
+      zh: "{who}没有拿走{what}"
+      en: "{who} did not take {what}"
+  stole:
+    zh: "{who}[{when}][在{where}]偷走了{what}"
+    en: "{who} stole {what}[ at {where}][ {when}]"
+    neg:
+      zh: "{who}没有偷{what}"
+      en: "{who} did not steal {what}"
+  hid:
+    zh: "{who}[{when}][在{where}]把{what}藏起来了"
+    en: "{who} hid {what}[ at {where}][ {when}]"
+    neg:
+      zh: "{who}没有把{what}藏起来"
+      en: "{who} did not hide {what}"
+  made:
+    zh: "{who}亲手做了{what}"
+    en: "{who} made {what} by hand"
+    neg:
+      zh: "{what}不是{who}亲手做的"
+      en: "{who} did not make {what} by hand"
+  gave:
+    zh: "{who}[{when}]把{what}给了{whom}"
+    en: "{who} gave {what} to {whom}[ {when}]"
+    neg:
+      zh: "{who}没有把{what}给{whom}"
+      en: "{who} did not give {what} to {whom}"
+  refused:
+    zh: "{who}[{when}]拒绝了{whom}"
+    en: "{who} turned {whom} down[ {when}]"
+    neg:
+      zh: "{who}没有拒绝{whom}"
+      en: "{who} did not turn {whom} down"
+  drank:
+    zh: "{who}[{when}][在{where}]喝了酒"
+    en: "{who} was drinking[ at {where}][ {when}]"
+    neg:
+      zh: "{who}[{when}][在{where}]没喝酒"
+      en: "{who} was not drinking[ at {where}][ {when}]"
+  broken:
+    zh: "{what}坏了"
+    en: "{what} is broken"
+    neg:
+      zh: "{what}没坏"
+      en: "{what} is not broken"
+  missing:
+    zh: "{what}不见了"
+    en: "{what} has gone missing"
+    neg:
+      zh: "{what}还在"
+      en: "{what} is still there"
+  scratched:
+    zh: "{what}有新刮痕"
+    en: "{what} has fresh scratches"
+    neg:
+      zh: "{what}没有刮痕"
+      en: "{what} has no scratches"
+  flooded:
+    zh: "{where}[{when}]涨水了"
+    en: "the water is up at {where}[ {when}]"
+    neg:
+      zh: "{where}没涨水"
+      en: "the water is not up at {where}"
+  located:
+    zh: "{what}在{where}"
+    en: "{what} is at {where}"
+    neg:
+      zh: "{what}不在{where}"
+      en: "{what} is not at {where}"
+  owns:
+    zh: "{what}是{who}的"
+    en: "{what} belongs to {who}"
+    neg:
+      zh: "{what}不是{who}的"
+      en: "{what} does not belong to {who}"
+  left_at:
+    zh: "{what}[{when}]落在了{where}"
+    en: "{what} was left at {where}[ {when}]"
+    neg:
+      zh: "{what}没有落在{where}"
+      en: "{what} was not left at {where}"
+  lied:
+    zh: "{who}撒了谎"
+    en: "{who} lied"
+    neg:
+      zh: "{who}没有撒谎"
+      en: "{who} did not lie"
+  broke_promise:
+    zh: "{who}说话不算数"
+    en: "{who} broke a promise"
+    neg:
+      zh: "{who}说话算数"
+      en: "{who} keeps a promise"
+  set_straight:
+    zh: "{who}只看见{whom}在{where}找{what}，这话当众说清了"
+    en: "{who} only saw {whom} looking for {what} at {where}, and this has been made clear in public"
+    neg:
+      zh: "没有人当众说过：{who}只看见{whom}在{where}找{what}"
+      en: "nobody said in public that {who} only saw {whom} looking for {what} at {where}"
+
+# Said after the line, set off by a comma.
+motives:
+  accident: {zh: 是不小心的, en: by accident}
+  on_purpose: {zh: 是故意的, en: on purpose}
+  jealousy: {zh: 是眼红别人在灯会上出风头, en: out of envy over the festival}
+  protect: {zh: 是为了护着谁, en: to protect somebody}
+  greed: {zh: 是贪财, en: out of greed}
+  play: {zh: 是贪玩, en: just for fun}
+  spite: {zh: 是存心使坏, en: out of spite}
+  save_face: {zh: 是为了遮丑, en: to save face}
+  fear: {zh: 是怕担责任, en: for fear of the blame}
+  pride: {zh: 是一股傲气, en: out of pride}
+  reckless: {zh: 是喝了酒胡闹, en: while drunk and reckless}
+  debt: {zh: 是欠了债, en: because of a debt}
+
+# The time of a span that has a word: it ended before the game began (a night, or longer), or
+# in the small hours of the first morning. A span that runs on into the game has none.
+when:
+  last_night: {zh: 昨夜, en: last night}
+  lately: {zh: 这几天, en: over the past few days}
+  this_morning: {zh: 今早, en: this morning}
+
+# How the speaker knows it. seen: the speaker saw it. heard: somebody named told the speaker.
+# unknown: the speaker names nobody. own: the speaker's own conclusion. A guess has its own
+# three, since the hedge is part of what is said. rival: said after the belief the speaker holds,
+# of an account somebody told them and they did not take in.
+frames:
+  seen: {zh: "我亲眼看见，{line}。", en: "I saw it myself: {line}."}
+  heard: {zh: "听{teller}说，{line}。", en: "{teller} told me that {line}."}
+  unknown: {zh: "听人说，{line}。", en: "I heard that {line}."}
+  own: {zh: "依我看，{line}。", en: "If you ask me, {line}."}
+  guess_own: {zh: "{hedge}{line}。", en: "{hedge} {line}."}
+  guess_heard: {zh: "听{teller}说，{hedge}{line}。", en: "{teller} guessed that {line}."}
+  guess_unknown: {zh: "听人说，{hedge}{line}。", en: "I heard it might be that {line}."}
+  rival: {zh: "但{teller}也对我说过，{line}。", en: "But {teller} has told me that {line}."}
+
+# The words that mark a guess. A speaker uses one of them in each language.
+hedges:
+  zh: [我猜, 怕是]
+  en: [I guess, I'd say]
+
+# The people whose English name is a bare role and takes "the" in a sentence (the Night
+# Watchman). Families, things and places get their article from the shape of the name.
+the: [gengfu, zhangfang, cha_laoban, miaozhu, zuzhang, mujiang, zhadeng_shifu, sishu_xiansheng, huolang]

@@ -1,0 +1,248 @@
+# The town of Chengxi (澄溪镇), the map of the scenario `bridge`. A fictional river town.
+#
+# `rows` is the terrain, one character per cell, x to the right and y down. The legend gives
+# each character an id, a Chinese and an English name and the cost of entering it (0 blocks).
+# Walkers follow the cheapest route, so streets are cheap and grass is dear.
+#
+# A place is a named area. Its `rect` is [x, y, w, h]. A `house`-like place also lists the
+# `footprints` of its buildings (blocked cells in `rows`). Walkers go to the `door` and to the
+# `stands`: person k of the cast stands on cell k mod n of [door, *stands], so a place with
+# many visitors spreads them out and nobody has to ask a model where to stand. `indoor` marks
+# places that keep off the rain. `cells` lists the cells of an irregular place (the lane).
+#
+# A barrier is a set of cells that are closed in `rows` and open when the story says so. The
+# core simulates the closed town. The lane behind the temple is cut by one: opening the barrier
+# turns the lane into a way round that leads from the east road to the end of the main street.
+id: bridge_town
+zh: 澄溪镇
+en: Chengxi Town
+legend:
+  "~": {id: river, zh: 河水, en: River, cost: 0}
+  "=": {id: bridge, zh: 石桥桥面, en: Bridge deck, cost: 1}
+  ",": {id: street, zh: 青石街, en: Bluestone street, cost: 1}
+  ":": {id: lane, zh: 夹道, en: Lane, cost: 2}
+  ".": {id: grass, zh: 草地, en: Grass, cost: 3}
+  ";": {id: bank, zh: 河滩, en: Gravel bank, cost: 2}
+  "w": {id: pier, zh: 码头栈板, en: Pier planks, cost: 1}
+  "#": {id: wall, zh: 墙与树, en: Wall or tree, cost: 0}
+  "H": {id: building, zh: 房屋, en: Building footprint, cost: 0}
+weather:
+  - {id: clear, zh: 晴, en: Clear}
+  - {id: light_rain, zh: 小雨, en: Light rain}
+  - {id: heavy_rain, zh: 大雨, en: Heavy rain}
+phases:
+  - {id: day, zh: 白天, en: Day}
+  - {id: night, zh: 夜里, en: Night}
+rows: |
+  .........................~~~~...........................
+  .........................~~~~...........................
+  ..HHHHH,,HHHHH..HHHHHH...~~~~..HHHHH,,HHHHH.............
+  ..HHHHH,,HHHHH,.HHHHHH...~~~~..HHHHH,,HHHHH.,...........
+  ..HHHHH,,HHHHH,.HHHHHH..#~~~~..HHHHH,,HHHHH.,...###.....
+  ..,,,,,,,,,,,,,,,,,,,,...~~~~..,,,,,,,,,,,,,,.##...#.#..
+  ..,,,,,,,,,,,,,,,,,,,,#..~~~~..,,,,,,,,,,,,,,.........#.
+  ..,,,,,,,,,,,,,........#.~~~~..,,,,,,,,,,,,,,...........
+  ..............,........#.~~~~...............,...........
+  ..............,..HHHH....~~~~...............,..HHHHHHHH.
+  .##.......##..,..HHHH....~~~~..HHHHHHH##.#..,..HHHHHHHH.
+  .#....##...#..,..HHHH....~~~~..HHHHHHH..##..,..HHHHHHHH.
+  ..............,...,,.HHH.~~~~..HHHHHHH......,..HHHHHHHH.
+  ....##........,...,..HHH.~~~~..HHHHHHH......,,,,,,,,,,,.
+  ..............,,,,,,,,,,,~~~~.,,,,,,,,,.....,,,,,,,,,,,.
+  ,,,,,,,,,,,,,,,,,,,,,,,,======,,,,,,,,,,,,,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,,,,,,,,,,,,,======,,,,,,,,,,,,,,,,,,,,,,,,,,
+  ..............,,,,,,,,,,.~~~~.,,,,,,,,,.....,,,,,,,,,,,:
+  ..HHHHHHH.....,,,,,,,,,,.~~~~.,.HHHHHH......,,,,,,,,,,,:
+  ..HHHHHHH.....,,HH,,HH,,.~~~~.,.HHHHHH......,..HHHHHHH.:
+  ..HHHHHHH.....,,,,,,,,,,.~~~~.,.HHHHHH..##..,..HHHHHHH.#
+  ..,,,,,,,.....,,,,,,,,,,.~~~~.,..........#..,..HHHHHHH.#
+  ..,,,,,,,,,,,,,,HH,,HH,,..~~~~,.......#.....,..HHHHHHH.:
+  ..............,,,,,,,,,,..~~~~,.............,..........:
+  ..............,.....;;;;;;~~~~,....##.......,:::::::::::
+  ..HHHH..HHH...,.##..;;;;;;~~~~,.....#.......,...........
+  ..HHHH..HHH...,..#..;;;;;;~~~~,.............,...........
+  ..HHHH..HHH...,,,,,,;;;;;;~~~~,.........##..,...........
+  ...,,,,,,,,,,,,.....;;;;;;~~~~,..........#..,....##.....
+  ..............,.....;;;;;;~~ww,....HHHH.....,.....#.....
+  .#..........##,.....;;;;;;~~~~,,,,,HHHH.....,...........
+  .....##......#,.....;;;;;;~~~~,....HHHH.....,.......##..
+  ..........................~~~~,.............,........#..
+  ........###...............~~~~......##..................
+
+places:
+  - id: p_li_house
+    zh: 李家宅
+    en: Li Family House
+    kind: house
+    indoor: true
+    rect: [2, 2, 13, 6]
+    door: [7, 5]
+    stands: [[3, 6], [5, 6], [7, 7], [10, 6], [12, 6]]
+    footprints: [[2, 2, 5, 3], [9, 2, 5, 3]]
+  - id: p_school
+    zh: 私塾
+    en: School
+    kind: school
+    indoor: true
+    rect: [16, 2, 6, 5]
+    door: [18, 5]
+    stands: [[16, 5], [17, 6], [19, 6], [20, 5], [21, 6]]
+    footprints: [[16, 2, 6, 3]]
+  - id: p_accountant_home
+    zh: 账房先生家
+    en: Accountant's House
+    kind: house
+    indoor: true
+    rect: [17, 9, 4, 4]
+    door: [18, 12]
+    stands: [[19, 12]]
+    footprints: [[17, 9, 4, 3]]
+  - id: p_watch_post
+    zh: 更铺
+    en: Watch Post
+    kind: post
+    indoor: true
+    rect: [21, 12, 3, 3]
+    door: [22, 14]
+    stands: [[21, 14], [23, 14]]
+    footprints: [[21, 12, 3, 2]]
+  - id: p_market
+    zh: 集市
+    en: Market
+    kind: market
+    indoor: false
+    rect: [15, 17, 9, 7]
+    door: [19, 20]
+    stands: [[15, 19], [18, 19], [19, 19], [22, 19], [15, 22], [18, 22], [19, 22], [22, 22]]
+    footprints: [[16, 19, 2, 1], [20, 19, 2, 1], [16, 22, 2, 1], [20, 22, 2, 1]]
+  - id: p_workshop
+    zh: 扎灯坊
+    en: Lantern Workshop
+    kind: workshop
+    indoor: true
+    rect: [2, 18, 7, 5]
+    door: [5, 21]
+    stands: [[3, 21], [4, 22], [6, 22], [7, 21], [5, 22]]
+    footprints: [[2, 18, 7, 3]]
+  - id: p_carpenter_home
+    zh: 木匠家
+    en: Carpenter's House
+    kind: house
+    indoor: true
+    rect: [2, 25, 4, 4]
+    door: [3, 28]
+    stands: [[4, 28]]
+    footprints: [[2, 25, 4, 3]]
+  - id: p_xiaoman_home
+    zh: 小满家
+    en: Xiaoman's House
+    kind: house
+    indoor: true
+    rect: [8, 25, 3, 4]
+    door: [9, 28]
+    stands: [[10, 28]]
+    footprints: [[8, 25, 3, 3]]
+  - id: p_riverbank
+    zh: 河滩
+    en: Riverbank
+    kind: bank
+    indoor: false
+    rect: [20, 24, 6, 8]
+    door: [23, 27]
+    stands: [[21, 26], [24, 25], [22, 29], [25, 30], [21, 31]]
+  - id: p_teahouse
+    zh: 茶馆
+    en: Teahouse
+    kind: teahouse
+    indoor: true
+    rect: [31, 10, 7, 5]
+    door: [34, 14]
+    stands: [[31, 14], [32, 14], [33, 14], [35, 14], [36, 14], [37, 14]]
+    footprints: [[31, 10, 7, 4]]
+  - id: p_zhou_house
+    zh: 周家宅
+    en: Zhou Family House
+    kind: house
+    indoor: true
+    rect: [31, 2, 13, 6]
+    door: [36, 5]
+    stands: [[32, 6], [34, 6], [39, 6], [41, 6], [43, 6]]
+    footprints: [[31, 2, 5, 3], [38, 2, 5, 3]]
+  - id: p_tavern
+    zh: 酒肆
+    en: Tavern
+    kind: tavern
+    indoor: true
+    rect: [32, 17, 6, 4]
+    door: [34, 17]
+    stands: [[32, 17], [33, 17], [35, 17], [36, 17]]
+    footprints: [[32, 18, 6, 3]]
+  - id: p_clan_hall
+    zh: 祠堂
+    en: Ancestral Hall
+    kind: hall
+    indoor: true
+    rect: [47, 9, 8, 6]
+    door: [50, 13]
+    stands: [[47, 13], [49, 13], [51, 13], [53, 13], [48, 14], [52, 14]]
+    footprints: [[47, 9, 8, 4]]
+  - id: p_temple
+    zh: 庙
+    en: Temple
+    kind: temple
+    indoor: true
+    rect: [47, 17, 8, 6]
+    door: [50, 18]
+    stands: [[47, 18], [48, 17], [52, 17], [53, 18], [49, 17]]
+    footprints: [[47, 19, 7, 4]]
+  - id: p_temple_lane
+    zh: 庙后夹道
+    en: Lane Behind the Temple
+    kind: lane
+    indoor: false
+    rect: [45, 17, 11, 8]
+    door: [50, 24]
+    stands: [[47, 24], [49, 24], [52, 24], [54, 24]]
+    cells: [[45, 24], [46, 24], [47, 24], [48, 24], [49, 24], [50, 24],
+            [51, 24], [52, 24], [53, 24], [54, 24], [55, 24], [55, 17],
+            [55, 18], [55, 19], [55, 20], [55, 21], [55, 22], [55, 23]]
+  - id: p_he_home
+    zh: 老何家
+    en: Boatman He's House
+    kind: house
+    indoor: true
+    rect: [34, 29, 5, 3]
+    door: [34, 30]
+    stands: [[34, 29], [34, 31]]
+    footprints: [[35, 29, 4, 3]]
+  - id: p_ferry
+    zh: 渡口
+    en: Ferry Landing
+    kind: ferry
+    indoor: false
+    rect: [28, 28, 5, 4]
+    door: [30, 29]
+    stands: [[29, 29], [28, 29], [31, 28], [31, 31], [30, 31]]
+  - id: p_bridge
+    zh: 石桥
+    en: Stone Bridge
+    kind: bridge
+    indoor: false
+    rect: [24, 15, 6, 2]
+    door: [27, 15]
+    stands: [[25, 16], [26, 15], [28, 16], [29, 15], [24, 16], [27, 16]]
+  - id: p_under_bridge
+    zh: 桥下水面
+    en: Water Beneath the Bridge
+    kind: water
+    indoor: false
+    rect: [25, 17, 4, 3]
+
+barriers:
+  - id: lane_barrier
+    zh: 杂物堵住的夹道口
+    en: Lane blocked by junk
+    place: p_temple_lane
+    cells: [[55, 20], [55, 21]]
+    closed: "#"
+    open: ":"

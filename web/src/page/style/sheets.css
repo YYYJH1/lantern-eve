@@ -1,0 +1,865 @@
+/* The cards over the map: the paper of the morning, the note of the night, the recap, the clan elder, the first day, a job that is done, and what
+   the people made of a statement. Each is a sheet of paper laid on the map. A card that holds the world for the player to read has one word to
+   put it away. They have no shadow, no radius and no entrance. */
+
+.sheet {
+  /* While a line of the help is up over it (--line-room, which the page measures), the card starts below the line and ends where it always did. */
+  --lift: max(0px, var(--line-room, 0px) - 56px);
+  position: absolute;
+  top: calc(56px + var(--lift));
+  left: 50%;
+  z-index: 24;
+  display: flex;
+  flex-direction: column;
+  width: min(500px, calc(100% - 24px));
+  max-height: calc(100% - 72px - var(--lift));
+  padding: 8px 12px 6px;
+  overflow: hidden;
+  transform: translateX(-50%);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.sheet-head {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 14px;
+  padding-right: 30px;
+}
+
+.sheet-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.35;
+}
+
+.sheet-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.sheet-foot {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  margin-top: 8px;
+  font-size: 18px;
+}
+
+.sheet p {
+  margin: 0;
+}
+
+/* A card that is lit by a lamp, whatever the theme is: the paper of the night. */
+
+.paper-slip.is-lamp {
+  background-color: var(--yase);
+  border-image-source: url("/ui/paper/slip-night-1x.png");
+}
+
+@media (min-resolution: 2dppx) {
+  .paper-slip.is-lamp {
+    border-image-slice: 24 fill;
+    border-image-source: url("/ui/paper/slip-night-2x.png");
+  }
+}
+
+/* The recap ---------------------------------------------------------------------------------------------- */
+
+.recap-lines {
+  display: grid;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recap-lines li {
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+  line-height: 1.55;
+}
+
+.recap-lines li:first-child {
+  border-top: 0;
+}
+
+.recap-today {
+  margin: 4px 0 2px;
+  padding-top: 10px;
+  border-top: 2px solid var(--ink);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* The paper of the morning: a printed sheet with a thick rule and a thin one round it, the masthead set upright down the left side in the brush face ---- */
+
+.sheet-gazette {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  width: min(580px, calc(100% - 24px));
+  padding: 0;
+  border: 4px solid var(--ink);
+  background-color: var(--paper);
+  outline: 1px solid var(--ink);
+  outline-offset: -9px;
+}
+
+.sheet-gazette > .ink-close {
+  top: 12px;
+  right: 12px;
+}
+
+.gazette-mast {
+  display: flex;
+  flex-direction: column;
+  grid-row: 1 / span 2;
+  grid-column: 1;
+  gap: 6px;
+  margin: 12px 0 12px 12px;
+  padding-right: 8px;
+  border-right: 1px solid var(--ink);
+  writing-mode: vertical-rl;
+}
+
+.gazette-title {
+  margin: 0;
+  font-family: var(--brush);
+  font-size: 50px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-orientation: upright;
+}
+
+.gazette-issue {
+  display: flex;
+  gap: 12px;
+  align-self: flex-end;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+}
+
+.gazette-body {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 16px 18px 4px 14px;
+}
+
+.sheet-gazette > .sheet-foot {
+  grid-column: 2;
+  grid-row: 2;
+  padding: 0 18px 14px;
+}
+
+.gazette-part {
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr);
+  gap: 0 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--ink);
+}
+
+.gazette-body > .gazette-part:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.gazette-label {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.7;
+}
+
+.gazette-head {
+  grid-column: 2;
+  margin: 0;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.gazette-news,
+.gazette-talk {
+  grid-column: 2;
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gazette-news li,
+.gazette-talk li {
+  line-height: 1.55;
+}
+
+.gazette-today {
+  padding: 10px 0 8px;
+  border-top: 3px double var(--ink);
+}
+
+.gazette-today-line {
+  line-height: 1.6;
+}
+
+.gazette-lead {
+  margin-right: 8px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.gazette-task {
+  font-weight: 500;
+}
+
+.gazette-also {
+  margin-top: 6px;
+}
+
+.gazette-more {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gazette-chance {
+  display: inline;
+}
+
+/* Each of the other things that are on today ends in a stop of its own, so that two of them do not run into one another. */
+.gazette-chance::after {
+  content: ". ";
+}
+
+:root:lang(zh) .gazette-chance::after {
+  content: "。";
+}
+
+.gazette-none {
+  line-height: 1.55;
+}
+
+:root:lang(en) .sheet-gazette {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+:root:lang(en) .gazette-mast {
+  grid-row: 1;
+  grid-column: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 12px 24px 0;
+  padding: 0 0 6px;
+  border-right: 0;
+  border-bottom: 1px solid var(--ink);
+  writing-mode: horizontal-tb;
+}
+
+:root:lang(en) .gazette-title {
+  font-size: 36px;
+  letter-spacing: 0.04em;
+  text-orientation: mixed;
+}
+
+:root:lang(en) .gazette-issue {
+  align-self: stretch;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+:root:lang(en) .gazette-body {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+:root:lang(en) .sheet-gazette > .sheet-foot {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+:root:lang(en) .gazette-part {
+  grid-template-columns: 6.6em minmax(0, 1fr);
+}
+
+/* The note of the night, on paper under a lamp: three rows ruled like a page of accounts ------------------------------ */
+
+.sheet-night {
+  width: min(480px, calc(100% - 24px));
+}
+
+.night-issue {
+  font-size: 15px;
+  letter-spacing: 0.1em;
+}
+
+.night-lines {
+  display: grid;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.night-lines li {
+  display: grid;
+  grid-template-columns: 8em minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.night-lines li:first-child {
+  border-top: 0;
+}
+
+.night-label {
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.night-text {
+  line-height: 1.55;
+  text-wrap: pretty; /* a sentence that runs to a second line does not leave one character of a name and its stop alone on it */
+}
+
+.night-text strong {
+  font-weight: 500;
+}
+
+/* What the people made of a statement: one line for each, written like a notice ------------------------------------- */
+
+.sheet-clarify {
+  width: min(520px, calc(100% - 24px));
+}
+
+.clarify-claim {
+  margin: 8px 0 4px;
+  line-height: 1.55;
+}
+
+.clarify-empty,
+.clarify-only,
+.clarify-sum {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.clarify-sum {
+  font-weight: 500;
+}
+
+.hearers {
+  display: grid;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hearer {
+  padding: 8px 0 9px;
+  border-top: 1px solid var(--rule);
+}
+
+.hearer:first-child {
+  border-top: 0;
+}
+
+/* They come in one after the other, 0.7 s apart: the answer to the statement the player made. Nothing else on a card moves. */
+
+.hearer {
+  opacity: 0;
+  animation: hearer-in 0.5s ease-out forwards;
+}
+
+.hearer:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.hearer:nth-child(2) {
+  animation-delay: 0.9s;
+}
+
+.hearer:nth-child(3) {
+  animation-delay: 1.6s;
+}
+
+.hearer:nth-child(4) {
+  animation-delay: 2.3s;
+}
+
+.hearer:nth-child(5) {
+  animation-delay: 3s;
+}
+
+.hearer:nth-child(n + 6) {
+  animation-delay: 3.7s;
+}
+
+@keyframes hearer-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hearer {
+    animation-delay: 0s !important;
+  }
+}
+
+.hearer-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 14px;
+}
+
+.hearer-name {
+  font-weight: 500;
+}
+
+.hearer-change {
+  font-size: 15px;
+}
+
+.tone {
+  font-weight: 500;
+}
+
+.hearer-reason {
+  margin-top: 2px;
+  line-height: 1.55;
+}
+
+.stated-verdict {
+  position: relative;
+  padding: 4px 76px 8px 0;
+  border-bottom: 2px solid var(--ink);
+}
+
+.stated-result {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.stated-stamp {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  width: 64px;
+  height: 44px;
+  transform: rotate(-5deg);
+}
+
+.stated-wrong,
+.stated-why,
+.stated-line {
+  margin-top: 4px;
+  line-height: 1.55;
+}
+
+.stated-who {
+  margin: 10px 0 0;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+/* The clan elder: a letter, with his seal at the end ------------------------------------------------------------- */
+
+.sheet-elder {
+  width: min(520px, calc(100% - 24px));
+}
+
+.elder-lead {
+  margin: 8px 0 2px;
+  line-height: 1.55;
+}
+
+.elder-answers {
+  display: grid;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.elder-answer {
+  padding: 8px 0 9px;
+  border-top: 1px solid var(--rule);
+}
+
+.elder-answer h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.elder-answer p {
+  margin-top: 2px;
+  line-height: 1.55;
+}
+
+.elder-extra {
+  font-size: 15px;
+}
+
+.elder-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin-top: 8px;
+}
+
+.elder-seal,
+.tut-token {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--dailan);
+  color: var(--paper);
+  font-family: var(--brush);
+  font-size: 28px;
+  line-height: 1;
+  outline: 2px solid var(--paper);
+  outline-offset: -5px;
+  transform: rotate(-4deg);
+}
+
+.elder-seal {
+  float: right;
+  margin: 4px 4px 4px 12px;
+}
+
+/* The first day is done ------------------------------------------------------------------------------------------ */
+
+.sheet-end {
+  width: min(460px, calc(100% - 24px));
+}
+
+.end-reached {
+  margin-top: 8px;
+  line-height: 1.65;
+}
+
+/* A job that is done: a lantern lit, and one line under its lamp ------------------------------------------------ */
+
+.sheet-show {
+  align-items: center;
+  width: min(420px, calc(100% - 24px));
+  text-align: center;
+}
+
+.sheet-show .sheet-title {
+  padding: 0;
+  font-family: var(--brush);
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+}
+
+.show-text {
+  margin-top: 8px;
+  line-height: 1.65;
+}
+
+.sheet-show .sheet-foot {
+  justify-content: center;
+}
+
+.lantern {
+  display: block;
+  flex: none;
+  width: 48px;
+  height: 69px;
+  margin: 2px auto 4px;
+}
+
+.lantern path {
+  stroke: var(--wuhei);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.lantern .lantern-cap {
+  fill: var(--wuhei);
+}
+
+.lantern .lantern-body {
+  fill: var(--lamp);
+}
+
+.lantern .lantern-rib {
+  stroke-width: 1.6;
+}
+
+/* The help: a card of the tutorial, the line between cards, a hint and the log of hints ------------------------- */
+
+.tut {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  z-index: 24;
+  display: flex;
+  flex-direction: column;
+  width: min(540px, calc(100% - 24px));
+  max-height: calc(100% - 72px);
+  min-height: 0;
+  padding: 6px 10px 4px;
+  transform: translateX(-50%);
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--serif);
+}
+
+.tut-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 4px 6px 0;
+  overflow-y: auto;
+}
+
+.tut-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tut-who {
+  display: grid;
+  line-height: 1.4;
+}
+
+.tut-who strong {
+  font-weight: 500;
+}
+
+.tut-title {
+  margin: 8px 0 4px;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+}
+
+.tut-body p {
+  margin: 6px 0 0;
+  line-height: 1.6;
+}
+
+.tut-task,
+.tut-facts,
+.tut-guidance {
+  display: grid;
+  gap: 2px;
+  margin-top: 10px;
+  padding: 8px 0 2px;
+  border-top: 1px solid var(--rule);
+}
+
+.tut-task-label {
+  font-weight: 500;
+}
+
+.tut-facts > div {
+  display: grid;
+  grid-template-columns: 5.2em minmax(0, 1fr);
+  gap: 10px;
+}
+
+.tut-facts dt {
+  font-weight: 500;
+}
+
+.tut-facts dd {
+  margin: 0;
+}
+
+.tut-relation {
+  font-weight: 500;
+}
+
+.tut-expected {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tut-expected li {
+  line-height: 1.5;
+}
+
+.tut-more,
+.tut-when {
+  font-size: 15px;
+}
+
+.tut-foot {
+  display: flex;
+  flex: none;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 6px 2px;
+  font-size: 18px;
+}
+
+.ink-act.is-quiet {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.tut-chip {
+  position: absolute;
+  top: 64px;
+  right: 130px;
+  z-index: 23;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  width: var(--line-width);
+  padding: 2px 6px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.tut-chip-n {
+  flex: none;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.tut-chip-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hint-pill {
+  position: absolute;
+  top: 64px;
+  right: 130px;
+  z-index: 23;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: var(--line-width);
+  margin: 0;
+  padding: 2px 34px 2px 4px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.hint-pill-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hint-pill > .ink-close {
+  top: 0;
+  right: -4px;
+  width: 28px;
+  height: 28px;
+}
+
+.hint-log {
+  position: fixed;
+  right: 30px;
+  bottom: 140px;
+  z-index: 25;
+  width: min(440px, calc(100vw - 42px)); /* 30 from the right edge and 12 from the left */
+  max-height: min(60vh, 420px);
+  padding: 4px 10px;
+  overflow-y: auto;
+}
+
+.hint-log-title {
+  margin: 4px 0 6px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.hint-log-off,
+.hint-log-empty {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+.hint-log-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hint-log-list li {
+  display: grid;
+  gap: 2px;
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.hint-log-list li:first-child {
+  border-top: 0;
+}
+
+.hint-log-when {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A choice of two words, in the menu and at the last step of the tutorial: the one chosen is heavier and has the stroke under it. */
+
+.choice {
+  display: inline-flex;
+  gap: 4px 24px;
+  align-items: baseline;
+}
+
+.choice-word {
+  position: relative;
+  margin: 0;
+  padding: 0 2px 8px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.choice-word[aria-pressed="true"] {
+  font-weight: 500;
+}
+
+.choice-word > svg.underline {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+}
+
+.choice-word:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}

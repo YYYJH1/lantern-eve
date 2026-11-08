@@ -1,0 +1,163 @@
+/* The model call log in the drawer: one row for each request the core made. */
+
+.menu-heading .count {
+  margin-left: 8px;
+  padding: 0 7px;
+  border-radius: 0;
+  background: var(--panel-3);
+  color: var(--ink);
+  font-size: 11px;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.calls-empty,
+.calls-cap {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+/* The figures in two columns, so that the first calls are not far down the drawer. */
+.calls-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px;
+  margin-top: 6px;
+}
+
+.calls-facts > div {
+  flex-wrap: wrap;
+  gap: 0 8px;
+}
+
+.calls {
+  max-height: 25rem;
+  margin: 10px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--panel-2);
+}
+
+.call {
+  display: grid;
+  gap: 3px;
+  padding: 8px 11px;
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
+}
+
+.call:last-child {
+  border-bottom: 0;
+}
+
+.call[data-status="pending"] {
+  border-left-color: var(--focus);
+}
+
+.call[data-status="ok"] {
+  border-left-color: var(--good);
+}
+
+.call[data-status="error"] {
+  border-left-color: var(--bad);
+}
+
+.call[data-status="timeout"] {
+  border-left-color: var(--accent);
+}
+
+.call[data-status="cancelled"],
+.call[data-status="template"] {
+  border-left-color: var(--line-strong);
+}
+
+.call[data-status="template"] {
+  border-left-style: dashed;
+}
+
+.call-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  min-width: 0;
+}
+
+.call-category {
+  padding: 0 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.call-tiers {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+}
+
+.call-asked {
+  color: var(--faint);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.call-arrow {
+  color: var(--accent);
+}
+
+.call-tiers[data-moved="true"] .call-given {
+  color: var(--accent);
+}
+
+.call-status {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.call-status[data-status="pending"] {
+  color: var(--focus);
+}
+
+.call-status[data-status="ok"] {
+  color: var(--good);
+}
+
+.call-status[data-status="error"] {
+  color: var(--bad);
+}
+
+.call-status[data-status="timeout"] {
+  color: var(--accent);
+}
+
+.call-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px 10px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.call-model {
+  color: var(--ink);
+}
+
+.call-cost {
+  color: var(--ink);
+}
+
+.call-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}

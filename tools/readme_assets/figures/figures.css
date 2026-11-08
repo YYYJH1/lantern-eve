@@ -1,0 +1,298 @@
+/* Shared look of the README figures.
+
+   One source serves four pictures per figure: light and dark, English and Chinese.
+   figures.js sets  data-theme="light|dark"  and  data-lang="en|zh"  on <html> from the query
+   string (?theme=dark&lang=zh), and everything below follows those two attributes:
+   colours are tokens on :root, and text comes in pairs, <span class="en"> and <span class="zh">.
+
+   The palette is the game's own: whitewashed walls and dark tiles, the amber of the lanterns,
+   the red of the seals and the teal of the river. Each picture carries its own rounded card, so it
+   stands out on GitHub's white and on its near-black page. The light card is the town by day on
+   paper, the dark card is the town by night with only its lanterns lit. */
+
+:root,
+:root[data-theme='light'] {
+  --card: #fbf6ea;
+  --card-edge: #d8ccae;
+  --ink: #2a261f;
+  --muted: #655f50;
+  --faint: #8a8372;
+  --primary: #3d4b57;
+  --primary-ink: #ffffff;
+  --primary-soft: #e8ecee;
+  --primary-edge: #b4bec7;
+  --accent: #a8620a;
+  --accent-fill: #e6b64a;
+  --accent-ink: #281a02;
+  --accent-soft: #fbefd2;
+  --accent-edge: #e3c37e;
+  --node: #fffdf8;
+  --node-edge: #ddd2b8;
+  --lane: #f3ecda;
+  --line: #8b8472;
+  --shadow: rgba(60, 44, 10, 0.1);
+
+  --sky-top: #fbf6ea;
+  --sky-bottom: #f5e6c2;
+  --hill: #e6e3cf;
+  --wall: #fffaf0;
+  --wall-shade: #e3dccb;
+  --roof: #414c57;
+  --roof-edge: #2c353d;
+  --window: #39424d;
+  --door: #704a34;
+  --street: #b9c1c6;
+  --grass: #cfd9b4;
+  --river: #86b8bf;
+  --river-light: #c9e4e7;
+  --stone: #ddd8ca;
+  --stone-shade: #b9b3a3;
+  --lantern: #c2402d;
+  --lantern-dark: #8f2c20;
+  --glow: 255, 184, 90;
+  --glow-alpha: 0.3;
+  --blame: #e0483e;
+  --clear: #3b82d6;
+  --other: #e2cf8e;
+  --zhou: #3f7fa6;
+  --li: #d0593a;
+  --bubble: #fffdf8;
+  --bubble-edge: #d9cfb4;
+  --bubble-ink: #3a352a;
+}
+
+:root[data-theme='dark'] {
+  --card: #131826;
+  --card-edge: #343c5c;
+  --ink: #ece8dc;
+  --muted: #a3a9bd;
+  --faint: #7f869c;
+  --primary: #a9b8c8;
+  --primary-ink: #0f1424;
+  --primary-soft: #1f2744;
+  --primary-edge: #3a4678;
+  --accent: #f0b44c;
+  --accent-fill: #f0b44c;
+  --accent-ink: #1b1405;
+  --accent-soft: #2b2415;
+  --accent-edge: #6b5424;
+  --node: #1b2235;
+  --node-edge: #353d5c;
+  --lane: #171d2f;
+  --line: #6f7899;
+  --shadow: rgba(0, 0, 0, 0.3);
+
+  --sky-top: #0e1324;
+  --sky-bottom: #26305a;
+  --hill: #1a2342;
+  --wall: #c3c3bd;
+  --wall-shade: #8d919b;
+  --roof: #232b34;
+  --roof-edge: #151a20;
+  --window: #ffd27a;
+  --door: #5a4030;
+  --street: #3c4560;
+  --grass: #25314a;
+  --river: #1d3947;
+  --river-light: #3c6677;
+  --stone: #9ea3ad;
+  --stone-shade: #6c7280;
+  --lantern: #ee7a5f;
+  --lantern-dark: #b24a34;
+  --glow: 255, 178, 84;
+  --glow-alpha: 0.62;
+  --blame: #ee6a5f;
+  --clear: #6aa4ee;
+  --other: #e6d79a;
+  --zhou: #4f8fb8;
+  --li: #dd6a4a;
+  --bubble: #1f2740;
+  --bubble-edge: #3a4678;
+  --bubble-ink: #e7e3d6;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: transparent;
+}
+
+body {
+  margin: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: system-ui, 'Noto Sans', 'DejaVu Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root[data-lang='zh'] body {
+  font-family: 'Noto Sans CJK SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  line-height: 1.45;
+}
+
+/* Text in two languages: the page shows the one that data-lang names. */
+:root[data-lang='en'] .zh,
+:root[data-lang='zh'] .en {
+  display: none !important;
+}
+
+.mono {
+  font-family: 'DejaVu Sans Mono', ui-monospace, 'Noto Sans Mono', monospace;
+  font-size: 0.92em;
+}
+
+/* The faces are the game's own: the files that the page bundles, cut down to the characters of the game. */
+@font-face {
+  font-family: 'Lantern Brush';
+  src: url('../../../web/public/fonts/ma-shan-zheng/MaShanZheng-titles.subset.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lantern Display';
+  src: url('../../../web/public/fonts/lxgw-wenkai/LXGWWenKai-Medium.subset.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* The card is the picture: its rounded corners are transparent in the PNG. */
+.card {
+  position: relative;
+  width: 920px;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  border-radius: 20px;
+}
+
+.node {
+  position: absolute;
+  z-index: 2;
+  padding: 10px 13px 10px;
+  background: var(--node);
+  border: 1px solid var(--node-edge);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+
+.node h3 {
+  margin: 0 0 3px;
+  font-size: 14.5px;
+  line-height: 1.25;
+  color: var(--primary);
+}
+
+.node p {
+  margin: 0;
+  text-wrap: pretty;
+  font-size: 12.8px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.node.accent {
+  background: var(--accent-soft);
+  border-color: var(--accent-edge);
+}
+
+.node.accent h3 {
+  color: var(--accent);
+}
+
+.node.solid {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.node.solid h3 {
+  color: var(--primary-ink);
+}
+
+.node.solid p {
+  color: var(--primary-ink);
+  opacity: 0.88;
+}
+
+.lane {
+  position: absolute;
+  z-index: 1;
+  left: 24px;
+  right: 24px;
+  background: var(--lane);
+  border: 1px solid var(--node-edge);
+  border-radius: 16px;
+}
+
+.lane-label {
+  position: absolute;
+  left: 16px;
+  top: 9px;
+  font-size: 10.8px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+:root[data-lang='zh'] .lane-label {
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: none;
+}
+
+svg.overlay {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.stroke-line {
+  stroke: var(--line);
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stroke-accent {
+  stroke: var(--accent);
+  stroke-width: 1.8;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fill-line {
+  fill: var(--line);
+}
+
+.fill-accent {
+  fill: var(--accent);
+}
+
+.arrow-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  font-size: 11.5px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--faint);
+}
+
+.arrow-label.accent {
+  color: var(--accent);
+  font-weight: 600;
+}

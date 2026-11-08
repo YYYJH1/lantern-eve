@@ -1,0 +1,298 @@
+/* The statement card, the right page of the notebook: three parts, each with the things that could be said, one to choose. A line that is chosen has
+   the manager's stroke of rouge under it, as a teacher's red pen marks a line. What bears on a line is counted in the strokes of 正 (the notes that
+   support it) and in a struck stroke with a figure (the notes that go against it). One word makes the full statement. */
+
+.statement {
+  display: grid;
+  gap: 8px;
+}
+
+.stmt-parts {
+  display: grid;
+}
+
+.stmt-part {
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr);
+  gap: 0 12px;
+  padding: 12px 0 10px;
+  border-top: 1px solid var(--structure);
+}
+
+.stmt-parts > .stmt-part:first-child {
+  padding-top: 4px;
+  border-top: 0;
+}
+
+.stmt-part-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+.stmt-part-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+}
+
+/* The names of the parts in English are words, not two characters: they stand over their lines, with the way to take a choice back beside them. */
+
+:root:lang(en) .stmt-part {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+:root:lang(en) .stmt-part-head {
+  flex-direction: row;
+  gap: 14px;
+  align-items: baseline;
+}
+
+:root:lang(en) .stmt-gap,
+:root:lang(en) .stmt-options {
+  grid-column: 1;
+}
+
+.stmt-clear.ink-act {
+  min-height: 0;
+  padding: 0 2px 6px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.stmt-gap {
+  grid-column: 2;
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.stmt-options {
+  display: grid;
+  grid-column: 2;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stmt-pick {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  align-items: start;
+  width: 100%;
+  margin: 0;
+  padding: 3px 0 4px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stmt-pick:hover .stmt-words,
+.stmt-pick:focus-visible .stmt-words {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
+
+.stmt-pick:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.stmt-text {
+  position: relative;
+  display: block;
+  padding-bottom: 6px;
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+
+.stmt-option.is-chosen .stmt-text {
+  font-size: 16.8px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.stmt-rouge {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 9px;
+  color: var(--rouge);
+}
+
+.stmt-marks {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 5.5em;
+  min-height: 28px;
+}
+
+.stmt-for.is-zero,
+.stmt-against.is-zero {
+  display: none;
+}
+
+.stmt-stamp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.stmt-notes {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.stmt-notes summary {
+  cursor: pointer;
+}
+
+.stmt-entries {
+  display: grid;
+  gap: 2px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stmt-entry {
+  margin: 0;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.note.is-pointed {
+  outline: 2px solid var(--rouge);
+  outline-offset: 0;
+}
+
+/* The word that makes the statement, and what is said when it cannot be pressed. */
+
+.stmt-state {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  padding-top: 10px;
+  border-top: 2px solid var(--ink);
+}
+
+.stmt-state .ink-frame {
+  display: inline-flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 6px 22px;
+  font-size: 19px;
+}
+
+.stmt-why,
+.stmt-no {
+  margin: 0;
+  font-size: 15px;
+  text-align: right;
+}
+
+.stmt-confirm {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 0 2px;
+  justify-items: start;
+}
+
+.stmt-confirm-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.stmt-recap {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stmt-recap li {
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+
+.stmt-confirm-body {
+  margin: 0;
+  font-size: 15px;
+}
+
+.stmt-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  align-items: center;
+}
+
+.stmt-buttons .ink-frame {
+  display: inline-flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 6px 18px;
+  font-size: 17px;
+}
+
+.stmt-last {
+  display: grid;
+  gap: 2px;
+  padding-top: 8px;
+  border-top: 1px solid var(--structure);
+  font-size: 15px;
+}
+
+.stmt-last p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.stmt-last-title {
+  font-weight: 500;
+}
+
+.stmt-legend {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* On the board: the part that is chosen, and the button to the card. */
+
+.statement-picked {
+  margin-left: 6px;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.statement-open {
+  margin-top: 8px;
+}

@@ -1,0 +1,16 @@
+[project]
+name = "lantern-core"
+version = "0.1.0"
+description = "The world of lantern-eve as a pure state machine: no I/O, no floats in its state, the same ticks under CPython and Pyodide."
+license = "MIT"
+authors = [{ name = "Jiahao You" }]
+requires-python = ">=3.12"
+# The standard library only. The browser loads this wheel into Pyodide and nothing else.
+dependencies = []
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["lantern_core"]

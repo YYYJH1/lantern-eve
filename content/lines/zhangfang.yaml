@@ -1,0 +1,152 @@
+# The Accountant, who keeps the town's accounts and its repair ledger. Precise and dry: he says
+# only what the books show, gives numbers where he can, and will not round anything up.
+person: zhangfang
+voice:
+  zh: 账房先生。精确、干巴巴，只说账上有的，能给数就给数，一分一厘不含糊。
+  en: Keeper of the town's accounts. Precise and dry, says only what the books show, gives figures where he can, will not round anything up.
+lines:
+  asleep:
+    - {zh: "呼……三七二十一……对上了……（睡熟了）", en: "Zzz... three sevens... twenty-one... it tallies... (fast asleep)"}
+    - {zh: "唔……还差一文钱……（睡熟了）", en: "Mm... one coin short... (fast asleep)"}
+  busy:
+    - {zh: "我正在对账。请改天再来。", en: "I am reconciling the books. Please come another day."}
+    - {zh: "这笔账没算完。现在不能打断。", en: "This sum is unfinished. I cannot be interrupted now."}
+  timeout:
+    - {zh: "时间到了。我还有账要核。", en: "Time is up. I have accounts to check."}
+    - {zh: "今日的账还没结。我先走了。", en: "Today's accounts are not closed. I will go now."}
+  unknown:
+    - {zh: "这件事账上没有记录。", en: "There is no record of that in the books."}
+    - {zh: "我不清楚。没有依据，不敢说。", en: "I do not know. Without a basis, I will not say."}
+  evade:
+    - {zh: "这事不在我可说的范围内。", en: "That is outside what I may say."}
+    - {zh: "涉及账目的事，一律不外传。", en: "Matters touching the accounts are not discussed."}
+  not_said:
+    - {zh: "我没有说过这句话。", en: "I did not say that sentence."}
+    - {zh: "我的记录里没有这句话。", en: "That sentence is not in my record."}
+  not_so:
+    - {zh: "不准确。事实不是这样。", en: "That is inaccurate. The facts are otherwise."}
+    - {zh: "有误。请更正。", en: "That is an error. Please correct it."}
+  keeper_no:
+    - {zh: "我们尚未相识。今日不便出示。", en: "We have not been introduced. I cannot show it today."}
+    - {zh: "账册不给不熟的人看。", en: "The ledger is not shown to those I do not know."}
+  took_in:
+    - {zh: "已记录。", en: "Recorded."}
+    - {zh: "好，我记下了。", en: "Good, I have noted it."}
+  knew:
+    - {zh: "这一点我已掌握。", en: "I already had that point."}
+    - {zh: "此事我早有记录。", en: "I have long had a record of this."}
+  doubted:
+    - {zh: "与我所记不符。", en: "That does not match my record."}
+    - {zh: "对不上。我听到的不是这样。", en: "It does not tally. What I heard is different."}
+  caught:
+    - {zh: "你的说法与事实不符！我今后不再采信你的任何说法！", en: "Your statement contradicts the facts! I will accept none of your statements again!"}
+    - {zh: "原来全是虚报！从此不再信你！", en: "So it was all misreported! I trust you no more!"}
+  deal:
+    - {zh: "可以。立此为据。", en: "Agreed. Let it stand as the record."}
+    - {zh: "成交。我记下了。", en: "Settled. I have written it down."}
+  empty:
+    - {zh: "没有凭据的口头承诺，不予采信。", en: "A verbal promise without a record is not accepted."}
+    - {zh: "没有实物，不算数。", en: "Without anything in hand, it does not count."}
+  kept_thanks:
+    - {zh: "你履行了承诺。账上已记。", en: "You fulfilled your promise. It is entered in the books."}
+    - {zh: "言行一致。这笔人情我记着。", en: "Word and deed agree. I will remember this favour."}
+  will_do:
+    - {zh: "可以，由我办理。", en: "Very well, I will handle it."}
+    - {zh: "好，我来处理。", en: "Good, I will take care of it."}
+  cannot:
+    - {zh: "这不在我的职责内。", en: "That is not within my duties."}
+    - {zh: "无法办理。请另寻他人。", en: "I cannot handle it. Please ask someone else."}
+  turned_down:
+    - {zh: "抱歉，这项请求不能批准。", en: "Sorry, this request cannot be approved."}
+    - {zh: "不予答应。理由是条件不符。", en: "I do not consent. The terms do not fit."}
+  said_already:
+    - {zh: "我已经答复过一次。", en: "I have already given one reply."}
+    - {zh: "此事已有答复。不再重复。", en: "This has been answered, and I will not repeat it."}
+  closed:
+    - {zh: "现在不是办理时间。请择时再来。", en: "This is not the hour for such business. Please come at another."}
+    - {zh: "暂不接待。稍后再来。", en: "Not receiving at present. Return later."}
+  needs_nod:
+    - {zh: "这需要族长批准。", en: "This requires the elder's approval."}
+    - {zh: "没有族长签批，我无权办理。", en: "Without the elder's seal, I have no authority."}
+  nothing_to_say:
+    - {zh: "对此我没有补充。", en: "I have nothing to add."}
+    - {zh: "无话可说。以账为准。", en: "Nothing to say. The books stand as they are."}
+  testified:
+    - {zh: "我陈述的，都是亲眼核对过的。", en: "What I state, I have checked with my own eyes."}
+    - {zh: "没有亲眼核对的，我不陈述。", en: "What I have not checked myself, I do not state."}
+  too_late:
+    - {zh: "已过办理时间。请明早再来。", en: "The hour for business has passed. Please return in the morning."}
+    - {zh: "天色已晚。明日再核。", en: "It is late. We will check tomorrow."}
+  will_ask:
+    - {zh: "好，我去向对方核实。", en: "Good, I will go and confirm it with them."}
+    - {zh: "我会转告，并记录回复。", en: "I will pass it on and record the reply."}
+  will_call:
+    - {zh: "好，我这就通知各位到祠堂。", en: "Good, I will notify everyone to attend the hall."}
+    - {zh: "我去逐一通知。祠堂集合。", en: "I will notify each in turn. Assemble at the hall."}
+  hard_hc_li_bamboo:
+    - {zh: "谣言未当众澄清前，不得动用竹料。", en: "Until the slander is publicly cleared, the bamboo may not be released."}
+    - {zh: "先公开澄清，再谈其他。顺序不能错。", en: "Public clearing first, the rest after. The order cannot change."}
+  hard_hc_li_bamboo_rumour:
+    - {zh: "谣言已传遍全镇，总管至今未置一词。账上不能放行。", en: "The rumour has reached the whole town, and the Manager has said nothing to date. The account cannot release it."}
+    - {zh: "谣言仍在，总管亦无声明。此项不入账，也不放行。", en: "The rumour stands, and the Manager has issued no statement. I will not enter this in the books, nor release it."}
+  hard_other:
+    - {zh: "不符合条件的，不能办。", en: "The conditions are not met. It cannot be done."}
+    - {zh: "此项没有商量余地。", en: "This item allows no negotiation."}
+  elder_yes:
+    - {zh: "我核对过了。就按此办理。", en: "I have checked it. Proceed accordingly."}
+    - {zh: "逻辑成立。我没有异议。", en: "The logic holds. I have no objection."}
+  elder_no:
+    - {zh: "证据不全。无法认定。", en: "The evidence is incomplete. I cannot affirm it."}
+    - {zh: "依据不足。我不能采信。", en: "The basis is insufficient. I cannot accept it."}
+  objection_withdrawn:
+    - {zh: "事实已当众说明。我撤回异议。", en: "The facts have been stated in public. I withdraw my objection."}
+    - {zh: "账已对清。此项异议，我撤销。", en: "The account is settled. I withdraw this objection."}
+  witness_in_public:
+    - {zh: "我仅陈述所见，账外之事不予置评。", en: "I state only what I saw. I offer no comment on anything outside the books."}
+    - {zh: "所见一项，如实记述。不增不减。", en: "One item seen and recorded as it was, nothing added, nothing removed."}
+  batch_promised:
+    - {zh: "已记入账。明晨送至桥边。", en: "Entered in the account. Delivered to the bridge by tomorrow morning."}
+    - {zh: "首批货物，明日上午交付。", en: "The first consignment is to be delivered tomorrow morning."}
+  bamboo_arrived:
+    - {zh: "竹料四根，已于桥边签收。", en: "Four poles of bamboo received at the bridge."}
+    - {zh: "入账：竹料已到桥边。", en: "Booked: the bamboo has reached the bridge."}
+  promise_open:
+    - {zh: "账上已记：{amount}根{item}，{when}交付桥边。", en: "Already on the books: {amount} poles of {item}, delivered to the bridge {when}."}
+    - {zh: "此项已应允，不重复记账。数目{amount}根{item}，期限{when}。", en: "This item is agreed and will not be entered twice. The figure is {amount} poles of {item}, due {when}."}
+  goods_enough:
+    - {zh: "账上{item}已足数，无需追加。", en: "The books show the {item} at the full count. No addition is needed."}
+    - {zh: "{item}已满额。再送即为超出。", en: "The {item} is at its full quota. More would be over the figure."}
+  point_heard:
+    - {zh: "账上没有这一条。据我所知，{name}谈起过此事。可向其核实。", en: "It is not in the books. As far as I know, {name} has spoken of it, so verify it with them."}
+    - {zh: "我不清楚，没有依据不敢说。{name}曾言及此事，建议前去询问。", en: "I do not know and, lacking a basis, will not say. I note that {name} has spoken of it, so inquire of them."}
+  point_hub:
+    - {zh: "此事无记录。就镇上的消息而言，{name}知道得最多。", en: "There is no record. As for news of the town, {name} knows the most."}
+    - {zh: "我无从核对。若要打听坊间说法，请找{name}。", en: "I cannot verify it. To learn what is said around town, please see {name}."}
+frames:
+  seen:
+    - {zh: "我亲眼核对过：{line}。", en: "I verified it with my own eyes: {line}."}
+    - {zh: "我在现场：{line}。", en: "I was on the premises: {line}."}
+  heard:
+    - {zh: "据{teller}陈述：{line}。", en: "{teller} states that {line}."}
+    - {zh: "我记录的是{teller}的说法：{line}。", en: "What I have on record from {teller} is this: {line}."}
+  unknown:
+    - {zh: "有一种说法：{line}。", en: "There is an account that {line}."}
+    - {zh: "来源无记录：{line}。", en: "Source unrecorded: {line}."}
+  own:
+    - {zh: "按我的判断：{line}。", en: "By my own assessment, {line}."}
+    - {zh: "我的结论是：{line}。", en: "My conclusion is that {line}."}
+  guess_own:
+    - {zh: "无法确证。{hedge}{line}。", en: "It cannot be verified. {hedge} {line}."}
+    - {zh: "仅为推测。{hedge}{line}。", en: "This is conjecture only. {hedge} {line}."}
+  guess_heard:
+    - {zh: "{teller}提供了线索。{hedge}{line}。", en: "{teller} supplied a lead. {hedge} {line}."}
+    - {zh: "按{teller}的陈述推算，{hedge}{line}。", en: "Reckoning from {teller}'s statement, {hedge} {line}."}
+  guess_unknown:
+    - {zh: "来源未核实。{hedge}{line}。", en: "The source is unverified. {hedge} {line}."}
+    - {zh: "无从查证。{hedge}{line}。", en: "It cannot be traced. {hedge} {line}."}
+  rival:
+    - {zh: "但另有一条记录，出自{teller}：{line}。", en: "But there is another entry on record, from {teller}: {line}."}
+    - {zh: "{teller}的陈述与此不符：{line}。", en: "The statement of {teller} does not agree: {line}."}
+hedges:
+  - {zh: 我估算, en: I estimate}
+  - {zh: 我推算, en: I calculate}

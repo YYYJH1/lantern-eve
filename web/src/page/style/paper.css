@@ -1,0 +1,284 @@
+/* Paper and ink: the things the notebook, the talk and the cards are made of.
+   A sheet has a hand-cut edge and one line of ink a little inside it. The edge is a picture cut in nine (web/public/ui/paper, made by
+   tools/ink_ui/paper.py), laid round the box with border-image, so that no filter runs on a large page. Two grades: a slip for small things
+   and a page for large ones. The picture is 荼白 paper with a 乌黑 line by day, and 牙色 paper with a 墨灰 line under the lamp; the roles
+   --edge-slip and --edge-page of tokens.css say which. A sheet has no shadow and no radius. */
+
+.paper-slip,
+.paper-page {
+  box-sizing: border-box;
+  border-style: solid;
+  border-color: transparent;
+  border-image-repeat: round;
+  /* The paper colour is under the padding box as well as in the picture, for whatever reads what lies behind the text. The picture's rough edge is outside it. */
+  background-color: var(--paper);
+  background-clip: padding-box;
+  color: var(--ink);
+  font-family: var(--serif);
+}
+
+.paper-slip {
+  border-width: 12px;
+  border-image-slice: 12 fill;
+  border-image-width: 12px;
+  border-image-source: var(--edge-slip);
+}
+
+.paper-page {
+  border-width: 20px;
+  border-image-slice: 20 fill;
+  border-image-width: 20px;
+  border-image-source: var(--edge-page);
+}
+
+/* On a screen with twice the dots the picture is the 2x one, drawn again at twice the size and not the 1x one enlarged. Its slice is twice as large and the border stays as wide in pixels of the page. */
+@media (min-resolution: 2dppx) {
+  .paper-slip {
+    border-image-slice: 24 fill;
+    border-image-source: var(--edge-slip-2x);
+  }
+
+  .paper-page {
+    border-image-slice: 40 fill;
+    border-image-source: var(--edge-page-2x);
+  }
+}
+
+/* The brush marks (ui/ink.tsx): an inline mark takes the colour of the text round it, and sits on the baseline. The overshoot of a circle runs a little past its box, and
+   shows. A seal is cut at its box, as the seals of the ledger always were, and the stamp on the verdict of a statement is not. The rules of the ledger and the three
+   drawings at the top right (`rule`, `glyph`), and the marks that a style sheet places itself (the thread of the notebook, its stitches, the strike through a
+   promise), are not in the list: their own rules say what they are. */
+
+svg.underline,
+svg.tick,
+svg.circle,
+svg.tally-mark,
+svg.struck-mark,
+svg.stamp,
+svg.cross-a,
+svg.cross-b {
+  display: inline-block;
+  overflow: visible;
+  vertical-align: baseline;
+  fill: currentColor;
+}
+
+svg.stamp {
+  overflow: hidden;
+}
+
+svg.stamp.stated-stamp {
+  overflow: visible;
+}
+
+/* An action in words: the word of a thing to do, with a stroke of the brush under it. It is not a button with a face. */
+
+.ink-act {
+  position: relative;
+  display: inline-block;
+  min-height: 24px;
+  margin: 0;
+  padding: 0 2px 8px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ink-act > svg.underline {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  color: var(--ink);
+  opacity: 0.72;
+}
+
+.ink-act:hover:not(:disabled) > svg.underline,
+.ink-act:focus-visible > svg.underline,
+.ink-act[aria-expanded="true"] > svg.underline,
+.ink-act[aria-pressed="true"] > svg.underline {
+  opacity: 1;
+}
+
+.ink-act:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.ink-act:disabled > svg.underline {
+  display: none;
+}
+
+.ink-act:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* A framed word, for the one act that decides: the frame is ruled in ink and square. */
+
+.ink-frame {
+  position: relative;
+  min-width: 112px;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 22px;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+}
+
+.ink-frame:hover:not(:disabled),
+.ink-frame:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.ink-frame:disabled {
+  border-style: dashed;
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* The corner that puts a sheet away: two strokes crossed. */
+
+.ink-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.ink-close .cross {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.ink-close .cross > svg {
+  position: absolute;
+  top: 4px;
+  left: -3px;
+  width: 24px;
+  height: 10px;
+}
+
+.ink-close .cross-a {
+  transform: rotate(45deg);
+}
+
+.ink-close .cross-b {
+  transform: rotate(-45deg);
+}
+
+.ink-close:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+}
+
+/* The tally and the strike that count. */
+
+.tally {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  color: var(--tick);
+  vertical-align: middle;
+}
+
+.tally-mark {
+  height: 28px;
+  width: auto;
+}
+
+.struck {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  color: var(--ink);
+  vertical-align: middle;
+}
+
+.struck-mark {
+  width: 24px;
+  height: 10px;
+}
+
+.struck-n {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The stamps and the manager's circling take the rouge, which is the accent of the page and nothing else is. */
+
+.stamp {
+  color: var(--rouge);
+}
+
+svg.circle {
+  color: var(--rouge);
+}
+
+/* English is not spaced out as the Chinese titles are. */
+
+:root:lang(en) :is(.sheet-title, .paper-title, .ending-card-title, .ending-title, .menu-head h2, .menu-heading, .stmt-part-title, .opening-chapter, .opening-title, .opening-things li strong, .chips-title, .picker-title, .request-title, .picker-heading, .person-name, .person-subtitle, .gazette-label, .gazette-lead, .gazette-issue, .night-issue, .pairing-title, .stated-who, .drawer-tab, .opening-settings-head h2, .ink-act, .ink-frame, .hint-log-title) {
+  letter-spacing: 0.02em;
+}
+
+/* The switches of the language, the theme and the speed, which the top bar has as well: on paper they are words, and the one that is on has a line under it. */
+
+:is(.menu, .opening) .seg {
+  gap: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+:is(.menu, .opening) .seg-btn {
+  padding: 2px 2px 6px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+:is(.menu, .opening) .seg-btn:hover {
+  color: inherit;
+}
+
+:is(.menu, .opening) .seg-btn[aria-pressed="true"] {
+  border-bottom-color: currentColor;
+  background: none;
+  color: inherit;
+  font-weight: 500;
+}
+
+:is(.menu, .opening) .seg-icon {
+  padding: 4px 8px 6px;
+}

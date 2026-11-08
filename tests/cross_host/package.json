@@ -1,0 +1,11 @@
+{
+  "name": "lantern-eve-cross-host",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Runs the lantern_core driver under Pyodide in Node, for the cross-host hash test",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "pyodide": "314.0.7"
+  }
+}

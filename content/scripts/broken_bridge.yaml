@@ -1,0 +1,1929 @@
+# The broken bridge, the script that the game plays. Truth is drawn from the seed at game start.
+# Time is integer game minutes, 0 = 00:00 of day 1, so the night before the game is negative.
+# Day d starts at (d - 1) * 1440. The incident happened about 23:15 on the night before day 1.
+id: broken_bridge
+label: 断桥
+days: 5
+truth_fixed_at: 0
+summary: 秋汛后石桥栏杆塌了一段，游灯路线过不去，李、周两家互相指责。
+
+cast:
+  - fam_li
+  - fam_zhou
+  - li_laotai
+  - li_da
+  - li_er
+  - li_xiaomei
+  - zhou_zhanggui
+  - zhou_niangzi
+  - zhou_huoji
+  - zhou_dalang
+  - zhou_erlang
+  - old_he
+  - xiao_man
+  - gengfu
+  - zhangfang
+  - cha_laoban
+  - miaozhu
+  - zuzhang
+  - mujiang
+  - zhadeng_shifu
+  - sishu_xiansheng
+  - t_rail
+  - t_he_boat
+  - t_li_er_lantern
+  - t_repair_ledger
+  - t_honor_light
+  - p_bridge
+  - p_under_bridge
+  - p_riverbank
+  - p_ferry
+  - p_he_home
+  - p_li_house
+  - p_zhou_house
+  - p_tavern
+  - p_teahouse
+  - p_temple
+  - p_clan_hall
+
+# Truth variants. `holds` lists the non-negated props that hold in that variant, on top of
+# `shared`. A negated prop whose positive twin exists is derived, never listed.
+variants:
+  - id: v_boat
+    label: 船夫老何夜里撑船撞的，他瞒着
+    holds: [pr_boat_damaged, pr_he_under_bridge, pr_boat_scratched, pr_he_repaired, pr_dalang_at_home]
+  - id: v_flood
+    label: 真是秋汛冲的
+    holds: [pr_flood_damaged, pr_he_home, pr_boat_scratched, pr_dalang_at_home]
+  - id: v_drunk
+    label: 周家大郎醉酒踢的
+    holds: [pr_dalang_damaged, pr_dalang_at_bridge, pr_he_home]
+
+# True in every variant: the opening headline, the cover story of 李二 and the misleading traces.
+shared:
+  - pr_rail_broken
+  - pr_rail_located
+  - pr_flooded
+  - pr_liner_looking
+  - pr_liner_at_bridge
+  - pr_xiaoman_riverbank
+  - pr_gengfu_round
+  - pr_dalang_drank
+  - pr_he_owns_boat
+
+props:
+  # facts of the world
+  - {id: pr_rail_broken, pred: broken, args: {what: t_rail}, span: [-40, 7200]}
+  - {id: pr_rail_located, pred: located, args: {what: t_rail, where: p_bridge}}
+  - {id: pr_flooded, pred: flooded, args: {where: p_under_bridge}, span: [-4320, -30]}
+  - {id: pr_he_owns_boat, pred: owns, args: {who: old_he, what: t_he_boat}}
+  - {id: pr_xiaoman_riverbank, pred: at, args: {who: xiao_man, where: p_riverbank}, span: [-180, -20]}
+  - {id: pr_gengfu_round, pred: at, args: {who: gengfu, where: p_bridge}, span: [-60, -40]}
+  - {id: pr_dalang_drank, pred: drank, args: {who: zhou_dalang, where: p_tavern}, span: [-240, -70]}
+  - {id: pr_dalang_at_home, pred: at, args: {who: zhou_dalang, where: p_zhou_house}, span: [-70, -20]}
+  - id: pr_liner_looking
+    pred: looked_for
+    args: {who: li_er, what: t_li_er_lantern, where: p_bridge}
+    span: [-110, -80]
+  # variant v_boat: 老何撑船撞的
+  - {id: pr_boat_damaged, pred: damaged, args: {who: old_he, what: t_rail}, span: [-45, -35], motive: accident}
+  - {id: pr_he_under_bridge, pred: at, args: {who: old_he, where: p_under_bridge}, span: [-90, -20]}
+  - {id: pr_he_repaired, pred: repaired, args: {who: old_he, what: t_he_boat}, span: [300, 360]}
+  # variants v_boat and v_flood share the scratches, which is what makes them misleading
+  - {id: pr_boat_scratched, pred: scratched, args: {what: t_he_boat}, span: [-40, 7200]}
+  # variant v_flood: 秋汛冲的
+  - {id: pr_flood_damaged, pred: flood_damaged, args: {what: t_rail}, span: [-45, -35]}
+  - {id: pr_he_home, pred: at, args: {who: old_he, where: p_he_home}, span: [-90, -20]}
+  # variant v_drunk: 大郎醉酒踢的
+  - {id: pr_dalang_damaged, pred: damaged, args: {who: zhou_dalang, what: t_rail}, span: [-45, -35], motive: reckless}
+  - {id: pr_dalang_at_bridge, pred: at, args: {who: zhou_dalang, where: p_bridge}, span: [-50, -35]}
+  # negations that people may claim (the first two are lies in v_drunk)
+  - {id: pr_dalang_not_bridge, pred: at, args: {who: zhou_dalang, where: p_bridge}, span: [-50, -35], neg: true}
+  - {id: pr_dalang_not_drank, pred: drank, args: {who: zhou_dalang, where: p_tavern}, span: [-240, -70], neg: true}
+  - {id: pr_liner_not_bridge, pred: at, args: {who: li_er, where: p_bridge}, span: [-110, -80], neg: true}
+  # the rumour chain: five hops, none of them true in any variant
+  - {id: pr_liner_at_bridge, pred: at, args: {who: li_er, where: p_bridge}, span: [-110, -80], parent: pr_liner_looking, op: level}
+  - {id: pr_liner_damaged, pred: damaged, args: {who: li_er, what: t_rail}, span: [-110, -80], parent: pr_liner_at_bridge, op: assimilate}
+  - {id: pr_li_damaged, pred: damaged, args: {who: fam_li, what: t_rail}, span: [-110, -80], parent: pr_liner_damaged, op: assimilate}
+  - {id: pr_li_damaged_on_purpose, pred: damaged, args: {who: fam_li, what: t_rail}, span: [-110, -80], motive: on_purpose, parent: pr_li_damaged, op: sharpen}
+  - {id: pr_li_damaged_jealous, pred: damaged, args: {who: fam_li, what: t_rail}, span: [-110, -80], motive: jealousy, parent: pr_li_damaged_on_purpose, op: fill}
+  # the same rumour kept on the person: how it went round the Zhou house and the teahouse before the
+  # game began (see the opening `op_li_er_hearsay`)
+  - {id: pr_liner_damaged_on_purpose, pred: damaged, args: {who: li_er, what: t_rail}, span: [-110, -80], motive: on_purpose, parent: pr_liner_damaged, op: sharpen}
+  - {id: pr_liner_damaged_jealous, pred: damaged, args: {who: li_er, what: t_rail}, span: [-110, -80], motive: jealousy, parent: pr_liner_damaged_on_purpose, op: fill}
+  # what the audience of a clarification takes in (`world/bridge/clarify.py`): the clerk only saw Li
+  # Er looking for his lantern at the bridge. It has no parent, so it is a story of its own and the
+  # quiet of the opening, which holds the rumour, does not hold it
+  - {id: pr_set_straight, pred: set_straight, args: {who: zhou_huoji, whom: li_er, what: t_li_er_lantern, where: p_bridge}}
+
+exclusive:
+  - {id: x_cause, props: [pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]}
+  - {id: x_rumor_person, props: [pr_liner_damaged, pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]}
+  - {id: x_rumor_family, props: [pr_li_damaged, pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]}
+  - {id: x_rumor_purpose, props: [pr_li_damaged_on_purpose, pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]}
+  - {id: x_rumor_jealous, props: [pr_li_damaged_jealous, pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]}
+  - {id: x_rumor_person_purpose, props: [pr_liner_damaged_on_purpose, pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]}
+  - {id: x_rumor_person_jealous, props: [pr_liner_damaged_jealous, pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]}
+  - {id: x_he_night, props: [pr_he_under_bridge, pr_he_home]}
+  - {id: x_dalang_night, props: [pr_dalang_at_bridge, pr_dalang_at_home]}
+  - {id: x_dalang_bridge, props: [pr_dalang_at_bridge, pr_dalang_not_bridge]}
+  - {id: x_dalang_drink, props: [pr_dalang_drank, pr_dalang_not_drank]}
+  - {id: x_liner_bridge, props: [pr_liner_at_bridge, pr_liner_not_bridge]}
+
+# What the opening shows. A cover story explains a suspicious fact away. A misleading
+# observation is true in the variants listed under `in` and tempts a conclusion that is not
+# supported (the journal marks that conclusion as 无据).
+observations:
+  - id: obs_liner_lantern
+    kind: cover_story
+    label: 李二在桥边找掉进水里的灯笼
+    holder: li_er
+    shows: [pr_liner_looking, pr_liner_at_bridge]
+    toward: [pr_liner_damaged]
+    in: all
+  - id: obs_watermark
+    kind: misleading
+    label: 桥墩上留着高水位的水痕
+    shows: [pr_flooded]
+    toward: [pr_flood_damaged]
+    in: all
+  - id: obs_dalang_hangover
+    kind: misleading
+    label: 大郎昨夜在酒肆喝到很晚，今早不肯出门
+    holder: zhou_dalang
+    shows: [pr_dalang_drank]
+    toward: [pr_dalang_damaged]
+    in: all
+  - id: obs_boat_scratch
+    kind: misleading
+    label: 老何的船身上有新刮痕
+    holder: old_he
+    shows: [pr_boat_scratched]
+    toward: [pr_boat_damaged]
+    in: [v_boat, v_flood]
+
+# The rumour chain. The first hop is the root, which is a fact of the world. Each later hop
+# says who changed the proposition and who heard the changed version.
+chains:
+  - id: ch_li_er_rumor
+    label: 从「李二在桥边找灯笼」传成「李家故意毁桥，不想让周家出风头」
+    hops:
+      - {prop: pr_liner_looking}
+      - {prop: pr_liner_at_bridge, speaker: zhou_huoji, listener: zhou_zhanggui}
+      - {prop: pr_liner_damaged, speaker: zhou_zhanggui, listener: cha_laoban, via: sr_presence_grudge}
+      - {prop: pr_li_damaged, speaker: cha_laoban, listener: mujiang}
+      - {prop: pr_li_damaged_on_purpose, speaker: cha_laoban, listener: gengfu}
+      - {prop: pr_li_damaged_jealous, speaker: cha_laoban, listener: li_da}
+
+# What the town has passed round by the time the game opens, as the hops of a rumour that
+# happened before the first tick. A hop is one telling: the speaker tells the listener a prop they
+# hold, or a changed version of one (the operator is the one of the prop, and `via` names the rule
+# when an assimilate changes the predicate), and the listener takes it in with `confidence`. `own` is
+# how far the speaker believes the version they have just voiced, and without it they do not hold it.
+# The hops are written at tick 0 as claims and the beliefs they leave, in this order, so that asking
+# who told whom walks them back to whoever saw. `quiet_until` is a minute of the script clock (06:00
+# is 360) until which nobody passes the story on of their own accord, so that the first day starts
+# from the same town whichever way the manager walks. A game starts from one only when its config
+# names it (`opening`).
+openings:
+  - id: op_li_er_hearsay
+    label: 昨夜到今晨，「李二弄坏了栏杆」已经在周家和茶馆传开
+    quiet_until: 1140
+    hops:
+      - {speaker: zhou_huoji, listener: zhou_zhanggui, prop: pr_liner_at_bridge, confidence: 87}
+      - {speaker: zhou_zhanggui, listener: zhou_erlang, prop: pr_liner_damaged, via: sr_presence_grudge, confidence: 86, own: 87}
+      - {speaker: zhou_erlang, listener: zhou_huoji, prop: pr_liner_damaged_on_purpose, confidence: 63}
+      - {speaker: zhou_huoji, listener: cha_laoban, prop: pr_liner_damaged_jealous, confidence: 45}
+      - {speaker: cha_laoban, listener: li_laotai, prop: pr_liner_damaged_jealous, confidence: 45}
+
+# Things the player can get hold of. A real item can exist only where everything it supports
+# is true and nothing it refutes is true (checked by the build). `acquire` is the retrieval
+# model: who holds it, the gatekeeper, the trust needed, the daily window, the minutes it costs,
+# and evidence that must be in hand first.
+#
+# The opportunity table. The places, the people and the hours are the same in every story, so the
+# table tells nothing of which one is true; what a place or a person yields is another matter, and
+# is the story's. `since` and `until` are minutes counted from 00:00 of day 1 (day 2 begins at
+# 1440). A request that comes before `since` is answered "not now", as one out of hours is, and a
+# `look` that is turned away is not counted as looked.
+#
+#   item                     where / who                    days     hours        story
+#   e_footprint              the rail (the bridge)          1-2      07-18        drunk
+#   e_boat_scratches         the boat (the ferry)           from 1   08-17        boat, flood
+#   e_flood_debris           under the bridge: low water    from 3   07-18        flood
+#   e_xiaoman_testimony      the child by the river         from 3   17-21        boat
+#   e_dalang_home            the clerk                      from 3   08-18        boat, flood
+#   e_he_lamp                the temple keeper              from 4   08-18        flood, drunk
+#   e_repair_record          the accountant's ledger        from 4   09-17        boat
+#   e_gengfu_boat/flood/dalang  the night watchman          from 4   15-23        boat / flood / drunk
+#   e_liner_testimony, e_huoji_testimony: the rumour of the first day, any day, 08-18
+#
+# The footprint is trodden out from the third day. The water under the bridge is too high to see
+# what is stuck on the pier until it falls on the third day. The child by the river is afraid to
+# speak for two days, the clerk is out with the Zhou carts until the third. From the fourth day the
+# watchman has slept off the festival wine, the temple keeper is done with the rites and the
+# accountant is back from the county seat with his books. Every set below holds one item of the
+# fourth day (the watchman's three, the lamp or the ledger), so no story can be told apart before
+# it (`tell_days`), and the places the lead sends the manager to give a complete set in each story
+# by the evening of that day: the rail on the first two, the water and the child on the third, the
+# watchman from the afternoon of the fourth.
+evidence:
+  - id: e_boat_scratches
+    label: 船身上的刮痕
+    label_en: "Scratches on the boat"
+    supports: [pr_boat_scratched]
+    acquire: {from: t_he_boat, gatekeeper: old_he, min_trust: 15, daily: [480, 1020], minutes: 30}
+  - id: e_xiaoman_testimony
+    label: 小满的证词：那晚看见船撞上了栏杆
+    label_en: "Xiaoman's word: a boat struck the rail that night"
+    supports: [pr_boat_damaged, pr_he_under_bridge, pr_xiaoman_riverbank]
+    refutes: [pr_liner_damaged, pr_dalang_damaged]
+    acquire: {from: xiao_man, gatekeeper: null, min_trust: 25, daily: [1020, 1260], since: 2880, minutes: 40}
+  - id: e_repair_record
+    label: 账房的修船记录
+    label_en: "The accountant's record of the boat repair"
+    supports: [pr_he_repaired]
+    acquire: {from: t_repair_ledger, gatekeeper: zhangfang, min_trust: 30, daily: [540, 1020], since: 4320, minutes: 60}
+  - id: e_flood_debris
+    label: 卡在桥墩上的上游断木
+    label_en: "Upstream driftwood caught on the pier"
+    supports: [pr_flood_damaged, pr_flooded]
+    refutes: [pr_boat_damaged, pr_dalang_damaged]
+    acquire: {from: p_under_bridge, gatekeeper: null, min_trust: null, daily: [420, 1080], since: 2880, minutes: 40}
+  - id: e_gengfu_flood
+    label: 更夫的证词：水头打在桥上，桥边没有人
+    label_en: "The night watchman's word: a surge of water hit the bridge and nobody was by it"
+    supports: [pr_flood_damaged, pr_gengfu_round]
+    refutes: [pr_dalang_at_bridge, pr_liner_damaged]
+    acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [900, 1380], since: 4320, minutes: 30}
+  - id: e_gengfu_boat
+    label: 更夫的证词：桥下有个撑船的黑影
+    label_en: "The night watchman's word: a dark shape poling a boat under the bridge"
+    supports: [pr_he_under_bridge, pr_gengfu_round]
+    refutes: [pr_dalang_at_bridge]
+    acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [900, 1380], since: 4320, minutes: 30}
+  - id: e_he_lamp
+    label: 庙祝的证词：老何家那晚灯一直亮到半夜
+    label_en: "The temple keeper's word: a lamp burned at Boatman He's house until midnight"
+    supports: [pr_he_home]
+    refutes: [pr_he_under_bridge]
+    acquire: {from: miaozhu, gatekeeper: null, min_trust: 20, daily: [480, 1080], since: 4320, minutes: 30}
+  - id: e_dalang_home
+    label: 周家伙计的证词：大郎回家后睡到天亮
+    label_en: "The clerk's word: Zhou Dalang went home and slept until dawn"
+    supports: [pr_dalang_at_home]
+    refutes: [pr_dalang_at_bridge]
+    acquire: {from: zhou_huoji, gatekeeper: zhou_zhanggui, min_trust: 35, daily: [480, 1080], since: 2880, minutes: 45}
+  - id: e_gengfu_dalang
+    label: 更夫的证词：看见大郎醉醺醺地走到桥上
+    label_en: "The night watchman's word: Zhou Dalang, drunk, walked onto the bridge"
+    supports: [pr_dalang_at_bridge, pr_gengfu_round]
+    refutes: [pr_he_under_bridge]
+    acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [900, 1380], since: 4320, minutes: 30}
+  - id: e_footprint
+    label: 断栏边带酒气的鞋印
+    label_en: "A shoeprint smelling of wine by the broken rail"
+    supports: [pr_dalang_at_bridge, pr_dalang_damaged]
+    acquire: {from: t_rail, gatekeeper: null, min_trust: null, daily: [420, 1080], minutes: 20, until: 2880}
+  - id: e_huoji_testimony
+    label: 周家伙计的证词：我只说过看见李二在桥边
+    label_en: "The clerk's word: I only said I saw Li Er by the bridge"
+    supports: [pr_liner_at_bridge, pr_liner_looking]
+    refutes: [pr_liner_damaged, pr_li_damaged]
+    acquire: {from: zhou_huoji, gatekeeper: zhou_zhanggui, min_trust: 30, daily: [480, 1080], minutes: 30, needs: [e_liner_testimony]}
+  - id: e_liner_testimony
+    label: 李二的证词：我在找掉进水里的灯笼
+    label_en: "Li Er's word: I was looking for the lantern I dropped in the water"
+    supports: [pr_liner_looking, pr_liner_at_bridge]
+    refutes: [pr_liner_damaged, pr_li_damaged]
+    acquire: {from: li_er, gatekeeper: li_laotai, min_trust: 25, daily: [480, 1080], minutes: 30}
+
+# For each variant, at most 6 sets of at most 4 items. A set must be real in its own variant
+# and must rule out every other variant (checked by the build). `tell_days` holds the build to the
+# opportunity table above: in no story is a set complete before the fourth day, and in each one is
+# by it.
+tell_days: [4, 4]
+evidence_sets:
+  - {id: es_boat_1, tells: v_boat, items: [e_xiaoman_testimony, e_repair_record]}
+  - {id: es_boat_2, tells: v_boat, items: [e_gengfu_boat, e_boat_scratches]}
+  - {id: es_boat_3, tells: v_boat, items: [e_boat_scratches, e_repair_record]}
+  - {id: es_flood_1, tells: v_flood, items: [e_flood_debris, e_gengfu_flood]}
+  - {id: es_flood_2, tells: v_flood, items: [e_he_lamp, e_dalang_home]}
+  - {id: es_drunk_1, tells: v_drunk, items: [e_gengfu_dalang]}
+  - {id: es_drunk_2, tells: v_drunk, items: [e_footprint, e_he_lamp]}
+  - {id: es_drunk_3, tells: v_drunk, items: [e_gengfu_dalang, e_footprint]}
+
+# Lie templates. `preds`, `objects` and `sources` are the envelope of what this character may
+# ever claim. A template is one claim from inside the envelope, or a feigned ignorance.
+lies:
+  - holder: old_he
+    motive: fear
+    preds: [at]
+    ignorance: [damaged]
+    objects: [old_he, p_he_home, p_ferry]
+    sources: [witnessed]
+    templates:
+      - {id: lie_he_home, kind: claim, prop: pr_he_home, source: {kind: witnessed}}
+      - {id: lie_he_ignorant, kind: feign_ignorance, about: damaged}
+  - holder: zhou_dalang
+    motive: fear
+    preds: [at, drank]
+    ignorance: []
+    objects: [zhou_dalang, p_zhou_house, p_tavern, p_bridge]
+    sources: [witnessed]
+    templates:
+      - {id: lie_dalang_home, kind: claim, prop: pr_dalang_at_home, source: {kind: witnessed}}
+      - {id: lie_dalang_not_bridge, kind: claim, prop: pr_dalang_not_bridge, source: {kind: witnessed}}
+      - {id: lie_dalang_not_drank, kind: claim, prop: pr_dalang_not_drank, source: {kind: witnessed}}
+  - holder: zhou_zhanggui
+    motive: protect
+    preds: [at]
+    ignorance: []
+    objects: [zhou_dalang, p_zhou_house, li_er, p_bridge]
+    sources: [witnessed]
+    templates:
+      - {id: lie_zhang_dalang_home, kind: claim, prop: pr_dalang_at_home, source: {kind: witnessed}}
+      # a true proposition with a false source: he heard it from 周家伙计 and did not see it
+      - {id: lie_zhang_saw_liner, kind: claim, prop: pr_liner_at_bridge, source: {kind: witnessed}, source_only: true}
+  - holder: li_er
+    motive: save_face
+    preds: [at]
+    ignorance: []
+    objects: [li_er, p_bridge, p_li_house]
+    sources: [witnessed]
+    templates:
+      - {id: lie_liner_not_bridge, kind: claim, prop: pr_liner_not_bridge, source: {kind: witnessed}}
+
+# Restricted speculation. Premises match authored, non-negated props. The
+# conclusion must land on an authored prop for every binding (checked by the build).
+speculation:
+  - id: sr_presence_grudge
+    label: 当时在现场，又与说话人所在的家结怨，就推测是这个人弄坏的
+    vars: {X: person, P: place, T: thing}
+    premises:
+      - {pred: at, args: {who: $X, where: $P}}
+      - {pred: located, args: {what: $T, where: $P}}
+      - {pred: broken, args: {what: $T}}
+    relation: {kind: grudge, holder: speaker, target: $X}
+    conclusion: {pred: damaged, args: {who: $X, what: $T}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 30
+  - id: sr_flood_season
+    label: 秋汛涨水，栏杆又塌了，就推测是汛水冲的
+    vars: {P: place, T: thing}
+    premises:
+      - {pred: flooded, args: {where: $P}}
+      - {pred: broken, args: {what: $T}}
+    conclusion: {pred: flood_damaged, args: {what: $T}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 0
+  - id: sr_drunk_reckless
+    label: 有人昨夜喝了酒，栏杆又塌了，就推测是这个人酒后弄坏的
+    vars: {X: person, Q: place, T: thing}
+    premises:
+      - {pred: drank, args: {who: $X, where: $Q}}
+      - {pred: broken, args: {what: $T}}
+    conclusion: {pred: damaged, args: {who: $X, what: $T}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 40
+  - id: sr_scratched_boat
+    label: 船身有新刮痕，栏杆又塌了，就推测是船主撞的
+    vars: {X: person, B: thing, T: thing}
+    premises:
+      - {pred: scratched, args: {what: $B}}
+      - {pred: owns, args: {who: $X, what: $B}}
+      - {pred: broken, args: {what: $T}}
+    conclusion: {pred: damaged, args: {who: $X, what: $T}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 20
+
+# Conditions below name flags and metrics of this section, goals, and (in the endings table)
+# plain names. Metrics are integers with a closed range.
+flags:
+  - {id: bamboo_delivered, label: 竹料送到桥边}
+  - {id: timber_delivered, label: 木料送到桥边}
+  - {id: bridge_fixed, label: 桥修好了}
+  - {id: lane_opened, label: 庙后夹道打开}
+  - {id: lamps_hung, label: 绕路沿线的灯挂好}
+  - {id: detour_done, label: 绕路备好了}
+  - {id: truth_told, label: 真相当众说清}
+  - {id: reconciled, label: 两家和解}
+  - {id: reconcile_seen, label: 有人看见了和解事件}
+  - {id: elder_accepts, label: 族长接受了当众说清的真相}
+
+metrics:
+  - {id: work_progress, label: 施工进度, min: 0, max: 100}
+  - {id: detour_workers, label: 沿绕路干活的人数, min: 0, max: 40}
+  - {id: audience_named, label: 当众说清时在场的有名有姓的人数, min: 0, max: 40}
+  - {id: accept_ratio, label: 在场者接受真相的百分比, min: 0, max: 100}
+  - {id: grudge, label: 两家家长之间的积怨, min: 0, max: 100}
+  - {id: false_belief_share, label: 终夜时相信主冲突假命题的有名有姓者百分比, min: 0, max: 100}
+
+goals:
+  - id: g_materials
+    label: 物料
+    done_when: {all: [{flag: bamboo_delivered}, {flag: timber_delivered}]}
+  - id: g_labor
+    label: 人手与施工
+    done_when: {metric: work_progress, op: ">=", value: 100}
+    deadline: 5400
+  - id: g_repair
+    label: 修桥
+    done_when: {all: [{goal: g_materials}, {goal: g_labor}]}
+    sets: bridge_fixed
+  - id: g_detour
+    label: 绕路
+    where: [p_temple]
+    done_when: {all: [{flag: lane_opened}, {flag: lamps_hung}, {metric: detour_workers, op: ">=", value: 3}]}
+    sets: detour_done
+  - id: g_truth
+    label: 真相当众说清
+    where: [p_teahouse, p_clan_hall]
+    done_when:
+      all:
+        - {metric: audience_named, op: ">=", value: 5}
+        - {metric: accept_ratio, op: ">=", value: 60}
+        - {flag: elder_accepts}
+    deadline: 6840
+    sets: truth_told
+  - id: g_reconcile
+    label: 和解
+    done_when: {all: [{metric: grudge, op: "<", value: 30}, {flag: reconcile_seen}]}
+    sets: reconciled
+
+# The endings. `passable` and `all_three` are derived; the three rows must be exclusive and
+# cover every assignment of the four inputs (checked by the build).
+endings:
+  inputs: [bridge_fixed, detour_done, truth_told, reconciled]
+  derived:
+    passable: {any: [bridge_fixed, detour_done]}
+    all_three: {all: [bridge_fixed, reconciled, truth_told]}
+  rows:
+    - {id: ending_full, label: 圆满, when: {all: [passable, all_three]}}
+    - {id: ending_barely, label: 勉强, when: {all: [passable, {not: all_three}]}}
+    - {id: ending_split, label: 散场：两家分开办灯, when: {not: passable}}
+  # with only the detour the bridge is not mended, so the best is 勉强
+  invariants:
+    - {if_false: bridge_fixed, never: ending_full}
+  hidden:
+    - id: hidden_legend_of_lie
+      label: 谎话成了传说
+      when: {metric: false_belief_share, op: ">", value: 50}
+
+# 李老太 lends bamboo if any one of the alternatives holds.
+hard_conditions:
+  - id: hc_li_bamboo
+    holder: li_laotai
+    label: 李老太借竹料
+    any:
+      # she knows it herself: she was there and took it in, or one of her family told her
+      - id: hc_rumor_cleared
+        label: 毁桥的谣言已经当众澄清，她自己知道了
+        all:
+          - {kind: knows, holder: li_laotai, props: [pr_set_straight], min: 40}
+      - id: hc_honor_and_trust
+        label: 给李家一个灯会上的体面角色，并且她对你的信任到一定程度
+        all:
+          - {kind: honor_given, to: fam_li, thing: t_honor_light}
+          - {kind: trust_min, holder: li_laotai, min: 45}
+      - id: hc_elder_asks
+        label: 族长亲自开口，而族长先要被你说动
+        all:
+          - {kind: persuaded, who: zuzhang}
+          - {kind: asked_by, who: zuzhang, of: li_laotai}
+    # What she says when every way is shut, by the reason: the first of these whose conditions all
+    # hold gives the code of the fixed line (see `phrases.py`). With none, the line is `hard_<id>`.
+    refusals:
+      - line: hard_hc_li_bamboo_rumour
+        when:
+          - {kind: believes, holder: li_laotai, props: [pr_liner_damaged, pr_liner_damaged_on_purpose, pr_liner_damaged_jealous, pr_li_damaged, pr_li_damaged_on_purpose, pr_li_damaged_jealous], min: 25}
+          - {kind: unspoken}
+
+# What the player is told to do, as tasks. A task is a thing to get, a lead, a promise somebody made,
+# an obstacle or an occasion (`kind`), for one of the three jobs of the festival (`job`: bridge,
+# truth or peace), and the more urgent it is the smaller its `priority`: when the task that is
+# followed is done or goes stale, the most urgent open one is followed next.
+#
+# The rest says when. `appears`, `done` and `stale` are lists of conditions that must all hold.
+# A condition is a term, `{kind: ..., args}`, or `{all: [...]}`, `{any: [...]}` and `{not: ...}` of
+# them. The terms are a closed vocabulary over what the player knows (see `check_content.py`, and
+# `world/bridge/agenda_terms.py` for what each says). `judged` holds once the player has judged a
+# relation between two notes right.
+#
+# `blocked` lists the reasons a task cannot go on, the first whose `when` holds being the one told:
+# what blocks it (`blocker`) and, in place of the task's own, why and what to do next. `why`,
+# `next` and `action` may be one option or a list of options, of which the first whose `when` holds
+# is used. An action that names `$frontier` as the person is `ask_source` of whoever the trail of the
+# first note of the `follow` props leaves to ask. A task with a `window` says where and when it is to
+# be done, in whole hours; `expected` (minutes of the clock) lists the people whose routines have
+# them at the place of the window then. A window is on one `day`, or on every day from the first to
+# the last of its `days`, or on every day. It is offered only where the act can be done in it, so a
+# task whose act waits for a day names that day, and `unless` lists the conditions that, all holding
+# today, spend today's time: the window is then the next day's, or none for a window of one day.
+tasks:
+  - id: t_bamboo_first
+    kind: need
+    job: bridge
+    priority: 10
+    text: {zh: 取得李家的第一批竹料, en: Get the first bamboo from the Li family}
+    # Once Granny Li no longer objects, the bamboo is Li Da's to bring (she agreeing to lend does not send
+    # him). Once he has promised it there is nothing to ask of him again: the task says what he promised
+    # and that the manager is to see it arrive, and has no action. The words name no time, since the
+    # window of the task is then that of the promise (the next morning for a promise made in the evening,
+    # two hours on for one made in the day). It goes back to asking him if the promise is broken or taken
+    # back.
+    why:
+      - when:
+          - &promised {kind: commitment, by: li_da, item: bamboo, state: promised}
+        zh: "李大答应了，把{bamboo_open}根竹料送到桥边。"
+        en: "Li Da has promised {bamboo_open} poles of bamboo at the bridge."
+      - when:
+          - &no_objection
+            any:
+              - {kind: event, event: objection_withdrawn, where: {npc: li_laotai}}
+              - {kind: event, event: entrusted, where: {npc: li_laotai, request: lend, result: agreed}}
+        zh: "李老太不再拦着了，竹料在李大手里。"
+        en: "Granny Li no longer objects, and Li Da has the bamboo."
+      - {zh: "修桥要竹料，竹料在李家。", en: "The bridge needs bamboo, and the Li family has it."}
+    next:
+      - when: [*promised]
+        zh: "按约好的时间去桥边，看竹料送到没有。"
+        en: "Be at the bridge at the agreed time and see the bamboo arrive."
+      - when: [*no_objection]
+        zh: "请李大把第一批竹料送到桥边。"
+        en: "Ask Li Da to bring the first bamboo to the bridge."
+      - {zh: "去李家，请李老太借竹料。", en: "Go to the Li house and ask Granny Li to lend the bamboo."}
+    action:
+      - {when: [*no_objection, {not: *promised}], verb: entrust, npc: li_da, item: bamboo}
+      - {when: [{not: *promised}], verb: entrust, npc: li_laotai, item: bamboo}
+    blocked:
+      - when:
+          - {kind: refused, npc: li_laotai, reason: hard_hc_li_bamboo_rumour}
+          - not:
+              any:
+                - {kind: event, event: objection_withdrawn, where: {npc: li_laotai}}
+                - {kind: event, event: entrusted, where: {npc: li_laotai, request: lend, result: agreed}}
+        blocker: {zh: 李家不肯给竹料, en: The Li family will not give the bamboo}
+        why: {zh: "李老太说镇上都传她家老二毁了桥，你却一声不吭。", en: "Granny Li says the town blames her second son, and you said nothing."}
+        next: {zh: "问清这话是从哪里传出来的。", en: "Find out where that talk came from."}
+        action:
+          - {verb: ask_source, npc: $frontier, follow: &rumour [pr_liner_damaged, pr_liner_damaged_on_purpose, pr_liner_damaged_jealous, pr_li_damaged, pr_li_damaged_on_purpose, pr_li_damaged_jealous]}
+          - {when: [{not: {kind: note, props: *rumour}}], verb: ask, npc: li_laotai, item: li_er}
+      - when:
+          - {kind: refused, npc: li_laotai}
+          - not:
+              any:
+                - {kind: event, event: objection_withdrawn, where: {npc: li_laotai}}
+                - {kind: event, event: entrusted, where: {npc: li_laotai, request: lend, result: agreed}}
+        blocker: {zh: 李老太还是不肯借竹料, en: Granny Li still will not lend the bamboo}
+        why: {zh: "她要谣言当众说清，才肯松口。", en: "She will not give way until the slander is cleared in public."}
+        next: {zh: "查清谣言的来历，再当众说清。", en: "Find where the slander came from, then set it straight in public."}
+        action:
+          - {verb: ask_source, npc: $frontier, follow: *rumour}
+          - {when: [{not: {kind: note, props: *rumour}}, {kind: refused, npc: li_laotai, reason: hard_hc_li_bamboo_rumour}], verb: ask, npc: li_laotai, item: li_er}
+      # Li Da was not at the teahouse when the talk was set straight, and nobody told him: the answer
+      # `unaware` says so, and what is left is to tell him what was cleared.
+      - when:
+          - {kind: event, event: action_ack, where: {reason: unaware}}
+          - {not: {kind: passed_on, npc: li_da, props: [pr_set_straight]}}
+          - {not: *promised}
+        blocker: {zh: 李大还不知道谣言已经说清了, en: Li Da has not heard that the talk was set straight}
+        why: {zh: "谣言说清时李大不在场，也没人告诉过李大。", en: "Li Da was not there when the talk was set straight, and nobody has told Li Da."}
+        next: {zh: "告诉李大谣言已经说清了，再请李大送竹料。", en: "Tell Li Da the talk was set straight, then ask Li Da for the bamboo."}
+        action: {verb: tell, npc: li_da, item: pr_set_straight}
+      # Li Da weighed the request and said no, and asking again would only get "I have said it already".
+      - when:
+          - {kind: turned_down, npc: li_da}
+        blocker: {zh: 李大这回不肯送竹料, en: Li Da will not send the bamboo yet}
+        why: {zh: "李大觉得你已经欠着人情，或者还信不过你。", en: "Li Da feels you owe a favour already, or does not trust you enough yet."}
+        next:
+          - when: [{kind: can_promise, npc: li_da}]
+            zh: "先许李大一件事，再请李大送。"
+            en: "Promise Li Da something, then ask again."
+          - {zh: "等更多人站到你这边，再请李大送。", en: "Ask Li Da again when more of the town is with you."}
+        action:
+          - {when: [{kind: can_promise, npc: li_da}], verb: promise, npc: li_da}
+    done:
+      - any:
+          - {kind: flag, flag: bamboo_delivered}
+          - {kind: commitment, by: li_da, item: bamboo, state: delivered}
+
+  - id: t_who_said
+    kind: lead
+    job: truth
+    priority: 20
+    text: {zh: 李二毁桥这话是谁传的？, en: "Who started the talk that Li Er wrecked the bridge?"}
+    why: {zh: "李家为这句话不肯给竹料。", en: "The Li family will not give bamboo because of that talk."}
+    next:
+      - when: [{kind: note, props: *rumour}]
+        zh: "顺着传话的人往回问：你是听谁说的？"
+        en: "Follow the telling back: who did you hear it from?"
+      - {zh: "问问周围的人，这话是听谁说的？", en: "Ask around: who did you hear it from?"}
+    action:
+      - {verb: ask_source, npc: $frontier, follow: *rumour}
+      - {when: [{not: {kind: note, props: *rumour}}], verb: ask, npc: li_laotai, item: li_er}
+    appears:
+      - any:
+          - {kind: refused, npc: li_laotai, reason: hard_hc_li_bamboo_rumour}
+          - {kind: note, props: *rumour}
+    done:
+      - {kind: note_first_hand, props: [pr_liner_at_bridge, pr_liner_looking], by: zhou_huoji}
+
+  - id: t_what_proves
+    kind: lead
+    job: truth
+    priority: 30
+    text: {zh: 这些话能证明什么？, en: "What do these words prove?"}
+    why: {zh: "伙计亲眼看见的，和传开的话，不一定是一回事。", en: "What the clerk saw himself and what went round are not necessarily the same."}
+    next: {zh: "把原话摆在一起比一比，看它们是什么关系。", en: "Set the words side by side and judge how they stand."}
+    action: {verb: judge}
+    appears:
+      - {kind: note, props: *rumour}
+      - {kind: note_first_hand, props: [pr_liner_at_bridge, pr_liner_looking], by: zhou_huoji}
+    done:
+      - {kind: judged}
+    stale:
+      - {kind: clarified}
+
+  - id: t_clear_rumour
+    kind: obstacle
+    job: truth
+    priority: 35
+    text: {zh: 「李二毁桥」这话还没有当众说清, en: The talk that Li Er wrecked the bridge has not been set straight in public}
+    why: {zh: "李老太认定你默认了这话，不肯借竹料。", en: "Granny Li takes your silence for consent, so she lends no bamboo."}
+    next: {zh: "用你判对了的两句话，当众说清。", en: "Set it straight in public with the two lines you judged."}
+    # The crowd is at the teahouse from half past five to seven (the window, every day), and the people
+    # whose word counts are all in the room by six: Li Da, who is Granny Li's son and has the bamboo, the
+    # head of the Zhou house, the clerk and the elder. So the card has the manager speak after six, with
+    # the walk there from four. (A manager who speaks earlier by hand is heard by whoever is there, and
+    # the card for the bamboo says to tell Li Da what he missed.)
+    action:
+      - {when: [{kind: at_place, place: p_teahouse}, {kind: hours, from: 18, to: 19}], verb: speak, kind: clarify}
+      - {when: [{kind: hours, from: 16, to: 19}, {not: {kind: at_place, place: p_teahouse}}], verb: move, place: p_teahouse}
+    window: {from: 17, to: 19, place: p_teahouse}
+    expected: {from: 1050, to: 1140}
+    appears:
+      - {kind: judged}
+    done:
+      - {kind: clarified}
+
+  - id: t_tea_tonight
+    kind: venue
+    job: truth
+    priority: 40
+    text: {zh: 今晚茶馆, en: The teahouse tonight}
+    why: {zh: "傍晚茶馆里人多，在场的人都会听到你的话。", en: "The teahouse fills in the evening, and everyone there hears what you say."}
+    next: {zh: "傍晚去茶馆，当众说话。", en: "Go to the teahouse in the evening and speak up."}
+    action: {when: [{kind: window, day: 1, from: 16, to: 19}], verb: move, place: p_teahouse}
+    window: {day: 1, from: 17, to: 19, place: p_teahouse}
+    expected: {from: 1050, to: 1140}
+    appears:
+      - {kind: after, day: 1, hour: 15}
+    done:
+      - any:
+          - {kind: clarified}
+          - {kind: event, event: spoke, where: {venue: p_teahouse}}
+    stale:
+      - {kind: after, day: 1, hour: 19}
+
+  - id: t_li_da_promise
+    kind: promise
+    job: bridge
+    priority: 12
+    text: {zh: 李大答应的竹料, en: The bamboo that Li Da promised}
+    # The words name no time, as in the task of the bamboo: the window is that of the promise.
+    # It follows the newest promise of his for the bamboo, and opens again for each new one.
+    why: {zh: "李大答应了，按约好的时间送到桥边。", en: "Li Da agreed to bring it to the bridge at the agreed time."}
+    next: {zh: "按约好的时间去桥边，看竹料送到没有。", en: "Be at the bridge at the agreed time and see that it arrives."}
+    again: true
+    appears:
+      - {kind: commitment, by: li_da, item: bamboo, state: promised, latest: true}
+    done:
+      - {kind: commitment, by: li_da, item: bamboo, state: delivered, latest: true}
+    stale:
+      - any:
+          - {kind: commitment, by: li_da, item: bamboo, state: broken, latest: true}
+          - {kind: commitment, by: li_da, item: bamboo, state: withdrawn, latest: true}
+
+  # the bridge, days 2 to 5
+  #
+  # The first batch of bamboo is at the bridge and the bridge lacks more: Li Da is asked for the next
+  # batch, up to what is lacking (`batches`, below). While he has promised it, the task says what he
+  # promised and that the manager is to see it arrive (its window is that of the promise), and it goes
+  # back to asking if the promise is broken or taken back, or comes true and more is lacking. The words
+  # carry the numbers the player sees (`{bamboo_site}` and the like, see `world/bridge/agenda_facts.py`).
+  - id: t_bamboo_rest
+    kind: need
+    job: bridge
+    priority: 11
+    text: {zh: 凑齐竹料, en: The rest of the bamboo}
+    why:
+      - when:
+          - *promised
+        zh: "桥要{bamboo_need}根竹料，到了{bamboo_site}根，李大又答应送{bamboo_open}根。"
+        en: "The bridge needs {bamboo_need} poles of bamboo and has {bamboo_site}, and Li Da has promised {bamboo_open} more."
+      - zh: "桥要{bamboo_need}根竹料，桥边才有{bamboo_site}根。"
+        en: "The bridge needs {bamboo_need} poles of bamboo and only {bamboo_site} lie there."
+    next:
+      - when:
+          - *promised
+        zh: "按约好的时间去桥边，看竹料送到没有。"
+        en: "Be at the bridge at the agreed time and see the bamboo arrive."
+      - {zh: "再请李大送一批。", en: "Ask Li Da for another batch."}
+    action:
+      - {when: [{not: *promised}], verb: entrust, npc: li_da, item: bamboo}
+    appears:
+      - {kind: commitment, by: li_da, item: bamboo, state: delivered}
+    # `turned_down` holds while asking again would only be answered "I have said it already", so a
+    # promise (or anything else that moves a number of his score) opens the task again. After three
+    # promises there is nothing more to try but to wait (`can_promise`), and the task has no action.
+    blocked:
+      - when:
+          - {kind: turned_down, npc: li_da}
+        blocker: {zh: 李大这回不肯再送, en: Li Da will not send another batch}
+        why: {zh: "李大觉得你已经欠着人情，或者还信不过你。", en: "Li Da feels you owe a favour already, or does not trust you enough yet."}
+        next:
+          - when: [{kind: can_promise, npc: li_da}]
+            zh: "先许李大一件事，再请李大送。"
+            en: "Promise Li Da something, then ask again."
+          - {zh: "等更多人站到你这边，再请李大送。", en: "Ask Li Da again when more of the town is with you."}
+        action:
+          - {when: [{kind: can_promise, npc: li_da}], verb: promise, npc: li_da}
+    done:
+      - {kind: flag, flag: bamboo_delivered}
+
+  - id: t_timber
+    kind: need
+    job: bridge
+    priority: 13
+    text: {zh: 取得周家的木料, en: Get the timber from the Zhou family}
+    why:
+      - when:
+          - &timber_promised {kind: commitment, by: zhou_zhanggui, item: timber, state: promised}
+        zh: "周掌柜答应了，把{timber_open}根木料送到桥边。"
+        en: "Shopkeeper Zhou has promised {timber_open} poles of timber at the bridge."
+      - zh: "修桥要{timber_need}根木料，木料在周家。"
+        en: "Mending the bridge takes {timber_need} poles of timber, and the Zhou family keeps it."
+    next:
+      - when:
+          - *timber_promised
+        zh: "按约好的时间去桥边，看木料送到没有。"
+        en: "Be at the bridge at the agreed time and see the timber arrive."
+      - {zh: "请周掌柜把木料送到桥边。", en: "Ask Shopkeeper Zhou to bring the timber to the bridge."}
+    action:
+      - {when: [{not: *timber_promised}], verb: entrust, npc: zhou_zhanggui, item: timber}
+    appears:
+      - {kind: after, day: 2, hour: 6}
+    blocked:
+      - when:
+          - {kind: turned_down, npc: zhou_zhanggui}
+        blocker: {zh: 周掌柜不肯出木料, en: Shopkeeper Zhou will not give the timber}
+        why: {zh: "木料是周家的生意，周掌柜不白送人情。", en: "The timber is the Zhou trade, and Shopkeeper Zhou gives no favour for nothing."}
+        next:
+          - when: [{kind: can_promise, npc: zhou_zhanggui}]
+            zh: "先许周掌柜一件事，再请周掌柜送木料。"
+            en: "Promise Shopkeeper Zhou something, then ask again."
+          - {zh: "等更多人站到你这边，再请周掌柜送木料。", en: "Ask Shopkeeper Zhou again when more of the town is with you."}
+        action:
+          - {when: [{kind: can_promise, npc: zhou_zhanggui}], verb: promise, npc: zhou_zhanggui}
+    done:
+      - {kind: flag, flag: timber_delivered}
+
+  # The work takes five helpers with one of each family at least. Nobody has joined until the
+  # manager calls for helpers (`rally`), and the person to ask next is the one `$helper` names.
+  - id: t_helpers
+    kind: need
+    job: bridge
+    priority: 14
+    text: {zh: 找帮手, en: Find helpers}
+    why:
+      zh: "修桥要{crew}个帮手，李、周两家各至少一人。"
+      en: "The bridge takes {crew} helpers, at least one from each family."
+    next:
+      - when:
+          - {not: {kind: event, event: rally}}
+        zh: "先号召一下，愿意的人会自己来。"
+        en: "Call the town for helpers first, and those who are willing will come."
+      - when:
+          - any:
+              - {not: {kind: helpers, at_least: 1, family: fam_li}}
+              - {not: {kind: helpers, at_least: 1, family: fam_zhou}}
+        zh: "请{needy}的人答应帮忙。"
+        en: "Ask someone from {needy} to help."
+      - {zh: "再请一个人答应。", en: "Ask one more person to help."}
+    action:
+      - {when: [{not: {kind: event, event: rally}}], verb: rally}
+      - {verb: entrust, request: join, npc: $helper}
+    # On the morning of the second day the bamboo and the timber come first. The helpers are asked
+    # for once a batch after the first is promised (the second promise anyone made, `m2`: the first
+    # batch of bamboo is the evening's) or the timber is agreed, or from the afternoon.
+    appears:
+      - any:
+          - {kind: after, day: 2, hour: 13}
+          - {kind: event, event: commitment, where: {id: m2}}
+          - {kind: event, event: agreed, where: {npc: zhou_zhanggui, what: timber}}
+    # A person who answers the request without joining (a no, or a yes that waits for friends to go
+    # first) stays the one to ask (`$helper`): a promise to them, and then the request can be put
+    # again. A person who joins brings their friends with them until there are five helpers, one of
+    # each family at least, so the first is worth the promises.
+    blocked:
+      - when:
+          - {kind: helper_waits}
+        blocker: {zh: "{helper}还没有加入", en: "{helper} has not joined yet"}
+        why: {zh: "{helper}要先看到你的诚意，才肯加入。", en: "{helper} wants to see more from you before joining."}
+        next: {zh: "先许{helper}一件事，再请{helper}加入。", en: "Promise {helper} something, then ask again."}
+        action: {verb: promise, npc: $helper}
+    done:
+      - {kind: crew}
+
+  # The helpers work at the bridge from eight to twelve every morning from the third day, and the
+  # work counts until the deadline of the goal of the labour (day 4, 18:00). One task for each of the
+  # two mornings that can finish it: a morning with heavy rain has no work, and the rain is the
+  # blocker.
+  - id: t_work_3
+    kind: need
+    job: bridge
+    priority: 15
+    text: {zh: 第三天早上施工, en: "Work on the bridge, the third morning"}
+    why:
+      zh: "{helpers}个帮手一早上能做{morning}个钟头，桥还差{hours_left}个钟头。"
+      en: "{helpers} helpers give {morning} hours in a morning, and {hours_left} are still to do."
+    next: {zh: "早上去桥边，看帮手开工。", en: "Be at the bridge in the morning and see the work begin."}
+    action:
+      - {when: [{not: {kind: weather, is: heavy_rain}}, {kind: window, day: 3, from: 7, to: 12}], verb: move, place: p_bridge}
+    window: {day: 3, from: 8, to: 12, place: p_bridge, unless: [{kind: weather, is: heavy_rain}]}
+    appears:
+      - {kind: crew}
+      - {not: {kind: work, percent: 100}}
+      - {not: {kind: after, day: 3, hour: 13}}
+    blocked:
+      - when:
+          - {kind: weather, is: heavy_rain}
+          - {kind: window, day: 3, from: 6, to: 21}
+        blocker: {zh: 今天下大雨，桥上不能施工, en: "Heavy rain today, so there is no work on the bridge"}
+        why: {zh: "大雨天不开工，桥还差{hours_left}个钟头。", en: "There is no work in heavy rain, and {hours_left} hours are still to do."}
+        next: {zh: "等雨停，明早再来。", en: "Wait for the rain to stop and come again in the morning."}
+    done:
+      - {kind: work, percent: 100}
+    stale:
+      - {kind: after, day: 3, hour: 13}
+
+  - id: t_work_4
+    kind: need
+    job: bridge
+    priority: 16
+    text: {zh: 第四天早上施工, en: "Work on the bridge, the fourth morning"}
+    why:
+      zh: "这是最后一个早上，帮手能做{morning}个钟头，桥还差{hours_left}个钟头。"
+      en: "The last morning: the helpers give {morning} hours, and {hours_left} are still to do."
+    next: {zh: "早上去桥边，看帮手开工。", en: "Be at the bridge in the morning and see the work begin."}
+    action:
+      - {when: [{not: {kind: weather, is: heavy_rain}}, {kind: window, day: 4, from: 7, to: 12}], verb: move, place: p_bridge}
+    window: {day: 4, from: 8, to: 12, place: p_bridge, unless: [{kind: weather, is: heavy_rain}]}
+    appears:
+      - {kind: crew}
+      - {not: {kind: work, percent: 100}}
+      - {kind: after, day: 3, hour: 13}
+      - {not: {kind: after, day: 4, hour: 13}}
+    blocked:
+      - when:
+          - {kind: weather, is: heavy_rain}
+          - {kind: window, day: 4, from: 6, to: 21}
+        blocker: {zh: 今天下大雨，桥上不能施工, en: "Heavy rain today, so there is no work on the bridge"}
+        why: {zh: "大雨天不开工，桥还差{hours_left}个钟头。", en: "There is no work in heavy rain, and {hours_left} hours are still to do."}
+        next: {zh: "今天开不了工，桥来不及修了，只能走绕路。", en: "No work can start today, so the bridge will not be done in time and only the detour is left."}
+    done:
+      - {kind: work, percent: 100}
+    stale:
+      - {kind: after, day: 4, hour: 13}
+
+  # The detour is offered when the bridge cannot be mended in time, as far as the player can see: on
+  # the morning of the fourth day the bamboo or the timber is not at the bridge, or the helpers are
+  # not enough, or when the last morning of work is over and the work is not done. It is the lesser
+  # ending, and the words say so. The temple keeper opens the lane behind the temple, then at least
+  # three helpers hang lamps along it in the afternoons (they are asked to when the lane is open).
+  - id: t_detour
+    kind: need
+    job: bridge
+    priority: 17
+    text: {zh: 备一条绕路, en: Get a detour ready}
+    why:
+      - when:
+          - &keeper_agreed {kind: event, event: agreed, where: {npc: miaozhu, what: lane}}
+          - {not: {kind: flag, flag: lane_opened}}
+        zh: "庙祝答应开夹道了，还要三个人沿路挂灯，走绕路这一夜最多是「勉强」。"
+        en: "The keeper will open the lane and three people must hang lamps along it, but the detour caps the night at “Just enough”."
+      - when:
+          - {kind: flag, flag: lane_opened}
+        zh: "夹道已经开了，还要三个人沿路挂灯，走绕路这一夜最多是「勉强」。"
+        en: "The lane is open and three people must hang lamps along it, but the detour caps the night at “Just enough”."
+      - zh: "桥怕是来不及修好了，走绕路这一夜最多是「勉强」。"
+        en: "The bridge may not be mended in time, and with the detour the night is “Just enough” at best."
+    next:
+      - when:
+          - *keeper_agreed
+          - {not: {kind: flag, flag: lane_opened}}
+        zh: "等一会儿，夹道就开了。"
+        en: "Wait a little, and the lane will be open."
+      - when:
+          - {kind: flag, flag: lane_opened}
+          - {not: {kind: helpers, at_least: 3}}
+        zh: "再请人答应帮忙，下午帮手会去夹道挂灯。"
+        en: "Ask more people to help, and they will hang the lamps in the afternoon."
+      - when:
+          - {kind: flag, flag: lane_opened}
+        zh: "帮手 13:00 到 17:00 沿夹道挂灯，去庙边看看。"
+        en: "The helpers hang lamps along the lane from 13:00 to 17:00, so go and see at the temple."
+      - {zh: "请庙祝打开庙后的夹道。", en: "Ask the temple keeper to open the lane behind the temple."}
+    action:
+      - {when: [{kind: flag, flag: lane_opened}, {not: {kind: helpers, at_least: 3}}], verb: entrust, request: join, npc: $helper}
+      - {when: [{kind: flag, flag: lane_opened}], verb: move, place: p_temple}
+      - {when: [{not: *keeper_agreed}], verb: entrust, request: lane, npc: miaozhu}
+    appears:
+      - {not: {kind: flag, flag: bridge_fixed}}
+      - any:
+          - all:
+              - {kind: after, day: 4, hour: 8}
+              - any:
+                  - {not: {kind: flag, flag: bamboo_delivered}}
+                  - {not: {kind: flag, flag: timber_delivered}}
+                  - {not: {kind: crew}}
+          - all:
+              - {kind: after, day: 4, hour: 13}
+              - {not: {kind: work, percent: 100}}
+          # a morning lost to rain, or too few hands for the hours left: as soon as the first morning of
+          # work is over and the mornings that are left cannot do them, the detour is offered
+          - all:
+              - {kind: after, day: 3, hour: 13}
+              - {kind: work_short}
+    blocked:
+      - when:
+          - {kind: turned_down, npc: miaozhu, request: lane}
+        blocker: {zh: 庙祝还不肯打开夹道, en: The temple keeper will not open the lane yet}
+        why: {zh: "夹道平时堵着，庙祝不轻易开。", en: "The lane is kept shut, and the temple keeper does not open it for just anyone."}
+        next:
+          - when: [{kind: can_promise, npc: miaozhu}]
+            zh: "先许庙祝一件事，再请庙祝打开夹道。"
+            en: "Promise the temple keeper something, then ask again."
+          - {zh: "等更多人站到你这边，再请庙祝打开夹道。", en: "Ask the temple keeper again when more of the town is with you."}
+        action:
+          - {when: [{kind: can_promise, npc: miaozhu}], verb: promise, npc: miaozhu}
+    done:
+      - {kind: flag, flag: detour_done}
+    stale:
+      - any:
+          - {kind: flag, flag: bridge_fixed}
+          - {kind: after, day: 5, hour: 17}
+
+  # the truth and the peace, days 2 to 5
+  #
+  # These tasks are the same whichever story is true. They name places and people that are there in
+  # all three, and they read only what the manager did or holds (what they looked for, the evidence in
+  # hand, the last statement they made in public), the flags of the festival and the hour. `hours` is
+  # the hour of the clock on any day, and a window with no `day` is the same hours every day: the
+  # frame shows the next of them.
+  - id: t_how_broke
+    kind: lead
+    job: truth
+    priority: 55
+    text: {zh: 桥到底是怎么坏的？, en: "How did the bridge really break?"}
+    why: {zh: "栏杆怎么断的，镇上还没有定论，要靠亲眼见过的人和留下的凭据。", en: "Nobody in town can say for certain how the rail broke, and it takes what someone saw and what was left behind."}
+    # The steps are the places and people that hold something in every story, in the order of the days
+    # (the script's table of opportunities, above the evidence): the rail and the boat from the second day,
+    # the water under the bridge and the child by the river from the third, the night watchman from the
+    # fourth. The mark at the rail is gone from the third day. A step drops out once it is done: a place
+    # looked at, whatever the look found, or a person who has told what they saw. Where a person turned the
+    # manager away (the boat owner at the boat, the night watchman) the card says what moves them: a first
+    # talk on a day (which earns a little trust) and a promise, and then the look or the question again.
+    # The hours leave the time to walk there: a look is offered an hour before the place shuts. When
+    # nothing is to be had today the last options say what the days ahead hold.
+    next:
+      - when:
+          - &daylight {kind: hours, from: 7, to: 17}
+          - &rail_missed {not: {kind: looked, items: [e_footprint]}}
+          - &rail_there {not: {kind: after, day: 3, hour: 6}}
+        zh: "白天去桥上，看断栏边留下了什么，过了第二天痕迹就被踩没了。"
+        en: "By day, go and look at what the broken rail left behind, before the marks are trodden out after the second day."
+      - when:
+          - *daylight
+          - &day3 {kind: after, day: 3, hour: 6}
+          - &water_missed {not: {kind: looked, items: [e_flood_debris]}}
+        zh: "桥墩下的水落下去了，去看看露出了什么。"
+        en: "The water under the bridge has dropped, so go and look at what shows on the pier."
+      - when:
+          - &ferry_hours {kind: hours, from: 8, to: 16}
+          - &boat_missed {not: {kind: looked, items: [e_boat_scratches]}}
+          - &boat_barred {kind: turned_down, npc: old_he, request: look}
+          - &boat_untalked {not: {kind: talked_today, npc: old_he}}
+        zh: "船主还不让你看船，先去和船主聊几句。"
+        en: "The boat's owner will not let you look yet, so talk with the owner first."
+      - when:
+          - *ferry_hours
+          - *boat_missed
+          - *boat_barred
+          - {kind: can_promise, npc: old_he}
+        zh: "船主还不让你看船，许船主一点好处再来。"
+        en: "The boat's owner will not let you look yet, so promise the owner something and come back."
+      - when: [*ferry_hours, *boat_missed, *boat_barred]
+        zh: "船主还信不过你，明天再去聊聊。"
+        en: "The boat's owner does not trust you yet, so talk again tomorrow."
+      - when: [*ferry_hours, *boat_missed]
+        zh: "去渡口，看看那条船。"
+        en: "Go to the ferry and look at the boat."
+      - when:
+          - &watch_hours {kind: hours, from: 15, to: 22}
+          - &day4 {kind: after, day: 4, hour: 6}
+          - &watch_missed {not: {kind: event, event: entrusted, where: {npc: gengfu, request: testify, result: agreed}}}
+          - &watch_barred {kind: turned_down, npc: gengfu, request: testify}
+          - &watch_untalked {not: {kind: talked_today, npc: gengfu}}
+        zh: "更夫还不肯开口，先去和更夫聊几句。"
+        en: "The night watchman will not speak yet, so talk with the watchman first."
+      - when:
+          - *watch_hours
+          - *day4
+          - *watch_missed
+          - *watch_barred
+          - {kind: can_promise, npc: gengfu}
+        zh: "更夫还不肯开口，许更夫一点好处再来问。"
+        en: "The night watchman will not speak yet, so promise the watchman something and ask again."
+      - when: [*watch_hours, *day4, *watch_missed, *watch_barred]
+        zh: "更夫还信不过你，明天下午再去聊聊。"
+        en: "The night watchman does not trust you yet, so talk again tomorrow afternoon."
+      - when: [*watch_hours, *day4, *watch_missed]
+        zh: "下午更夫在更铺里，去问问那一夜看见了什么。"
+        en: "The night watchman is at the watch post from the afternoon, so ask what was seen that night."
+      - when:
+          - &evening_hours {kind: hours, from: 17, to: 20}
+          - *day3
+          # asked: the child told what was seen, or had nothing to say (the answer `nothing_to_say`)
+          - &river_missed
+            all:
+              - {not: {kind: event, event: entrusted, where: {npc: xiao_man, request: testify, result: agreed}}}
+              - {not: {kind: event, event: action_ack, where: {reason: nothing_to_say}}}
+          - &river_barred {kind: turned_down, npc: xiao_man, request: testify}
+          - &river_untalked {not: {kind: talked_today, npc: xiao_man}}
+        zh: "小满还不肯开口，先去和小满聊几句。"
+        en: "Xiaoman will not speak yet, so talk with Xiaoman first."
+      - when:
+          - *evening_hours
+          - *day3
+          - *river_missed
+          - *river_barred
+          - {kind: can_promise, npc: xiao_man}
+        zh: "小满还不肯开口，许小满一点好处再来问。"
+        en: "Xiaoman will not speak yet, so promise Xiaoman something and ask again."
+      - when: [*evening_hours, *day3, *river_missed, *river_barred]
+        zh: "小满还信不过你，明天傍晚再去聊聊。"
+        en: "Xiaoman does not trust you yet, so talk again tomorrow evening."
+      - when: [*evening_hours, *day3, *river_missed]
+        zh: "小满夜里常在河边钓鱼，傍晚在家，去问问那一夜看见了什么。"
+        en: "Xiaoman fishes by the river at night and is home in the evening, so ask what was seen that night."
+      - when: [{not: *day3}]
+        zh: "今天能看的都看了，等第三天早上水落下去，再看桥墩。"
+        en: "There is nothing more to see today, and on the third morning the water drops and the pier can be looked at."
+      - when: [{not: *day4}, *water_missed]
+        zh: "水落下去了，白天去看桥墩，傍晚找小满。"
+        en: "The water has dropped, so look at the pier by day and see Xiaoman in the evening."
+      - when: [{not: *day4}, *river_missed]
+        zh: "傍晚去找小满，问问那一夜看见了什么。"
+        en: "See Xiaoman in the evening and ask what was seen that night."
+      - when: [{not: *day4}]
+        zh: "今天能查的都查了，更夫要第四天下午才肯开口。"
+        en: "You have done what can be done today, and the night watchman will not speak before the afternoon of the fourth day."
+      - when: [*watch_missed]
+        zh: "下午去更铺找更夫，问问那一夜看见了什么。"
+        en: "Find the night watchman at the watch post in the afternoon and ask what was seen that night."
+      - zh: "白天去桥上和渡口，傍晚找小满，第四天下午找更夫。"
+        en: "By day go to the bridge and the ferry, in the evening see Xiaoman, and on the fourth afternoon the night watchman."
+    action:
+      - {when: [*daylight, *rail_missed, *rail_there], verb: look, item: t_rail, place: p_bridge}
+      - {when: [*daylight, *day3, *water_missed], verb: look, place: p_under_bridge}
+      - {when: [*ferry_hours, *boat_missed, *boat_barred, *boat_untalked], verb: talk, npc: old_he}
+      - {when: [*ferry_hours, *boat_missed, *boat_barred, {kind: can_promise, npc: old_he}], verb: promise, npc: old_he}
+      - {when: [*ferry_hours, *boat_missed, {not: *boat_barred}], verb: look, item: t_he_boat, place: p_ferry}
+      - {when: [*watch_hours, *day4, *watch_missed, *watch_barred, *watch_untalked], verb: talk, npc: gengfu}
+      - {when: [*watch_hours, *day4, *watch_missed, *watch_barred, {kind: can_promise, npc: gengfu}], verb: promise, npc: gengfu}
+      - {when: [*watch_hours, *day4, *watch_missed, {not: *watch_barred}], verb: entrust, npc: gengfu, request: testify}
+      - {when: [*evening_hours, *day3, *river_missed, *river_barred, *river_untalked], verb: talk, npc: xiao_man}
+      - {when: [*evening_hours, *day3, *river_missed, *river_barred, {kind: can_promise, npc: xiao_man}], verb: promise, npc: xiao_man}
+      - {when: [*evening_hours, *day3, *river_missed, {not: *river_barred}], verb: entrust, npc: xiao_man, request: testify}
+    # The lead comes in the afternoon of the second day, when the bridge's first tasks are under way.
+    appears:
+      - {kind: after, day: 2, hour: 12}
+    done:
+      - &rail_done
+        any:
+          - {kind: looked, items: [e_footprint]}
+          - {kind: after, day: 3, hour: 6}
+      - &water_done {kind: looked, items: [e_flood_debris]}
+      - &boat_done {kind: looked, items: [e_boat_scratches]}
+      - &watch_done {kind: event, event: entrusted, where: {npc: gengfu, request: testify, result: agreed}}
+    stale:
+      - {kind: after, day: 5, hour: 18}
+
+  - id: t_tell_town
+    kind: obstacle
+    job: truth
+    priority: 57
+    text: {zh: 当众把桥的事说清楚, en: Tell the town how the bridge broke}
+    # The statement card (`statement`, below): the manager fills in the cause, the course and where the
+    # talk about Li Er came from, from what the notebook holds, and makes the full statement at the public
+    # meeting from the evening of the fourth day, once a day. What the last statement fell short of, in the
+    # order that helps most: a part that did not hold, the proof, then the three things the goal asks (at
+    # least five named people there, six in ten of them accepting, and the elder accepting).
+    why:
+      - when: [{kind: told, missed: parts}]
+        zh: "上回有一栏没站住，陈述卡上标出了是哪一栏。"
+        en: "A part did not hold last time, and the card marks which one."
+      - when: [{kind: told, missed: proof}]
+        zh: "上回每一栏都对得上，可凭据还分不出是哪种说法，话没有分量。"
+        en: "Every part held last time, but your proof cannot tell the stories apart, so the words carried no weight."
+      - when: [{kind: told, missed: named}]
+        zh: "上回在场有名有姓的人不到五位，话传不开。"
+        en: "Fewer than five named people were there last time, so the word did not carry."
+      - when: [{kind: told, missed: accepted}]
+        zh: "上回在场的人里，接受的不到六成。"
+        en: "Last time fewer than six in ten of those there accepted it."
+      - when: [{kind: told, missed: elder_absent}]
+        zh: "上回族长不在场，没有族长点头，说清不算数。"
+        en: "The elder was not there last time, and without the elder's nod it does not count."
+      - when: [{kind: told, missed: elder_refused}]
+        zh: "上回凭据够了，族长在场却没点头，心里还信着另一种说法，或是信不过你。"
+        en: "The proof held last time, but the elder did not nod, holding another account or not trusting you enough yet."
+      - zh: "桥是怎么坏的，要在公议上一栏一栏说清，两家和镇上的人才会信。"
+        en: "How the bridge broke has to be said in public, part by part, before the families and the town will believe it."
+    next:
+      - when: [{kind: told, missed: parts}]
+        zh: "回到陈述卡，看标出的那一栏，再查再问或换个说法，下回再陈述。"
+        en: "Go back to the marked part of the card, look and ask more or choose another account, and state it again next time."
+      - when: [{kind: told, missed: proof}]
+        zh: "凭据还不够，再看再问几处，凑到能分出说法，下回再陈述。"
+        en: "Look and ask in more places until your proof can tell the stories apart, then state it again next time."
+      - when: [{kind: told, missed: named}]
+        zh: "人多的时候再说，18:00 以后去茶馆，或请族长上午召集族人去祠堂。"
+        en: "Speak when more people are there: at the teahouse after 18:00, or at the hall once you have asked the elder in the morning to call the clan."
+      - when: [{kind: told, missed: accepted}]
+        zh: "拿出更多凭据，再看再问几处，补齐了再当众说一次。"
+        en: "Bring more proof by looking and asking in more places, then speak again."
+      - when: [{kind: told, missed: elder_absent}]
+        zh: "族长傍晚在茶馆，也可请族长召集族人去祠堂，族长要在场才算数。"
+        en: "The elder is at the teahouse in the evening, or have the clan called to the hall, and the elder must be there."
+      - when: [{kind: told, missed: elder_refused}]
+        zh: "先和族长聊聊，兑现许下的事，赢得信任，再拿驳倒另一种说法的凭据当众说一次。"
+        en: "Talk with the elder and keep your word to win trust, then speak again with the proof that refutes the other account."
+      - when: [&day4_evening {kind: after, day: 4, hour: 17}, {kind: card_filled}, {not: {kind: stated_today}}, {kind: meeting}]
+        zh: "族长召集了族人，祠堂开着，去祠堂当众陈述。"
+        en: "The elder has called the clan and the hall is open, so make the statement there."
+      - when: [*day4_evening, {kind: card_filled}, {not: {kind: stated_today}}]
+        zh: "18:00 以后去茶馆当众陈述，或请族长上午召集族人去祠堂。"
+        en: "Make the statement at the teahouse after 18:00, or at the hall once you have asked the elder in the morning to call the clan."
+      - when: [*day4_evening, {kind: card_filled}]
+        zh: "今天已经陈述过一次，下回再来。"
+        en: "A statement has been made today, so come again next time."
+      - when: [*day4_evening]
+        zh: "把缺的线索查出来，填满陈述卡再去陈述。"
+        en: "Find the clues that are missing, fill in the card, then go and state it."
+      - when: [{kind: card_filled}]
+        zh: "陈述卡填好了，完整陈述要等第四天傍晚的公议。"
+        en: "The card is filled in, and the full statement waits for the public meeting on the evening of the fourth day."
+      - zh: "先查先问，攒够线索填满陈述卡，第四天傍晚的公议上陈述。"
+        en: "Look and ask until the clues fill in the card, then state it at the public meeting on the evening of the fourth day."
+    # The card is opened to fill it in while there is something to choose (`card_fillable`). From the
+    # evening of the fourth day, with the card filled in and nothing stated today, the statement is made
+    # at the hall while the clan is called, else at the teahouse after six (from five on the last day,
+    # since the goal closes at six), with the walk there offered from four on the fourth day. The
+    # elder is asked to call the clan by the task `t_call_clan`.
+    action:
+      - when:
+          - *day4_evening
+          - &filled {kind: card_filled}
+          - &not_yet {not: {kind: stated_today}}
+          - {kind: meeting}
+          - {kind: at_place, place: p_clan_hall}
+        verb: speak
+        kind: statement
+      - {when: [*day4_evening, *filled, *not_yet, {kind: meeting}], verb: move, place: p_clan_hall}
+      - when:
+          - {kind: after, day: 5, hour: 6}
+          - *filled
+          - *not_yet
+          - {kind: hours, from: 17, to: 19}
+          - {kind: at_place, place: p_teahouse}
+        verb: speak
+        kind: statement
+      - when: [*day4_evening, *filled, *not_yet, {kind: hours, from: 18, to: 19}, {kind: at_place, place: p_teahouse}]
+        verb: speak
+        kind: statement
+      - {when: [{kind: after, day: 4, hour: 16}, *filled, *not_yet, {kind: hours, from: 16, to: 19}], verb: move, place: p_teahouse}
+      - {when: [{kind: told, missed: elder_refused}, {not: {kind: talked_today, npc: zuzhang}}], verb: talk, npc: zuzhang}
+      - {when: [{kind: told, missed: elder_refused}, {kind: can_promise, npc: zuzhang}], verb: promise, npc: zuzhang}
+      - {when: [{kind: card_fillable}], verb: state}
+    # The full statement is possible from the evening of the fourth day (`statement.opens`) and once a
+    # day, so the window is that of the fourth and the fifth evening, and when a statement has been
+    # made today it is tomorrow's.
+    window: {from: 17, to: 19, place: p_teahouse, days: [4, 5], unless: [{kind: stated_today}]}
+    expected: {from: 1050, to: 1140}
+    appears:
+      - kind: evidence
+        items: [e_boat_scratches, e_xiaoman_testimony, e_repair_record, e_flood_debris, e_gengfu_flood, e_gengfu_boat, e_he_lamp, e_dalang_home, e_gengfu_dalang, e_footprint]
+    done:
+      - {kind: flag, flag: truth_told}
+    stale:
+      - {kind: after, day: 5, hour: 18}
+
+  - id: t_make_peace
+    kind: need
+    job: peace
+    priority: 59
+    text: {zh: 两家和解, en: Make peace between the families}
+    # Peace is the grudge between the two heads under thirty (the goal reads the bar the board shows) and a
+    # reconciliation that someone saw: a table for both heads with at least three others there. Deeds the
+    # town can see bring the bar down (`peace`): a head who stops accusing in public once the rumour is
+    # cleared or the truth is told, helpers of both families at the bridge the same morning, and the table,
+    # which takes off most once the truth is told. No one of them does it. The card comes on the third day and
+    # names the next deed with the hours and the place.
+    why:
+      - when: [{kind: grudge, below: 30}]
+        zh: "积怨降下来了，可还没有人当面看见两家和解。"
+        en: "The grudge has come down, but nobody has seen the two families make peace."
+      - when: [{kind: flag, flag: reconcile_seen}]
+        zh: "有人看见了和解，可两家家长的积怨还没低到能算数。"
+        en: "A reconciliation was seen, but the grudge between the two heads is still too high to count."
+      - when: [{kind: flag, flag: truth_told}]
+        zh: "桥的事说清了，两家家长的积怨还有{grudge}点，这时摆一桌降得最多。"
+        en: "The truth is out and the grudge between the two heads stands at {grudge}, so a meal now lowers it the most."
+      - zh: "两家家长的积怨还有{grudge}点，要降到三十以下，一顿饭压不下来。"
+        en: "The grudge between the two heads stands at {grudge} and has to fall under thirty, which one meal will not do."
+    next:
+      - when: [{kind: grudge, below: 30}]
+        zh: "傍晚去茶馆，请两位当家同席，再请三位以上的人在场见证。"
+        en: "Seat both heads together at the teahouse in the evening, with at least three others there to see it."
+      - when: [{kind: flag, flag: reconcile_seen}, {kind: flag, flag: truth_told}]
+        zh: "换一天傍晚再摆一桌，两位当家同席，三位以上的人在场见证。"
+        en: "Lay another table on another evening, with both heads seated and at least three others there as witnesses."
+      - when: [{kind: flag, flag: reconcile_seen}]
+        zh: "先把桥的事当众说清，再换一天摆一桌。"
+        en: "Tell the town how the bridge broke first, then lay another table on another day."
+      - when: [{kind: flag, flag: truth_told}]
+        zh: "傍晚去茶馆，请两位当家同席，三位以上的人在场见证。"
+        en: "Lay a table at the teahouse in the evening, with both heads seated and at least three others as witnesses."
+      - when:
+          - {not: {kind: eased, act: work_together}}
+          - {kind: crew}
+          - {not: {kind: work, percent: 100}}
+        zh: "08:00 到 12:00 去桥边，两家帮手一起干活，两位当家的积怨就各降一截。"
+        en: "Be at the bridge from 08:00 to 12:00, where helpers of both families working together ease both heads' grudge."
+      - zh: "先把桥的事当众说清，再去茶馆摆一桌，请两位当家同席，三位以上的人在场见证。"
+        en: "First tell the town how the bridge broke, then lay a table at the teahouse: both heads seated, three more to witness."
+    # The table is laid once the truth is told (a meal before it lowers the grudge less), or when the
+    # grudge is low and only the sight of it is missing, or on the last afternoon whatever came of the
+    # truth. Until then the card names the next deed, and has nothing for the manager to do but be there.
+    action:
+      - when:
+          - &table_time
+            any:
+              - {kind: flag, flag: truth_told}
+              - {kind: grudge, below: 30}
+              - {kind: after, day: 5, hour: 16}
+          - {kind: meeting}
+          - {kind: at_place, place: p_clan_hall}
+        verb: speak
+        kind: meal
+      - {when: [*table_time, {kind: meeting}], verb: move, place: p_clan_hall}
+      - {when: [*table_time, {kind: hours, from: 17, to: 19}, {kind: at_place, place: p_teahouse}], verb: speak, kind: meal}
+      - {when: [*table_time, {kind: hours, from: 16, to: 19}], verb: move, place: p_teahouse}
+    # The table is not laid before the evening of the fourth day, the first on which the truth can be
+    # told, so that is the first evening the window names.
+    window: {from: 17, to: 19, place: p_teahouse, days: [4, 5]}
+    expected: {from: 1050, to: 1140}
+    appears:
+      - {kind: after, day: 3, hour: 6}
+    done:
+      - {kind: flag, flag: reconciled}
+    stale:
+      - {kind: after, day: 5, hour: 21}
+
+  - id: t_festival_night
+    kind: venue
+    priority: 80
+    text: {zh: 灯会之夜, en: Festival night}
+    why: {zh: "今夜游灯过桥，先看路通不通，再看修桥、说清、说和成了几件。", en: "Tonight the lanterns cross. The night is judged by whether the way is open and by how many of the three jobs are done."}
+    next: {zh: "天黑前把没办完的办完，然后到桥边。", en: "Finish what is left before dark, then be at the bridge."}
+    action: {when: [{kind: window, day: 5, from: 17, to: 21}], verb: move, place: p_bridge}
+    window: {day: 5, from: 18, to: 21, place: p_bridge}
+    appears:
+      - {kind: after, day: 5, hour: 6}
+    stale:
+      - {kind: after, day: 5, hour: 21}
+
+  # the manager's promises
+  #
+  # A stall, a role of honour, a wage or a place in the programme that the manager promises a person
+  # (the player action `promise`) is owed until it is kept in person, by the day it falls due. One
+  # task for each of the first twenty promises made (all that the offers of a talk can make): this
+  # is the template, and the compiled script has `t_keep_1` to `t_keep_20`, in which `$n` is the
+  # number of the promise, `$pledge` is the person it was made to and `{pledge_to}`, `{pledge_what}`
+  # and `{pledge_due}` are the words about it. The task appears when the promise is made. From the
+  # morning of the day it falls due it has the action (a talk with that person, with the promise
+  # ready to keep), and then it is the task that is followed, once the tasks whose own hours are now
+  # are over. It is done when the promise is kept, and stale when the day has passed and it was not:
+  # `lapse` is what the bar says then.
+  - id: t_keep
+    per: pledge
+    kind: promise
+    priority: 60  # the priority of the first; each of the next is one less urgent
+    text: {zh: "兑现对{pledge_to}的许诺", en: "Keep the promise to {pledge_to}"}
+    why:
+      - when:
+          - {kind: pledge, n: $n, state: open, due: today}
+        zh: "你答应了{pledge_to}：{pledge_what}，今天到期，要当面兑现。"
+        en: "You promised {pledge_to} {pledge_what}, and it falls due today: keep it in person."
+      - zh: "你答应了{pledge_to}：{pledge_what}，最迟{pledge_due}要当面兑现，失信要折信用。"
+        en: "You promised {pledge_to} {pledge_what}, to be kept in person by {pledge_due}, or it costs you trust."
+    next:
+      - when:
+          - {kind: pledge, n: $n, state: open, due: today}
+        zh: "今天去找{pledge_to}，当面兑现。"
+        en: "Go to {pledge_to} today and keep it in person."
+      - zh: "{pledge_due}当天去找{pledge_to}当面兑现，早些也行。"
+        en: "On {pledge_due}, go to {pledge_to} and keep it in person, or sooner."
+    action:
+      - {when: [{kind: pledge, n: $n, state: open, due: today}], verb: promise, npc: $pledge, kind: keep}
+    lapse:
+      zh: "你没有在{pledge_due}之内兑现对{pledge_to}的许诺（{pledge_what}），{pledge_to}更不信你了，这件事还会在镇上传开。"
+      en: "You did not keep your promise of {pledge_what} to {pledge_to} by the end of {pledge_due}. {pledge_to} trusts you less now, and word of it will go round the town."
+    appears:
+      - {kind: pledge, n: $n}
+    done:
+      - {kind: pledge, n: $n, state: kept}
+    stale:
+      - {kind: pledge, n: $n, state: broken}
+
+  # games without the opening rumour: the first days
+  #
+  # In a game that begins with no talk of Li Er in the town (the config names no `opening`) Granny Li
+  # still turns the manager down at the Li house, with the line that the matter must be cleared in
+  # front of everyone, but nobody is saying anything yet and there is no talk to follow: asking her
+  # about Li Er gets nothing. The way to her bamboo is then the one the script gives for the matter
+  # being cleared in public (`hc_li_bamboo`, `hc_rumor_cleared`), by what the manager finds out for
+  # themself, so this task takes the place of the bamboo on the top bar until she no longer objects.
+  # It appears when she has turned the manager down and not for the talk of Li Er, and the manager
+  # holds no note of that talk. A game with the opening never has it: there she turns the manager
+  # down for the talk at once. In the task of the bamboo the question to her about Li Er (the second
+  # refusal) is offered only once she has said the town talks of him, so that no button of the top
+  # bar asks what nobody can answer. Its steps are those of the lead on how the bridge broke, and
+  # open on the days the script's table of opportunities opens them: the rail by day on the first
+  # two days, the boat, the water under the bridge and the child by the river from the third.
+  - id: t_see_for_yourself
+    kind: obstacle
+    job: truth
+    priority: 9
+    text: {zh: 先把桥的事查清，当众说出来, en: Find out how the bridge broke and say it in public}
+    why:
+      - when:
+          - &np_cleared {kind: note, props: [pr_set_straight]}
+        zh: "桥的事当众说清了，李老太却还没松口。"
+        en: "The matter of the bridge has been cleared in public, and Granny Li has not yet given way."
+      - zh: "李老太要桥的事当众说清才肯借竹料，镇上没有传话可追，只能自己去查。"
+        en: "Granny Li lends no bamboo until the matter of the bridge is cleared up in public, and no talk leads anywhere, so look into it yourself."
+    next:
+      - when:
+          - *np_cleared
+          - {not: {kind: passed_on, npc: li_laotai, props: [pr_set_straight]}}
+        zh: "去找李老太，把当众说清的事告诉她。"
+        en: "Go to Granny Li and tell her what was cleared in public."
+      - when: [*np_cleared]
+        zh: "再请李老太借竹料。"
+        en: "Ask Granny Li for the bamboo again."
+      - when:
+          - &np_daylight {kind: hours, from: 7, to: 17}
+          - &np_rail_missed {not: {kind: looked, items: [e_footprint]}}
+          - &np_rail_there {not: {kind: after, day: 3, hour: 6}}
+        zh: "白天去桥上，看断栏边留下了什么。"
+        en: "In daylight, go to the bridge and look at what the broken rail left behind."
+      - when:
+          - *np_daylight
+          - *day3
+          - &np_water_missed {not: {kind: looked, items: [e_flood_debris]}}
+        zh: "去看看桥墩下面的水面。"
+        en: "Look at the water under the bridge."
+      - when:
+          - &np_clerk_missed {not: {kind: note, props: [pr_liner_at_bridge, pr_liner_looking, pr_set_straight]}}
+        zh: "周家伙计那晚在桥边走动过，去问问桥边看见了什么。"
+        en: "Zhou's Clerk was about the bridge that night, so ask what was seen there."
+      - when:
+          - &np_ferry_hours {kind: hours, from: 8, to: 16}
+          - &np_boat_missed {not: {kind: looked, items: [e_boat_scratches]}}
+          - &np_boat_barred {kind: turned_down, npc: old_he, request: look}
+          - &np_boat_untalked {not: {kind: talked_today, npc: old_he}}
+        zh: "船主还不让你看船，先去和船主聊几句。"
+        en: "The boat's owner will not let you look yet, so talk with the owner first."
+      - when:
+          - *np_ferry_hours
+          - *np_boat_missed
+          - *np_boat_barred
+          - {kind: can_promise, npc: old_he}
+        zh: "船主还不让你看船，许船主一点好处再来。"
+        en: "The boat's owner will not let you look yet, so promise the owner something and come back."
+      - when: [*np_ferry_hours, *np_boat_missed, *np_boat_barred]
+        zh: "船主还信不过你，明天再去聊聊。"
+        en: "The boat's owner does not trust you yet, so talk again tomorrow."
+      - when: [*np_ferry_hours, *np_boat_missed]
+        zh: "去渡口，看看那条船。"
+        en: "Go to the ferry and look at the boat."
+      - when:
+          - &np_evening {kind: hours, from: 17, to: 20}
+          - *day3
+          - &np_river_missed
+            all:
+              - {not: {kind: event, event: entrusted, where: {npc: xiao_man, request: testify, result: agreed}}}
+              - {not: {kind: event, event: action_ack, where: {reason: nothing_to_say}}}
+          - &np_river_barred {kind: turned_down, npc: xiao_man, request: testify}
+          - &np_river_untalked {not: {kind: talked_today, npc: xiao_man}}
+        zh: "小满还不肯开口，先去和小满聊几句。"
+        en: "Xiaoman will not speak yet, so talk with Xiaoman first."
+      - when:
+          - *np_evening
+          - *day3
+          - *np_river_missed
+          - *np_river_barred
+          - {kind: can_promise, npc: xiao_man}
+        zh: "小满还不肯开口，许小满一点好处再来问。"
+        en: "Xiaoman will not speak yet, so promise Xiaoman something and ask again."
+      - when: [*np_evening, *day3, *np_river_missed, *np_river_barred]
+        zh: "小满还信不过你，明天傍晚再去聊聊。"
+        en: "Xiaoman does not trust you yet, so talk again tomorrow evening."
+      - when: [*np_evening, *day3, *np_river_missed]
+        zh: "小满夜里常在河边钓鱼，傍晚在家，去问问那一夜看见了什么。"
+        en: "Xiaoman fishes by the river at night and is home in the evening, so ask what was seen that night."
+      - when: [*watch_hours, *day4, *watch_missed, *watch_barred, *watch_untalked]
+        zh: "更夫还不肯开口，先去和更夫聊几句。"
+        en: "The night watchman will not speak yet, so talk with the watchman first."
+      - when: [*watch_hours, *day4, *watch_missed, *watch_barred, {kind: can_promise, npc: gengfu}]
+        zh: "更夫还不肯开口，许更夫一点好处再来问。"
+        en: "The night watchman will not speak yet, so promise the watchman something and ask again."
+      - when: [*watch_hours, *day4, *watch_missed, *watch_barred]
+        zh: "更夫还信不过你，明天下午再去聊聊。"
+        en: "The night watchman does not trust you yet, so talk again tomorrow afternoon."
+      - when: [*watch_hours, *day4, *watch_missed]
+        zh: "下午更夫在更铺里，去问问那一夜看见了什么。"
+        en: "The night watchman is at the watch post from the afternoon, so ask what was seen that night."
+      - zh: "白天去桥上和渡口，傍晚找小满，第四天下午找更夫，填好陈述卡就去陈述。"
+        en: "By day see the bridge and the ferry, in the evening Xiaoman, on the afternoon of day 4 the watchman, and state it once the card is full."
+    action:
+      - {when: [*np_cleared, {not: {kind: passed_on, npc: li_laotai, props: [pr_set_straight]}}], verb: tell, npc: li_laotai, item: pr_set_straight}
+      - {when: [*np_cleared], verb: entrust, npc: li_laotai, request: lend}
+      - {when: [*np_daylight, *np_rail_missed, *np_rail_there], verb: look, item: t_rail, place: p_bridge}
+      - {when: [*np_daylight, *day3, *np_water_missed], verb: look, place: p_under_bridge}
+      - {when: [*np_clerk_missed], verb: ask, npc: zhou_huoji, item: li_er}
+      - {when: [*np_ferry_hours, *np_boat_missed, *np_boat_barred, *np_boat_untalked], verb: talk, npc: old_he}
+      - {when: [*np_ferry_hours, *np_boat_missed, *np_boat_barred, {kind: can_promise, npc: old_he}], verb: promise, npc: old_he}
+      - {when: [*np_ferry_hours, *np_boat_missed, {not: *np_boat_barred}], verb: look, item: t_he_boat, place: p_ferry}
+      - {when: [*np_evening, *day3, *np_river_missed, *np_river_barred, *np_river_untalked], verb: talk, npc: xiao_man}
+      - {when: [*np_evening, *day3, *np_river_missed, *np_river_barred, {kind: can_promise, npc: xiao_man}], verb: promise, npc: xiao_man}
+      - {when: [*np_evening, *day3, *np_river_missed, {not: *np_river_barred}], verb: entrust, npc: xiao_man, request: testify}
+      - {when: [*watch_hours, *day4, *watch_missed, *watch_barred, *watch_untalked], verb: talk, npc: gengfu}
+      - {when: [*watch_hours, *day4, *watch_missed, *watch_barred, {kind: can_promise, npc: gengfu}], verb: promise, npc: gengfu}
+      - {when: [*watch_hours, *day4, *watch_missed, {not: *watch_barred}], verb: entrust, npc: gengfu, request: testify}
+    appears:
+      - {kind: refused, npc: li_laotai}
+      - {not: {kind: refused, npc: li_laotai, reason: hard_hc_li_bamboo_rumour}}
+      - {not: {kind: note, props: *rumour}}
+    done:
+      - any:
+          - {kind: event, event: objection_withdrawn, where: {npc: li_laotai}}
+          - {kind: event, event: entrusted, where: {npc: li_laotai, request: lend, result: agreed}}
+    stale:
+      - {kind: after, day: 5, hour: 6}
+
+  # the elder's call, days 4 and 5 (the truth and the peace)
+  #
+  # The hall is the second place to speak in public, besides the teahouse, and the elder calls the clan
+  # to it in the first hours of the day (the task of the statement sends the manager there while the
+  # clan is called). The elder will not do it for nothing: the manager has to hold some proof, the elder has
+  # to know the manager a little (a first talk of the day earns some trust) and the town has to be behind
+  # the manager (the elder's acquaintances among the helpers). The card names what is missing. It comes on
+  # the fourth day, the first on which a story can be told, and goes with the call (it opens again if the
+  # clan was called and the hours of the hall have gone by with the truth still untold).
+  - id: t_call_clan
+    kind: venue
+    job: truth
+    priority: 56
+    text: {zh: 请族长召集族人, en: Have the elder call the clan}
+    again: true
+    why: {zh: "族长不会无缘无故召集族人：要有凭据，有几分信任，还要有人站在你这边。", en: "The elder will not call the clan without proof in your hands, some trust and part of the town behind you."}
+    next: {zh: "上午去祠堂请族长召集族人，再当着族人的面拿出凭据。", en: "In the morning ask the elder at the hall to call the clan, then show your proof in front of them."}
+    # The card asks once the lead is followed through (the places and the person it names are what a
+    # story is told apart by, whichever is true), or on the last morning whatever the manager holds. A
+    # call that comes before is a call for a statement that falls short.
+    action:
+      - when:
+          - {kind: hours, from: 6, to: 16}
+          - {kind: fresh_proof, venue: p_clan_hall}
+          - any:
+              - all: [*rail_done, *water_done, *boat_done, *watch_done]
+              - {kind: after, day: 5, hour: 6}
+        verb: entrust
+        npc: zuzhang
+        request: convene
+    appears:
+      - {kind: after, day: 4, hour: 6}
+      - kind: evidence
+        items: [e_boat_scratches, e_xiaoman_testimony, e_repair_record, e_flood_debris, e_gengfu_flood, e_gengfu_boat, e_he_lamp, e_dalang_home, e_gengfu_dalang, e_footprint]
+    blocked:
+      - when:
+          - {kind: turned_down, npc: zuzhang, request: convene}
+        blocker: {zh: 族长还不肯召集族人, en: The elder will not call the clan yet}
+        why: {zh: "族长要先对你有几分信任，也要看到镇上有人站在你这边。", en: "The elder wants to know you better and to see part of the town behind you."}
+        next:
+          - when: [{not: {kind: talked_today, npc: zuzhang}}]
+            zh: "先和族长聊几句，让族长信得过你，再请族长召集。"
+            en: "Talk with the elder first, so that the elder comes to trust you, then ask again."
+          - when: [{kind: can_promise, npc: zuzhang}]
+            zh: "许族长一件事，再请族长召集。"
+            en: "Promise the elder something, then ask again."
+          - {zh: "等更多人站到你这边，明天再请族长召集。", en: "Ask the elder again tomorrow, when more of the town is with you."}
+        action:
+          - {when: [{not: {kind: talked_today, npc: zuzhang}}], verb: talk, npc: zuzhang}
+          - {when: [{kind: can_promise, npc: zuzhang}], verb: promise, npc: zuzhang}
+    done:
+      - any:
+          - {kind: called}
+          - {kind: flag, flag: truth_told}
+    stale:
+      - {kind: after, day: 5, hour: 16}
+
+# What a person wants, which the player can read on the card of the person once they have learned it
+# (`learned`, conditions as above; none at all means the player knows it from the start).
+wants:
+  - id: w_elder_lantern
+    person: zuzhang
+    text: {zh: 五天后，让李、周两家一起提灯过桥, en: "In five days, both families crossing the bridge with their lanterns, together"}
+  - id: w_li_laotai_public
+    person: li_laotai
+    text: {zh: 有人出来把「李二毁桥」这话当众说清, en: "Someone to set straight, in public, the talk that Li Er wrecked the bridge"}
+    learned:
+      - {kind: refused, npc: li_laotai, reason: hard_hc_li_bamboo_rumour}
+  # the people who carry the five days (`content/lines`, `world/bridge/roles.py`): what each of them
+  # wants, learned in a first talk, or from what the player holds where the want is about that
+  - id: w_li_da_nod
+    person: li_da
+    text: {zh: 李老太点了头，竹料才能出库, en: "Granny Li's nod before any bamboo leaves the store"}
+    learned:
+      - {kind: event, event: talk_start, where: {npc: li_da}}
+  - id: w_li_er_name
+    person: li_er
+    text: {zh: 洗掉毁桥的闲话，再找回掉进河里的灯笼, en: "To be rid of the talk about the broken rail, and to find the lantern lost in the river"}
+    learned:
+      - {kind: note, props: [pr_liner_looking, pr_set_straight]}
+  - id: w_zhou_ledger
+    person: zhou_zhanggui
+    text: {zh: 铺子的账要平：木料有人付，人情有人还, en: "A ledger that balances: someone to pay for the timber and someone to return the favours"}
+    learned:
+      - {kind: event, event: talk_start, where: {npc: zhou_zhanggui}}
+  - id: w_zhou_huoji_blame
+    person: zhou_huoji
+    text: {zh: 别再有人把桥的事算到自己头上, en: To be left out of the blame for the bridge}
+    learned:
+      - {kind: note_first_hand, props: [pr_liner_at_bridge], by: zhou_huoji}
+  - id: w_zhou_dalang_peace
+    person: zhou_dalang
+    text: {zh: 没人来烦，有一壶酒喝, en: To be left in peace with a jug of wine}
+    learned:
+      - {kind: event, event: talk_start, where: {npc: zhou_dalang}}
+  - id: w_cha_laoban_house
+    person: cha_laoban
+    text: {zh: 灯会那夜茶馆满座，镇上的新鲜事头一个从茶桌上传出去, en: "A full house on festival night, and every piece of news going out first from the teahouse tables"}
+    learned:
+      - {kind: event, event: talk_start, where: {npc: cha_laoban}}
+  - id: w_gengfu_heard
+    person: gengfu
+    text: {zh: 夜里看到的事，也能有人听进去, en: To be listened to when speaking of what is seen at night}
+    learned:
+      - {kind: event, event: talk_start, where: {npc: gengfu}}
+  - id: w_old_he_quiet
+    person: old_he
+    text: {zh: 守着渡船，不被人打扰, en: To be left alone with the ferry}
+    learned:
+      - {kind: event, event: talk_start, where: {npc: old_he}}
+
+# How long the acts of the manager take, in game minutes. In a conversation the world stands still
+# while the player reads, looks at the notebook or waits for a model. When the player does one of the
+# five things below, the person answers first, and then the world runs this long (fast, so that the
+# player sees the hour go by) and holds again if the conversation is still open. Speaking in public
+# is the same, outside a conversation. The person who has to go for their next entry in the routine
+# goes when the clock reaches it, whatever the act was.
+act_minutes:
+  ask: 10
+  ask_source: 10
+  tell: 15
+  entrust: 20
+  promise: 20
+  speak: 30
+
+# What people promise the manager to bring (`commitments` and `site` of the frame, `commitments.py`).
+# A person who agrees to carry goods to the bridge promises a batch of them for a time, and carries
+# it then. The words are templates: a template is filled for each language with the names of the
+# people, the items and the places in that language, an item in lower case in English.
+#
+# `batches`: how much of an item a first promise is for. An item that is not listed is promised
+# whole, as much as the bridge needs; a later promise is for what the bridge still lacks, up to the
+# same amount.
+# `due`: when a promise falls due, from the hour of the game clock (06 to 21) it was made at. Made
+# before `cutoff` it falls due the same day, `soon` hours later (on the hour: 10:20 is due at 13:00).
+# Made at `cutoff` or after, it falls due the next day at `late` o'clock.
+# `start`: the hour of the day a promise falls due at which the person sets out, or at once if that
+# hour has passed. `grace`: a promise that has not been kept this many hours after it fell due is
+# broken. `recap_hour`: the hour of each morning, from the second day, at which the recap of the
+# day before is made.
+# `what`: the words of a promise in the frame. `reasons`: why a promise was broken or taken back.
+# `recap`: the lines of the recap, at most one of each, made only from the events of the day before.
+commitments:
+  batches: {bamboo: 4}
+  due: {cutoff: 15, soon: 2, late: 7}
+  start: 6
+  grace: 3
+  recap_hour: 7
+  what:
+    zh: "把{amount}根{item}送到{place}"
+    en: "Bring {amount} poles of {item} to the {place}"
+  reasons:
+    rain: {zh: 下大雨，货运不出来, en: The heavy rain kept the goods off the road}
+    failed: {zh: 路上出了岔子，货没能送到, en: Something went wrong and the goods did not get there}
+    late: {zh: 没能赶在期限前送到, en: It did not arrive in time}
+    taken_back: {zh: 对方把应承收了回去, en: They took the promise back}
+  recap:
+    delivery:
+      zh: "{who}答应的{amount}根{item}，已经送到{place}。"
+      en: "The {amount} poles of {item} that {who} promised have reached the {place}."
+    withdrawn:
+      zh: "{who}撤回了阻拦：{what}"
+      en: "{who} no longer stands in the way: {what}"
+    withdrawn_plain:
+      zh: "{who}撤回了阻拦。"
+      en: "{who} no longer stands in the way."
+    clarified:
+      zh: "你当众指出那句话说过了头，{names}听后改了口。"
+      en: "You said in public that the claim went too far, and {names} changed their minds."
+    promise:
+      zh: "{who}答应送来{amount}根{item}。"
+      en: "{who} promised to bring {amount} poles of {item}."
+
+# The Town Gazette of each morning and the summary of each night (`gazette` and `night` of the
+# frame, `gazette.py`; the table below is called `paper`). The gazette is the recap grown: at the
+# hour of the recap, from the second day, one headline and up to two short items, made from the
+# events of the day before (the delivery, the stance and the promise lines of the recap, which
+# carry their own words) and from what the town saw in public (the flags of the festival, a
+# statement, the helpers who joined, the sky); then what is to be done today, and one or two lines
+# of street talk. The summary of each night is the same machinery over the day that is ending.
+# Only these words are the script's; the rest of the card is the page's.
+#
+# `when`: yesterday, for the Town Gazette of the morning, and today, for the summary of the night.
+# `news`: a line for each kind of public thing; `{place}` is a place, `{named}` and `{accepted}`
+# the people at a statement, `{n}` the helpers who joined, `{hours}` and `{left}` the hours of work
+# done and still to do, `{why}` the reason the work stopped (the words of the board), and
+# `{when}` is `when`.
+# `street`: when the street talks of the festival and of the two families, from the townsfolk
+# without names (`crowd`). `warm` and `cool`: of the 200 townsfolk, how many are keen for the
+# festival (enthusiasm 60 or more, the number the side panel counts the turnout from) for the
+# street to be warm, and below which it is cool. `swing`: a change of this many keen since the
+# last morning is the street warming or cooling. `camp`: a townsperson is on a family's side at
+# this many points from the middle of the lean (-100 the Li, 100 the Zhou). `side`: the larger
+# camp is the street's side when it is this many people larger. `split`: two camps of at least this
+# many, and no side, is a split street. `lean_swing`: a change of this many in the difference of
+# the camps since the last morning is the street turning to a side. `fresh`: for this many days a
+# thing the town saw in public (the truth told, the families at peace) is what the street talks of.
+# `talk`: the lines of the street, one of the festival and at most one of the families.
+paper:
+  when:
+    morning: {zh: 昨天, en: yesterday}
+    night: {zh: 今天, en: today}
+  street:
+    warm: 50
+    cool: 30
+    swing: 8
+    camp: 30
+    side: 30
+    split: 50
+    lean_swing: 12
+    fresh: 2
+  news:
+    bridge_mended:
+      zh: 石桥修好了，两岸又通了。
+      en: The Stone Bridge is mended, and the two banks are joined again.
+    truth_told:
+      zh: 桥是怎么坏的，已经当众说清，在场的人都听到了。
+      en: How the bridge broke has been told in public, and everyone there heard it.
+    reconciled:
+      zh: 李周两家的当家人同了席，两家和好了。
+      en: The heads of the Li and Zhou families sat at one table, and the two families have made peace.
+    statement:
+      zh: "你在{place}当众陈述，{named}位有名有姓的人在场，{accepted}位接受。"
+      en: "You made your statement in public at the {place}. {accepted} of the {named} named people there accepted it."
+    statement_refused:
+      zh: "你在{place}当众陈述，{named}位有名有姓的人在场，没有人接受。"
+      en: "You made your statement in public at the {place}, and none of the {named} named people there accepted it."
+    evidence:
+      zh: "你在{place}当众出示了手里的证据，{named}位有名有姓的人在场，{accepted}位接受。"
+      en: "You showed what you hold in public at the {place}. {accepted} of the {named} named people there took it in."
+    evidence_refused:
+      zh: "你在{place}当众出示了手里的证据，{named}位有名有姓的人在场，没有人接受。"
+      en: "You showed what you hold in public at the {place}, and none of the {named} named people there took it in."
+    meal:
+      zh: 两家的当家人同席吃了饭，旁人都看见了。
+      en: The heads of the two families shared a meal, and others saw it.
+    stopped:
+      zh: "{who}当着众人，不再说对方家的不是了。"
+      en: "{who} has stopped speaking ill of the other family in public."
+    side_by_side:
+      zh: 两家的人一同在桥边干活。
+      en: People of both families worked at the bridge together.
+    helpers:
+      zh: "{n}位乡亲答应来桥边帮手。"
+      en: "{n} more of the town agreed to help at the bridge."
+    work_stopped:
+      zh: "桥边的活停了。{why}。"
+      en: "Work at the bridge stopped. {why}."
+    work:
+      zh: "桥边已经干了{hours}个钟头，还差{left}个。"
+      en: "{hours} hours of work are done at the bridge, and {left} more are needed."
+    rain_heavy:
+      zh: "{when}落了一场大雨，街上行人稀少。"
+      en: "Heavy rain fell {when}, and the streets emptied."
+    rain_light:
+      zh: "{when}飘了一阵小雨。"
+      en: "It drizzled {when}."
+    quiet:
+      zh: "{when}镇上没有什么大事。"
+      en: "Nothing much happened in town {when}."
+    two_accounts:
+      zh: "街上有两种说法：一说{first}，一说{second}。"
+      en: "The street has two stories. Some say that {first}, and others say that {second}."
+  talk:
+    festival_up:
+      zh: 街上盼灯会的人比昨天多了，孩子们追着问什么时候挂灯。
+      en: More people on the street look forward to the festival than yesterday, and the children keep asking when the lanterns go up.
+    festival_down:
+      zh: 街上盼灯会的人比昨天少了，茶馆里提起灯会的也不多。
+      en: Fewer people on the street look forward to the festival than yesterday, and the teahouse hardly mentions it.
+    festival_warm:
+      zh: 街上都在说灯会，哪家挂几盏灯，已经有人在数了。
+      en: The street talks of little else than the festival, and people are already counting the lanterns at each door.
+    festival_mixed:
+      zh: 街上有人盼着灯会，也有人说再看看。
+      en: Some on the street look forward to the festival, and others want to wait and see.
+    festival_cool:
+      zh: 街上提起灯会的人不多，都说今年怕是没什么兴致。
+      en: Hardly anyone on the street speaks of the festival, and people say there is little heart for it this year.
+    peace:
+      zh: 街上都在说，李周两家的当家人坐到一张桌上去了。
+      en: The street is saying that the heads of the Li and Zhou families have sat down at one table.
+    talked_out:
+      zh: 街上的人还在议论当众说清的那件事，旧话少有人再提。
+      en: The street is still talking about what was set out in public, and the old stories are heard less.
+    li_more:
+      zh: 街上向着李家说话的人，比昨天又多了些。
+      en: More people on the street than yesterday are speaking up for the Li family.
+    zhou_more:
+      zh: 街上向着周家说话的人，比昨天又多了些。
+      en: More people on the street than yesterday are speaking up for the Zhou family.
+    li_side:
+      zh: 街上向着李家说话的人多些。
+      en: More people on the street speak up for the Li family than for the Zhou family.
+    zhou_side:
+      zh: 街上向着周家说话的人多些。
+      en: More people on the street speak up for the Zhou family than for the Li family.
+    split:
+      zh: 街上分成了两拨，一拨向着李家，一拨向着周家，谁也说不服谁。
+      en: The street has split into two camps, one for the Li family and one for the Zhou family, and neither can win the other over.
+    # who went about the day before, by kind (the errands the people chose in the night, done in
+    # public): nothing is said of who, or of what they had in mind
+    walk_look:
+      zh: 昨天有人特地去桥边看了看。
+      en: Some people made a point of going down to look at the bridge yesterday.
+    walk_call:
+      zh: 昨天街坊之间走动得多些，有人专程登门说话。
+      en: There was more coming and going between neighbours yesterday, and some called on one another to talk.
+    walk_hand:
+      zh: 昨天有人到桥边搭了把手。
+      en: Some people lent a hand at the bridge yesterday.
+
+# How two kinds of note stand to each other, shown on the notebook from the start so that the player
+# sees the first judgement made before they make one themselves (the tutorial's demonstration). A
+# note of `a` is the evidence and a note of `b` the claim: here "Li Er was at the bridge" does not
+# show that Li Er, or his family, broke the rail, whichever way the story went on. The relation is
+# shown on the claim, once the manager has one note of each side. Every other mark of the notebook is
+# one the player has judged right.
+tutorial_relations:
+  - {a: [pr_liner_at_bridge], b: *rumour, relation: unsupported}
+
+# Whom a person who knows nothing of what the manager asks, and has heard nobody speak of it, sends
+# the manager to instead: the people in town who keep up with everything said, the first of these
+# who is not the one asked.
+hubs: [cha_laoban]
+
+# The statement card (the player's side is `world/bridge/statement.py`). The manager states how the bridge
+# broke in three parts, each chosen from a closed list that is the same in every variant, so that a list
+# gives nothing away. An option is shown once the manager holds a note that bears on it: a note of one of
+# its `supports` props bears for it and a note of one of its `against` props bears against it, and the card
+# counts them. `right` names the variants in which the option is the right one, so each part has exactly
+# one right option in each variant. `claims` are the props the option states (a cause always states
+# who or what broke the rail), which those who accept the statement come to believe. Nothing found for real is against the right option of its variant (checked by
+# the build). `opens` is the first moment of the public meeting at which a full statement may be made.
+statement:
+  opens: {day: 4, hour: 17}
+  parts:
+    - id: cause
+      title: {zh: 成因, en: Cause}
+      options:
+        - id: boat
+          text: {zh: 老何夜里撑船，船头撞断了栏杆, en: "Boatman He's boat struck the rail in the night"}
+          right: [v_boat]
+          claims: [pr_boat_damaged]
+          supports: [pr_boat_damaged, pr_boat_scratched, pr_he_repaired, pr_he_under_bridge]
+          against: [pr_flood_damaged, pr_dalang_damaged, pr_he_home, pr_dalang_at_bridge]
+        - id: flood
+          text: {zh: 秋汛的水头冲松了旧榫，栏杆自己断了, en: "The flood water loosened the old joints and the rail gave way by itself"}
+          right: [v_flood]
+          claims: [pr_flood_damaged]
+          supports: [pr_flood_damaged, pr_flooded]
+          against: [pr_boat_damaged, pr_dalang_damaged, pr_he_under_bridge, pr_dalang_at_bridge]
+        - id: drunk
+          text: {zh: 周家大郎喝醉了酒，一脚踢断了栏杆, en: "Zhou Dalang, drunk, kicked the rail down"}
+          right: [v_drunk]
+          claims: [pr_dalang_damaged]
+          supports: [pr_dalang_damaged, pr_dalang_at_bridge, pr_dalang_drank]
+          against: [pr_boat_damaged, pr_flood_damaged, pr_dalang_at_home, pr_he_under_bridge]
+        - id: li_er
+          text: {zh: 李二下手弄断了栏杆, en: "Li Er broke the rail"}
+          right: []
+          claims: [pr_liner_damaged]
+          supports:
+            - pr_liner_damaged
+            - pr_li_damaged
+            - pr_liner_damaged_on_purpose
+            - pr_li_damaged_on_purpose
+            - pr_liner_damaged_jealous
+            - pr_li_damaged_jealous
+            - pr_liner_at_bridge
+          against: [pr_liner_looking, pr_set_straight, pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]
+    - id: course
+      title: {zh: 经过, en: Course}
+      options:
+        - id: boat_night
+          text: {zh: 老何夜里撑船从桥下过，船头撞上栏杆，事后悄悄把船修好, en: "Boatman He poled under the bridge in the night, struck the rail, and quietly mended the boat afterwards"}
+          right: [v_boat]
+          claims: [pr_he_under_bridge, pr_he_repaired]
+          supports: [pr_he_under_bridge, pr_he_repaired, pr_boat_damaged, pr_boat_scratched]
+          against: [pr_he_home, pr_flood_damaged, pr_dalang_damaged, pr_dalang_at_bridge]
+        - id: flood_night
+          text: {zh: 夜里水头打上桥，把旧榫冲松，栏杆自己断了，桥上桥下都没有人, en: "The flood water hit the bridge in the night and loosened the old joints, and nobody was on the bridge or under it"}
+          right: [v_flood]
+          claims: [pr_flood_damaged, pr_he_home, pr_dalang_at_home]
+          supports: [pr_flood_damaged, pr_flooded, pr_he_home, pr_dalang_at_home]
+          against: [pr_he_under_bridge, pr_dalang_at_bridge, pr_boat_damaged, pr_dalang_damaged]
+        - id: drunk_night
+          text: {zh: 夜里大郎在酒肆喝醉了，晃到桥上，一脚踢断了栏杆, en: "Zhou Dalang drank at the tavern in the night, staggered onto the bridge and kicked the rail down"}
+          right: [v_drunk]
+          claims: [pr_dalang_at_bridge, pr_dalang_damaged]
+          supports: [pr_dalang_at_bridge, pr_dalang_damaged, pr_dalang_drank, pr_he_home]
+          against: [pr_dalang_at_home, pr_he_under_bridge, pr_boat_damaged, pr_flood_damaged]
+        - id: li_er_night
+          text: {zh: 夜里李二到桥边，下手弄断了栏杆, en: "Li Er went to the bridge in the night and broke the rail"}
+          right: []
+          claims: [pr_liner_damaged]
+          supports: [pr_liner_at_bridge, pr_liner_damaged, pr_li_damaged]
+          against: [pr_liner_looking, pr_set_straight, pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]
+    - id: rumour
+      title: {zh: 误会缘由, en: How the rumour began}
+      options:
+        - id: grew
+          text: {zh: 周家伙计只看见李二在桥边找掉进水里的灯笼，周掌柜凭旧怨猜成了是李二弄坏的，传来传去又添上了「故意」「嫉妒」, en: "Zhou's Clerk only saw Li Er at the bridge looking for a lantern that fell in the water, Shopkeeper Zhou took an old grudge for proof that Li Er broke it, and the telling added “on purpose” and “jealous”"}
+          right: [v_boat, v_flood, v_drunk]
+          claims: [pr_set_straight]
+          supports: [pr_liner_at_bridge, pr_liner_looking, pr_set_straight]
+          against: []
+        - id: seen
+          text: {zh: 李二真的弄坏了栏杆，周家伙计亲眼看见了, en: "Li Er really did break the rail, and Zhou's Clerk saw it happen"}
+          right: []
+          claims: [pr_liner_damaged]
+          supports:
+            - pr_liner_damaged
+            - pr_li_damaged
+            - pr_liner_damaged_on_purpose
+            - pr_li_damaged_on_purpose
+            - pr_liner_damaged_jealous
+            - pr_li_damaged_jealous
+          against: [pr_liner_looking, pr_set_straight, pr_boat_damaged, pr_flood_damaged, pr_dalang_damaged]
+        - id: invented
+          text: {zh: 周家伙计编了瞎话，李二那晚根本不在桥边, en: "Zhou's Clerk made it up, and Li Er was not at the bridge that night"}
+          right: []
+          claims: [pr_liner_not_bridge]
+          supports: [pr_liner_not_bridge]
+          against: [pr_liner_at_bridge, pr_liner_looking, pr_set_straight]
+        - id: smear
+          text: {zh: 周家有意把话传出去，要败坏李家的名声, en: "The Zhou family spread it on purpose to ruin the name of the Li family"}
+          right: []
+          claims: []
+          supports: [pr_li_damaged_on_purpose, pr_li_damaged_jealous, pr_liner_damaged_on_purpose]
+          against: [pr_set_straight, pr_liner_looking]

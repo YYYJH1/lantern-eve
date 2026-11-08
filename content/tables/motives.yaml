@@ -1,0 +1,14 @@
+# Closed motive table. A prop may carry at most one motive. Ids are English, labels Chinese.
+motives:
+  - {id: accident, label: 意外}
+  - {id: on_purpose, label: 故意}
+  - {id: jealousy, label: 嫉妒}  # also covers 眼红别人在灯会上出风头
+  - {id: protect, label: 护人}
+  - {id: greed, label: 贪财}
+  - {id: play, label: 贪玩}
+  - {id: spite, label: 使坏}
+  - {id: save_face, label: 遮丑}
+  - {id: fear, label: 怕担责}
+  - {id: pride, label: 傲气}
+  - {id: reckless, label: 酒后胡闹}
+  - {id: debt, label: 欠债}

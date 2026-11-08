@@ -1,0 +1,231 @@
+# Zhou Dalang, the eldest Zhou son, quick to anger and fond of the tavern. Surly and blunt, no
+# patience for questions, gives an order where others would give a reason.
+person: zhou_dalang
+voice:
+  zh: 周家长子，脾气爆，爱喝酒。口气冲，没耐心，三言两语就顶回去。
+  en: The eldest Zhou son, quick to anger and fond of drink. Surly and blunt, no patience for questions, cuts every answer short.
+lines:
+  asleep:
+    - {zh: "呼噜……走开……让我睡……（睡熟了）", en: "Snore... go away... let me sleep... (fast asleep)"}
+    - {zh: "唔……酒……再来一碗……（睡熟了）", en: "Mm... wine... another bowl... (fast asleep)"}
+  busy:
+    - {zh: "没空。别来烦我。", en: "No time. Don't pester me."}
+    - {zh: "我忙着呢。有事等会儿再说。", en: "I'm busy. Whatever it is can wait."}
+  timeout:
+    - {zh: "行了。我没工夫陪你耗。", en: "That's enough. I haven't time to waste on you."}
+    - {zh: "不聊了。我还有事。", en: "I'm done talking. I've got things to do."}
+  unknown:
+    - {zh: "我怎么知道？", en: "How should I know?"}
+    - {zh: "不清楚。别问我。", en: "No idea. Don't ask me."}
+  evade:
+    - {zh: "关你什么事。", en: "None of your business."}
+    - {zh: "不想说。别逼我。", en: "Won't say. Don't push me."}
+  not_said:
+    - {zh: "我没说过。别栽赃。", en: "I never said that. Don't pin it on me."}
+    - {zh: "谁说我说过的？", en: "Who says I said it?"}
+  not_so:
+    - {zh: "不对。你搞错了。", en: "Wrong. You've got it wrong."}
+    - {zh: "胡扯。不是这样。", en: "Nonsense. It's not like that."}
+  keeper_no:
+    - {zh: "不熟。别凑过来。", en: "I don't know you. Keep your distance."}
+    - {zh: "你谁啊？今天不行。", en: "Who are you? Not today."}
+  took_in:
+    - {zh: "哦。知道了。", en: "Hm. Got it."}
+    - {zh: "行，我听见了。", en: "Fine. I heard you."}
+  knew:
+    - {zh: "早知道了。用不着你说。", en: "Knew it already. No need for you to tell me."}
+    - {zh: "这个我清楚。", en: "I'm aware of that."}
+  doubted:
+    - {zh: "胡说。我听到的可不是这样。", en: "Rubbish. That's not what I heard."}
+    - {zh: "不对劲。跟我听的对不上。", en: "Something's off. It doesn't match what I heard."}
+  caught:
+    - {zh: "你敢骗我！以后你的话我一句都不听！", en: "You dare lie to me! I won't hear another word out of you!"}
+    - {zh: "撒谎的东西！别让我再看见你！", en: "Lying wretch! Don't let me see you again!"}
+  deal:
+    - {zh: "成。就这样。", en: "Fine. That's that."}
+    - {zh: "好。别反悔。", en: "Right. Don't go back on it."}
+  empty:
+    - {zh: "空话。我不信。", en: "Empty talk. I don't buy it."}
+    - {zh: "拿出东西来再说。", en: "Show me something real, then talk."}
+  kept_thanks:
+    - {zh: "你还算讲信用。这事我记着。", en: "You keep your word, at least. I'll remember it."}
+    - {zh: "说到做到。行，欠你一回。", en: "You did what you said. Fine, I owe you one."}
+  will_do:
+    - {zh: "行，我去办。", en: "Fine, I'll do it."}
+    - {zh: "知道了。包我身上。", en: "Got it. I'll handle it."}
+  cannot:
+    - {zh: "办不了。找别人去。", en: "Can't do it. Ask somebody else."}
+    - {zh: "帮不上。就这样。", en: "Can't help. That's all."}
+  turned_down:
+    - {zh: "不答应。我说不行就不行。", en: "No. When I say no, I mean no."}
+    - {zh: "没门。", en: "No chance."}
+  said_already:
+    - {zh: "说过了。听不懂吗？", en: "I said already. Don't you understand?"}
+    - {zh: "刚说完。别让我说第二遍。", en: "I just said it. Don't make me say it twice."}
+  closed:
+    - {zh: "现在不行。晚点来。", en: "Not now. Come later."}
+    - {zh: "这会儿别来。换个时辰。", en: "Don't come now. Try another hour."}
+  needs_nod:
+    - {zh: "得先问我爹。", en: "Have to ask my father first."}
+    - {zh: "我爹没点头。我说了不算。", en: "My father hasn't agreed. My word isn't enough."}
+  nothing_to_say:
+    - {zh: "没话说。", en: "Nothing to say."}
+    - {zh: "无可奉告。", en: "No comment."}
+  testified:
+    - {zh: "我看到什么就说什么。别的没有。", en: "I say what I saw. Nothing else."}
+    - {zh: "没看见的我不说。看见的都是真的。", en: "I don't speak of what I didn't see. What I saw is true."}
+  too_late:
+    - {zh: "晚了。明天再来。", en: "Too late. Come tomorrow."}
+    - {zh: "天都黑了。明天再说吧。", en: "It's dark. Let it wait until tomorrow."}
+  will_ask:
+    - {zh: "行，我去说。", en: "Fine, I'll tell them."}
+    - {zh: "知道了，我去问问。", en: "Got it, I'll ask."}
+  will_call:
+    - {zh: "好，我去叫人。都去祠堂。", en: "Fine, I'll round them up. Everyone to the hall."}
+    - {zh: "我去喊他们。祠堂等着。", en: "I'll call them. See you at the hall."}
+  hard_hc_li_bamboo:
+    - {zh: "谣言不当众说清楚，别想从我这儿拿到东西。", en: "Clear the slander in public first. You'll get nothing from me till then."}
+    - {zh: "那谣言不澄清。这事免谈。", en: "Until that slander is cleared up, forget it."}
+  hard_hc_li_bamboo_rumour:
+    - {zh: "全镇都在传，你一声不吭。没得借，走人。", en: "The whole town's talking and you keep your mouth shut. Nothing to lend. Go."}
+    - {zh: "谣言满天飞，你装哑巴。别指望我点头。", en: "Rumours everywhere and you play dumb. Don't expect a nod from me."}
+  hard_other:
+    - {zh: "免谈。别浪费口舌。", en: "Out of the question. Save your breath."}
+    - {zh: "办不到。再说也一样。", en: "Not happening. Asking again changes nothing."}
+  elder_yes:
+    - {zh: "行了。我认了。", en: "Fine. I accept it."}
+    - {zh: "你说的有点道理。就这样。", en: "You've got a point. So be it."}
+  elder_no:
+    - {zh: "就这点东西？不够。", en: "Is that all? Not enough."}
+    - {zh: "还是不行。我不服。", en: "Still not good enough. I'm not convinced."}
+  objection_withdrawn:
+    - {zh: "说清楚了。行，我不拦。", en: "It's been said. Fine, I won't stop you."}
+    - {zh: "得了。不挡你的道。", en: "Enough. I won't block your way."}
+  witness_in_public:
+    - {zh: "我就看见这些。别问多的。", en: "That's all I saw. Don't ask for more."}
+    - {zh: "看见多少是多少。少啰嗦。", en: "What I saw is what I saw. Quit nagging."}
+  batch_promised:
+    - {zh: "行。明早送到，别催。", en: "Fine. It'll be there in the morning. Don't push me."}
+    - {zh: "明天一早。我说到做到。", en: "First thing tomorrow. I do what I say."}
+  bamboo_arrived:
+    - {zh: "竹子到了。看着办吧。", en: "Bamboo's here. Get on with it."}
+    - {zh: "料送来了。别愣着。", en: "The stock's come. Don't just stand there."}
+  promise_open:
+    - {zh: "应了就是应了！{when}，{amount}根{item}。", en: "I said yes, and that's that! It's {amount} poles of {item}, {when}."}
+    - {zh: "说了送就送。{when}把{amount}根{item}扔到桥边。", en: "I said I'd bring it, so I'll drop {amount} poles of {item} at the bridge {when}."}
+  goods_enough:
+    - {zh: "够了！桥边的{item}还不够你看吗？", en: "Enough! Can't you see the {item} at the bridge?"}
+    - {zh: "{item}够了，别再烦我。", en: "The {item} is enough, so stop bothering me."}
+  point_heard:
+    - {zh: "我怎么知道！听{name}讲过，自己去问！", en: "How should I know! I heard {name} talk about it, so go and ask yourself!"}
+    - {zh: "不清楚。{name}讲过。自己去找，别烦我。", en: "No idea. I heard {name} talk about it, so go and ask them, and stop bothering me."}
+  point_hub:
+    - {zh: "别问我！去找{name}，镇上什么事那儿都知道！", en: "Don't ask me! Go see {name}, who knows every piece of news in town!"}
+    - {zh: "我没工夫管闲事。要打听就去{name}那儿！", en: "I've no time for idle talk. If you want news, go to {name}'s!"}
+frames:
+  seen:
+    - {zh: "我看见了：{line}。", en: "I saw it, plain as day: {line}."}
+    - {zh: "我在场。{line}。", en: "I was there: {line}."}
+  heard:
+    - {zh: "{teller}那张嘴说的：{line}。", en: "That's {teller}'s word: {line}."}
+    - {zh: "我听{teller}讲：{line}。", en: "{teller} said {line}."}
+  unknown:
+    - {zh: "外头瞎传：{line}。", en: "People are blabbing that {line}."}
+    - {zh: "听人讲：{line}。", en: "Somebody said {line}."}
+  own:
+    - {zh: "我告诉你：{line}。", en: "I'll tell you straight: {line}."}
+    - {zh: "老实说：{line}。", en: "Frankly, {line}."}
+  guess_own:
+    - {zh: "我不敢保。{hedge}{line}。", en: "Don't hold me to it. {hedge} {line}."}
+    - {zh: "谁知道。{hedge}{line}。", en: "Who knows. {hedge} {line}."}
+  guess_heard:
+    - {zh: "{teller}嘴里漏过一句。{hedge}{line}。", en: "{teller} let one slip. {hedge} {line}."}
+    - {zh: "照{teller}的话头，{hedge}{line}。", en: "Judging by {teller}'s talk, {hedge} {line}."}
+  guess_unknown:
+    - {zh: "不知谁嚷的。{hedge}{line}。", en: "Some loudmouth said it. {hedge} {line}."}
+    - {zh: "满街都在传。{hedge}{line}。", en: "It's all over the street. {hedge} {line}."}
+  rival:
+    - {zh: "可{teller}的嘴里是另一套：{line}。", en: "But {teller}'s mouth says different: {line}."}
+    - {zh: "{teller}偏说是另一回事：{line}。", en: "Yet {teller} swore to something else: {line}."}
+hedges:
+  - {zh: 准是, en: I bet}
+  - {zh: 我看八成, en: I'll say}
+# What he says by the state of the game (world/bridge/roles.py): a greeting as a talk opens, a last
+# word as the manager leaves, and the epilogue of the ending page. The first entry whose conditions
+# all hold is the one. Some story of the script blames him, so his lists read nothing of what he or
+# anyone believes: only flags, the clock and the promises. His epilogue says who broke the rail only
+# if the truth was told in public and it named him.
+greet:
+  - id: new
+    when: [{kind: acquainted, is: new}]
+    lines:
+      - {zh: "你就是总管？我忙着，有话快说。", en: "You're the Manager? I'm busy. Say it quick."}
+  - id: broken
+    when: [{kind: promised, state: broken}]
+    lines:
+      - {zh: "你说话不算数。我记着。", en: "Your word counts for nothing. I remember."}
+  - id: festival
+    when: [{kind: after, day: 5, hour: 15}]
+    lines:
+      - {zh: "今晚游灯，我滴酒不沾。", en: "Not a drop for me tonight. The parade's on."}
+  - id: truth
+    when: [{kind: flag, flag: truth_told}]
+    lines:
+      - {zh: "桥的事摆明了。别再拿眼睛盯着我。", en: "The bridge business is out in the open. Stop staring at me."}
+  - id: peace
+    when: [{kind: flag, flag: reconcile_seen}]
+    lines:
+      - {zh: "两家坐一桌了。哼，也行。", en: "Both houses at one table. Hm. Fine."}
+  - id: bridge
+    when: [{kind: flag, flag: bridge_fixed}]
+    lines:
+      - {zh: "桥修好了。我扛的木头，一根没少。", en: "The bridge is mended. Not one timber I hauled went missing."}
+  - id: kept
+    when: [{kind: promised, state: kept}]
+    lines:
+      - {zh: "你应的办了。行，记你一回。", en: "You did what you said. Fine, one point to you."}
+  - id: cleared
+    when: [{kind: cleared}]
+    lines:
+      - {zh: "李二那事当众说清了。嗯，早该如此。", en: "Li Er's business was cleared in public. Hm, about time."}
+  - id: again
+    when: [{kind: acquainted, is: today}]
+    lines:
+      - {zh: "又是你。", en: "You again."}
+      - {zh: "快说。", en: "Quick."}
+  - id: plain
+    lines:
+      - {zh: "有事说事。别磨叽。", en: "Say what you want. Don't dawdle."}
+      - {zh: "要问就问，我手上有活。", en: "Ask if you're going to. I've work on."}
+chat:
+  - id: broken
+    when: [{kind: promised, state: broken}]
+    lines:
+      - {zh: "记着你欠的。", en: "Remember what you owe."}
+  - id: festival
+    when: [{kind: after, day: 5, hour: 15}]
+    lines:
+      - {zh: "灯会上见。别迟到。", en: "See you at the lanterns. Don't be late."}
+  - id: peace
+    when: [{kind: flag, flag: reconcile_seen}]
+    lines:
+      - {zh: "两家的事，到此为止。", en: "That's the end of the quarrel between the houses."}
+  - id: plain
+    lines:
+      - {zh: "走吧。别挡着路。", en: "Move along. You're in the way."}
+      - {zh: "话说完了？", en: "Done talking?"}
+epilogue:
+  - id: owned
+    when: [{kind: told_cause, is: drunk}]
+    text: {zh: "周家大郎当着众人认下了酒后踢断栏杆的事，赔了新栏杆的工钱。", en: "Zhou Dalang owned up in front of everyone to kicking the rail down when drunk, and paid the cost of the new one."}
+  - id: cleared
+    when: [{any: [{kind: told_cause, is: boat}, {kind: told_cause, is: flood}]}]
+    text: {zh: "周家大郎提着灯站在桥边。这一回，没有人拿酒气说事。", en: "Zhou Dalang stood by the bridge with a lantern. This time nobody made a point of the smell of wine."}
+  - id: bridge
+    when: [{kind: flag, flag: bridge_fixed}]
+    text: {zh: "周家大郎在桥边搬完最后一捆木料，转身进了酒肆。", en: "Zhou Dalang finished hauling the last bundle of timber at the bridge and turned into the tavern."}
+  - id: detour
+    when: [{kind: flag, flag: detour_done}]
+    text: {zh: "周家大郎扛着木料走了夹道，一路没停脚。", en: "Zhou Dalang shouldered timber along the lane and never broke stride."}
+  - id: apart
+    text: {zh: "周家大郎蹲在酒肆门口，望着桥那边的灯。一句话没说。", en: "Zhou Dalang squatted at the door of the tavern, watched the lights at the bridge, and said nothing."}

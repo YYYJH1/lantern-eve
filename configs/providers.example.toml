@@ -1,0 +1,96 @@
+# Which model answers each tier of a game served by `lantern-eve play`.
+#
+#   uv run lantern-eve play --provider-config configs/providers.example.toml
+#
+# Copy this file to configs/providers.toml (git ignores that name) and change what you need. The
+# file never holds a key: `api_key_env` is the NAME of an environment variable, and the key is
+# read from it when a game starts.
+
+version = 1
+
+# --- The services ---------------------------------------------------------------------------
+# `kind` fills in the address, the key variable and the field that switches thinking off:
+#   bailian   https://dashscope.aliyuncs.com/compatible-mode/v1  DASHSCOPE_API_KEY
+#             enable_thinking = false
+#   deepseek  https://api.deepseek.com                            DEEPSEEK_API_KEY
+#             thinking = { type = "disabled" }
+#   ollama    http://localhost:11434/v1                           (no key)
+#             reasoning_effort = "none"
+#   vllm      http://localhost:8000/v1                            (no key)
+#             chat_template_kwargs = { enable_thinking = false }
+#   openai    any other OpenAI-compatible service: base_url is required, no thinking switch
+# Every one of them can be overridden: base_url, api_key_env, extra_body (the fields added to
+# each request body), max_output_tokens (a cap below what the game asks for) and max_tokens_field.
+
+[providers.bailian]
+kind = "bailian"
+
+[providers.ollama]
+kind = "ollama"
+# base_url = "http://localhost:11434/v1"
+
+# [providers.deepseek]
+# kind = "deepseek"
+
+# [providers.vllm]
+# kind = "vllm"
+# base_url = "http://127.0.0.1:8000/v1"
+
+# --- The tiers ------------------------------------------------------------------------------
+# The game asks for a tier, and the model behind it is named here. `cheap` and `strong` are paid
+# tiers and carry their price in yuan per million tokens (or take it from a price list given
+# with --prices). The prices below are the list prices of Alibaba Bailian. The game keeps its
+# budget from them, so they must be those of the model named, and they change: check them.
+# `local` is optional and free. The game uses it when the cloud is down or the budget has reached
+# 90 percent, and only after the server has found the model in the service's model list.
+
+[tiers.cheap]
+provider = "bailian"
+model = "qwen-flash"
+price_in = 0.15
+price_out = 1.5
+
+[tiers.strong]
+provider = "bailian"
+model = "qwen-plus"
+price_in = 0.8
+price_out = 8
+
+[tiers.local]
+provider = "ollama"
+model = "qwen3.5:4b"
+
+# --- The game's own limit -------------------------------------------------------------------
+# What one game may spend on the cloud tiers, in yuan. Without it the scenario's default holds.
+
+[game]
+budget_yuan = 3
+
+# --- The queue ------------------------------------------------------------------------------
+# Calls wait in four classes that only decide who goes first (1 first, 4 last, and in order of
+# arrival inside a class). Each tier has its own limit on calls in flight.
+
+[queue]
+timeout_s = 8          # from the moment the game asks to the answer, else the game gets `timeout`
+thinking_s = 3         # a class 1 reply this late is announced to the page as `thinking`
+late_s = 30            # a call that has timed out may still finish this long, and is booked
+connect_s = 4          # the time to open a connection
+probe_s = 15           # how often a service that is down is looked at again
+down_after = 3         # consecutive network failures that mark a service down
+max_calls = 0          # a hard cap on the calls of one game, 0 for none
+
+[queue.concurrency]
+cheap = 8
+strong = 3
+local = 2
+
+# Seconds per class where `timeout_s` is not right.
+[queue.timeouts]
+4 = 30
+
+# The class of a request is looked up by its category. A category that is not listed gets
+# `default_class`, which is 3 unless [queue] says otherwise. The game asks under `reply` (what a
+# townsperson says to the manager), and the demo world m0 of the tests under `chatter`.
+[classes]
+reply = 1
+chatter = 3

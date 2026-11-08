@@ -1,0 +1,152 @@
+# Zhou Erlang, the second Zhou son, who has friends in both families. Gentle and well brought up,
+# apologises before he refuses, and would rather help than win.
+person: zhou_erlang
+voice:
+  zh: 周家次子。温和有礼，拒绝之前先道歉，宁愿帮忙也不愿争输赢。
+  en: The second Zhou son. Gentle and well brought up, apologises before he refuses, would rather help than win.
+lines:
+  asleep:
+    - {zh: "呼……书卷……还没读完……（睡熟了）", en: "Zzz... the book... not finished yet... (fast asleep)"}
+    - {zh: "唔……明天……一定早起……（睡熟了）", en: "Mm... tomorrow... I'll rise early... (fast asleep)"}
+  busy:
+    - {zh: "实在抱歉，我这会儿走不开。稍后奉陪。", en: "I'm terribly sorry, but I can't get away just now. I'll be with you shortly."}
+    - {zh: "劳烦总管稍候。我手上还有事。", en: "Please wait a moment. I have something in hand."}
+  timeout:
+    - {zh: "不好意思，我得先去忙了。", en: "Forgive me, I must get back to it."}
+    - {zh: "家里还有事等着我。改日再叙。", en: "There's something waiting at home. Let's continue another day."}
+  unknown:
+    - {zh: "这件事我确实不清楚。", en: "I'm afraid I really don't know about that."}
+    - {zh: "抱歉，我没听说过。", en: "Sorry, I haven't heard of it."}
+  evade:
+    - {zh: "这个……恕我不便多说。", en: "That... I'd rather not say, if you'll forgive me."}
+    - {zh: "还请不要问这个。", en: "Please, don't ask me about that."}
+  not_said:
+    - {zh: "我并没有这样说过。", en: "I didn't say anything of the sort."}
+    - {zh: "恐怕是误会了。我没说过。", en: "There must be a misunderstanding. I didn't say it."}
+  not_so:
+    - {zh: "恐怕不是这样的。", en: "I'm afraid that isn't so."}
+    - {zh: "不好意思，事情不是那样。", en: "Sorry, it wasn't like that."}
+  keeper_no:
+    - {zh: "我们才刚认识。下次再说吧，抱歉。", en: "We've only just met. Another time, I'm afraid."}
+    - {zh: "这个我不便给生人看。", en: "I can't show this to someone I don't know."}
+  took_in:
+    - {zh: "原来如此。多谢告知。我记下了。", en: "I see. Thank you for telling me. I'll remember it."}
+    - {zh: "明白了。谢谢你。", en: "Understood. Thank you."}
+  knew:
+    - {zh: "这件事我已有所耳闻。", en: "I had heard something of it already."}
+    - {zh: "多谢，不过我先前就知道了。", en: "Thank you, though I knew of it before."}
+  doubted:
+    - {zh: "恕我直言，我听到的不是这样。", en: "Forgive me, but that is not what I heard."}
+    - {zh: "与我所闻略有不同。", en: "It differs a little from what I heard."}
+  caught:
+    - {zh: "你竟然欺骗我！我不会再相信你了。", en: "You deceived me! I will not believe you again."}
+    - {zh: "原来你一直在说谎。太让人失望了。", en: "So you were lying all along. How disappointing."}
+  deal:
+    - {zh: "好，就这么说定了。", en: "Good, then it is agreed."}
+    - {zh: "一言为定。多谢。", en: "Agreed. Thank you."}
+  empty:
+    - {zh: "只有空话。恕我难以相信。", en: "Words alone, I'm afraid. I find it hard to believe."}
+    - {zh: "没有凭据，我不能轻信。", en: "Without anything to back it, I can't simply believe."}
+  kept_thanks:
+    - {zh: "总管信守承诺。我会记得这份恩情。", en: "The Manager keeps their word. I shall remember this kindness."}
+    - {zh: "你说到做到。我很感激。", en: "You did as you said. I'm grateful."}
+  will_do:
+    - {zh: "好，这件事我来办。", en: "Certainly, I'll see to it."}
+    - {zh: "没问题，请放心。", en: "No trouble at all, rest assured."}
+  cannot:
+    - {zh: "抱歉，这个忙我帮不上。", en: "I'm sorry, I can't help with that."}
+    - {zh: "恐怕我无能为力。", en: "I'm afraid it's beyond me."}
+  turned_down:
+    - {zh: "实在抱歉，这件事我不能答应。", en: "I'm so sorry, but I cannot agree to this."}
+    - {zh: "请原谅，这件事我无法应允。", en: "Please forgive me, I am unable to consent."}
+  said_already:
+    - {zh: "这件事我已经说过了。", en: "I've already said as much."}
+    - {zh: "方才已经讲过。请见谅。", en: "I said so a moment ago, forgive me."}
+  closed:
+    - {zh: "此刻不太方便。请换个时辰再来。", en: "This isn't a convenient moment. Please come at another hour."}
+    - {zh: "抱歉，现在不行。稍后再来吧。", en: "Sorry, not now. Please come again later."}
+  needs_nod:
+    - {zh: "这得先问过我父亲。", en: "I would need to ask my father first."}
+    - {zh: "家父要是没点头，我不便答应。", en: "My father hasn't agreed, so I can't say yes."}
+  nothing_to_say:
+    - {zh: "关于这件事，我没有什么可说的。", en: "I have nothing to say regarding that."}
+    - {zh: "抱歉，实在无话可说。", en: "Sorry, I truly have nothing to say."}
+  testified:
+    - {zh: "我所说的，都是亲眼所见。", en: "What I have told you, I saw with my own eyes."}
+    - {zh: "我不会说没见过的事。", en: "I would never speak of what I haven't seen."}
+  too_late:
+    - {zh: "夜已深了。明早再谈吧。", en: "The night is far gone. Let us speak in the morning."}
+    - {zh: "时候太晚了。请明天再来。", en: "It's too late. Please come tomorrow."}
+  will_ask:
+    - {zh: "好的，我去和对方说一声。", en: "Of course, I'll have a word with them."}
+    - {zh: "我会替你转达。", en: "I'll pass it on for you."}
+  will_call:
+    - {zh: "好的，我这就去请大家到祠堂。", en: "Of course, I'll go and invite everyone to the hall."}
+    - {zh: "我去通知各位。祠堂见。", en: "I'll let everyone know. See you at the hall."}
+  hard_hc_li_bamboo:
+    - {zh: "谣言一日未在众人面前澄清，这件事恕难相助。", en: "Until the slander is cleared before everyone, I cannot help in this."}
+    - {zh: "请先当众澄清那桩谣言。然后再谈。", en: "Please clear the slander publicly first. Then we can talk."}
+  hard_hc_li_bamboo_rumour:
+    - {zh: "实在对不住。谣言传得厉害，总管又一直没出声。此事我不好应。", en: "I am so sorry. The rumour is spreading badly, and the Manager has said nothing. I cannot agree to this."}
+    - {zh: "抱歉。街上流言不断，总管也没说句话。我不便点头。", en: "Forgive me. The street talk will not stop, and the Manager has not said a word. I cannot nod yes."}
+  hard_other:
+    - {zh: "这恐怕不行。", en: "I'm afraid that is out of the question."}
+    - {zh: "此事没有商量的余地。", en: "There is no room to discuss it."}
+  elder_yes:
+    - {zh: "我明白了。就依你说的办。", en: "I understand. Let it be as you say."}
+    - {zh: "你说得很有道理。我心服了。", en: "You speak sense. I am persuaded."}
+  elder_no:
+    - {zh: "单凭这些，恐怕还不够。", en: "On this alone, I'm afraid it isn't enough."}
+    - {zh: "我还需要再想一想。", en: "I still need to think it over."}
+  objection_withdrawn:
+    - {zh: "太好了，误会解开了。我不再拦着，请放心。", en: "How good that the misunderstanding is cleared. I will not stand in the way, please be at ease."}
+    - {zh: "说清楚就好。方才多有阻拦，抱歉。", en: "I am glad it is clear. I am sorry for standing in the way earlier."}
+  witness_in_public:
+    - {zh: "我只能说我看到的，别的实在不清楚。", en: "I can only say what I saw. About the rest I truly do not know."}
+    - {zh: "抱歉。我只看见这些，不敢多说。", en: "Sorry, that is all I saw, and I dare not say more."}
+  batch_promised:
+    - {zh: "好的。明早一定送到桥边，请放心。", en: "Certainly. It will be at the bridge tomorrow morning, please be at ease."}
+    - {zh: "明早我亲自送去，不会耽误。", en: "I will bring it myself in the morning, without delay."}
+  bamboo_arrived:
+    - {zh: "竹料到桥边了，太好了。", en: "The bamboo has reached the bridge. That is wonderful."}
+    - {zh: "料到了。多亏大家相助。", en: "The bamboo is here. Thanks to everyone who helped."}
+  promise_open:
+    - {zh: "抱歉，这事我已经应下了。{when}送{amount}根{item}到桥边。", en: "Forgive me, but I have already agreed to bring {amount} poles of {item} to the bridge {when}."}
+    - {zh: "请放心，我记着的。{amount}根{item}，{when}送到。", en: "Please be at ease, I remember. It will be {amount} poles of {item}, delivered {when}."}
+  goods_enough:
+    - {zh: "不好意思，桥边的{item}已经够了。", en: "Forgive me, but the {item} at the bridge is enough already."}
+    - {zh: "{item}已经足够了。再多怕是浪费，请见谅。", en: "There is enough {item} already, and more would be wasted, I'm afraid."}
+  point_heard:
+    - {zh: "抱歉，这件事我确实不清楚。不过我听{name}提到过，你不妨去问问。", en: "Sorry, I really don't know about it. But I heard {name} mention it, so you might ask them."}
+    - {zh: "对不住，我帮不上忙。好像{name}说起过，要不您去问问？", en: "I'm sorry, I can't help. I believe {name} spoke of it, so would you like to ask them?"}
+  point_hub:
+    - {zh: "抱歉，我不太清楚。镇上的事{name}知道得多些，您去问问吧。", en: "Sorry, I'm not sure. You might ask {name}, who knows more about the town."}
+    - {zh: "实在对不起，我答不上来。{name}那里消息灵通，不如去问问。", en: "I'm so sorry, I can't answer. News travels fast around {name}, so perhaps ask them."}
+frames:
+  seen:
+    - {zh: "这是我亲眼所见：{line}。", en: "This is what I saw with my own eyes: {line}."}
+    - {zh: "我当时恰好在场：{line}。", en: "I happened to be present: {line}."}
+  heard:
+    - {zh: "{teller}曾向我提起：{line}。", en: "{teller} once told me that {line}."}
+    - {zh: "我是从{teller}那里听来的：{line}。", en: "I learned it from {teller}: {line}."}
+  unknown:
+    - {zh: "我听闻：{line}。", en: "I have heard that {line}."}
+    - {zh: "坊间有传言：{line}。", en: "There is talk around town that {line}."}
+  own:
+    - {zh: "依我之见：{line}。", en: "In my view, {line}."}
+    - {zh: "我是这样想的：{line}。", en: "My own thinking is that {line}."}
+  guess_own:
+    - {zh: "我并不确定。{hedge}{line}。", en: "I can't be certain. {hedge} {line}."}
+    - {zh: "仅是推测。{hedge}{line}。", en: "It is only conjecture. {hedge} {line}."}
+  guess_heard:
+    - {zh: "{teller}稍微提过。{hedge}{line}。", en: "{teller} touched on it briefly. {hedge} {line}."}
+    - {zh: "听{teller}的话音，{hedge}{line}。", en: "From the sound of what {teller} said, {hedge} {line}."}
+  guess_unknown:
+    - {zh: "不知是谁说起。{hedge}{line}。", en: "I do not know who raised it. {hedge} {line}."}
+    - {zh: "仅是耳闻。{hedge}{line}。", en: "It reached me only by ear. {hedge} {line}."}
+  rival:
+    - {zh: "抱歉，只是{teller}也曾对我说过另一种：{line}。", en: "Sorry, but {teller} once told me something else: {line}."}
+    - {zh: "不过{teller}说的不同，我也不好不提：{line}。", en: "Though {teller} told me differently, and I should mention it: {line}."}
+hedges:
+  - {zh: 我以为, en: I believe}
+  - {zh: 想必, en: I presume}

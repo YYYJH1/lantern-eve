@@ -1,0 +1,266 @@
+/* Reset, type, and the few controls that every part of the page shares. Colours are tokens from tokens.css, so a
+   theme change is a change of the variables and nothing else. Paper has square corners, and a control is a line of
+   ink round a word: the only round thing on the page is a seal. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.6 var(--serif);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#app {
+  height: 100%;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1,
+h2,
+h3,
+p,
+dl,
+dd,
+dt,
+ol,
+ul,
+pre {
+  margin: 0;
+  padding: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+.mono {
+  font-variant-numeric: tabular-nums;
+}
+
+.icon {
+  flex: none;
+  display: block;
+}
+
+/* A ring of ink with a ring of paper outside it, so that it shows on the paper and on the map, by day and by night. */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--paper);
+}
+
+/* Buttons --------------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.btn-paper {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* A number on a button: a small square of paper, not a pill. */
+.btn .count {
+  min-width: 1.5em;
+  padding: 0 5px;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.tool {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.tool:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.tool-paper {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--rule);
+}
+
+/* A group of choices, one of which is on: a line of ink round them, and the one that is on is the ink itself. */
+.seg {
+  display: inline-flex;
+  padding: 0;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+}
+
+.seg-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 14.5px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.seg-btn + .seg-btn {
+  border-left: 1px solid var(--rule);
+}
+
+.seg-btn:hover {
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.seg-btn[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 500;
+}
+
+.seg-icon {
+  padding: 4px 9px;
+}
+
+.seg-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.seg-speed {
+  align-items: center;
+}
+
+.seg-icon-lead {
+  display: inline-flex;
+  padding: 0 2px 0 8px;
+  color: var(--ink);
+}
+
+/* Form fields ------------------------------------------------------------------------------ */
+
+input[type="text"],
+input[type="password"],
+select {
+  padding: 4px 9px;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+input[type="text"],
+input[type="password"] {
+  flex: 1 1 8rem;
+  min-width: 0;
+}
+
+input::placeholder {
+  color: var(--ink);
+  opacity: 0.7;
+}
+
+input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.ok,
+.bad {
+  color: var(--ink);
+}
+
+.notice {
+  min-height: 1.5em;
+  margin: 6px 0 0;
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

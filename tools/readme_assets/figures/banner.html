@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>banner</title>
+  <link rel="stylesheet" href="figures.css">
+  <script src="figures.js"></script>
+  <style>
+    .banner { height: 320px; }
+    svg.scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+    /* The town, in the colours of the game's map. By day the lanterns are small and red, at night they carry the picture. */
+    .sky-top { stop-color: var(--sky-top); }
+    .sky-bottom { stop-color: var(--sky-bottom); }
+    .glow-in { stop-color: rgb(var(--glow)); stop-opacity: 1; }
+    .glow-out { stop-color: rgb(var(--glow)); stop-opacity: 0; }
+    .hill { fill: var(--hill); }
+    .wall { fill: var(--wall); }
+    .plinth { fill: var(--wall-shade); }
+    .roof { fill: var(--roof); }
+    .roof-line { stroke: var(--roof-edge); stroke-width: 1.2; fill: none; stroke-linecap: round; }
+    .win { fill: var(--window); }
+    .door { fill: var(--door); }
+    .bank { fill: var(--street); }
+    .water { fill: var(--river); }
+    .ripple { stroke: var(--river-light); stroke-width: 1.6; fill: none; stroke-linecap: round; opacity: 0.7; }
+    .stone { fill: var(--stone); }
+    .stone-line { stroke: var(--stone-shade); stroke-width: 1.4; fill: none; stroke-linecap: round; }
+    .stone-dark { fill: var(--stone-shade); }
+    .rope { stroke: var(--roof-edge); stroke-width: 1.3; fill: none; opacity: 0.55; }
+    .lamp { fill: var(--lantern); }
+    .lamp.gold { fill: var(--accent-fill); }
+    .lamp-cap { fill: var(--roof-edge); }
+    .lamp-rib { stroke: #fff; stroke-opacity: 0.32; stroke-width: 1; fill: none; }
+    .lamp-tassel { stroke: var(--lantern-dark); stroke-width: 1.3; fill: none; }
+    .halo { fill: url(#glow); opacity: var(--glow-alpha); }
+    .halo-window { fill: url(#glow); opacity: calc(var(--glow-alpha) * 0.5); }
+    .reflect { fill: rgb(var(--glow)); opacity: calc(var(--glow-alpha) * 0.4); }
+    .night-only { display: none; }
+    .day-only { display: inline; }
+    :root[data-theme='dark'] .night-only { display: inline; }
+    :root[data-theme='dark'] .day-only { display: none; }
+    .star { fill: #f3efe0; }
+    .moon { fill: #f1ecd8; }
+    .sun { fill: var(--accent-fill); opacity: 0.4; }
+
+    /* The rumour: three pieces like the ones on the game's map, the lights between them, and what each one says. */
+    .link { stroke: var(--faint); stroke-width: 1.6; stroke-dasharray: 1 6; stroke-linecap: round; fill: none; }
+    .piece { stroke: var(--card); stroke-width: 2.4; }
+    .piece.zhou { fill: var(--zhou); }
+    .piece-letter { fill: #fff; font: 800 13px system-ui, 'Noto Sans', sans-serif; text-anchor: middle; }
+    :root[data-lang='zh'] .piece-letter { font-family: 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif; font-size: 13.5px; }
+    .dot-other { fill: var(--other); }
+    .dot-blame { fill: var(--blame); }
+    .flag { fill: var(--blame); stroke: var(--card); stroke-width: 1.6; }
+    .flag-text { fill: #fff; font: 800 10px system-ui, 'Noto Sans', sans-serif; text-anchor: middle; }
+
+    .bubble {
+      position: absolute; z-index: 3;
+      padding: 7px 10px 8px;
+      background: var(--bubble); border: 1px solid var(--bubble-edge); border-radius: 10px;
+      font-size: 11.4px; line-height: 1.34; color: var(--bubble-ink); text-wrap: balance;
+      box-shadow: 0 1px 3px var(--shadow);
+    }
+    :root[data-lang='zh'] .bubble { font-size: 12px; line-height: 1.38; }
+    .bubble::after {
+      content: ''; position: absolute; left: var(--tail, 50%); bottom: -6px; width: 10px; height: 10px; margin-left: -5px;
+      background: var(--bubble); border-right: 1px solid var(--bubble-edge); border-bottom: 1px solid var(--bubble-edge);
+      transform: rotate(45deg);
+    }
+    #b1 { left: 428px; top: 148px; width: 172px; --tail: 63%; }
+    #b2 { left: 590px; top: 72px; width: 180px; --tail: 45%; }
+    #b3 { left: 724px; top: 136px; width: 190px; --tail: 44%; }
+
+    .words { position: absolute; z-index: 3; left: 44px; top: 54px; width: 400px; }
+    .words h1 {
+      margin: 0;
+      font-size: 64px; line-height: 1.02; font-weight: 600;
+      font-family: 'Lantern Display', 'LXGW WenKai', serif;
+      color: var(--accent);
+    }
+    :root[data-lang='zh'] .words h1 {
+      font-family: 'Lantern Brush', 'Ma Shan Zheng', 'Noto Serif CJK SC', serif; font-style: normal; font-weight: 400;
+      font-size: 70px; line-height: 1; letter-spacing: 0.04em;
+    }
+    .words .name2 { margin: 4px 0 0; font-size: 29px; line-height: 1.1; color: var(--primary); }
+    .words .name2 .zh { font-family: 'Lantern Display', 'LXGW WenKai', serif; font-weight: 600; font-size: 31px; }
+    .words .name2 .en { font-family: 'Lantern Brush', 'Ma Shan Zheng', 'Noto Serif CJK SC', serif; letter-spacing: 0.08em; }
+    .words .tagline { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: var(--muted); max-width: 380px; text-wrap: pretty; }
+    :root[data-lang='zh'] .words .tagline { max-width: 360px; }
+  </style>
+</head>
+<body>
+  <div class="card banner" id="card">
+    <svg class="scene" id="scene" viewBox="0 0 920 320" aria-hidden="true">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" class="sky-top"/><stop offset="1" class="sky-bottom"/>
+        </linearGradient>
+        <radialGradient id="glow">
+          <stop offset="0" class="glow-in"/><stop offset="1" class="glow-out"/>
+        </radialGradient>
+      </defs>
+      <rect width="920" height="320" fill="url(#sky)"/>
+      <g id="sky-things"></g>
+      <path class="hill" d="M0 236 C 110 206, 230 224, 350 212 S 590 198, 700 216 S 860 204, 920 214 L920 320 L0 320 Z"/>
+      <g id="houses"></g>
+      <rect class="bank" x="0" y="262" width="920" height="14"/>
+      <g id="bridge"></g>
+      <rect class="water" x="0" y="276" width="920" height="44"/>
+      <g id="water-things"></g>
+      <g id="lanterns"></g>
+      <g id="rumour"></g>
+    </svg>
+
+    <div class="words">
+      <h1><span class="en">Lantern Eve</span><span class="zh">灯会前夕</span></h1>
+      <p class="name2"><span class="en">灯会前夕</span><span class="zh">Lantern Eve</span></p>
+      <p class="tagline">
+        <span class="en">A river town, a railing broken on the lantern route, and rumours that keep the chain they travelled.</span>
+        <span class="zh">一座水乡小镇，游灯路线上塌了一段栏杆，<br>镇上每一句传言都记得自己是怎么传来的。</span>
+      </p>
+    </div>
+
+    <div class="bubble" id="b1">
+      <span class="en">I saw it myself: Li&nbsp;Er was at the Stone&nbsp;Bridge last night.</span>
+      <span class="zh">我亲眼看见，<br>李二昨夜在石桥。</span>
+    </div>
+    <div class="bubble" id="b2">
+      <span class="en">Zhou's Clerk told me that Li&nbsp;Er was at the Stone&nbsp;Bridge last night.</span>
+      <span class="zh">听周家伙计说，<br>李二昨夜在石桥。</span>
+    </div>
+    <div class="bubble" id="b3">
+      <span class="en">Zhou Erlang told me that Li&nbsp;Er damaged the Stone&nbsp;Bridge Railing last night.</span>
+      <span class="zh">听周家二郎说，<br>李二昨夜弄坏了石桥栏杆。</span>
+    </div>
+  </div>
+
+  <script>
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (parent, tag, attrs = {}) => {
+      const node = document.createElementNS(NS, tag);
+      for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, String(value));
+      parent.appendChild(node);
+      return node;
+    };
+    const at = (id) => document.getElementById(id);
+
+    // --- sky: stars and a moon by night, a pale sun by day
+    const sky = at('sky-things');
+    for (const [x, y, r] of [[60,20,1.2],[132,52,0.9],[214,16,1.3],[301,40,1],[382,14,0.9],[452,46,1.2],[540,18,1],[618,50,0.9],[700,22,1.3],[770,48,0.9],[884,26,1.1],[906,92,0.9],[26,98,1],[168,112,0.8],[430,104,0.9]]) {
+      el(sky, 'circle', { class: 'star night-only', cx: x, cy: y, r, opacity: 0.55 + (x % 5) * 0.08 });
+    }
+    el(sky, 'circle', { class: 'night-only', cx: 850, cy: 62, r: 54, fill: 'url(#glow)', opacity: 0.16 });
+    el(sky, 'circle', { class: 'moon night-only', cx: 850, cy: 62, r: 15 });
+    el(sky, 'circle', { class: 'day-only', cx: 850, cy: 66, r: 70, fill: 'url(#glow)', opacity: 0.3 });
+    el(sky, 'circle', { class: 'sun day-only', cx: 850, cy: 66, r: 21 });
+
+    // --- houses: whitewashed walls, dark tiles, a lit window or two at night
+    const houses = at('houses');
+    const house = (x, w, wallH, roofH, base = 262, windows = 2) => {
+      const g = el(houses, 'g');
+      const top = base - wallH;
+      el(g, 'rect', { class: 'wall', x, y: top, width: w, height: wallH });
+      el(g, 'rect', { class: 'plinth', x, y: base - 4, width: w, height: 4 });
+      el(g, 'path', { class: 'roof', d: `M${x - 6} ${top + 1} L${x + w + 6} ${top + 1} L${x + w - 4} ${top - roofH} L${x + 4} ${top - roofH} Z` });
+      el(g, 'path', { class: 'roof-line', d: `M${x - 6} ${top + 1} L${x + w + 6} ${top + 1} M${x + 8} ${top - roofH * 0.45} L${x + w - 8} ${top - roofH * 0.45}` });
+      const wy = top + Math.max(5, wallH * 0.3);
+      const wh = Math.max(6, wallH * 0.32);
+      for (let i = 0; i < windows; i++) {
+        const wx = x + (w * (i + 1)) / (windows + 1) - 3.5;
+        el(g, 'circle', { class: 'halo-window night-only', cx: wx + 3.5, cy: wy + wh / 2, r: 15 });
+        el(g, 'rect', { class: 'win', x: wx, y: wy, width: 7, height: wh, rx: 1 });
+      }
+      if (wallH > 24) el(g, 'rect', { class: 'door', x: x + w / 2 - 3.5, y: base - 13, width: 7, height: 13, rx: 1 });
+    };
+    for (const [x, w, wh, rh, n] of [[14,50,20,14,2],[72,60,24,16,3],[140,46,18,12,2],[194,70,24,16,3],[272,52,20,14,2],[332,66,26,18,3],[406,48,20,14,2]]) house(x, w, wh, rh, 262, n);
+    for (const [x, w, wh, rh, n] of [[454,60,32,20,3],[520,60,36,22,3]]) house(x, w, wh, rh, 262, n);
+    for (const [x, w, wh, rh, n] of [[800,52,36,24,2],[858,64,40,26,3]]) house(x, w, wh, rh, 262, n);
+
+    // --- the stone bridge, with a gap in its railing
+    const bridge = at('bridge');
+    const deckY = (x) => { const t = (x - 596) / 188; return (1 - t) * (1 - t) * 248 + 2 * t * (1 - t) * 206 + t * t * 248; };
+    el(bridge, 'path', { class: 'stone', d: 'M596 276 L596 248 Q690 206 784 248 L784 276 Z' });
+    el(bridge, 'path', { class: 'stone-line', d: 'M596 248 Q690 206 784 248' });
+    el(bridge, 'path', { class: 'water', d: 'M630 276 A60 38 0 0 1 750 276 Z' });
+    el(bridge, 'path', { class: 'stone-line', d: 'M626 276 A64 42 0 0 1 754 276' });
+    for (const x of [606, 624, 758, 772]) el(bridge, 'path', { class: 'stone-line', d: `M${x} 266 L${x + 10} 266 M${x + 2} 256 L${x + 12} 256`, opacity: 0.7 });
+    const railY = (x) => deckY(x) - 9;
+    const post = (x) => el(bridge, 'rect', { class: 'stone', x: x - 2.2, y: railY(x) - 2, width: 4.4, height: 11, rx: 1.2 });
+    const rail = (x0, x1) => {
+      let d = '';
+      for (let x = x0; x <= x1; x += 4) d += `${x === x0 ? 'M' : 'L'}${x} ${railY(x) + 1.5} `;
+      el(bridge, 'path', { class: 'stone-line', d, 'stroke-width': 3.2, stroke: 'var(--stone)' });
+      el(bridge, 'path', { class: 'stone-line', d, 'stroke-width': 1, opacity: 0.8 });
+    };
+    rail(598, 698); rail(732, 782);
+    for (const x of [598, 624, 650, 676, 698, 734, 758, 782]) post(x);
+    // what came down: a stone on the deck's edge and two in the water
+    el(bridge, 'rect', { class: 'stone-dark', x: 709, y: deckY(712) - 5, width: 10, height: 6, rx: 2, transform: `rotate(-12 714 ${deckY(712)})` });
+    el(bridge, 'rect', { class: 'stone-dark', x: 742, y: 281, width: 11, height: 6, rx: 2.5, transform: 'rotate(14 747 284)' });
+    el(bridge, 'rect', { class: 'stone-dark', x: 764, y: 289, width: 8, height: 5, rx: 2, transform: 'rotate(-9 768 291)' });
+
+    // --- the river: ripples, and the lamps of the windows by night
+    const water = at('water-things');
+    for (const [x, y, w] of [[30,290,38],[120,304,48],[210,292,30],[300,306,44],[392,293,36],[474,308,50],[566,296,32],[636,306,40],[700,296,44],[790,308,34],[860,294,40],[900,310,28]]) {
+      el(water, 'path', { class: 'ripple', d: `M${x} ${y} q ${w / 4} -3 ${w / 2} 0 t ${w / 2} 0` });
+    }
+    for (const x of [40, 104, 163, 229, 297, 358, 430, 484, 548, 826, 884]) {
+      for (let i = 0; i < 3; i++) el(water, 'ellipse', { class: 'reflect night-only', cx: x, cy: 284 + i * 7, rx: 7 - i * 1.6, ry: 1.5 });
+    }
+
+    // --- strings of lanterns across the top
+    const lanterns = at('lanterns');
+    const curve = (p0, p1, p2, count, skip = 0) => {
+      el(lanterns, 'path', { class: 'rope', d: `M${p0[0]} ${p0[1]} Q ${p1[0]} ${p1[1]} ${p2[0]} ${p2[1]}` });
+      for (let i = 0; i < count; i++) {
+        const t = (i + 0.5) / count;
+        const x = (1 - t) * (1 - t) * p0[0] + 2 * t * (1 - t) * p1[0] + t * t * p2[0];
+        const y = (1 - t) * (1 - t) * p0[1] + 2 * t * (1 - t) * p1[1] + t * t * p2[1];
+        const gold = (i + skip) % 4 === 3;
+        const g = el(lanterns, 'g');
+        el(g, 'circle', { class: 'halo', cx: x, cy: y + 12, r: 26 });
+        el(g, 'path', { class: 'rope', d: `M${x} ${y} L${x} ${y + 3}` });
+        el(g, 'rect', { class: 'lamp-cap', x: x - 4, y: y + 3, width: 8, height: 3, rx: 1 });
+        el(g, 'rect', { class: gold ? 'lamp gold' : 'lamp', x: x - 7, y: y + 5, width: 14, height: 15, rx: 6 });
+        el(g, 'path', { class: 'lamp-rib', d: `M${x - 3} ${y + 6} Q${x - 4.5} ${y + 12.5} ${x - 3} ${y + 19} M${x + 3} ${y + 6} Q${x + 4.5} ${y + 12.5} ${x + 3} ${y + 19}` });
+        el(g, 'rect', { class: 'lamp-cap', x: x - 4, y: y + 19, width: 8, height: 2.4, rx: 1 });
+        el(g, 'path', { class: 'lamp-tassel', d: `M${x} ${y + 21} L${x} ${y + 28}` });
+      }
+    };
+    curve([-12, 4], [224, 40], [460, 16], 11);
+    curve([460, 16], [696, 42], [934, 2], 11, 2);
+
+    // --- the rumour: three pieces, the lights between them, a flag where the story changed
+    const rumour = at('rumour');
+    const pieces = [[536, 246], [672, 182], [808, 246]];
+    const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+    for (let i = 0; i < 2; i++) {
+      const [a, b] = [pieces[i], pieces[i + 1]];
+      el(rumour, 'path', { class: 'link', d: `M${a[0]} ${a[1]} L${b[0]} ${b[1]}` });
+      const [x, y] = lerp(a, b, 0.52);
+      el(rumour, 'circle', { class: 'halo', cx: x, cy: y, r: 20, opacity: 1 });
+      el(rumour, 'circle', { class: i === 0 ? 'dot-other' : 'dot-blame', cx: x, cy: y, r: 5.2 });
+      el(rumour, 'circle', { cx: x, cy: y, r: 2, fill: '#fff', opacity: 0.85 });
+    }
+    for (const [x, y] of pieces) {
+      el(rumour, 'ellipse', { cx: x, cy: y + 13, rx: 12, ry: 4, fill: '#000', opacity: 0.12 });
+      el(rumour, 'circle', { class: 'piece zhou', cx: x, cy: y, r: 14 });
+      el(rumour, 'text', { class: 'piece-letter en', x, y: y + 4.6 }).textContent = 'Z';
+      el(rumour, 'text', { class: 'piece-letter zh', x, y: y + 4.8 }).textContent = '周';
+    }
+    const [fx, fy] = lerp(pieces[1], pieces[2], 0.52);
+    el(rumour, 'circle', { class: 'flag', cx: fx - 15, cy: fy + 11, r: 8.5 });
+    el(rumour, 'text', { class: 'flag-text', x: fx - 15, y: fy + 14.4 }).textContent = '1';
+
+    window.__needs = [
+      document.fonts.load('500 40px "Lantern Display"', 'Lantern Eve'),
+      document.fonts.load('40px "Lantern Brush"', '灯会前夕'),
+    ];
+  </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+/* The two faces of the page, each cut down to the characters of the game (tools/fonts) and each under the SIL Open
+   Font License 1.1, with the licence beside the file in public/fonts.
+
+   WenKai is a Kai face with Latin letters in the same family, so Chinese and English are set in one hand: Regular for
+   the text and Medium for what stands out. The page asks for no bolder weight, and the browser does not make one
+   (font-synthesis is off in base.css), so a 700 in a style sheet draws the Medium.
+
+   Brush is Ma Shan Zheng, a brush face, for the titles only: the name of the game, the masthead of the gazette, the
+   names of the tasks on the slips (and what a slip says while there is no task), the names of the jobs on the ledger
+   and the titles of the cards that say a job is done. */
+
+@font-face {
+  font-family: "WenKai";
+  src: url("/fonts/lxgw-wenkai/LXGWWenKai-Regular.subset.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "WenKai";
+  src: url("/fonts/lxgw-wenkai/LXGWWenKai-Medium.subset.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Brush";
+  src: url("/fonts/ma-shan-zheng/MaShanZheng-titles.subset.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

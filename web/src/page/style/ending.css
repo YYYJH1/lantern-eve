@@ -1,0 +1,404 @@
+/* The ending: a page laid over the map when the last night is over. The name of the ending is set in the brush face, what became of the people comes
+   first, and the rest is ruled like a page of accounts: the numbers of the night, what really happened, how the rumours travelled. Nothing in it is
+   a box inside the page. */
+
+.ending {
+  position: fixed;
+  inset: var(--topbar-h) 0 0 0;
+  z-index: 18;
+  min-width: 0;
+  min-height: 0;
+  padding: 18px clamp(10px, 3vw, 32px) 26px;
+  overflow-y: auto;
+  background: var(--veil);
+}
+
+.ending-sheet {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 10px clamp(8px, 2.4vw, 28px) 8px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.ending-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.ending-title {
+  margin: 0;
+  font-size: clamp(34px, 6vw, 54px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.25;
+}
+
+/* A hidden ending is a stamp on the page. */
+
+.ending-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 14px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ending-tag {
+  padding: 2px 14px;
+  border: 2px solid var(--rouge);
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  outline: 1px solid var(--rouge);
+  outline-offset: -5px;
+  transform: rotate(-2deg);
+}
+
+.ending-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 0 32px;
+  margin-top: 14px;
+}
+
+.ending-wide {
+  grid-column: 1 / -1;
+}
+
+.ending-card {
+  min-width: 0;
+  padding: 10px 0 12px;
+  border-top: 2px solid var(--ink);
+}
+
+.ending-card-title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+/* What became of the people: a name for each, and one or two sentences. */
+
+.ending-after .ending-card-title {
+  font-size: 28px;
+  letter-spacing: 0.3em;
+}
+
+.ending-epilogue {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ending-epilogue li {
+  display: grid;
+  grid-template-columns: 8.5em minmax(0, 1fr);
+  gap: 4px 16px;
+  padding: 7px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.ending-epilogue li:first-child {
+  border-top: 0;
+}
+
+.epilogue-name {
+  font-weight: 500;
+}
+
+.epilogue-text {
+  min-width: 0;
+  line-height: 1.55;
+}
+
+/* The numbers of the night, as lines of a ledger. */
+
+.ending-numbers {
+  display: grid;
+  margin: 0;
+}
+
+.ending-numbers > div {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.ending-numbers > div:first-child {
+  border-top: 0;
+}
+
+.ending-numbers dt {
+  font-weight: 500;
+}
+
+.ending-numbers dd {
+  margin: 0;
+  text-align: right;
+}
+
+.ending-checks {
+  display: grid;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ending-checks li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 4px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.ending-check-mark {
+  display: inline-block;
+  flex: none;
+  width: 24px;
+  height: 20px;
+  color: var(--tick);
+}
+
+.ending-check-mark svg {
+  display: block;
+  width: 24px;
+  height: 20px;
+}
+
+.ending-check-word {
+  margin-left: auto;
+  font-weight: 500;
+}
+
+.ending-truth {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.ending-quiet,
+.ending-small {
+  margin: 4px 0;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.ending-aside {
+  font-size: 15px;
+}
+
+/* How a rumour travelled: a tree of names joined by the tellings. */
+
+.ending-chain + .ending-chain {
+  margin-top: 12px;
+}
+
+.ending-chain-title {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.tree-wrap {
+  overflow-x: auto;
+  padding: 4px 0 8px;
+}
+
+.tree {
+  display: block;
+  max-width: none;
+}
+
+/* A tree that is a little too wide for its page is scaled to fit. */
+.tree {
+  max-width: 100%;
+  height: auto;
+}
+
+.tree text {
+  fill: var(--ink);
+  font-family: var(--serif);
+  font-size: 13.5px;
+}
+
+.tree-edge {
+  stroke: var(--ink);
+  stroke-width: 1.4;
+}
+
+.tree-edge.is-untrue {
+  stroke-dasharray: 6 4;
+}
+
+.tree-edge.is-changed {
+  stroke-width: 2.8;
+}
+
+.tree-node rect {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+
+.tree-node.is-first rect {
+  stroke-width: 3;
+}
+
+.tree .tree-words {
+  font-size: 12.5px;
+}
+
+.tree .tree-words.is-heard {
+  font-style: normal;
+}
+
+.tree-flag circle {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.tree-flag text {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.tree-changes {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tree-changes li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.tree-change-body {
+  display: grid;
+  min-width: 0;
+}
+
+.tree-quote {
+  font-size: 15px;
+}
+
+.tree-number {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Who believed what, and what was said: names written out in a line, not set in boxes. */
+
+.ending-side + .ending-side {
+  margin-top: 6px;
+}
+
+.ending-side h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.ending-count {
+  margin-left: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ending-pills {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ending-pills li:not(:last-child)::after {
+  content: "，";
+  margin-right: 0.15em;
+}
+
+:root:lang(en) .ending-pills li:not(:last-child)::after {
+  content: ",";
+  margin-right: 0.4em;
+}
+
+.ending-said {
+  display: grid;
+  gap: 4px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ending-said li {
+  padding: 4px 0;
+  border-top: 1px solid var(--rule);
+  line-height: 1.5;
+}
+
+.ending-said li:first-child {
+  border-top: 0;
+}
+
+.ending-said li[data-caught="true"] {
+  font-weight: 500;
+}
+
+.ending-part {
+  margin-top: 8px;
+}
+
+.ending-part h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.ending-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 28px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 2px solid var(--ink);
+  font-size: 18px;
+}
+
+.ending-foot .ink-frame {
+  min-width: 140px;
+  padding: 8px 24px;
+}
+
+/* The word that brings the ending back, once it is put away: a frame on a slip of paper over the map. */
+
+.ending-tab {
+  z-index: 5;
+  min-width: 0;
+  min-height: 40px;
+  padding: 6px 18px;
+  background: var(--paper);
+  font-size: 17px;
+}

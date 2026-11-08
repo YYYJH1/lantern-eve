@@ -1,0 +1,345 @@
+/* The numbers beside the map, and the small things laid over the map itself. */
+
+.card {
+  padding: 10px 4px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.card-title {
+  margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* Stat rows -------------------------------------------------------------------------------- */
+
+.stats {
+  display: block;
+}
+
+.stat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 12px;
+  padding: 8px 0;
+  border-top: 1px dashed var(--line);
+}
+
+.stat:first-child {
+  border-top: 0;
+}
+
+.stat dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.stat-icon {
+  display: inline-flex;
+  color: var(--accent);
+}
+
+.stat dd {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: auto;
+}
+
+.stat-value {
+  color: var(--ink-strong);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-sub {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.dash {
+  color: var(--faint);
+  font-weight: 400;
+}
+
+/* The person who is picked ----------------------------------------------------------------- */
+
+.person-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.person-token {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 0;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 21px;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--accent-ink) 22%, transparent);
+}
+
+.person-name {
+  color: var(--ink-strong);
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.person-role {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.person-bio {
+  margin-bottom: 8px;
+}
+
+.person-bio .card-subtitle {
+  margin-top: 0;
+}
+
+/* In a talk the bio is one line, the heading, and the words open on a click. */
+.person-bio-fold {
+  margin-bottom: 4px;
+}
+
+.person-bio-fold > summary {
+  cursor: pointer;
+}
+
+.person-bio-fold[open] > summary {
+  margin-bottom: 6px;
+}
+
+/* Under what the town says: what the person leans to and the other account they were told, if they said so. */
+.person-lean {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.person-lean .lean-label {
+  color: var(--ink-strong);
+}
+
+.person-lean .lean-rival {
+  color: var(--muted);
+}
+
+:root:lang(zh) .person-lean {
+  line-height: 1.7;
+}
+
+.person-bio-text {
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+:root:lang(zh) .person-bio-text {
+  line-height: 1.7;
+}
+
+.facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 4px 0;
+  border-top: 1px dashed var(--line);
+}
+
+.facts dt {
+  flex: none;
+  color: var(--muted);
+}
+
+.facts dd {
+  min-width: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Over the map ----------------------------------------------------------------------------- */
+
+/* The buttons for the camera, and the key to the lights, in a column down the left edge under the placard. */
+.map-tools {
+  position: absolute;
+  top: 196px;
+  left: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.map-legend {
+  position: absolute;
+  top: 336px;
+  left: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: max-content;
+  max-width: 170px;
+  padding: 5px 10px 6px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.legend-title {
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--rule);
+  font-weight: 500;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dot {
+  flex: none;
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border: 1px solid var(--ink); /* a ring of ink, so that the pale dot shows on paper too */
+  border-radius: 50%;
+  background: var(--other);
+}
+
+.dot-blame {
+  background: var(--blame);
+}
+
+.dot-clear {
+  background: var(--clear);
+}
+
+.dot-other {
+  background: var(--other);
+}
+
+.tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.tooltip-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px 11px 5px;
+  transform: translate(-50%, calc(-100% - 22px));
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.tooltip-card strong {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.tooltip-card em {
+  font-style: normal;
+}
+
+.toasts {
+  position: absolute;
+  top: max(84px, var(--line-room, 0px)); /* under a line of the help while one is up (the tutorial line, a hint), as the sheets are */
+  right: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: min(380px, calc(100% - 340px));
+  pointer-events: none;
+}
+
+.toasts > * {
+  pointer-events: auto;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 5px 6px 5px 12px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14.5px;
+  overflow-wrap: anywhere;
+}
+
+.toast-error {
+  padding-right: 12px;
+  font-weight: 500;
+}
+
+.toast-close {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.toast-close:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--bg);
+  color: var(--base-ink);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.veil-failed {
+  font-weight: 500;
+}
+
+.spinner {
+  display: none;
+}

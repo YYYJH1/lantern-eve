@@ -1,0 +1,112 @@
+name: CI
+
+# Every push to main and every pull request runs the three jobs, and so does a start by hand. Once a week
+# the browser job runs alone, so that a new browser or runner image shows up without a push. A job runs in
+# YYYJH1/lantern-eve, or when someone starts the workflow by hand: a fork spends no minutes of its own.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (Python ${{ matrix.python-version }})
+    if: ${{ github.event_name != 'schedule' && (github.repository == 'YYYJH1/lantern-eve' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.14 because the browser runs the core in Pyodide 314, which is Python 3.14.
+        python-version: ["3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run python tools/check_content.py --check
+      - run: uv run python tools/fonts/build.py --check
+      - run: uv run pytest -q -n 4
+
+  cross-host:
+    name: CPython and Pyodide agree (Node 22, Pyodide 314)
+    if: ${{ github.event_name != 'schedule' && (github.repository == 'YYYJH1/lantern-eve' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - run: npm ci --prefix tests/cross_host
+      - run: uv sync
+      # Skipping here would mean the browser's interpreter was never checked, so a skip fails.
+      # test_host_replay also reads a server replay with the browser's own code under Pyodide.
+      - name: Every call hashes the same under both interpreters
+        run: |
+          set -euo pipefail
+          uv run pytest -q -rs -n 4 tests/cross_host tests/host_server/test_host_replay.py | tee cross_host.txt
+          if grep -q SKIPPED cross_host.txt; then
+            echo "::error::the cross-host tests were skipped"
+            exit 1
+          fi
+
+  web:
+    name: web build and browser tests (Node 22, Chromium, shard ${{ matrix.shard }} of 2)
+    if: ${{ github.repository == 'YYYJH1/lantern-eve' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        # The browser tests run one at a time, so that what they time is the page and not the other
+        # tests. Two runners take half of the browser files each, and the first also runs the unit
+        # tests, which take seconds.
+        shard: [1, 2]
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      # uv builds the core wheel the page loads, and the replay checks run the core in CPython.
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - run: uv sync
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # Type check, the production build and the test build, then the unit tests on the first runner and
+      # this runner's half of the browser tests. Split together, the many small unit files would fill one
+      # half and leave the browser files to the other.
+      - run: npm run build && npm run build:e2e
+      - run: npx playwright test --project=unit
+        if: matrix.shard == 1
+      - run: npx playwright test --project=chromium --shard=${{ matrix.shard }}/2
+      # A failed test leaves its page as it stood (error-context.md) and a screenshot in test-results, next to the
+      # replays and reports the tests write. Uploaded only when a step above failed, and kept for a week.
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: web-test-results-shard-${{ matrix.shard }}
+          path: web/test-results
+          retention-days: 7
+          if-no-files-found: ignore

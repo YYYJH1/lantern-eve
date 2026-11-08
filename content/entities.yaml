@@ -1,0 +1,182 @@
+# Entities of the town. Ids are English, labels Chinese, label_en the English name. No persona cards
+# here: how a person speaks is in content/lines. Each person of the cast has a bio, two sentences in
+# each language of what the town says of them. It holds public things only, so it is true whichever
+# story of a script is true, and it points the way without giving the answer.
+families:
+  - {id: fam_li, label: 李家, label_en: "Li Family"}
+  - {id: fam_zhou, label: 周家, label_en: "Zhou Family"}
+
+people:
+  - id: li_laotai
+    label: 李老太
+    label_en: "Granny Li"
+    family: fam_li
+    bio:
+      zh: "李老太守寡多年，一手把李大、李二两个儿子拉扯大，如今孙女孙子都在跟前。李家的大事，最后都要她点头。"
+      en: "Granny Li has been a widow for many years and raised her two sons, Li Da and Li Er, on her own, and now has her grandchildren about her. Nothing large is decided in the Li house until she nods."
+  - id: li_da
+    label: 李大
+    label_en: "Li Da"
+    family: fam_li
+    bio:
+      zh: "李大是李老太的长子，家里的竹林和竹料归他管。他做事稳当，可大事向来要等娘发话。"
+      en: "Li Da is Granny Li's elder son and has charge of the family's bamboo grove and its bamboo. He is steady, and on anything big he waits for his mother's word."
+  - id: li_er
+    label: 李二
+    label_en: "Li Er"
+    family: fam_li
+    bio:
+      zh: "李二是李老太的小儿子，在扎灯坊帮工，糊出来的灯又圆又亮。他脾气随和，镇上老老少少都和他说得上话。"
+      en: "Li Er is Granny Li's younger son and works at the lantern workshop, where the lanterns he pastes come out round and bright. He is easygoing and has a word for everyone in town, young or old."
+  - id: shitou
+    label: 石头
+    label_en: "Shitou"
+    family: fam_li
+    bio:
+      zh: "石头是李大的小儿子，白天在私塾念书，一下学就往河滩跑。他嗓门大，心里藏不住话。"
+      en: "Shitou is Li Da's young son. He spends the day at the school and runs to the riverbank the moment lessons end. He is loud and cannot keep anything to himself."
+  - id: li_xiaomei
+    label: 李家小妹
+    label_en: "Li Xiaomei"
+    family: fam_li
+    bio:
+      zh: "李家小妹是李大的女儿，常去扎灯坊帮着裁纸、糊灯面。她手巧嘴甜，街坊都喜欢她。"
+      en: "Li Xiaomei is Li Da's daughter and often helps at the lantern workshop, cutting paper and pasting shades. She is deft and sweet-tongued, and the neighbours are fond of her."
+  - id: zhou_zhanggui
+    label: 周掌柜
+    label_en: "Shopkeeper Zhou"
+    family: fam_zhou
+    bio:
+      zh: "周掌柜做了半辈子木料生意，修桥要的木料大半在他家库里。在他那里，人情和买卖是两本账。"
+      en: "Shopkeeper Zhou has traded in timber for half his life, and most of the timber a repair would need sits in his store. To him, favours and business are kept in two separate ledgers."
+  - id: zhou_huoji
+    label: 周家伙计
+    label_en: "Zhou's Clerk"
+    family: fam_zhou
+    bio:
+      zh: "伙计在周家帮工好些年，记性好，手脚勤快。遇上什么事，他一开口总是「掌柜的说了算」。"
+      en: "Zhou's Clerk has worked for the Zhou family for years, with a good memory and quick hands. Whatever comes up, his first words are that the Shopkeeper decides."
+  - id: zhou_dalang
+    label: 周家大郎
+    label_en: "Zhou Dalang"
+    family: fam_zhou
+    bio:
+      zh: "周家大郎是周掌柜的长子，帮家里扛木料、跑买卖。他力气大，脾气也大，闲下来就往酒肆跑。"
+      en: "Zhou Dalang is the Shopkeeper's elder son and carries timber and runs errands for the family trade. He is strong and short-tempered, and spends his free hours at the tavern."
+  - id: zhou_niangzi
+    label: 周娘子
+    label_en: "Madam Zhou"
+    family: fam_zhou
+    bio:
+      zh: "周娘子是周掌柜的妻子，天天在集市上走动。街坊谁家有点事，她总是头一个知道，也头一个说出去。"
+      en: "Madam Zhou is the Shopkeeper's wife and is out at the market every day. When anything happens in any house on the street, she is the first to hear of it and the first to tell it."
+  - id: zhou_erlang
+    label: 周家二郎
+    label_en: "Zhou Erlang"
+    family: fam_zhou
+    bio:
+      zh: "周家二郎是周掌柜的次子，性子温和，常替家里去集市、河边办事。两家吵得再凶，他见了李家人也照样问好。"
+      en: "Zhou Erlang is the Shopkeeper's younger son, mild by nature, and often sent to the market and the river on family errands. However hard the two families quarrel, he still greets the Li family when he meets them."
+  - id: old_he
+    label: 船夫老何
+    label_en: "Boatman He"
+    bio:
+      zh: "老何在渡口摆了二十多年渡船，镇上的人谁都坐过他的船。河上的事他看得多，说得少。"
+      en: "Boatman He has run the ferry for more than twenty years, and everyone in town has crossed in his boat. The boatman sees a great deal of what happens on the river and says little of it."
+  - id: xiao_man
+    label: 小满
+    label_en: "Xiaoman"
+    bio:
+      zh: "小满家就在河边，夜里常一个人蹲在河滩钓鱼，白天就犯困。小满说的话，大人们多半当孩子话听。"
+      en: "Xiaoman lives by the river, often fishes alone on the bank at night, and dozes through the day. The grown-ups mostly hear what Xiaoman says as a child's talk."
+  - id: gengfu
+    label: 更夫
+    label_en: "Night Watchman"
+    bio:
+      zh: "更夫打了十几年更，每夜提着锣沿河岸、过石桥报时。他爱喝两口，镇上人都说他夜里看见的事要打个折扣。"
+      en: "The Night Watchman has walked his rounds for more than ten years, along the river and over the stone bridge, calling the hours on his gong. He likes a drink, and the town says that what he sees at night should be taken with some doubt."
+  - id: zhangfang
+    label: 账房
+    label_en: "Accountant"
+    bio:
+      zh: "账房先生管着全镇的公账。修桥修路、灯会的花销，一笔一笔都记在他的账本上。"
+      en: "The Accountant keeps the town's common accounts. Every coin spent on bridges, roads and the festival is written down in his ledger."
+  - id: cha_laoban
+    label: 茶馆老板娘
+    label_en: "Teahouse Keeper"
+    bio:
+      zh: "老板娘在河边守着茶馆十几年，镇上的新鲜事都要在她的茶桌上过一遍。话从她这里传出去，往往又多了几分颜色。"
+      en: "The Teahouse Keeper has kept the teahouse by the river for more than ten years, and every piece of news in town passes over her tables. What leaves her teahouse has usually gained some colour on the way."
+  - id: miaozhu
+    label: 庙祝
+    label_en: "Temple Keeper"
+    bio:
+      zh: "庙祝在镇上的小庙里守了大半辈子香火。庙后那条夹道平日锁着，钥匙由她收着。"
+      en: "The Temple Keeper has tended the incense of the town's small temple for most of her life. The lane behind the temple is usually locked, and she keeps the key."
+  - id: zuzhang
+    label: 族长
+    label_en: "Clan Elder"
+    bio:
+      zh: "族长是澄溪镇辈分最高的长辈，祠堂的事和族里的规矩都由他定。这回请外乡人来当灯会总管，也是他拍的板。"
+      en: "The Clan Elder is the most senior elder in Chengxi, and the ancestral hall and the clan's rules are his to keep. Bringing in an outsider to manage this year's festival was his decision."
+  - id: mujiang
+    label: 木匠
+    label_en: "Carpenter"
+    bio:
+      zh: "木匠在扎灯坊里有一张工台，镇上门窗桌椅坏了都找他。修桥要动木头，少不了他的手艺。"
+      en: "The Carpenter keeps a bench in the lantern workshop, and the town brings him every broken door, window and chair. Any repair to the bridge that needs timber will need his hands."
+  - id: zhadeng_shifu
+    label: 扎灯师傅
+    label_en: "Lantern Maker"
+    bio:
+      zh: "扎灯师傅扎了三十年灯，每年游灯打头的那盏主灯都出自她手。今年的灯已经扎了一半，就等游灯那一夜。"
+      en: "The Lantern Maker has made lanterns for thirty years, and the great lantern at the head of every parade is her work. This year's lanterns are half made, waiting for the night of the parade."
+  - id: sishu_xiansheng
+    label: 私塾先生
+    label_en: "Schoolmaster"
+    bio:
+      zh: "私塾先生教镇上的孩子读书识字，还办着一份《镇报》。镇上的事一上了《镇报》，识字的人就当了真。"
+      en: "The Schoolmaster teaches the town's children to read and write, and puts out the Town Gazette. Once a thing is in the Gazette, those who can read take it as true."
+  - id: apprentice
+    label: 学徒阿福
+    label_en: "Apprentice Afu"
+  - id: stranger
+    label: 外乡人
+    label_en: "The Stranger"
+  - id: huolang
+    label: 邻镇货郎
+    label_en: "Peddler from the Next Town"
+
+things:
+  - {id: t_rail, label: 石桥栏杆, label_en: "Stone Bridge Railing"}
+  - {id: t_he_boat, label: 老何的船, label_en: "The Ferry Boat"}
+  - {id: t_li_er_lantern, label: 掉进水里的灯笼, label_en: "The Lost Lantern"}
+  - {id: t_repair_ledger, label: 账房的修船记录, label_en: "The Accountant's Boat Repair Ledger"}
+  - {id: t_main_lantern, label: 主灯, label_en: "The Main Lantern"}
+  - {id: t_apprentice_towel, label: 学徒的蓝布巾, label_en: "Apprentice's Blue Cloth"}
+  - {id: t_toy_horse, label: 石头的竹马, label_en: "Shitou's Bamboo Horse"}
+  - {id: t_zhou_tassel, label: 周家灯穗, label_en: "Zhou Family Lantern Tassel"}
+  - {id: t_sample_lantern, label: 外乡人的样灯, label_en: "Stranger's Sample Lantern"}
+  - {id: t_deposit, label: 定金, label_en: "Deposit"}
+  - {id: t_honor_light, label: 点主灯的体面, label_en: "The Honour of Lighting the Main Lantern"}
+
+places:
+  - {id: p_bridge, label: 石桥, label_en: "Stone Bridge"}
+  - {id: p_under_bridge, label: 桥下水面, label_en: "Water Beneath the Bridge"}
+  - {id: p_riverbank, label: 河滩, label_en: "Riverbank"}
+  - {id: p_ferry, label: 渡口, label_en: "Ferry Landing"}
+  - {id: p_he_home, label: 老何家, label_en: "Boatman He's House"}
+  - {id: p_li_house, label: 李家宅, label_en: "Li Family House"}
+  - {id: p_zhou_house, label: 周家宅, label_en: "Zhou Family House"}
+  - {id: p_tavern, label: 酒肆, label_en: "Tavern"}
+  - {id: p_teahouse, label: 茶馆, label_en: "Teahouse"}
+  - {id: p_temple, label: 庙, label_en: "Temple"}
+  - {id: p_clan_hall, label: 祠堂, label_en: "Ancestral Hall"}
+  - {id: p_workshop, label: 扎灯坊, label_en: "Lantern Workshop"}
+  - {id: p_loft, label: 工坊阁楼, label_en: "Workshop Loft"}
+  - {id: p_dorm, label: 学徒房, label_en: "Apprentices' Room"}
+  - {id: p_inn, label: 客栈, label_en: "Inn"}
+  - {id: p_town_gate, label: 镇口, label_en: "Town Gate"}
+  - {id: p_next_town, label: 邻镇, label_en: "Next Town"}
+  - {id: p_cloud_workshop, label: 云锦灯坊, label_en: "Cloud Brocade Lantern Shop"}
+  - {id: p_river_port, label: 下游码头, label_en: "Downstream Port"}

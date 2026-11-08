@@ -1,0 +1,502 @@
+# The cast of the scenario `bridge` in version 0: twenty named people of Chengxi town, seen
+# through the network they form. Every id is unique. An id that is in
+# entities.yaml must carry the same names and family there. The other ids are cast-only until a
+# script needs them.
+#
+# network tags (not exclusive, and none is shown to the player):
+#   hub          knows many people, passes news on fast and bends it often
+#   bridge       links the two families, so a rumour crosses over through them
+#   gatekeeper   trusted, weighty, and slow to pass anything on
+#   witness      often sees the truth, but the grown-ups do not quite believe them
+#
+# traits are ints in [0, 100]: gossip (how readily they pass a thing on), conformity (how much
+# they follow their own group), suspicion (how readily they think ill of others), warmth (how
+# readily they think well of the listener). ops are the weights of the four operators that
+# retell a proposition (level, sharpen, assimilate, fill) and add up to 100.
+#
+# A routine is a list of (hour, act, place) on the 24-hour clock. The day runs from 06:00 and
+# the first entry is at 06:00. An entry holds until the next one, and the last holds until
+# 06:00 again. The place of the last entry is home, where the person sleeps. Everyone but a
+# night_shift person goes home when the night begins, whatever the routine says.
+#
+# holdings are the stocks a person keeps: the item, how many bundles, and where they lie.
+
+id: bridge_v0
+scenario: bridge
+script: broken_bridge
+size: 20
+
+items:
+  - {id: bamboo, zh: 竹料, en: Bamboo}
+  - {id: timber, zh: 木料, en: Timber}
+  - {id: tools, zh: 工具, en: Tools}
+
+activities:
+  - {id: sleep, zh: 睡觉, en: Sleeping}
+  - {id: meal, zh: 用饭, en: Having a meal}
+  - {id: work, zh: 干活, en: Working}
+  - {id: tea, zh: 喝茶, en: Having tea}
+  - {id: drink, zh: 喝酒, en: Drinking}
+  - {id: chat, zh: 闲谈, en: Chatting}
+  - {id: pray, zh: 上香, en: Praying}
+  - {id: teach, zh: 教书, en: Teaching}
+  - {id: study, zh: 读书, en: Studying}
+  - {id: play, zh: 玩耍, en: Playing}
+  - {id: fish, zh: 钓鱼, en: Fishing}
+  - {id: ferry, zh: 摆渡, en: Ferrying}
+  - {id: patrol, zh: 巡夜, en: On the night round}
+  - {id: council, zh: 议事, en: In council}
+  - {id: rest, zh: 歇息, en: Resting}
+  # what a person does when something other than the routine decides
+  - {id: walk, zh: 赶路, en: Walking, system: true}
+  - {id: carry, zh: 搬运, en: Carrying a load, system: true}
+  - {id: shelter, zh: 躲雨, en: Sheltering from the rain, system: true}
+
+people:
+  # ---------------------------------------------------------------- the Li family
+  - id: li_laotai
+    zh: 李老太
+    en: "Granny Li"
+    role: {zh: 李家老太太, en: "Matriarch of the Li family"}
+    token: {zh: 李, en: L}
+    family: fam_li
+    tags: []
+    home: p_li_house
+    work: p_li_house
+    traits: {gossip: 35, conformity: 70, suspicion: 60, warmth: 55}
+    ops: {level: 20, sharpen: 25, assimilate: 40, fill: 15}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_li_house}
+      - {hour: 7, act: pray, place: p_temple}
+      - {hour: 9, act: rest, place: p_li_house}
+      - {hour: 12, act: meal, place: p_li_house}
+      - {hour: 13, act: rest, place: p_li_house}
+      # she stays at the teahouse for the evening: the first evening's scene needs her there
+      - {hour: 15, act: tea, place: p_teahouse}
+      - {hour: 19, act: meal, place: p_li_house}
+      - {hour: 21, act: sleep, place: p_li_house}
+
+  - id: li_da
+    zh: 李大
+    en: "Li Da"
+    role: {zh: 李家长子，管竹料, en: "Eldest Li son, keeper of the bamboo"}
+    token: {zh: 李, en: L}
+    family: fam_li
+    tags: []
+    home: p_li_house
+    work: p_li_house
+    traits: {gossip: 40, conformity: 55, suspicion: 45, warmth: 50}
+    ops: {level: 25, sharpen: 25, assimilate: 35, fill: 15}
+    holdings:
+      - {item: bamboo, qty: 30, at: p_li_house}
+    routine:
+      - {hour: 6, act: meal, place: p_li_house}
+      - {hour: 7, act: work, place: p_li_house}
+      - {hour: 11, act: work, place: p_market}
+      - {hour: 13, act: meal, place: p_li_house}
+      - {hour: 14, act: work, place: p_li_house}
+      # he sets out for the teahouse at four, to be there with his mother when the evening begins: the
+      # walk takes him forty minutes, and he must be in the room when a thing is set straight at five
+      - {hour: 16, act: tea, place: p_teahouse}
+      - {hour: 20, act: rest, place: p_li_house}
+      - {hour: 21, act: sleep, place: p_li_house}
+
+  - id: li_er
+    zh: 李二
+    en: "Li Er"
+    role: {zh: 李家次子, en: "Second Li son"}
+    token: {zh: 李, en: L}
+    family: fam_li
+    tags: []
+    home: p_li_house
+    work: p_workshop
+    traits: {gossip: 45, conformity: 40, suspicion: 35, warmth: 55}
+    ops: {level: 30, sharpen: 20, assimilate: 25, fill: 25}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_li_house}
+      - {hour: 7, act: work, place: p_workshop}
+      - {hour: 12, act: meal, place: p_li_house}
+      - {hour: 13, act: work, place: p_workshop}
+      - {hour: 17, act: chat, place: p_bridge}
+      - {hour: 19, act: meal, place: p_li_house}
+      - {hour: 20, act: rest, place: p_li_house}
+      - {hour: 21, act: sleep, place: p_li_house}
+
+  - id: shitou
+    zh: 石头
+    en: "Shitou"
+    role: {zh: 李家的孩子, en: "Child of the Li family"}
+    token: {zh: 李, en: L}
+    family: fam_li
+    tags: []
+    home: p_li_house
+    work: p_school
+    traits: {gossip: 55, conformity: 30, suspicion: 15, warmth: 80}
+    ops: {level: 40, sharpen: 25, assimilate: 15, fill: 20}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_li_house}
+      - {hour: 8, act: study, place: p_school}
+      - {hour: 12, act: meal, place: p_li_house}
+      - {hour: 13, act: study, place: p_school}
+      - {hour: 16, act: play, place: p_riverbank}
+      - {hour: 18, act: meal, place: p_li_house}
+      - {hour: 20, act: rest, place: p_li_house}
+      - {hour: 21, act: sleep, place: p_li_house}
+
+  - id: li_xiaomei
+    zh: 李家小妹
+    en: "Li Xiaomei"
+    role: {zh: 李家小女儿, en: "Youngest daughter of the Li family"}
+    token: {zh: 李, en: L}
+    family: fam_li
+    tags: [bridge]
+    home: p_li_house
+    work: p_workshop
+    traits: {gossip: 60, conformity: 35, suspicion: 25, warmth: 80}
+    ops: {level: 30, sharpen: 10, assimilate: 20, fill: 40}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_li_house}
+      - {hour: 7, act: work, place: p_workshop}
+      - {hour: 12, act: meal, place: p_li_house}
+      - {hour: 13, act: work, place: p_workshop}
+      - {hour: 17, act: chat, place: p_riverbank}
+      - {hour: 19, act: rest, place: p_li_house}
+      - {hour: 21, act: sleep, place: p_li_house}
+
+  # ---------------------------------------------------------------- the Zhou family
+  - id: zhou_zhanggui
+    zh: 周掌柜
+    en: "Shopkeeper Zhou"
+    role: {zh: 周家掌柜，管木料, en: "Head of the Zhou shop, keeper of the timber"}
+    token: {zh: 周, en: Z}
+    family: fam_zhou
+    tags: []
+    home: p_zhou_house
+    work: p_zhou_house
+    traits: {gossip: 50, conformity: 60, suspicion: 65, warmth: 35}
+    ops: {level: 15, sharpen: 25, assimilate: 40, fill: 20}
+    holdings:
+      - {item: timber, qty: 24, at: p_zhou_house}
+    routine:
+      - {hour: 6, act: meal, place: p_zhou_house}
+      - {hour: 7, act: work, place: p_zhou_house}
+      - {hour: 10, act: work, place: p_market}
+      - {hour: 12, act: meal, place: p_zhou_house}
+      - {hour: 13, act: work, place: p_zhou_house}
+      - {hour: 17, act: tea, place: p_teahouse}
+      - {hour: 19, act: meal, place: p_zhou_house}
+      - {hour: 21, act: sleep, place: p_zhou_house}
+
+  - id: zhou_niangzi
+    zh: 周娘子
+    en: "Madam Zhou"
+    role: {zh: 周家主妇, en: "Mistress of the Zhou household"}
+    token: {zh: 周, en: Z}
+    family: fam_zhou
+    tags: []
+    home: p_zhou_house
+    work: p_market
+    traits: {gossip: 70, conformity: 60, suspicion: 50, warmth: 50}
+    ops: {level: 20, sharpen: 30, assimilate: 30, fill: 20}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_zhou_house}
+      - {hour: 7, act: work, place: p_market}
+      - {hour: 11, act: meal, place: p_zhou_house}
+      - {hour: 13, act: rest, place: p_zhou_house}
+      - {hour: 15, act: pray, place: p_temple}
+      - {hour: 17, act: chat, place: p_teahouse}
+      - {hour: 19, act: meal, place: p_zhou_house}
+      - {hour: 21, act: sleep, place: p_zhou_house}
+
+  - id: zhou_dalang
+    zh: 周家大郎
+    en: "Zhou Dalang"
+    role: {zh: 周家长子，脾气爆, en: "Eldest Zhou son, quick to anger"}
+    token: {zh: 周, en: Z}
+    family: fam_zhou
+    tags: []
+    home: p_zhou_house
+    work: p_zhou_house
+    traits: {gossip: 45, conformity: 20, suspicion: 40, warmth: 30}
+    ops: {level: 10, sharpen: 45, assimilate: 25, fill: 20}
+    holdings: []
+    routine:
+      - {hour: 6, act: sleep, place: p_zhou_house}
+      - {hour: 9, act: meal, place: p_zhou_house}
+      - {hour: 10, act: work, place: p_zhou_house}
+      - {hour: 13, act: meal, place: p_tavern}
+      - {hour: 14, act: work, place: p_zhou_house}
+      - {hour: 17, act: rest, place: p_zhou_house}
+      - {hour: 18, act: drink, place: p_tavern}
+      - {hour: 22, act: sleep, place: p_zhou_house}
+
+  - id: zhou_erlang
+    zh: 周家二郎
+    en: "Zhou Erlang"
+    role: {zh: 周家次子, en: "Second Zhou son"}
+    token: {zh: 周, en: Z}
+    family: fam_zhou
+    tags: [bridge]
+    home: p_zhou_house
+    work: p_zhou_house
+    traits: {gossip: 55, conformity: 30, suspicion: 30, warmth: 75}
+    ops: {level: 30, sharpen: 10, assimilate: 20, fill: 40}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_zhou_house}
+      - {hour: 7, act: work, place: p_zhou_house}
+      - {hour: 12, act: meal, place: p_zhou_house}
+      - {hour: 13, act: work, place: p_market}
+      - {hour: 17, act: chat, place: p_riverbank}
+      - {hour: 19, act: rest, place: p_zhou_house}
+      - {hour: 21, act: sleep, place: p_zhou_house}
+
+  - id: zhou_huoji
+    zh: 周家伙计
+    en: "Zhou's Clerk"
+    role: {zh: 在周家帮工, en: "Works for the Zhou family"}
+    token: {zh: 周, en: Z}
+    family: fam_zhou
+    tags: []
+    home: p_zhou_house
+    work: p_zhou_house
+    traits: {gossip: 65, conformity: 75, suspicion: 40, warmth: 45}
+    ops: {level: 30, sharpen: 20, assimilate: 30, fill: 20}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_zhou_house}
+      - {hour: 7, act: work, place: p_zhou_house}
+      - {hour: 10, act: work, place: p_market}
+      - {hour: 12, act: meal, place: p_teahouse}
+      - {hour: 13, act: work, place: p_zhou_house}
+      - {hour: 17, act: tea, place: p_teahouse}
+      - {hour: 19, act: meal, place: p_zhou_house}
+      - {hour: 21, act: sleep, place: p_zhou_house}
+
+  # ---------------------------------------------------------------- hubs
+  - id: cha_laoban
+    zh: 茶馆老板娘
+    en: "Teahouse Keeper"
+    role: {zh: 茶馆老板娘, en: "Keeper of the teahouse"}
+    token: {zh: 茶, en: T}
+    family: null
+    tags: [hub]
+    home: p_teahouse
+    work: p_teahouse
+    traits: {gossip: 92, conformity: 55, suspicion: 40, warmth: 70}
+    ops: {level: 10, sharpen: 45, assimilate: 25, fill: 20}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_teahouse}
+      - {hour: 7, act: work, place: p_teahouse}
+      - {hour: 12, act: meal, place: p_teahouse}
+      - {hour: 13, act: work, place: p_teahouse}
+      - {hour: 21, act: sleep, place: p_teahouse}
+
+  - id: sishu_xiansheng
+    zh: 私塾先生
+    en: "Schoolmaster"
+    role: {zh: 私塾先生，办《镇报》, en: "Schoolmaster, editor of the Town Gazette"}
+    token: {zh: 塾, en: S}
+    family: null
+    tags: [hub]
+    home: p_school
+    work: p_school
+    traits: {gossip: 70, conformity: 40, suspicion: 35, warmth: 55}
+    ops: {level: 35, sharpen: 10, assimilate: 20, fill: 35}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_school}
+      - {hour: 8, act: teach, place: p_school}
+      - {hour: 12, act: meal, place: p_school}
+      - {hour: 13, act: teach, place: p_school}
+      - {hour: 16, act: tea, place: p_teahouse}
+      - {hour: 18, act: study, place: p_school}
+      - {hour: 20, act: rest, place: p_school}
+      - {hour: 21, act: sleep, place: p_school}
+
+  # ---------------------------------------------------------------- bridges
+  - id: old_he
+    zh: 船夫老何
+    en: "Boatman He"
+    role: {zh: 摆渡船夫, en: "Ferryman"}
+    token: {zh: 何, en: H}
+    family: null
+    tags: [bridge]
+    home: p_he_home
+    work: p_ferry
+    traits: {gossip: 40, conformity: 45, suspicion: 55, warmth: 50}
+    ops: {level: 30, sharpen: 20, assimilate: 20, fill: 30}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_he_home}
+      - {hour: 7, act: ferry, place: p_ferry}
+      - {hour: 12, act: meal, place: p_he_home}
+      - {hour: 13, act: ferry, place: p_ferry}
+      - {hour: 17, act: rest, place: p_he_home}
+      - {hour: 18, act: tea, place: p_teahouse}
+      - {hour: 20, act: rest, place: p_he_home}
+      - {hour: 21, act: sleep, place: p_he_home}
+
+  # ---------------------------------------------------------------- gatekeepers
+  - id: zuzhang
+    zh: 族长
+    en: "Clan Elder"
+    role: {zh: 族长, en: "Elder of the clan"}
+    token: {zh: 族, en: C}
+    family: null
+    tags: [gatekeeper]
+    home: p_clan_hall
+    work: p_clan_hall
+    traits: {gossip: 15, conformity: 85, suspicion: 50, warmth: 45}
+    ops: {level: 50, sharpen: 5, assimilate: 35, fill: 10}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_clan_hall}
+      - {hour: 8, act: council, place: p_clan_hall}
+      - {hour: 12, act: meal, place: p_clan_hall}
+      - {hour: 13, act: council, place: p_clan_hall}
+      - {hour: 16, act: pray, place: p_temple}
+      - {hour: 17, act: tea, place: p_teahouse}
+      - {hour: 19, act: meal, place: p_clan_hall}
+      - {hour: 21, act: sleep, place: p_clan_hall}
+
+  - id: zhangfang
+    zh: 账房
+    en: "Accountant"
+    role: {zh: 账房先生, en: "Keeper of the town's accounts"}
+    token: {zh: 账, en: A}
+    family: null
+    tags: [gatekeeper]
+    home: p_accountant_home
+    work: p_market
+    traits: {gossip: 10, conformity: 60, suspicion: 70, warmth: 35}
+    ops: {level: 60, sharpen: 5, assimilate: 15, fill: 20}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_accountant_home}
+      - {hour: 8, act: work, place: p_market}
+      - {hour: 12, act: meal, place: p_accountant_home}
+      - {hour: 13, act: work, place: p_market}
+      - {hour: 17, act: rest, place: p_accountant_home}
+      - {hour: 21, act: sleep, place: p_accountant_home}
+
+  - id: miaozhu
+    zh: 庙祝
+    en: "Temple Keeper"
+    role: {zh: 庙祝, en: "Keeper of the temple"}
+    token: {zh: 庙, en: K}
+    family: null
+    tags: [gatekeeper]
+    home: p_temple
+    work: p_temple
+    traits: {gossip: 20, conformity: 70, suspicion: 40, warmth: 60}
+    ops: {level: 40, sharpen: 10, assimilate: 30, fill: 20}
+    holdings: []
+    routine:
+      - {hour: 6, act: pray, place: p_temple}
+      - {hour: 8, act: work, place: p_temple}
+      - {hour: 12, act: meal, place: p_temple}
+      - {hour: 13, act: work, place: p_temple}
+      - {hour: 17, act: work, place: p_temple_lane}
+      - {hour: 19, act: meal, place: p_temple}
+      - {hour: 21, act: sleep, place: p_temple}
+
+  # ---------------------------------------------------------------- unreliable witnesses
+  - id: xiao_man
+    zh: 小满
+    en: "Xiaoman"
+    role: {zh: 夜里爱钓鱼的孩子, en: "A child who likes to fish at night"}
+    token: {zh: 满, en: X}
+    family: null
+    tags: [witness]
+    night_shift: true
+    home: p_xiaoman_home
+    work: p_riverbank
+    traits: {gossip: 60, conformity: 25, suspicion: 20, warmth: 70}
+    ops: {level: 45, sharpen: 25, assimilate: 10, fill: 20}
+    holdings: []
+    routine:
+      - {hour: 6, act: sleep, place: p_xiaoman_home}
+      - {hour: 9, act: meal, place: p_xiaoman_home}
+      - {hour: 10, act: fish, place: p_riverbank}
+      - {hour: 13, act: meal, place: p_xiaoman_home}
+      - {hour: 14, act: play, place: p_market}
+      - {hour: 17, act: meal, place: p_xiaoman_home}
+      - {hour: 19, act: rest, place: p_xiaoman_home}
+      - {hour: 21, act: fish, place: p_riverbank}
+      - {hour: 23, act: sleep, place: p_xiaoman_home}
+
+  - id: gengfu
+    zh: 更夫
+    en: "Night Watchman"
+    role: {zh: 爱喝酒的更夫, en: "Night watchman, fond of a drink"}
+    token: {zh: 更, en: W}
+    family: null
+    tags: [witness]
+    night_shift: true
+    home: p_watch_post
+    work: p_bridge
+    traits: {gossip: 50, conformity: 40, suspicion: 55, warmth: 40}
+    ops: {level: 30, sharpen: 30, assimilate: 15, fill: 25}
+    holdings: []
+    routine:
+      - {hour: 6, act: sleep, place: p_watch_post}
+      - {hour: 14, act: meal, place: p_watch_post}
+      - {hour: 15, act: rest, place: p_watch_post}
+      - {hour: 18, act: meal, place: p_watch_post}
+      - {hour: 20, act: rest, place: p_watch_post}
+      - {hour: 21, act: patrol, place: p_bridge}
+      - {hour: 23, act: patrol, place: p_ferry}
+      - {hour: 1, act: patrol, place: p_market}
+      - {hour: 3, act: patrol, place: p_bridge}
+      - {hour: 5, act: rest, place: p_watch_post}
+
+  # ---------------------------------------------------------------- other townsfolk
+  - id: mujiang
+    zh: 木匠
+    en: "Carpenter"
+    role: {zh: 木匠, en: "Carpenter"}
+    token: {zh: 木, en: C}
+    family: null
+    tags: []
+    home: p_carpenter_home
+    work: p_workshop
+    traits: {gossip: 35, conformity: 50, suspicion: 40, warmth: 55}
+    ops: {level: 35, sharpen: 15, assimilate: 25, fill: 25}
+    holdings:
+      - {item: tools, qty: 3, at: p_workshop}
+    routine:
+      - {hour: 6, act: meal, place: p_carpenter_home}
+      - {hour: 7, act: work, place: p_workshop}
+      - {hour: 12, act: meal, place: p_carpenter_home}
+      - {hour: 13, act: work, place: p_workshop}
+      - {hour: 17, act: tea, place: p_teahouse}
+      - {hour: 19, act: meal, place: p_carpenter_home}
+      - {hour: 21, act: sleep, place: p_carpenter_home}
+
+  - id: zhadeng_shifu
+    zh: 扎灯师傅
+    en: "Lantern Maker"
+    role: {zh: 扎灯师傅, en: "Master of the lantern workshop"}
+    token: {zh: 灯, en: M}
+    family: null
+    tags: []
+    home: p_workshop
+    work: p_workshop
+    traits: {gossip: 30, conformity: 45, suspicion: 30, warmth: 60}
+    ops: {level: 35, sharpen: 15, assimilate: 20, fill: 30}
+    holdings: []
+    routine:
+      - {hour: 6, act: meal, place: p_workshop}
+      - {hour: 7, act: work, place: p_workshop}
+      - {hour: 12, act: meal, place: p_workshop}
+      - {hour: 13, act: work, place: p_workshop}
+      - {hour: 19, act: meal, place: p_workshop}
+      - {hour: 20, act: rest, place: p_workshop}
+      - {hour: 21, act: sleep, place: p_workshop}

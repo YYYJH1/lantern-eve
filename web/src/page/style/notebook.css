@@ -1,0 +1,468 @@
+/* The notebook, a book bound with thread. A wide screen has it open at two pages: what the manager has seen and heard on the left, the card of the
+   statement on the right, with the thread down the middle. The pages are paper with a hand-cut
+   edge (paper.css), the lines are ruled in the colour of tile, and what has been found out about a line is written after its source in a heavier hand. */
+
+/* The book lies between the placard at the top left and the bookmarks of the ledger at the right edge, and covers neither. */
+
+.notebook {
+  /* While a line of the help is up over it (--line-room, which the page measures), the book starts below the line and ends where it always did. */
+  --lift: max(0px, var(--line-room, 0px) - 84px);
+  position: absolute;
+  top: calc(84px + var(--lift));
+  right: 70px;
+  left: 150px;
+  z-index: 20;
+  display: none;
+  width: min(1060px, calc(100% - 220px));
+  /* the sheet ends 112 px above the foot of the window, clear of the three things of the corner, and while the help is on a little above its button (--book-foot, which the page measures) */
+  height: calc(min(566px, 100% - 196px, var(--book-foot, 100%) - 84px) - var(--lift));
+  margin: 0 auto;
+}
+
+.notebook[data-open="true"] {
+  display: block;
+}
+
+.book {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0 10px 6px;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.book-head {
+  flex: none;
+  padding: 2px 4px 6px;
+}
+
+.paper-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1.3;
+}
+
+.workspace-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.workspace-tab {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 0;
+  padding: 0 22px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.workspace-tab .count {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.workspace-tab:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+}
+
+.leaves {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 0;
+}
+
+.notebook[data-spread="false"] .leaves {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.leaf {
+  min-height: 0;
+  padding: 2px 24px 10px 22px;
+  overflow-y: auto;
+}
+
+/* The phrase that turns the page sticks at the foot of the leaf under its padding, so that no line of the next part of the page shows below it. */
+
+.leaf .turn {
+  bottom: -10px;
+}
+
+.leaf-notes {
+  padding-right: 30px;
+}
+
+.leaf-statement {
+  padding-left: 30px;
+}
+
+/* The thread: two plumb lines, and the short strokes of the stitches across them. */
+
+.thread {
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 50%;
+  width: 22px;
+  margin-left: -11px;
+  pointer-events: none;
+}
+
+.thread-rule {
+  position: absolute;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  color: var(--structure);
+}
+
+.thread-rule-a {
+  left: 5px;
+}
+
+.thread-rule-b {
+  left: 11px;
+}
+
+.stitch {
+  position: absolute;
+  left: -2px;
+  width: 26px;
+  height: 5px;
+  color: var(--structure);
+}
+
+.stitch-1 {
+  top: 8%;
+}
+
+.stitch-2 {
+  top: 24%;
+}
+
+.stitch-3 {
+  top: 40%;
+}
+
+.stitch-4 {
+  top: 56%;
+}
+
+.stitch-5 {
+  top: 72%;
+}
+
+.stitch-6 {
+  top: 88%;
+}
+
+.leaf-count {
+  margin: 0 0 4px;
+  font-size: 14px;
+  text-align: right;
+}
+
+.notebook[data-spread="true"] .leaf-count {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.paper-sample,
+.paper-empty {
+  margin: 12px 0 0;
+  line-height: 1.6;
+}
+
+/* The lines of the notebook: ruled, the words first, then where they came from. */
+
+.notes {
+  display: grid;
+}
+
+.note {
+  position: relative;
+  padding: 10px 4px 10px 6px;
+  border-bottom: 1px solid var(--structure);
+}
+
+.note-cols {
+  display: grid;
+  gap: 2px;
+}
+
+.col-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.note-text {
+  margin: 0;
+  padding-right: 4.5em;
+  font-size: 17.5px;
+  line-height: 1.5;
+}
+
+.note-new {
+  position: absolute;
+  top: 20px;
+  left: -10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.note-source {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  align-items: baseline;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.note-from {
+  font-size: 14.5px;
+}
+
+.seals {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+}
+
+.seal {
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.chain {
+  flex-basis: 100%;
+}
+
+.chain summary {
+  cursor: pointer;
+}
+
+.hops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hop + .hop::before {
+  content: "，";
+  margin-right: 8px;
+}
+
+.hop-you {
+  font-weight: 500;
+}
+
+.note-meta {
+  position: absolute;
+  top: 6px;
+  right: 2px;
+  font-size: 15px;
+}
+
+.note-pick.ink-act {
+  min-height: 0;
+  padding: 0 2px 6px;
+  font-weight: 400;
+}
+
+.note-pick.is-on.ink-act {
+  font-weight: 500;
+}
+
+.note-ask {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 22px;
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.note.is-picked .note-text,
+.note.is-hinted .note-text,
+.note.is-pointed .note-text {
+  font-weight: 500;
+}
+
+/* What is above the lines: two lines set side by side and judged, a way to ask for help, and what was judged right. */
+
+.workspace-bar {
+  display: grid;
+  gap: 8px;
+  padding: 0 0 10px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.pairing {
+  display: grid;
+  gap: 4px;
+}
+
+.pairing-title,
+.judged-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.pairing-hint {
+  margin: 0;
+  font-size: 15px;
+}
+
+.pairing-cards {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pairing-cards li {
+  display: grid;
+  grid-template-columns: 4.6em minmax(0, 1fr);
+  gap: 8px;
+  padding: 3px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.slot {
+  font-weight: 500;
+}
+
+.relations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin-top: 2px;
+}
+
+.relation {
+  position: relative;
+  margin: 0;
+  padding: 4px 8px 6px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.relation:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.relation.is-on {
+  font-weight: 500;
+}
+
+.relation > svg.circle {
+  position: absolute;
+  top: -2px;
+  left: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 4px);
+}
+
+.pairing-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.pairing-buttons .ink-frame {
+  min-height: 38px;
+  padding: 4px 16px;
+}
+
+.pairing-outcome {
+  margin: 4px 0 0;
+  font-weight: 500;
+}
+
+.hint-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  align-items: baseline;
+}
+
+.hint-line {
+  margin: 0;
+  font-size: 15px;
+}
+
+.judgments {
+  display: grid;
+  gap: 2px;
+}
+
+.judgments ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.judgments li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+  align-items: baseline;
+  padding: 4px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.judgment-relation {
+  font-weight: 500;
+}
+
+.judgment-pair {
+  flex: 1 1 14em;
+  font-size: 15px;
+}
+
+/* The minutes stand a space off the name of the act. */
+.judgments .ink-act > .verb-cost {
+  margin-left: 0.5em;
+}
+
+.judgment-where,
+.judgment-no {
+  flex-basis: 100%;
+  font-size: 14px;
+}

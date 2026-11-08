@@ -1,0 +1,316 @@
+# The lost lantern, a script that the game does not play and the content tests use. The main
+# lantern vanishes from the workshop on night 2, between 23:00 and 24:00 (minutes 2820 to 2880).
+# The truth is drawn at that moment from the candidates who then have a motive. Day d starts at
+# (d - 1) * 1440.
+id: lost_lantern
+label: 失灯
+days: 7
+truth_fixed_at: 2820
+summary: 第二夜扎灯坊里的主灯不见了，坊里的人、孩子和两家的人互相对不上说法。
+
+cast:
+  - fam_li
+  - fam_zhou
+  - zhadeng_shifu
+  - apprentice
+  - shitou
+  - zhou_huoji
+  - zhou_zhanggui
+  - li_laotai
+  - li_er
+  - gengfu
+  - mujiang
+  - cha_laoban
+  - miaozhu
+  - xiao_man
+  - zuzhang
+  - t_main_lantern
+  - t_apprentice_towel
+  - t_toy_horse
+  - t_zhou_tassel
+  - p_workshop
+  - p_dorm
+  - p_loft
+  - p_li_house
+  - p_teahouse
+
+variants:
+  - id: v_apprentice
+    label: 嫉妒的学徒拿走的
+    holds: [pr_app_took, pr_app_at_workshop, pr_towel_left, pr_shitou_home, pr_huoji_tea, pr_maker_loft]
+  - id: v_child
+    label: 借去玩的孩子拿走的
+    holds: [pr_kid_took, pr_kid_at_workshop, pr_horse_left, pr_app_dorm, pr_huoji_tea, pr_maker_loft]
+  - id: v_family
+    label: 想让对家出丑的周家拿走的
+    holds: [pr_huoji_took, pr_zhou_took, pr_huoji_at_workshop, pr_tassel_left, pr_app_dorm, pr_shitou_home, pr_maker_loft]
+  - id: v_maker
+    label: 扎灯师傅自己藏起来遮丑
+    holds: [pr_maker_hid, pr_maker_at_workshop, pr_lantern_flawed, pr_app_dorm, pr_shitou_home, pr_huoji_tea]
+
+shared:
+  - pr_lantern_made
+  - pr_lantern_located
+  - pr_lantern_missing
+  - pr_gengfu_round
+  - pr_towel_owner
+  - pr_horse_owner
+  - pr_tassel_owner
+  - pr_shitou_afternoon
+  - pr_app_daytime
+
+props:
+  # facts of the world
+  - {id: pr_lantern_made, pred: made, args: {who: zhadeng_shifu, what: t_main_lantern}}
+  - {id: pr_lantern_located, pred: located, args: {what: t_main_lantern, where: p_workshop}}
+  - {id: pr_lantern_missing, pred: missing, args: {what: t_main_lantern}, span: [2850, 10080]}
+  - {id: pr_gengfu_round, pred: at, args: {who: gengfu, where: p_workshop}, span: [2790, 2880]}
+  - {id: pr_towel_owner, pred: owns, args: {who: apprentice, what: t_apprentice_towel}}
+  - {id: pr_horse_owner, pred: owns, args: {who: shitou, what: t_toy_horse}}
+  - {id: pr_tassel_owner, pred: owns, args: {who: zhou_huoji, what: t_zhou_tassel}}
+  - {id: pr_shitou_afternoon, pred: at, args: {who: shitou, where: p_workshop}, span: [2280, 2340]}
+  - {id: pr_app_daytime, pred: at, args: {who: apprentice, where: p_workshop}, span: [1500, 2700]}
+  # alibis: each is true in the three variants where that person is innocent
+  - {id: pr_app_dorm, pred: at, args: {who: apprentice, where: p_dorm}, span: [2760, 2900]}
+  - {id: pr_shitou_home, pred: at, args: {who: shitou, where: p_li_house}, span: [2760, 2900]}
+  - {id: pr_huoji_tea, pred: at, args: {who: zhou_huoji, where: p_teahouse}, span: [2760, 2900]}
+  - {id: pr_maker_loft, pred: at, args: {who: zhadeng_shifu, where: p_loft}, span: [2760, 2900]}
+  # variant v_apprentice
+  - {id: pr_app_took, pred: took, args: {who: apprentice, what: t_main_lantern, where: p_workshop}, span: [2850, 2870], motive: jealousy}
+  - {id: pr_app_at_workshop, pred: at, args: {who: apprentice, where: p_workshop}, span: [2840, 2880]}
+  - {id: pr_towel_left, pred: left_at, args: {what: t_apprentice_towel, where: p_workshop}, span: [2850, 2880]}
+  # variant v_child
+  - {id: pr_kid_took, pred: took, args: {who: shitou, what: t_main_lantern, where: p_workshop}, span: [2850, 2870], motive: play}
+  - {id: pr_kid_at_workshop, pred: at, args: {who: shitou, where: p_workshop}, span: [2840, 2880]}
+  - {id: pr_horse_left, pred: left_at, args: {what: t_toy_horse, where: p_workshop}, span: [2850, 2880]}
+  # variant v_family
+  - {id: pr_huoji_took, pred: took, args: {who: zhou_huoji, what: t_main_lantern, where: p_workshop}, span: [2850, 2870], motive: spite}
+  - {id: pr_huoji_at_workshop, pred: at, args: {who: zhou_huoji, where: p_workshop}, span: [2840, 2880]}
+  - {id: pr_tassel_left, pred: left_at, args: {what: t_zhou_tassel, where: p_workshop}, span: [2850, 2880]}
+  # variant v_maker
+  - {id: pr_maker_hid, pred: hid, args: {who: zhadeng_shifu, what: t_main_lantern, where: p_workshop}, span: [2820, 2860], motive: save_face}
+  - {id: pr_maker_at_workshop, pred: at, args: {who: zhadeng_shifu, where: p_workshop}, span: [2810, 2870]}
+  - {id: pr_lantern_flawed, pred: broken, args: {what: t_main_lantern}, span: [2400, 10080]}
+  # claims nobody can make true
+  - {id: pr_maker_not_hid, pred: hid, args: {who: zhadeng_shifu, what: t_main_lantern, where: p_workshop}, span: [2820, 2860], neg: true}
+  - {id: pr_gengfu_took, pred: took, args: {who: gengfu, what: t_main_lantern}, span: [2850, 2870]}
+  # the rumour chain: from the child who borrowed it to 李二 who stole it out of spite
+  - {id: pr_kid_took_bare, pred: took, args: {who: shitou, what: t_main_lantern}, span: [2850, 2870], parent: pr_kid_took, op: level}
+  - {id: pr_kid_stole, pred: stole, args: {who: shitou, what: t_main_lantern}, span: [2850, 2870], parent: pr_kid_took_bare, op: sharpen}
+  - {id: pr_liner_stole, pred: stole, args: {who: li_er, what: t_main_lantern}, span: [2850, 2870], parent: pr_kid_stole, op: assimilate}
+  - {id: pr_liner_stole_spite, pred: stole, args: {who: li_er, what: t_main_lantern}, span: [2850, 2870], motive: spite, parent: pr_liner_stole, op: fill}
+  # the family step that happens to be true in v_family
+  - {id: pr_zhou_took, pred: took, args: {who: fam_zhou, what: t_main_lantern, where: p_workshop}, span: [2850, 2870], motive: spite, parent: pr_huoji_took, op: assimilate}
+
+exclusive:
+  - {id: x_culprit, props: [pr_app_took, pr_kid_took, pr_huoji_took, pr_maker_hid, pr_gengfu_took]}
+  - {id: x_culprit_bare, props: [pr_kid_took_bare, pr_app_took, pr_huoji_took, pr_maker_hid, pr_gengfu_took]}
+  - {id: x_culprit_stole, props: [pr_kid_stole, pr_app_took, pr_huoji_took, pr_maker_hid]}
+  - {id: x_culprit_liner, props: [pr_liner_stole, pr_app_took, pr_kid_took, pr_huoji_took, pr_maker_hid]}
+  - {id: x_culprit_liner_spite, props: [pr_liner_stole_spite, pr_app_took, pr_kid_took, pr_huoji_took, pr_maker_hid]}
+  - {id: x_family, props: [pr_zhou_took, pr_app_took, pr_kid_took, pr_maker_hid]}
+  - {id: x_app_night, props: [pr_app_at_workshop, pr_app_dorm]}
+  - {id: x_kid_night, props: [pr_kid_at_workshop, pr_shitou_home]}
+  - {id: x_huoji_night, props: [pr_huoji_at_workshop, pr_huoji_tea]}
+  - {id: x_maker_night, props: [pr_maker_at_workshop, pr_maker_loft]}
+  - {id: x_maker_hide, props: [pr_maker_hid, pr_maker_not_hid]}
+
+observations:
+  - id: obs_gengfu_near
+    kind: misleading
+    label: 更夫那晚正好在工坊附近
+    holder: gengfu
+    shows: [pr_gengfu_round]
+    toward: [pr_gengfu_took]
+    in: all
+  - id: obs_kid_afternoon
+    kind: cover_story
+    label: 石头说竹马是下午来看灯时落下的
+    holder: shitou
+    shows: [pr_shitou_afternoon]
+    toward: [pr_shitou_home]
+    in: [v_apprentice, v_child, v_family, v_maker]
+  - id: obs_app_daytime
+    kind: cover_story
+    label: 学徒说蓝布巾整天挂在工坊里
+    holder: apprentice
+    shows: [pr_app_daytime]
+    toward: [pr_app_dorm]
+    in: all
+
+chains:
+  - id: ch_borrow_to_steal
+    label: 从「石头借灯去玩」传成「李二出于使坏偷了灯」
+    hops:
+      - {prop: pr_kid_took}
+      - {prop: pr_kid_took_bare, speaker: xiao_man, listener: cha_laoban}
+      - {prop: pr_kid_stole, speaker: cha_laoban, listener: zhou_huoji}
+      - {prop: pr_liner_stole, speaker: zhou_huoji, listener: zhou_zhanggui}
+      - {prop: pr_liner_stole_spite, speaker: zhou_zhanggui, listener: zuzhang}
+  - id: ch_family_step
+    label: 从「周家伙计拿了灯」传成「周家拿了灯」
+    hops:
+      - {prop: pr_huoji_took}
+      - {prop: pr_zhou_took, speaker: apprentice, listener: cha_laoban}
+
+evidence:
+  - id: e_towel
+    label: 工坊门口的蓝布巾
+    label_en: "A blue cloth at the workshop door"
+    supports: [pr_towel_left, pr_towel_owner]
+    acquire: {from: p_workshop, gatekeeper: null, min_trust: null, daily: [420, 1080], minutes: 20, until: 4320}
+  - id: e_horse
+    label: 工坊门口的竹马
+    label_en: "A bamboo horse at the workshop door"
+    supports: [pr_horse_left, pr_horse_owner]
+    acquire: {from: p_workshop, gatekeeper: null, min_trust: null, daily: [420, 1080], minutes: 20, until: 4320}
+  - id: e_tassel
+    label: 工坊墙根的周家灯穗
+    label_en: "A Zhou family lantern tassel at the foot of the workshop wall"
+    supports: [pr_tassel_left, pr_tassel_owner]
+    acquire: {from: p_workshop, gatekeeper: null, min_trust: null, daily: [420, 1080], minutes: 20, until: 4320}
+  - id: e_gengfu_app
+    label: 更夫的证词：学徒房的灯灭了，有人影往工坊去
+    label_en: "The night watchman's word: the apprentices' lamp went out and a figure headed for the workshop"
+    supports: [pr_app_at_workshop, pr_gengfu_round]
+    refutes: [pr_app_dorm]
+    acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [1140, 1380], minutes: 30}
+  - id: e_gengfu_kid
+    label: 更夫的证词：一个小影子拖着竹马进了工坊
+    label_en: "The night watchman's word: a small figure dragging a bamboo horse went into the workshop"
+    supports: [pr_kid_at_workshop, pr_gengfu_round]
+    refutes: [pr_shitou_home]
+    acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [1140, 1380], minutes: 30}
+  - id: e_gengfu_huoji
+    label: 更夫的证词：周家伙计提着灯笼在工坊旁
+    label_en: "The night watchman's word: the clerk was by the workshop with a lantern"
+    supports: [pr_huoji_at_workshop, pr_gengfu_round]
+    refutes: [pr_huoji_tea]
+    acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [1140, 1380], minutes: 30}
+  - id: e_gengfu_maker
+    label: 更夫的证词：师傅整晚守在工坊里
+    label_en: "The night watchman's word: the master stayed in the workshop all night"
+    supports: [pr_maker_at_workshop, pr_gengfu_round]
+    refutes: [pr_maker_loft]
+    acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [1140, 1380], minutes: 30}
+  - id: e_dorm_mate
+    label: 木匠的证词：学徒整晚睡在房里
+    label_en: "The carpenter's word: the apprentice slept in the room all night"
+    supports: [pr_app_dorm]
+    refutes: [pr_app_at_workshop]
+    acquire: {from: mujiang, gatekeeper: null, min_trust: 25, daily: [480, 1080], minutes: 30}
+  - id: e_granny_home
+    label: 李老太的证词：石头夜里在家睡觉
+    label_en: "Granny Li's word: Shitou slept at home that night"
+    supports: [pr_shitou_home]
+    refutes: [pr_kid_at_workshop]
+    acquire: {from: li_laotai, gatekeeper: null, min_trust: 30, daily: [480, 1080], minutes: 30}
+  - id: e_tea_owner
+    label: 茶馆老板娘的证词：周家伙计那晚在茶馆坐到很晚
+    label_en: "The teahouse keeper's word: the clerk sat in the teahouse until late that night"
+    supports: [pr_huoji_tea]
+    refutes: [pr_huoji_at_workshop]
+    acquire: {from: cha_laoban, gatekeeper: null, min_trust: 15, daily: [600, 1260], minutes: 20}
+  - id: e_maker_loft
+    label: 庙祝的证词：那晚阁楼的灯早早灭了
+    label_en: "The temple keeper's word: the loft lamp went out early that night"
+    supports: [pr_maker_loft]
+    refutes: [pr_maker_at_workshop]
+    acquire: {from: miaozhu, gatekeeper: null, min_trust: 20, daily: [480, 1080], minutes: 30}
+  - id: e_flaw
+    label: 学徒的证词：师傅摔裂了灯架，骂了半夜
+    label_en: "The apprentice's word: the master cracked a lamp frame and cursed half the night"
+    supports: [pr_lantern_flawed]
+    acquire: {from: apprentice, gatekeeper: zhadeng_shifu, min_trust: 35, daily: [480, 1080], minutes: 40}
+  - id: e_cabinet
+    label: 工坊夹壁里露出的灯架边角
+    label_en: "The corner of a lamp frame showing in the hidden wall of the workshop"
+    supports: [pr_maker_hid, pr_lantern_flawed]
+    acquire: {from: p_workshop, gatekeeper: zhadeng_shifu, min_trust: 50, daily: [480, 1080], minutes: 50}
+
+evidence_sets:
+  - {id: es_app_1, tells: v_apprentice, items: [e_towel]}
+  - {id: es_app_2, tells: v_apprentice, items: [e_gengfu_app]}
+  - {id: es_app_3, tells: v_apprentice, items: [e_granny_home, e_tea_owner, e_maker_loft]}
+  - {id: es_kid_1, tells: v_child, items: [e_horse]}
+  - {id: es_kid_2, tells: v_child, items: [e_gengfu_kid]}
+  - {id: es_kid_3, tells: v_child, items: [e_dorm_mate, e_tea_owner, e_maker_loft]}
+  - {id: es_family_1, tells: v_family, items: [e_tassel]}
+  - {id: es_family_2, tells: v_family, items: [e_gengfu_huoji]}
+  - {id: es_family_3, tells: v_family, items: [e_dorm_mate, e_granny_home, e_maker_loft]}
+  - {id: es_maker_1, tells: v_maker, items: [e_flaw, e_cabinet]}
+  - {id: es_maker_2, tells: v_maker, items: [e_gengfu_maker]}
+  - {id: es_maker_3, tells: v_maker, items: [e_dorm_mate, e_granny_home, e_tea_owner]}
+
+lies:
+  - holder: apprentice
+    motive: fear
+    preds: [at]
+    ignorance: [took]
+    objects: [apprentice, p_dorm]
+    sources: [witnessed]
+    templates:
+      - {id: lie_app_dorm, kind: claim, prop: pr_app_dorm, source: {kind: witnessed}}
+      - {id: lie_app_ignorant, kind: feign_ignorance, about: took}
+  - holder: shitou
+    motive: fear
+    preds: [at]
+    ignorance: [took]
+    objects: [shitou, p_li_house]
+    sources: [witnessed]
+    templates:
+      - {id: lie_kid_home, kind: claim, prop: pr_shitou_home, source: {kind: witnessed}}
+      - {id: lie_kid_ignorant, kind: feign_ignorance, about: took}
+  - holder: zhou_huoji
+    motive: protect
+    preds: [at]
+    ignorance: [took]
+    objects: [zhou_huoji, p_teahouse]
+    sources: [witnessed]
+    templates:
+      - {id: lie_huoji_tea, kind: claim, prop: pr_huoji_tea, source: {kind: witnessed}}
+      - {id: lie_huoji_ignorant, kind: feign_ignorance, about: took}
+  - holder: zhadeng_shifu
+    motive: save_face
+    preds: [at, hid]
+    ignorance: [hid]
+    objects: [zhadeng_shifu, t_main_lantern, p_loft, p_workshop]
+    sources: [witnessed]
+    templates:
+      - {id: lie_maker_loft, kind: claim, prop: pr_maker_loft, source: {kind: witnessed}}
+      - {id: lie_maker_not_hid, kind: claim, prop: pr_maker_not_hid, source: {kind: witnessed}}
+      - {id: lie_maker_ignorant, kind: feign_ignorance, about: hid}
+
+speculation:
+  - id: sr_left_item
+    label: 物件遗在现场，物主又没有说法，就推测是物主拿的
+    vars: {I: thing, P: place, X: person, L: thing}
+    premises:
+      - {pred: left_at, args: {what: $I, where: $P}}
+      - {pred: owns, args: {who: $X, what: $I}}
+      - {pred: missing, args: {what: $L}}
+      - {pred: located, args: {what: $L, where: $P}}
+    conclusion: {pred: took, args: {who: $X, what: $L}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 25
+  - id: sr_maker_flaw
+    label: 灯本来就有毛病又不见了，就推测是做灯的人藏起来的
+    vars: {X: person, L: thing}
+    premises:
+      - {pred: broken, args: {what: $L}}
+      - {pred: missing, args: {what: $L}}
+      - {pred: made, args: {who: $X, what: $L}}
+    conclusion: {pred: hid, args: {who: $X, what: $L}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 45
+  - id: sr_rival_spite
+    label: 那晚在现场的是结怨那一家的人，就推测是这个人拿的
+    vars: {X: person, P: place, L: thing}
+    premises:
+      - {pred: at, args: {who: $X, where: $P}}
+      - {pred: located, args: {what: $L, where: $P}}
+      - {pred: missing, args: {what: $L}}
+    relation: {kind: grudge, holder: speaker, target: $X}
+    conclusion: {pred: took, args: {who: $X, what: $L}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 30

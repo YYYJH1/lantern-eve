@@ -1,0 +1,1428 @@
+/* The shape of the page. The map fills the whole of it and is the hero. What the manager has is laid on the map, each thing
+   the shape of the thing it is: a roof line across the top with a placard and a red slip hanging from it, two drawings at the
+   top right (pause, menu), three bookmarks on the right edge that open the ledger, a paper strip at the bottom left for the talk,
+   and three things on the table at the bottom right (the elder's seal, the notebook, the incense). Paper has square corners.
+
+   The order, from under to over: the map; the strip at the bottom left (14); the roof line and the placard (15); the slip (16); the ledger and the
+   page of the ending (18); the bookmarks and the sheet of the notebook (19); the three things of the corner, which stay in reach over the sheets
+   that end above them (20, and 12 while the ending is up); what is laid over the map (the sheets of the elder and the help, the keys, the notes: 21);
+   the scrim and the menu (21, 22); the drawings of the pause and the menu (30). */
+
+.shell {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Paper: the paper colour inside, a hand-cut edge and a line of ink a little inside it. The edge is a picture of nine slices, drawn once
+   (tools/ink_ui/paper.py), because a filter on a large page is slow. A slip is for small things and a page for large ones. */
+.paper-slip,
+.side {
+  border: 12px solid transparent;
+  border-image: var(--edge-slip) 12 fill / 12px round;
+  background-color: var(--paper);
+  background-clip: padding-box;
+}
+
+.paper-page,
+.ledger-leaf {
+  border: 20px solid transparent;
+  border-image: var(--edge-page) 20 fill / 20px round;
+  background-color: var(--paper);
+  background-clip: padding-box;
+}
+
+@media (min-resolution: 2dppx) {
+  .paper-slip,
+  .side {
+    border-image-source: var(--edge-slip-2x);
+    border-image-slice: 24 fill;
+  }
+
+  .paper-page,
+  .ledger-leaf {
+    border-image-source: var(--edge-page-2x);
+    border-image-slice: 40 fill;
+  }
+}
+
+/* The stage ----------------------------------------------------------------------------- */
+
+.stage {
+  position: absolute;
+  inset: 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.stage canvas.map-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.stage canvas.map-canvas.is-dragging {
+  cursor: grabbing;
+}
+
+.stage canvas.map-canvas:focus-visible {
+  outline-offset: -3px;
+}
+
+/* What is over the map (the sheets of the elder and the help, the notes, the keys) is over the frame as well, so that a sheet does not lie under the slip, and
+   under the scrim of the menu, so that the menu does not lie under a sheet. */
+.map-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 21;
+  pointer-events: none;
+}
+
+.map-ui > * {
+  pointer-events: auto;
+}
+
+/* The roof line and what hangs from it -------------------------------------------------- */
+
+/* The frame that hangs from the roof line has no stacking order of its own, so that its parts are ordered with the rest of the page: the placard, the
+   roof and the slip are under the scrim of the menu (a press on them is a press outside the menu), and the two drawings are over it. */
+.topbar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.topbar > * {
+  pointer-events: auto;
+}
+
+/* The roof tiles: a band of the structure colour with the round ends of the tiles along its lower edge. */
+.eave {
+  position: absolute;
+  z-index: 15;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--topbar-h);
+  background: var(--eave);
+  pointer-events: none;
+  -webkit-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='26'%3E%3Cpath d='M0 0H22V12Q22 25 11 25Q0 25 0 12Z'/%3E%3C/svg%3E") repeat-x left top / 22px 26px;
+  mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='26'%3E%3Cpath d='M0 0H22V12Q22 25 11 25Q0 25 0 12Z'/%3E%3C/svg%3E") repeat-x left top / 22px 26px;
+}
+
+/* The placard: the day, the hour and the sky, in three lines, on the colour of the wall with a frame of the structure colour. */
+.placard {
+  position: absolute;
+  z-index: 15;
+  top: 23px;
+  left: 28px;
+  width: var(--placard-w);
+  padding: 11px 6px 12px;
+  border: 3px solid var(--structure);
+  background: var(--base);
+  color: var(--base-ink);
+  line-height: 1.3;
+  text-align: center;
+  outline: 1px solid color-mix(in srgb, var(--base-ink) 55%, transparent);
+  outline-offset: -8px;
+  pointer-events: none;
+}
+
+.placard::before,
+.placard::after,
+.slip::before,
+.slip::after {
+  content: "";
+  position: absolute;
+  top: -17px;
+  width: 2px;
+  height: 17px;
+  background: var(--base-ink);
+}
+
+.placard::before {
+  left: 22px;
+}
+
+.placard::after {
+  right: 22px;
+}
+
+.pl-day {
+  display: block;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-indent: 0.12em; /* the space that the letter spacing leaves after the last character, so that the name of the day is centred on its own */
+}
+
+.pl-hour {
+  display: block;
+  margin-top: 4px;
+  font-size: 15.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pl-clock {
+  margin-left: 0.4em;
+}
+
+/* English names the part of the day in a word ("Afternoon") that with the clock is wider than the frame of the placard: they are two lines there. */
+:root:lang(en) .pl-part,
+:root:lang(en) .pl-clock {
+  display: block;
+  margin-left: 0;
+}
+
+.pl-sky {
+  display: block;
+  margin-top: 2px;
+  font-size: 15.5px;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+}
+
+/* "Heavy rain" spaced as wide as one Chinese character is would not fit the frame on one line, and the placard would be a line taller. */
+:root:lang(en) .pl-sky {
+  letter-spacing: 0.08em;
+  text-indent: 0.08em;
+}
+
+/* The slip: red paper hung from the roof line, with the name of the task in brush on it. It opens into a note. */
+.slip {
+  position: absolute;
+  z-index: 16;
+  top: 23px;
+  left: clamp(168px, 23vw, 300px);
+  width: max-content;
+  max-width: min(440px, calc(100vw - 330px));
+  color: var(--ink);
+}
+
+.slip[data-open="true"] {
+  width: min(430px, calc(100vw - 330px));
+}
+
+.slip::before {
+  left: 24px;
+  background: var(--ink);
+}
+
+.slip::after {
+  right: 24px;
+  background: var(--ink);
+}
+
+.slip-card {
+  display: block;
+}
+
+.slip-head {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 11px 22px 13px;
+  border: 0;
+  border-radius: 0;
+  background: var(--slip);
+  color: var(--on-slip);
+  font: 400 27px/1.2 var(--brush);
+  letter-spacing: 0.06em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.slip[data-open="false"] .slip-head {
+  padding-bottom: 25px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 13px), 0 100%);
+}
+
+.slip-title {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.slip-tick {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  color: var(--on-slip);
+}
+
+.slip-note {
+  margin: 0 13px;
+  padding: 13px 18px 0;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 0 12px;
+  border-image: var(--edge-slip) 12 fill / 0 12px 0 12px round;
+  background-color: var(--paper);
+  background-clip: padding-box;
+  font-size: 15.5px;
+  line-height: 1.62;
+  overflow-y: auto;
+}
+
+@media (min-resolution: 2dppx) {
+  .slip-note {
+    border-image-source: var(--edge-slip-2x);
+    border-image-slice: 24 fill;
+  }
+}
+
+/* While a person is picked their card stands at the foot of the page, as tall as a third of the window at the most, and the note of the slip ends above it: in a short window the note scrolls. */
+
+.shell[data-picked="true"] .slip-note {
+  max-height: max(120px, calc(66vh - 195px));
+}
+
+.slip-note::after {
+  content: "";
+  display: block;
+  height: 7px;
+  margin: 12px -30px 0;
+  background: var(--structure);
+}
+
+.note-line {
+  margin: 0;
+  text-wrap: balance; /* a sentence that runs to a second line does not leave one word on it */
+}
+
+.note-line + .note-line {
+  margin-top: 2px;
+}
+
+.note-when {
+  margin: 8px 0 0;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.note-lead {
+  margin: 8px 0 0;
+}
+
+.note-do {
+  position: sticky;
+  bottom: 0;
+  margin: 10px 0 0;
+  padding: 2px 0 4px;
+  background: var(--paper);
+}
+
+.act,
+.phrase {
+  position: relative;
+  display: inline-block;
+  padding: 0 2px 8px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  cursor: pointer;
+}
+
+.phrase {
+  font-size: 16.5px;
+  letter-spacing: 0.04em;
+}
+
+.act:hover:not(:disabled) .underline,
+.phrase:hover:not(:disabled) .underline {
+  opacity: 1;
+}
+
+.act .underline,
+.phrase .underline {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0.8;
+}
+
+.act:disabled,
+.phrase:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.expected-list {
+  display: grid;
+  gap: 0 18px;
+  margin: 2px 0 0;
+  list-style: none;
+}
+
+.expected-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+}
+
+.expected-more summary,
+.task-more summary {
+  cursor: pointer;
+}
+
+.task-more {
+  margin: 8px 0 4px;
+  border-top: 1px solid var(--rule);
+  padding-top: 6px;
+}
+
+.task-others {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  list-style: none;
+}
+
+.task-other {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+}
+
+.task-other-text {
+  flex: 1 1 9rem;
+  min-width: 0;
+}
+
+.task-other-state {
+  font-size: 14px;
+}
+
+.leads {
+  margin: 8px 0 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+}
+
+.leads-title {
+  margin: 0 0 2px;
+  font-size: 15.5px;
+  font-weight: 500;
+}
+
+.leads-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  list-style: none;
+}
+
+.lead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 12px;
+}
+
+.lead-text {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 8px;
+}
+
+.lead-text em {
+  font-style: normal;
+}
+
+/* The top right: pause and the menu, two drawings with nothing round them. */
+.run {
+  position: absolute;
+  z-index: 30;
+  top: 30px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.glyph-btn {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--on-map);
+  cursor: pointer;
+}
+
+.glyph-btn .glyph {
+  width: 32px;
+  height: 32px;
+  overflow: visible;
+}
+
+.glyph-btn .glyph path {
+  stroke: var(--on-map-halo);
+  stroke-width: 2.2px;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+
+.glyph-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* What the world is doing is told by the drawing, and in words only where it is not running. */
+.status {
+  padding: 1px 9px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.status-running {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip-path: inset(50%);
+}
+
+.run-replay {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: min(640px, calc(100vw - 460px));
+}
+
+/* The bookmarks of the ledger ---------------------------------------------------------- */
+
+.marks {
+  position: absolute;
+  z-index: 19;
+  top: clamp(90px, min(30vh, calc(100vh - 506px)), 260px); /* the three of them end clear of the button of the hints above the corner */
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: var(--marks-w);
+}
+
+.mark {
+  --cut: 14px; /* how deep the V in the foot of the cloth is */
+  --sew: 4px; /* how far inside the outline of the cloth the stitch runs, all the way round */
+  position: relative;
+  display: block;
+  width: 46px;
+  height: 112px;
+  margin: 0 0 0 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.mark.is-on {
+  width: 64px;
+  margin-left: 0;
+}
+
+/* A bookmark is a ribbon of cloth in the structure colour with a V cut into its lower end, a stitch round the inside of it, and a title slip of
+   paper sewn on near the top with the name of the job, as on the cover of a thread-bound book. A job that is done has its seal on the cloth under the slip. */
+.mark-cloth {
+  position: absolute;
+  inset: 0;
+  background: var(--structure);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - var(--cut)), 0 100%);
+}
+
+/* The stitch: a dashed line that follows the outline of the cloth, --sew inside it down the left side, across the top, down the right side and along both edges
+   of the V, in the colour that shows on the cloth in each look. The page draws its path to the size of the cloth (board.tsx). */
+.mark-stitch {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.mark-stitch path {
+  fill: none;
+  stroke: var(--on-structure);
+  stroke-width: 1.5px;
+  stroke-dasharray: 4 3;
+  stroke-linejoin: round;
+}
+
+/* The slip: paper centred on the cloth, as long as the name is and with the same room above it and below it. */
+.mark-label {
+  position: absolute;
+  top: 9px;
+  right: 0;
+  left: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  margin: 0 auto;
+  padding: 5px 0;
+  background: var(--paper);
+}
+
+/* The name is upright in Chinese and turned in English. The space that the letter spacing leaves after the last character is taken back, so that the
+   name is centred on the slip and not the name and a space. */
+.mark-name {
+  display: block;
+  margin-bottom: -0.12em;
+  padding-right: 0.1em; /* the box of the text reaches a little further to the right of the line than to the left of it: this puts the name in the middle */
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.1;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+
+:root:lang(en) .mark-name {
+  margin-bottom: 0;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-orientation: mixed;
+}
+
+/* The seal of a job that is done: stamped on a ring of paper, which shows it on the cloth in each look, on the cloth under the slip and inside the stitch. */
+.mark-seal {
+  position: absolute;
+  right: 0;
+  bottom: 26px;
+  left: 0;
+  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
+  margin: 0 auto;
+  padding: 2px;
+  background: var(--paper);
+  color: var(--seal);
+}
+
+/* The ledger: a blue cloth cover, stitched down the left, and the page of one job ruled in tile blue. */
+.ledger {
+  position: absolute;
+  z-index: 18;
+  top: max(84px, var(--line-room, 0px)); /* under a line of the help while one is up */
+  right: 44px;
+  bottom: 108px;
+  width: min(890px, calc(100% - 330px));
+  padding: 15px 15px 15px 46px;
+  background: var(--structure);
+  color: var(--ink);
+}
+
+.ledger-cover {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 46px;
+}
+
+.ledger-cover::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 20px;
+  border-left: 3px dotted var(--paper);
+}
+
+.ledger-leaf {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  padding: 2px 22px 0 24px;
+  overflow-y: auto;
+}
+
+.ledger-head {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ledger-title {
+  font: 400 54px/1.05 var(--brush);
+  letter-spacing: 0.3em;
+}
+
+:root:lang(en) .ledger-title {
+  letter-spacing: 0.05em;
+}
+
+.ledger-date {
+  margin-bottom: 6px;
+  padding: 5px 12px 5px;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* Where a paper runs past its foot (the page of the ledger, the tags of a talk), a phrase at the foot turns it. It lies on the paper, over the last lines that are in view. */
+.turn {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  height: 0; /* it takes no room of its own, so that it is not what makes the page longer than the leaf */
+}
+
+.turn-bar {
+  pointer-events: none; /* a tag or a line under the bar can be pressed where the bar has no phrase */
+  position: absolute;
+  right: 0;
+  bottom: -2px;
+  left: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 6px 0 4px;
+  border-top: 1px solid var(--structure);
+  background: var(--paper);
+}
+
+.turn-bar > button {
+  pointer-events: auto;
+}
+
+/* A control that is reached by the keyboard, or scrolled to, stops above the bar and not under it. */
+.ledger-leaf,
+.leaf,
+.chips,
+.picker {
+  scroll-padding-bottom: 52px;
+}
+
+.ledger-rule {
+  display: block;
+  width: 100%;
+  height: 5px;
+  margin: 8px 0 0;
+  color: var(--structure);
+}
+
+.ledger-body {
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.lrows {
+  position: relative;
+  margin-top: 4px;
+}
+
+.lrows::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 108px;
+  width: 1.5px;
+  background: var(--structure);
+  opacity: 0.85;
+}
+
+.lrows-favours {
+  margin-top: 8px;
+  padding-top: 4px;
+  border-top: 2px solid var(--structure);
+}
+
+.lrow {
+  position: relative;
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr) 60px;
+  align-items: center;
+  min-height: 42px;
+  font-size: 17.5px;
+}
+
+.lrow-label {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  font-size: 18.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+}
+
+:root:lang(en) .lrow-label {
+  letter-spacing: 0.02em;
+  font-size: 16.5px;
+}
+
+.lrow-cells {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 40px;
+  padding-left: 18px;
+  line-height: 1.4;
+}
+
+.lrow-mark {
+  display: flex;
+  justify-content: center;
+  color: var(--tick);
+}
+
+.lrow-mark .tick {
+  width: 26px;
+  height: auto;
+}
+
+.lrow-rule {
+  position: absolute;
+  right: 0;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  color: var(--structure);
+  pointer-events: none;
+}
+
+.lrow-block {
+  align-items: start;
+  grid-template-columns: 108px minmax(0, 1fr);
+  padding: 8px 0 6px;
+}
+
+.lrow-block .lrow-label {
+  align-self: start;
+  padding-top: 2px;
+}
+
+.lrow-body {
+  min-width: 0;
+  padding-left: 18px;
+}
+
+.lcell {
+  white-space: normal;
+}
+
+.lcell-tally {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tally {
+  display: inline-flex;
+  gap: 4px;
+  color: var(--tick);
+}
+
+.ledger .tally .tally-mark {
+  width: 22px;
+  height: auto;
+}
+
+.lnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.lcell-lost {
+  text-decoration: none;
+}
+
+.helper {
+  display: inline-block;
+  margin-left: 14px;
+  white-space: nowrap; /* a family and its number wrap as one, not in the middle of 无家族 */
+}
+
+.board-warn {
+  margin: 4px 0 4px 126px;
+  font-weight: 500;
+}
+
+/* The older promises are folded under one line, so that the page ends in a whole line and not in half of one. */
+.ledger .commits-older > summary {
+  padding: 4px 0 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--structure) 55%, transparent);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.ledger .commits-older[open] > summary {
+  margin-bottom: 0;
+}
+
+/* A promise that came has its seal on the line, one that did not has a stroke through it. */
+.ledger .commit-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.ledger .commit {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 12px;
+  padding: 5px 0 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--structure) 55%, transparent);
+}
+
+.ledger .commit:last-child {
+  border-bottom: 0;
+}
+
+.ledger .commit-what {
+  position: relative;
+  grid-column: 1;
+}
+
+.ledger .commit-strike {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 9px;
+  margin-top: -4px;
+  color: var(--ink);
+  pointer-events: none;
+}
+
+.ledger .commit-reason {
+  grid-column: 1;
+  font-size: 15px;
+}
+
+.ledger .commit-state {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  color: var(--seal);
+}
+
+.ledger .commit-state .stamp {
+  width: 46px;
+  height: auto;
+}
+
+.ledger .commit-word {
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.ledger .pledges {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.ledger .pledges li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  padding: 5px 0;
+}
+
+.ledger .pledge-none {
+  padding: 5px 0;
+}
+
+.ledger .stats {
+  display: block;
+}
+
+.ledger .stat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 18px;
+  padding: 2px 0;
+}
+
+.ledger .stat dt {
+  min-width: 6em;
+}
+
+.ledger .left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 26px;
+  margin: 0;
+}
+
+.ledger .left > div {
+  display: flex;
+  gap: 8px;
+}
+
+.ledger .left .is-out dd {
+  text-decoration: line-through;
+}
+
+.ledger .left-roles {
+  margin: 2px 0 0;
+}
+
+.ledger .stars {
+  display: inline-flex;
+  gap: 8px;
+  color: var(--tick);
+}
+
+.ledger .star {
+  display: inline-block;
+  min-width: 26px;
+  min-height: 21px;
+  border-bottom: 1.5px solid var(--rule);
+}
+
+.ledger .star .tick {
+  width: 26px;
+  height: auto;
+}
+
+.ledger-seal {
+  position: absolute;
+  top: 2px;
+  right: 190px;
+  width: 112px;
+  height: auto;
+  color: var(--seal);
+  pointer-events: none;
+}
+
+/* The truth and the peace. */
+.board-part {
+  position: relative;
+  padding-top: 6px;
+}
+
+.statement-columns {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.statement-columns li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr) 36px;
+  align-items: center;
+  min-height: 46px;
+  border-bottom: 1px solid color-mix(in srgb, var(--structure) 55%, transparent);
+}
+
+.statement-name {
+  font-size: 18.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+}
+
+.statement-counts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 26px;
+  padding-left: 18px;
+}
+
+.tally-cell,
+.strike-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.strike-mark {
+  width: 24px;
+  height: auto;
+  color: var(--ink);
+}
+
+.statement-gap-mark {
+  font-style: normal;
+  font-size: 15px;
+}
+
+.statement-picked {
+  width: 26px;
+  height: auto;
+  color: var(--tick);
+}
+
+.ledger-legend {
+  margin: 8px 0 0;
+  font-size: 14.5px;
+}
+
+.truth-needs,
+.peace-acts {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+  list-style: none;
+}
+
+.truth-needs li,
+.peace-acts li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+}
+
+.act-mark {
+  display: inline-block;
+  flex: none;
+  width: 26px;
+  min-height: 21px;
+  border-bottom: 1.5px solid var(--rule);
+  color: var(--tick);
+}
+
+.act-mark .tick {
+  width: 26px;
+  height: auto;
+}
+
+.board-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 2px;
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.board-state .tick {
+  width: 26px;
+  height: auto;
+  color: var(--tick);
+}
+
+.truth-last {
+  margin-top: 10px;
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+}
+
+.statement-open {
+  margin-top: 14px;
+}
+
+.peace-grudge {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 8px 0 6px;
+}
+
+/* The grudge between the families is an incense stick that burns down: the dotted line is the ash it has left, and what is left of the stick is the grudge. */
+.incense {
+  flex: 1 1 auto;
+  max-width: 460px;
+  height: 10px;
+  border: 0;
+  border-bottom: 2px dotted var(--rule);
+  border-radius: 0;
+  background: transparent;
+  appearance: none;
+}
+
+.incense::-webkit-progress-bar {
+  background: transparent;
+}
+
+.incense::-webkit-progress-value {
+  background: var(--ink);
+  border-radius: 0;
+}
+
+.incense::-moz-progress-bar {
+  background: var(--ink);
+}
+
+.peace-caption {
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.peace-witness {
+  margin: 8px 0 0;
+}
+
+/* The corner at the bottom right: the three things the manager keeps ----------------------- */
+
+.corner {
+  position: absolute;
+  z-index: 20;
+  right: 30px;
+  bottom: var(--corner-bottom);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.corner > * {
+  pointer-events: auto;
+}
+
+/* The things on the table stay over the sheets of the ledger and of the notebook, which end above them, and under the page of the ending. */
+.shell[data-ending="true"] .corner {
+  z-index: 12;
+}
+
+/* The buttons of the zoom and the key of the rumours are of the map, which the page of the ending lies over. */
+.shell[data-ending="true"] .map-tools,
+.shell[data-ending="true"] .map-legend {
+  visibility: hidden;
+}
+
+.things {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.thing {
+  position: relative;
+  display: inline-grid;
+  place-items: end center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.thing-art {
+  position: relative;
+  display: block;
+}
+
+.thing-art canvas {
+  display: block;
+}
+
+.thing-fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.thing:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+span.thing {
+  cursor: default;
+}
+
+/* A word on a slip of paper, for the one that is pointed at. */
+.thing-tag {
+  position: absolute;
+  right: -2px;
+  bottom: calc(100% + 2px);
+  z-index: 3;
+  display: none;
+  padding: 3px 11px 4px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14.5px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.thing:hover .thing-tag,
+.thing:focus-visible .thing-tag {
+  display: block;
+}
+
+.thing-count {
+  position: absolute;
+  top: 0;
+  right: -6px;
+  min-width: 22px;
+  padding: 0 5px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.thing-dots {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  display: flex;
+  gap: 4px;
+  transform: translateX(-50%);
+}
+
+.thing-dots i {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 1.5px var(--paper);
+}
+
+/* The hint log of the help sits above the things. */
+.corner .help-bar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* The strip at the bottom left: what the manager can do where they stand, and the line that somebody just said. It is not there when there is nothing on it. */
+.side:empty {
+  display: none;
+}
+
+.side {
+  position: absolute;
+  z-index: 14;
+  bottom: 26px;
+  left: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(612px, calc(100% - 330px));
+  max-height: calc(100% - 150px);
+  padding: 4px 14px 4px;
+  color: var(--ink);
+}
+
+/* The card of a person and the talk lie over the lower left of the map, where the buttons of the zoom and the key of the rumours are: they step aside. */
+.shell[data-picked="true"] .map-tools,
+.shell[data-picked="true"] .map-legend {
+  visibility: hidden;
+}
+
+.dialogue {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+.dialogue-line {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 1.6em;
+  font-size: 17px;
+}
+
+.dialogue-line > span:last-child {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow-wrap: anywhere;
+}
+
+.verbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+}
+
+.verb {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 2px 0 4px;
+  border: 0;
+  border-bottom: 2px solid var(--ink);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 16.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.verb:hover:not(:disabled),
+.verb.is-open {
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+}
+
+.verb:disabled {
+  border-bottom-style: dashed;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.say {
+  flex: 1 1 220px;
+  min-width: 160px;
+}
+
+/* What takes the place of the stage and is not the notebook. */
+.shell > .ending {
+  position: absolute;
+  inset: var(--topbar-h) 0 0 0;
+}
+

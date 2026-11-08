@@ -1,0 +1,190 @@
+# The stranger, a script that the game does not play and the content tests use. A man who calls
+# himself a famous lantern maker comes to the town on day 1; the truth about him is drawn at game
+# start. Day d starts at (d - 1) * 1440.
+id: stranger
+label: 外乡人
+days: 7
+truth_fixed_at: 0
+summary: 来了个自称扎灯名家的外乡人，周掌柜付了定金，他的来历前后说得不一样。
+
+cast:
+  - fam_zhou
+  - stranger
+  - huolang
+  - zhou_zhanggui
+  - cha_laoban
+  - old_he
+  - zhadeng_shifu
+  - t_sample_lantern
+  - t_deposit
+  - p_inn
+  - p_teahouse
+  - p_town_gate
+  - p_next_town
+  - p_cloud_workshop
+  - p_river_port
+
+variants:
+  - id: v_swindler
+    label: 骗子，收了定金第六天夜里要跑
+    holds: [pr_from_port, pr_flees]
+  - id: v_master
+    label: 真名家，但脾气傲，得被敬着才肯帮
+    holds: [pr_from_cloud, pr_made_sample, pr_refused]
+  - id: v_fugitive
+    label: 邻镇跑出来的人，有人在找他
+    holds: [pr_from_next, pr_made_sample, pr_fled_next, pr_wanted]
+
+shared:
+  - pr_stranger_at_inn
+  - pr_sample_owned
+  - pr_deposit_paid
+  - pr_pedlar_in_town
+
+props:
+  # facts of the world
+  - {id: pr_stranger_at_inn, pred: at, args: {who: stranger, where: p_inn}, span: [600, 8300]}
+  - {id: pr_sample_owned, pred: owns, args: {who: stranger, what: t_sample_lantern}}
+  - {id: pr_deposit_paid, pred: gave, args: {who: zhou_zhanggui, whom: stranger, what: t_deposit}, span: [2040, 2100]}
+  - {id: pr_pedlar_in_town, pred: at, args: {who: huolang, where: p_teahouse}, span: [3600, 5000]}
+  - {id: pr_made_sample, pred: made, args: {who: stranger, what: t_sample_lantern}}
+  # origin: three mutually exclusive stories, one per variant (the first is also his own claim)
+  - {id: pr_from_cloud, pred: came_from, args: {who: stranger, where: p_cloud_workshop}}
+  - {id: pr_from_port, pred: came_from, args: {who: stranger, where: p_river_port}}
+  - {id: pr_from_next, pred: came_from, args: {who: stranger, where: p_next_town}}
+  # variant v_swindler
+  - {id: pr_flees, pred: fled_from, args: {who: stranger, where: p_town_gate}, span: [8340, 8400], motive: greed}
+  # variant v_master
+  - {id: pr_refused, pred: refused, args: {who: stranger, whom: zhou_zhanggui}, span: [2200, 2260], motive: pride}
+  # variant v_fugitive
+  - {id: pr_fled_next, pred: fled_from, args: {who: stranger, where: p_next_town}, span: [-1440, 600], motive: debt}
+  - {id: pr_wanted, pred: wanted, args: {who: stranger}, span: [-1440, 10080], motive: debt}
+  # negations people may claim (derived from the positive twins)
+  - {id: pr_not_made, pred: made, args: {who: stranger, what: t_sample_lantern}, neg: true}
+  - {id: pr_not_wanted, pred: wanted, args: {who: stranger}, span: [-1440, 10080], neg: true}
+  # the rumour chain: from a debt to a swindler's trail
+  - {id: pr_wanted_bare, pred: wanted, args: {who: stranger}, span: [-1440, 10080], parent: pr_wanted, op: level}
+  - {id: pr_wanted_greed, pred: wanted, args: {who: stranger}, span: [-1440, 10080], motive: greed, parent: pr_wanted_bare, op: fill}
+
+exclusive:
+  - {id: x_origin, props: [pr_from_cloud, pr_from_port, pr_from_next]}
+  - {id: x_made, props: [pr_made_sample, pr_not_made]}
+  - {id: x_wanted, props: [pr_wanted, pr_not_wanted]}
+  - {id: x_wanted_motive, props: [pr_wanted, pr_wanted_greed]}
+
+observations:
+  - id: obs_cloud_claim
+    kind: cover_story
+    label: 外乡人说他师从云锦灯坊，样灯随身带着
+    holder: stranger
+    shows: [pr_sample_owned]
+    toward: [pr_from_cloud]
+    in: all
+  - id: obs_sample_fine
+    kind: misleading
+    label: 样灯做工精细，看着像名家手笔
+    holder: stranger
+    shows: [pr_sample_owned]
+    toward: [pr_made_sample]
+    in: all
+  - id: obs_deposit
+    kind: misleading
+    label: 周掌柜刚付了定金，他就整天待在客栈不出门
+    holder: zhou_zhanggui
+    shows: [pr_deposit_paid, pr_stranger_at_inn]
+    toward: [pr_flees]
+    in: all
+
+chains:
+  - id: ch_debt_to_swindle
+    label: 从「他欠了债被人找」传成「他在外头骗了钱被人找」
+    hops:
+      - {prop: pr_wanted}
+      - {prop: pr_wanted_bare, speaker: huolang, listener: cha_laoban}
+      - {prop: pr_wanted_greed, speaker: cha_laoban, listener: zhou_zhanggui}
+
+evidence:
+  - id: e_pedlar_mass
+    label: 货郎的证词：这盏样灯是邻镇集上论斤卖的
+    label_en: "The peddler's word: this sample lantern is sold by weight at the market of the next town"
+    supports: [pr_not_made, pr_pedlar_in_town]
+    acquire: {from: huolang, gatekeeper: null, min_trust: 20, daily: [840, 1140], minutes: 30, until: 6480}
+  - id: e_ticket
+    label: 老何的证词：外乡人订了第六天夜里的渡船
+    label_en: "Boatman He's word: the stranger booked the ferry for the night of the sixth day"
+    supports: [pr_flees]
+    acquire: {from: old_he, gatekeeper: null, min_trust: 40, daily: [480, 1020], minutes: 30, until: 8000}
+  - id: e_craft
+    label: 扎灯师傅验过样灯的手艺：确实是亲手扎的
+    label_en: "The Lantern Maker's check of the sample lantern: it really was made by hand"
+    supports: [pr_made_sample, pr_sample_owned]
+    acquire: {from: t_sample_lantern, gatekeeper: zhadeng_shifu, min_trust: 25, daily: [480, 1020], minutes: 40}
+  - id: e_pedlar_mark
+    label: 货郎的证词：灯上的暗纹是云锦灯坊的印记
+    label_en: "The peddler's word: the faint pattern on the lantern is the mark of the Cloud Brocade Lantern Shop"
+    supports: [pr_from_cloud, pr_made_sample, pr_pedlar_in_town]
+    acquire: {from: huolang, gatekeeper: null, min_trust: 20, daily: [840, 1140], minutes: 30, until: 6480}
+  - id: e_walkout
+    label: 周掌柜的说法：他被讨价还价后拂袖而去
+    label_en: "Shopkeeper Zhou's account: after the haggling the stranger stormed out"
+    supports: [pr_refused]
+    acquire: {from: zhou_zhanggui, gatekeeper: null, min_trust: 30, daily: [480, 1080], minutes: 30}
+  - id: e_pedlar_seen
+    label: 货郎的证词：邻镇有人到处打听一个会扎灯的人
+    label_en: "The peddler's word: people in the next town are asking everywhere for someone who can make lanterns"
+    supports: [pr_wanted, pr_pedlar_in_town]
+    acquire: {from: huolang, gatekeeper: null, min_trust: 20, daily: [840, 1140], minutes: 30, until: 6480}
+  - id: e_slip
+    label: 外乡人酒后说漏了嘴：口音是邻镇的
+    label_en: "A slip of the stranger's tongue over wine: the accent is the next town's"
+    supports: [pr_from_next, pr_stranger_at_inn]
+    acquire: {from: stranger, gatekeeper: null, min_trust: 40, daily: [1080, 1320], minutes: 45}
+
+evidence_sets:
+  - {id: es_swindler_1, tells: v_swindler, items: [e_pedlar_mass]}
+  - {id: es_swindler_2, tells: v_swindler, items: [e_ticket]}
+  - {id: es_master_1, tells: v_master, items: [e_pedlar_mark]}
+  - {id: es_master_2, tells: v_master, items: [e_walkout, e_craft]}
+  - {id: es_fugitive_1, tells: v_fugitive, items: [e_pedlar_seen]}
+  - {id: es_fugitive_2, tells: v_fugitive, items: [e_slip, e_craft]}
+
+lies:
+  - holder: stranger
+    motive: greed
+    preds: [came_from, made, wanted]
+    ignorance: [wanted]
+    objects: [stranger, p_cloud_workshop, t_sample_lantern]
+    sources: [witnessed]
+    templates:
+      - {id: lie_str_cloud, kind: claim, prop: pr_from_cloud, source: {kind: witnessed}}
+      - {id: lie_str_made, kind: claim, prop: pr_made_sample, source: {kind: witnessed}}
+      - {id: lie_str_not_wanted, kind: claim, prop: pr_not_wanted, source: {kind: witnessed}}
+      - {id: lie_str_ignorant, kind: feign_ignorance, about: wanted}
+
+speculation:
+  - id: sr_deposit_flee
+    label: 付了定金的外乡人住在客栈里，就推测他拿了钱要跑
+    vars: {W: person, X: person, D: thing, P: place}
+    premises:
+      - {pred: gave, args: {who: $W, whom: $X, what: $D}}
+      - {pred: at, args: {who: $X, where: $P}}
+    conclusion: {pred: fled_from, args: {who: $X, where: p_town_gate}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 50
+  - id: sr_wanted_runaway
+    label: 有人到处找他，就推测他是从邻镇跑出来的
+    vars: {X: person}
+    premises:
+      - {pred: wanted, args: {who: $X}}
+    conclusion: {pred: fled_from, args: {who: $X, where: p_next_town}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 30
+  - id: sr_proud_master
+    label: 样灯是亲手扎的，又敢拒绝出钱的人，就推测他真是云锦灯坊出来的
+    vars: {X: person, S: thing, W: person}
+    premises:
+      - {pred: made, args: {who: $X, what: $S}}
+      - {pred: refused, args: {who: $X, whom: $W}}
+    conclusion: {pred: came_from, args: {who: $X, where: p_cloud_workshop}}
+    hedge: [我猜, 怕是]
+    min_suspicion: 20

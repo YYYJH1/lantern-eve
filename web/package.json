@@ -1,0 +1,33 @@
+{
+  "name": "lantern-eve-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "pixi.js": "8.22.0",
+    "preact": "11.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "26.6.6",
+    "pyodide": "314.0.7",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
+  },
+  "scripts": {
+    "assets": "node scripts/prepare-assets.mjs",
+    "wheel": "node scripts/prepare-assets.mjs wheel",
+    "csp": "node --no-warnings scripts/print-csp.mjs",
+    "dev": "npm run assets && vite",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.worker.json && tsc -p tsconfig.node.json",
+    "build": "npm run assets && npm run typecheck && vite build",
+    "build:e2e": "npm run assets && vite build --mode e2e",
+    "preview": "vite preview",
+    "test:unit": "playwright test --project=unit",
+    "test:e2e": "npm run build && npm run build:e2e && playwright test"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}

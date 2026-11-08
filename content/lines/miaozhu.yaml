@@ -1,0 +1,152 @@
+# The Temple Keeper, an elderly woman, who tends the incense and keeps the lane behind the temple.
+# Calm and gentle, in no hurry, speaks as if the gods were listening in the next room.
+person: miaozhu
+voice:
+  zh: 庙祝，一位上了年纪的妇人。平和、不慌不忙，说话像神明就在隔壁听着，常说“愿”和“缘分”。
+  en: The temple keeper, an elderly woman. Calm and gentle, never in a hurry, speaks as if the gods were listening in the next room.
+lines:
+  asleep:
+    - {zh: "呼……香烟……袅袅……（睡熟了）", en: "Zzz... the incense... curls up... (fast asleep)"}
+    - {zh: "唔……神明保佑……（睡熟了）", en: "Mm... may the gods protect us... (fast asleep)"}
+  busy:
+    - {zh: "我正在上香。请改日再来。", en: "I am tending the incense. Please come another day."}
+    - {zh: "香客，我手里的香火未了。稍后再叙。", en: "Dear visitor, the incense is not yet done. Let us speak later."}
+  timeout:
+    - {zh: "香火要添了。我得去照看。", en: "The incense needs replenishing. I must see to it."}
+    - {zh: "时辰到了。愿神明保佑你。", en: "The hour has come. May the gods protect you."}
+  unknown:
+    - {zh: "此事我并不知情。", en: "I know nothing of this."}
+    - {zh: "神明未曾示下。我不知道。", en: "The gods have shown me nothing. I do not know."}
+  evade:
+    - {zh: "这话不宜在神前说。", en: "This is not fit to be said before the gods."}
+    - {zh: "莫问了。我不便开口。", en: "Ask no more. I am not free to speak."}
+  not_said:
+    - {zh: "我没有说过这样的话。", en: "I have not said such a thing."}
+    - {zh: "神明在上。我没说过。", en: "As the gods are above us, I did not say it."}
+  not_so:
+    - {zh: "并非如此。", en: "It is not so."}
+    - {zh: "你误会了。事情不是这样。", en: "You are mistaken. It was not so."}
+  keeper_no:
+    - {zh: "我们缘分尚浅。今日请回。", en: "Our acquaintance is still young. Please go today."}
+    - {zh: "香客初来。此事容后再说。", en: "You are new here. We will speak of it later."}
+  took_in:
+    - {zh: "原来如此。我记在心里。", en: "I see. I will keep it in my heart."}
+    - {zh: "多谢相告。神明作证。", en: "Thank you for telling me. The gods are witness."}
+  knew:
+    - {zh: "这事我早已知晓。", en: "I have known this for some time."}
+    - {zh: "此事不必多说。我心里有数。", en: "No need to say more. I know it in my heart."}
+  doubted:
+    - {zh: "我听来的并非如此。", en: "That is not what has reached me."}
+    - {zh: "此说与我所闻不同。", en: "This differs from what I have heard."}
+  caught:
+    - {zh: "你竟在神前说谎！往后你的话，我不再相信！", en: "You lied before the gods! I will believe your words no more!"}
+    - {zh: "原来你一直在骗我。我心寒了。", en: "So you were deceiving me all along. My heart has gone cold."}
+  deal:
+    - {zh: "好。愿神明见证。", en: "Good. May the gods bear witness."}
+    - {zh: "那就这样说定了。", en: "Then it is settled so."}
+  empty:
+    - {zh: "口说无凭。神明也不信。", en: "Words without proof, even the gods would not believe."}
+    - {zh: "没有诚意的话，我不收。", en: "I do not accept words without sincerity."}
+  kept_thanks:
+    - {zh: "总管言而有信。神明会记得的。", en: "The Manager keeps their word. The gods will remember."}
+    - {zh: "你守住了诺言。多谢。", en: "You kept your promise. My thanks."}
+  will_do:
+    - {zh: "好。此事我来办。", en: "Good. I will see to it."}
+    - {zh: "愿尽绵力。", en: "I will do what little I can."}
+  cannot:
+    - {zh: "此事非我所能。", en: "This is beyond what I can do."}
+    - {zh: "力不从心，抱歉。", en: "It is beyond my strength. Forgive me."}
+  turned_down:
+    - {zh: "对不住。这件事我不能应承。", en: "Forgive me. I cannot take this upon myself."}
+    - {zh: "请原谅，我不能这样做。", en: "Please pardon me. I cannot do this."}
+  said_already:
+    - {zh: "此话我已说过。", en: "I have said this once already."}
+    - {zh: "该说的我都说了。", en: "I have said what there is to say."}
+  closed:
+    - {zh: "此时香火正盛。恕不见客。", en: "The incense burns strong now, and I cannot receive visitors."}
+    - {zh: "神前不便。换个时辰再来。", en: "It is not proper before the shrine. Come at another hour."}
+  needs_nod:
+    - {zh: "这要先问过神明。", en: "This must first be asked of the gods."}
+    - {zh: "没有神明应允，我不敢应。", en: "The gods have not consented. I dare not agree."}
+  nothing_to_say:
+    - {zh: "此事无可言说。", en: "There is nothing to be said of it."}
+    - {zh: "我没有什么要说的。", en: "I have nothing to say."}
+  testified:
+    - {zh: "我所说的，皆是亲眼所见。神明可鉴。", en: "All I say I saw with my own eyes. The gods are my witness."}
+    - {zh: "未曾见过的，我不会说。", en: "What I have not seen, I will not say."}
+  too_late:
+    - {zh: "夜深了。明早再来上香吧。", en: "The night is deep. Come back to burn incense in the morning."}
+    - {zh: "天色已晚。明天再说。", en: "The hour is late. We shall speak tomorrow."}
+  will_ask:
+    - {zh: "好，我去同对方说。", en: "Good, I will go and speak with them."}
+    - {zh: "我去传话。愿神明成全。", en: "I will carry the word. May the gods favour it."}
+  will_call:
+    - {zh: "好，我这就去敲钟。请大家到祠堂。", en: "Good, I shall toll the bell and call everyone to the hall."}
+    - {zh: "我去通知众人。祠堂相聚。", en: "I will tell everyone. We gather at the hall."}
+  hard_hc_li_bamboo:
+    - {zh: "谣言不在众人面前澄清，此事不可行。", en: "While the slander is not cleared before all, this cannot be done."}
+    - {zh: "须先当众澄清，才能谈别的。", en: "It must be cleared in public first, before we speak of anything else."}
+  hard_hc_li_bamboo_rumour:
+    - {zh: "谣言满镇，总管却默然不语。此事恕我难应。", en: "The slander fills the town, yet the Manager remains silent. I cannot agree to this."}
+    - {zh: "谣言未散，总管亦不置一词。愿神明宽恕，此事不可。", en: "The slander has not cleared, and the Manager says nothing. May the gods forgive me, but I cannot."}
+  hard_other:
+    - {zh: "此事不可。", en: "This may not be."}
+    - {zh: "万万不可。请勿再提。", en: "It cannot be. Please do not raise it again."}
+  elder_yes:
+    - {zh: "我明白了。愿一切顺遂。", en: "I understand. May all go well."}
+    - {zh: "所言有理。我心安了。", en: "What you say is reasonable. My heart is at peace."}
+  elder_no:
+    - {zh: "这些还不足以让我安心。", en: "This is not yet enough to set my heart at ease."}
+    - {zh: "神明未点头。我也不能点头。", en: "The gods have not nodded, and neither can I."}
+  objection_withdrawn:
+    - {zh: "误会既解，我不再阻拦。愿一切顺遂。", en: "The misunderstanding is lifted, and I will no longer stand in the way. May all go well."}
+    - {zh: "事已说明。缘分到了，我不拦了。", en: "The matter is explained. Fate allows it, so I will not hinder you."}
+  witness_in_public:
+    - {zh: "我所见仅此而已。余者不敢妄言。", en: "That is all I saw. Of the rest I dare not speak."}
+    - {zh: "神明在上，我只说亲眼所见。", en: "With the gods above, I speak only of what I saw."}
+  batch_promised:
+    - {zh: "好。明晨便送到桥边。", en: "Good. By tomorrow's dawn it will be at the bridge."}
+    - {zh: "愿一切顺利。明早必到。", en: "May all go well. It will arrive tomorrow morning."}
+  bamboo_arrived:
+    - {zh: "竹料已至桥边。愿修桥顺遂。", en: "The bamboo has come to the bridge. May the mending go smoothly."}
+    - {zh: "料到了。这也是缘分。", en: "The bamboo is here. That too is fate."}
+  promise_open:
+    - {zh: "此事已应下。{when}，{amount}根{item}送至桥边。", en: "I have consented already. So it shall be: {amount} poles of {item} at the bridge {when}."}
+    - {zh: "应允的事，必不相负。{amount}根{item}，{when}到。", en: "A promise given is not forgotten, and {amount} poles of {item} will come {when}."}
+  goods_enough:
+    - {zh: "桥边的{item}已足。愿修桥顺遂。", en: "The {item} at the bridge is sufficient. May the mending go well."}
+    - {zh: "{item}既已足够，便不必再求了。", en: "Since the {item} is enough, there is no need to ask for more."}
+  point_heard:
+    - {zh: "此事我并不知情。我听{name}提起过，你不妨去问问。", en: "I know nothing of this. I heard {name} speak of it, so you may wish to ask."}
+    - {zh: "神明未曾示下。{name}或许听说过，你去问吧。", en: "The gods have shown me nothing. Perhaps {name} has heard of it, so go and ask."}
+  point_hub:
+    - {zh: "此事我不知晓。镇上的消息，{name}那里最全。", en: "I do not know. News of the town is gathered most fully by {name}."}
+    - {zh: "我不知道。往来的人都经过{name}那里，你去问问。", en: "I cannot say. All who come and go pass by {name}, so go and ask them."}
+frames:
+  seen:
+    - {zh: "我亲眼所见。神明可鉴：{line}。", en: "I saw it with my own eyes, as the gods are my witness: {line}."}
+    - {zh: "那日我在庙中亲见：{line}。", en: "That day I saw it in the temple myself: {line}."}
+  heard:
+    - {zh: "{teller}曾对我说起：{line}。", en: "{teller} spoke to me of it: {line}."}
+    - {zh: "我听{teller}提过：{line}。", en: "I heard {teller} mention that {line}."}
+  unknown:
+    - {zh: "香客们议论：{line}。", en: "The visitors have been saying that {line}."}
+    - {zh: "有人在庙前说起：{line}。", en: "Someone spoke of it by the temple gate: {line}."}
+  own:
+    - {zh: "我心里觉得：{line}。", en: "My heart tells me that {line}."}
+    - {zh: "依我看来：{line}。", en: "To my eyes, {line}."}
+  guess_own:
+    - {zh: "不可妄断。{hedge}{line}。", en: "One should not judge rashly. {hedge} {line}."}
+    - {zh: "只是心中所感。{hedge}{line}。", en: "It is only what my heart senses. {hedge} {line}."}
+  guess_heard:
+    - {zh: "{teller}说得含糊。{hedge}{line}。", en: "{teller} spoke vaguely. {hedge} {line}."}
+    - {zh: "听{teller}话中之意，{hedge}{line}。", en: "From what {teller} seemed to mean, {hedge} {line}."}
+  guess_unknown:
+    - {zh: "不知是谁传的话。{hedge}{line}。", en: "I know not who carried the word. {hedge} {line}."}
+    - {zh: "只是风中听来。{hedge}{line}。", en: "I only caught it on the wind. {hedge} {line}."}
+  rival:
+    - {zh: "只是{teller}也曾对我提起另一种说法：{line}。", en: "Yet {teller} also spoke to me of another account: {line}."}
+    - {zh: "愿神明明鉴，{teller}也说过不同的话：{line}。", en: "May the gods judge it, for {teller} has said otherwise to me: {line}."}
+hedges:
+  - {zh: 我感觉, en: I sense}
+  - {zh: 许是, en: I feel}

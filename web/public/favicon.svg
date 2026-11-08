@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <title>Lantern Eve</title>
+  <rect x="0.5" y="0.5" width="31" height="31" fill="#3d3b4f" stroke="#eedeb0"/>
+  <path d="M16 3v5" fill="none" stroke="#eedeb0" stroke-width="1.6"/>
+  <rect x="10.5" y="7.5" width="11" height="3" fill="#9d2933"/>
+  <ellipse cx="16" cy="17.5" rx="8.5" ry="7.5" fill="#f0c239"/>
+  <path d="M16 10.5c-3.6 2.2-3.6 12.8 0 15M16 10.5c3.6 2.2 3.6 12.8 0 15" fill="none" stroke="#9d2933" stroke-width="1"/>
+  <rect x="10.5" y="24.5" width="11" height="3" fill="#9d2933"/>
+  <path d="M16 27.5v2.5" fill="none" stroke="#eedeb0" stroke-width="1.6"/>
+</svg>

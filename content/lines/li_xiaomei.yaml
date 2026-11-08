@@ -1,0 +1,152 @@
+# Li Xiaomei, the youngest daughter of the Li family, who is fond of a Zhou son and keeps it to
+# herself. Bright and quick, a little breathless, gentle with everyone.
+person: li_xiaomei
+voice:
+  zh: 李家小妹。明快、有点喘不过气似的，爱用语气词，对谁都温和，心里藏着事。
+  en: The youngest Li daughter. Bright and quick, a little breathless, gentle with everyone, with something she keeps to herself.
+lines:
+  asleep:
+    - {zh: "嗯……别……被人看见……（睡熟了）", en: "Mm... don't... someone will see... (fast asleep)"}
+    - {zh: "呼……灯笼……真好看……（睡熟了）", en: "Zzz... the lanterns... so pretty... (fast asleep)"}
+  busy:
+    - {zh: "哎呀，我正忙着呢。等会儿找你呀！", en: "Oh, I'm busy right now. I'll find you later!"}
+    - {zh: "对不起呀，现在真的不得闲。", en: "Sorry, I really haven't a moment now."}
+  timeout:
+    - {zh: "糟了，坊里的活还没做完！我得走啦！", en: "Oh dear, the work at the workshop isn't done! I have to go!"}
+    - {zh: "不能再聊啦。工坊里有人等我呢。", en: "I can't chat any longer. They're waiting for me at the workshop."}
+  unknown:
+    - {zh: "这个我真不知道呀。", en: "I really don't know about that."}
+    - {zh: "嗯……我没听说过呢。", en: "Um... I haven't heard anything."}
+  evade:
+    - {zh: "这个……我不太想说。", en: "That's... something I'd rather not say."}
+    - {zh: "哎呀，别问这个啦。", en: "Oh, please don't ask about that."}
+  not_said:
+    - {zh: "我没说过这话呀。", en: "I didn't say that, honestly."}
+    - {zh: "哎，我可不是这个意思。", en: "Oh, that's not what I meant."}
+  not_so:
+    - {zh: "不是的呀。不是那样的。", en: "No, it isn't. It wasn't like that."}
+    - {zh: "不对不对，你弄错了。", en: "No, no, you've got it wrong."}
+  keeper_no:
+    - {zh: "咱们还不熟呢。下次吧。", en: "We don't know each other well yet. Next time."}
+    - {zh: "这个不好随便给人看呀。", en: "I can't just show this to anybody."}
+  took_in:
+    - {zh: "哦，原来是这样呀。我记下了。", en: "Oh, so that's how it is. I'll remember."}
+    - {zh: "嗯嗯，我明白了。", en: "Mm-hm, I understand."}
+  knew:
+    - {zh: "这个我知道好久啦。", en: "I've known that for a while."}
+    - {zh: "我听说过的呀。", en: "I'd heard about it."}
+  doubted:
+    - {zh: "咦？我听到的可不是这样。", en: "Oh? That's not what I heard."}
+    - {zh: "不太对呀。跟我听说的不一样。", en: "That doesn't sound right. It's not what I was told."}
+  caught:
+    - {zh: "你骗我！我再也不信你啦！", en: "You lied to me! I'll never trust you again!"}
+    - {zh: "原来你一直在说谎！太过分了！", en: "You've been lying all along! That's too much!"}
+  deal:
+    - {zh: "好呀！就这么说定了！", en: "Yes! It's agreed!"}
+    - {zh: "一言为定哦！", en: "It's a deal, then!"}
+  empty:
+    - {zh: "光说好听的，我才不信呢。", en: "Sweet words alone, I won't believe them."}
+    - {zh: "没有凭据，我不信。", en: "Without anything to show for it, I don't believe you."}
+  kept_thanks:
+    - {zh: "总管真的说话算数！谢谢你呀！", en: "The Manager really keeps their word! Thank you!"}
+    - {zh: "你做到了！我会记住的！", en: "You did it! I'll remember this!"}
+  will_do:
+    - {zh: "好呀，这事我来！", en: "Sure, I'll take care of it!"}
+    - {zh: "行，我这就去办。", en: "All right, I'll do it right away."}
+  cannot:
+    - {zh: "这个我帮不上忙呀。", en: "I can't help with that one."}
+    - {zh: "对不起，我做不到。", en: "Sorry, I can't manage that."}
+  turned_down:
+    - {zh: "真对不起，这件事我不能答应。", en: "I'm so sorry. I can't agree to this."}
+    - {zh: "唉，这个真的不行呀。", en: "Oh, this really can't be done."}
+  said_already:
+    - {zh: "我已经说过啦。", en: "I've said so already."}
+    - {zh: "刚才讲过了呀。", en: "I just told you."}
+  closed:
+    - {zh: "现在不方便呀。换个时候来吧。", en: "It's not convenient now. Come at another time."}
+    - {zh: "这会儿不行呢。晚些再来。", en: "Not at the moment. Come back later."}
+  needs_nod:
+    - {zh: "得先问问我娘才行。", en: "I'll have to ask my mother first."}
+    - {zh: "奶奶还没点头呢。我不敢答应。", en: "Granny hasn't nodded yet. I don't dare say yes."}
+  nothing_to_say:
+    - {zh: "这个我没什么可说的呀。", en: "I've got nothing to say about that."}
+    - {zh: "没有啦。真的没有。", en: "There's nothing. Really."}
+  testified:
+    - {zh: "我说的全是亲眼看见的呀。", en: "All I say is what I saw with my own eyes."}
+    - {zh: "我才不乱说呢。看见了才讲。", en: "I never make things up. I only tell what I saw."}
+  too_late:
+    - {zh: "天晚了呀。明早再来吧。", en: "It's late. Come back in the morning."}
+    - {zh: "已经很晚啦。明天再说好吗？", en: "It's very late. Shall we talk tomorrow?"}
+  will_ask:
+    - {zh: "好呀，我去跟对方说一声。", en: "All right, I'll have a word with them."}
+    - {zh: "我帮你问问看。", en: "I'll ask them for you."}
+  will_call:
+    - {zh: "好，我这就去叫大家来祠堂。", en: "Okay, I'll go and call everyone to the hall."}
+    - {zh: "我去喊人！大家都到祠堂来！", en: "I'll go call them! Everybody to the hall!"}
+  hard_hc_li_bamboo:
+    - {zh: "谣言不当众说清楚，竹子一根也不能借呀。", en: "Unless the rumour is cleared in front of everyone, we can't lend a single pole."}
+    - {zh: "奶奶说了，要先把谣言说清楚。", en: "Granny says the rumour must be cleared up first."}
+  hard_hc_li_bamboo_rumour:
+    - {zh: "镇上都在说我二叔毁了桥呀。总管一声不吭，奶奶才不肯借竹子呢。", en: "The whole town says my uncle wrecked the bridge. You stayed so quiet, Manager, that Granny won't lend the bamboo."}
+    - {zh: "谣言传得到处都是呀。总管一直不吭声，我不敢点头。", en: "The rumour's all over the place. The Manager keeps quiet, so I don't dare say yes."}
+  hard_other:
+    - {zh: "这个不行呀。", en: "That isn't possible."}
+    - {zh: "没办法商量呢。", en: "There's no way to discuss it."}
+  elder_yes:
+    - {zh: "我明白了。就这样吧。", en: "I see. Let's leave it at that."}
+    - {zh: "你说得对。我没有意见了。", en: "You're right. I have no more doubts."}
+  elder_no:
+    - {zh: "光这样还不行呢。", en: "That alone isn't enough."}
+    - {zh: "我还是没法相信呀。", en: "I still can't bring myself to believe it."}
+  objection_withdrawn:
+    - {zh: "说清楚啦！那我们不拦着了呀。", en: "It's all cleared up! Then we won't stop you."}
+    - {zh: "太好了，奶奶也点头啦。你去吧。", en: "How lovely, Granny nodded too. Go ahead."}
+  witness_in_public:
+    - {zh: "我就看见这么多呀，别的真不知道。", en: "That's all I saw, really. I don't know anything else."}
+    - {zh: "我只说看见的，不添一个字哦。", en: "I only tell what I saw, without adding a word."}
+  batch_promised:
+    - {zh: "好呀！明天一早就送到桥边！", en: "Okay! First thing tomorrow it goes to the bridge!"}
+    - {zh: "明早一定送到呀，放心吧。", en: "It will definitely be there in the morning, don't worry."}
+  bamboo_arrived:
+    - {zh: "竹子到桥边啦！太好了呀！", en: "The bamboo's at the bridge! How wonderful!"}
+    - {zh: "快看，竹料送来了呀。", en: "Look quick, the bamboo has come."}
+  promise_open:
+    - {zh: "答应过啦。{when}，{amount}根{item}呀。", en: "I said yes already. It's {amount} poles of {item}, {when}."}
+    - {zh: "我记着呢，{when}把{amount}根{item}送去呀。", en: "I remember, I'll bring {amount} poles of {item} {when}."}
+  goods_enough:
+    - {zh: "桥边的{item}够啦呀。", en: "There's enough {item} at the bridge, really."}
+    - {zh: "已经够了呀，{item}都堆起来了。", en: "It's enough already, the {item} is piled up."}
+  point_heard:
+    - {zh: "我真的不知道呀。不过我听{name}说起过，你去问问吧。", en: "I really don't know. But I heard {name} talking about it, so you could ask."}
+    - {zh: "嗯……我没听说呢。好像{name}知道一点，要不你去问问？", en: "Um... I haven't heard anything. I think {name} knows a little, so maybe ask?"}
+  point_hub:
+    - {zh: "这个我不清楚呀。{name}什么都知道，你去问问看。", en: "I don't know about that. You could ask {name}, who knows everything."}
+    - {zh: "我不知道呢。镇上的事，{name}最清楚啦。", en: "I don't know. When it comes to the town, {name} knows best."}
+frames:
+  seen:
+    - {zh: "我亲眼看见的呀：{line}。", en: "I saw it with my own eyes, really: {line}."}
+    - {zh: "我当时就在旁边：{line}。", en: "I happened to be nearby: {line}."}
+  heard:
+    - {zh: "{teller}告诉我的呀：{line}。", en: "{teller} told me, you know: {line}."}
+    - {zh: "听{teller}讲的：{line}。", en: "I heard it from {teller}: {line}."}
+  unknown:
+    - {zh: "我听人说呀：{line}。", en: "I heard people saying {line}."}
+    - {zh: "好像大家都在传：{line}。", en: "It seems everyone is passing it around: {line}."}
+  own:
+    - {zh: "我是这么想的：{line}。", en: "This is what I think: {line}."}
+    - {zh: "依我看呀：{line}。", en: "The way I see it: {line}."}
+  guess_own:
+    - {zh: "我也不确定呀。{hedge}{line}。", en: "I'm not certain. {hedge} {line}."}
+    - {zh: "说不定呢。{hedge}{line}。", en: "Who can say. {hedge} {line}."}
+  guess_heard:
+    - {zh: "{teller}好像提过。{hedge}{line}。", en: "{teller} seemed to mention it. {hedge} {line}."}
+    - {zh: "听{teller}的口气，{hedge}{line}。", en: "Going by {teller}'s tone, {hedge} {line}."}
+  guess_unknown:
+    - {zh: "不记得谁说的了。{hedge}{line}。", en: "I don't remember who said it. {hedge} {line}."}
+    - {zh: "只是听见有人讲。{hedge}{line}。", en: "I only overheard it. {hedge} {line}."}
+  rival:
+    - {zh: "不过{teller}也跟我说过呢：{line}。", en: "But {teller} told me something too, you know: {line}."}
+    - {zh: "还有呀，{teller}说的可不一样：{line}。", en: "And then {teller} said it was different, really: {line}."}
+hedges:
+  - {zh: 我想, en: I suppose}
+  - {zh: 说不定是, en: I'd imagine}
