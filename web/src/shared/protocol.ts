@@ -3,7 +3,7 @@
  * the replay file, and the messages between the page and the host worker.
  */
 
-export const HOST_VERSION = "0.1.0";
+export const HOST_VERSION = "0.1.1";
 export const REPLAY_FORMAT = 1;
 
 export type ProviderId = "bailian" | "deepseek" | "ollama";

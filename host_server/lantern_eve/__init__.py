@@ -14,4 +14,4 @@
 - ``cli``       the ``lantern-eve`` command (``play`` and ``batch``)
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"

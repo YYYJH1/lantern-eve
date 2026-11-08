@@ -1,6 +1,6 @@
 [project]
 name = "lantern-eve"
-version = "0.1.0"
+version = "0.1.1"
 description = "Five days to a lantern festival in a river town: follow a rumour from person to person and set it straight."
 readme = "README.md"
 license = "MIT"

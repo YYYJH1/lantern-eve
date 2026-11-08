@@ -68,17 +68,17 @@ jobs:
           fi
 
   web:
-    name: web build and browser tests (Node 22, Chromium, shard ${{ matrix.shard }} of 2)
+    name: web build and browser tests (Node 22, Chromium, shard ${{ matrix.shard }} of 4)
     if: ${{ github.repository == 'YYYJH1/lantern-eve' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         # The browser tests run one at a time, so that what they time is the page and not the other
-        # tests. Two runners take half of the browser files each, and the first also runs the unit
-        # tests, which take seconds.
-        shard: [1, 2]
+        # tests. Four runners take a quarter of the browser files each, and the first also runs the
+        # unit tests, which take seconds.
+        shard: [1, 2, 3, 4]
     defaults:
       run:
         working-directory: web
@@ -95,12 +95,12 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       # Type check, the production build and the test build, then the unit tests on the first runner and
-      # this runner's half of the browser tests. Split together, the many small unit files would fill one
-      # half and leave the browser files to the other.
+      # this runner's quarter of the browser tests. Split together, the many small unit files would fill one
+      # quarter and leave the browser files to the others.
       - run: npm run build && npm run build:e2e
       - run: npx playwright test --project=unit
         if: matrix.shard == 1
-      - run: npx playwright test --project=chromium --shard=${{ matrix.shard }}/2
+      - run: npx playwright test --project=chromium --shard=${{ matrix.shard }}/4
       # A failed test leaves its page as it stood (error-context.md) and a screenshot in test-results, next to the
       # replays and reports the tests write. Uploaded only when a step above failed, and kept for a week.
       - uses: actions/upload-artifact@v7

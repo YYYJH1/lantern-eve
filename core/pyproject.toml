@@ -1,6 +1,6 @@
 [project]
 name = "lantern-core"
-version = "0.1.0"
+version = "0.1.1"
 description = "The world of lantern-eve as a pure state machine: no I/O, no floats in its state, the same ticks under CPython and Pyodide."
 license = "MIT"
 authors = [{ name = "Jiahao You" }]
