@@ -185,7 +185,7 @@ def test_the_tasks_come_in_the_kinds_and_jobs_of_the_brief_with_their_titles():
         "zh": "当众把桥的事说清楚",
         "en": "Tell the town how the bridge broke",
     }
-    assert BOOK[PEACE]["text"] == {"zh": "两家和解", "en": "Make peace between the families"}
+    assert BOOK[PEACE]["text"] == {"zh": "让两家和好", "en": "Make peace between the families"}
     assert BOOK[NIGHT]["text"] == {"zh": "灯会之夜", "en": "Festival night"}
     assert BOOK[CALL]["text"] == {"zh": "请族长召集族人", "en": "Have the elder call the clan"}
     assert ids.index(CALL) == len(ids) - 1  # the tasks of the elder's call are a block at the end
@@ -395,7 +395,7 @@ def test_following_the_cards_by_the_days_tells_the_truth_in_public_and_makes_the
     found = card(marks, "morning3", PEACE)
     assert found["state"] == "open" and found["action"] is None
     assert found["next"]["en"] == words(PEACE, "next", TABLE["work"])
-    assert found["why"]["en"].startswith("The grudge between the two heads stands at ")
+    assert found["why"]["en"].startswith("The two heads are still angry with each other")
     for label in bot.order[bot.order.index("work3") : bot.order.index("told")]:
         found = card(marks, label, PEACE)
         assert found["state"] == "open", label
@@ -407,7 +407,7 @@ def test_following_the_cards_by_the_days_tells_the_truth_in_public_and_makes_the
     table = card(marks, "told", PEACE)
     assert table["action"] == {"verb": "speak", "kind": "meal"}
     assert table["next"]["en"] == words(PEACE, "next", TABLE["told"])
-    assert table["why"]["en"].startswith("The truth is out and the grudge between the two heads")
+    assert table["why"]["en"].startswith("The truth about the bridge is out. A meal now")
     assert (table["window"]["from"], table["window"]["to"]) == (17, 19)
     assert [card(marks, "fed", i)["state"] for i in (LEAD, TELL, PEACE)] == ["done"] * 3
     assert card(marks, "told", TELL)["state"] == "done"
@@ -728,7 +728,7 @@ def test_the_full_statement_waits_for_enough_people_and_the_card_says_so_instead
     fill(game)
     card_now = frame_now(game)["statement"]
     assert card_now["can_state"] is False and card_now["why_not"]["en"] == (
-        "Fewer than five named people are here"
+        "Fewer than five familiar faces are here"
     )
     assert acks(state_it(game)) == [("rejected", "few_present")]  # and nothing was spent
     assert frame_now(game)["statement"]["used_today"] is False
@@ -748,7 +748,7 @@ def test_a_statement_with_the_parts_right_and_too_little_proof_says_so_and_asks_
         assert found["next"]["en"] == words(TELL, "next", SHORT_NEXT["proof"])
         last = frame_now(game)["board"]["truth"]["last"]
         assert last["why"] == {
-            "zh": "每一栏都对得上，可手里的凭据还分不出是哪一种说法",
+            "zh": "每一条都对，可你的凭据分不出是哪种说法",
             "en": "Every part holds, but what you hold cannot tell one story from the others",
         }
         assert assembly.missed(state_of(game)) == "proof"
@@ -769,7 +769,7 @@ def test_a_part_that_did_not_hold_is_named_with_the_kind_of_its_failure_and_aske
     assert found["next"]["en"] == words(TELL, "next", SHORT_NEXT["parts"])
     last = frame_now(game)["statement"]["last"]
     assert last["wrong"] == ["cause"] and last["told"] is False
-    assert last["why"]["en"].startswith("Cause: ")
+    assert last["why"]["en"].startswith("The part “How the bridge broke” ")
     assert frame_now(game)["board"]["truth"]["last"]["why"] == last["why"]
 
 
@@ -808,7 +808,7 @@ def test_after_the_elder_refused_a_whole_proof_the_card_has_the_manager_win_him_
     speak_row(game, at(4, 17, 40), TEAHOUSE, 9, 8, 1, 1, 0, [])
     found = tasks_of(frame_now(game))[TELL]
     assert "did not nod" in found["why"]["en"] and "another account" in found["why"]["en"]
-    assert "trust" in found["next"]["en"] and "refutes the other account" in found["next"]["en"]
+    assert "trust" in found["next"]["en"] and "rules out the other account" in found["next"]["en"]
     assert "没点头" in found["why"]["zh"]
     assert found["action"] == {"verb": "talk", "npc": "zuzhang"}
     # once they have talked that day, the next thing to do is the promise, where one can be made
@@ -895,7 +895,8 @@ def test_the_card_sends_the_manager_to_the_hall_while_the_clan_is_called_and_bac
     found = tasks_of(idle(game)["frame"])[TELL]
     assert found["action"] == {"verb": "move", "place": "p_clan_hall"}
     assert found["next"]["en"] == words(TELL, "next", NEXT_STATE["hall"])
-    assert "hall is open" in found["next"]["en"] and "祠堂开着" in found["next"]["zh"]
+    assert "called the clan to the hall" in found["next"]["en"]
+    assert "召集到祠堂" in found["next"]["zh"]
     put(game, *hall)
     assert tasks_of(idle(game)["frame"])[TELL]["action"] == {"verb": "speak", "kind": "statement"}
     until = me(game)["meeting"]["until"]

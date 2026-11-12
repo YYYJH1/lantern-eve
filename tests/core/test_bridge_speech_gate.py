@@ -637,7 +637,7 @@ def test_the_gate_changes_nothing_and_gives_the_same_answer_every_time(game):
     before = game.snapshot_json()
     texts = [
         reply(PLAIN, **PLAIN_LINE),
-        reply([belief("pr_rail_located", "self_seen")], mood="sad", address="friend"),
+        reply([belief("pr_rail_located", "self_seen")], mood="sad", address="manager"),
         reply(PLAIN, zh="没有人知道。", en="Nobody knows."),
         "garbage",
     ]

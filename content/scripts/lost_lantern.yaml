@@ -219,12 +219,12 @@ evidence:
     acquire: {from: miaozhu, gatekeeper: null, min_trust: 20, daily: [480, 1080], minutes: 30}
   - id: e_flaw
     label: 学徒的证词：师傅摔裂了灯架，骂了半夜
-    label_en: "The apprentice's word: the master cracked a lamp frame and cursed half the night"
+    label_en: "The apprentice's word: the master cracked a lantern frame and cursed half the night"
     supports: [pr_lantern_flawed]
     acquire: {from: apprentice, gatekeeper: zhadeng_shifu, min_trust: 35, daily: [480, 1080], minutes: 40}
   - id: e_cabinet
     label: 工坊夹壁里露出的灯架边角
-    label_en: "The corner of a lamp frame showing in the hidden wall of the workshop"
+    label_en: "The corner of a lantern frame showing in the hidden wall of the workshop"
     supports: [pr_maker_hid, pr_lantern_flawed]
     acquire: {from: p_workshop, gatekeeper: zhadeng_shifu, min_trust: 50, daily: [480, 1080], minutes: 50}
 

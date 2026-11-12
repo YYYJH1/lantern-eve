@@ -17,12 +17,24 @@ kept, so the state does not know the voices are there and holds the same line wh
 the words are made in the frame, from the line, as ever. A bubble does not change its words while
 it is on show, because none of the three changes.
 
+A person also has their own names for other people (``call`` in ``content/lines``): the second son
+is "老二" to his mother and "李家老二" to a neighbour. ``calls`` is that table, ``called`` looks one
+name up in it and ``names_for`` lays the whole table over the names of the cast. Wherever a person
+says a name, the words are made with the names of that person: the people a frame names (``teller``)
+and the people the told sentence is about, the person a pointing line sends the manager to, and the
+people the answer about a taste names. A person the table does not list goes by the name the cast
+gives them, and a person who speaks of themself says "I", as before. What is not a person speaking
+(the notebook, the cards, the paper, the recaps, the ending) names everyone by the cast. A name is a
+matter of words only, like the rest of the voices: the state never holds one.
+
 An unknown code is a mistake in the caller, as in ``phrases``.
 """
 
 from __future__ import annotations
 
 import functools
+from collections import ChainMap
+from collections.abc import Mapping
 from typing import Any
 
 from lantern_core.cognition.lines import frame_key
@@ -94,15 +106,40 @@ def hedges(person: str) -> dict[str, list[str]] | None:
     return None if voice is None else voice["hedges"]
 
 
+def calls(person: str) -> Mapping[str, Mapping[str, str]]:
+    """How ``person`` names the others when they speak: ``{cast id: {"zh", "en"}}``. A person with
+    no table of their own, and anyone their table does not list, are named as the cast names them.
+    """
+    voice: Any = VOICES.get(person)
+    return {} if voice is None else voice.get("call", {})
+
+
+def called(person: str, other: str) -> dict[str, str]:
+    """What ``person`` calls ``other`` when they speak of them, in both languages: the name their
+    table gives, else the name of the cast."""
+    own = calls(person).get(other)
+    return dict(own) if own is not None else dict(lore().names[other])
+
+
+def names_for(person: str) -> Mapping[str, Mapping[str, str]]:
+    """The names of the town as ``person`` says them: ``Lore.names`` with the table of ``person``
+    laid over it. A sentence the town's lines make for ``person`` is made with these."""
+    own = calls(person)
+    return ChainMap(dict(own), lore().names) if own else lore().names
+
+
 @functools.lru_cache(maxsize=4096)
 def rival_words(prop: Prop, teller: str, speaker: str, said_at: int) -> dict[str, str]:
     """What ``speaker`` adds, after the belief they hold, of the account ``prop`` that ``teller``
     told them and they did not take in, in their own voice. ``said_at`` is the tick of the claim.
     The words are a function of these four things alone, and the result is shared by every caller
     of the cache: do not change it."""
-    lo = lore()
-    return lo.lines.rival(
-        prop, lo.names, teller=teller, speaker=speaker, frame=frame(speaker, "rival", said_at)
+    return lore().lines.rival(
+        prop,
+        names_for(speaker),
+        teller=teller,
+        speaker=speaker,
+        frame=frame(speaker, "rival", said_at),
     )
 
 
@@ -114,14 +151,17 @@ def claim_words(
     their own voice. ``pick`` is the number of the claim (it chooses the hedge) and ``said_at``
     the tick it was made. The words are a function of these six things alone, and the result is
     shared by every caller of the cache: do not change it."""
-    lo = lore()
-    return lo.lines.say(
+    return lore().lines.say(
         prop,
-        lo.names,
+        names_for(speaker),
         modality=modality,
         claimed_source=claimed_source,
         speaker=speaker,
         pick=pick,
-        frame=frame(speaker, frame_key(modality, claimed_source, speaker), said_at),
+        frame=frame(
+            speaker,
+            frame_key(modality, claimed_source, speaker, lore().lines.is_known(prop)),
+            said_at,
+        ),
         hedges=hedges(speaker),
     )

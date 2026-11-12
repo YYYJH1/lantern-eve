@@ -180,12 +180,12 @@ test.describe("the time the button says", () => {
     expect(skipShort({ running: false })).toBe("Skip");
     expect(skipShort({ running: true })).toBe("Stop");
     setLang("zh");
-    expect(momentText("zh", { day: 5, hour: 17, minute: 0 })).toBe("第五日 17:00");
-    expect(skipLabel("zh", state)).toBe("快进到第五日 17:00");
+    expect(momentText("zh", { day: 5, hour: 17, minute: 0 })).toBe("第五天 17:00");
+    expect(skipLabel("zh", state)).toBe("快进到第五天 17:00");
     expect(skipLabel("zh", { offer: { until: null }, running: false })).toBe("快进到下一件事");
     expect(skipLabel("zh", { offer, running: true })).toBe("停止快进");
     expect(skipShort({ running: false })).toBe("快进");
-    expect(translate("zh", "skip.stop.short")).toBe("停止");
+    expect(translate("zh", "skip.stop.short")).toBe("停下");
     setLang("en");
   });
 });

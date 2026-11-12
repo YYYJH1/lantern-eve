@@ -128,6 +128,76 @@
   flex: none;
 }
 
+/* The acts that come to what the manager points at on the map: a small slip over a pair that talks, and over the manager's own piece when a thing is within reach.
+   They hang over the map and over the red slip (the manager stands under it at the start, and the act must be there to press), and under the ledger, the
+   notebook, the menu and the sheets. They are the only part of their layer that takes a press. */
+.chip-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 17;
+  pointer-events: none;
+}
+
+.chip-layer .chip-act,
+.chip-layer .map-chip-said {
+  pointer-events: auto;
+}
+
+.map-chip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+}
+
+.chip-stack {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  transform: translateX(-50%);
+}
+
+.chip-act {
+  padding: 3px 12px 4px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  outline: 2px solid var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chip-act:hover,
+.chip-act:focus-visible {
+  background: color-mix(in srgb, var(--paper) 88%, var(--ink));
+}
+
+.chip-act.is-off {
+  border-style: dashed;
+  opacity: 0.7;
+  cursor: help;
+}
+
+.map-chip-said {
+  position: absolute;
+  bottom: 84px;
+  left: 50%;
+  max-width: min(440px, 60%);
+  margin: 0;
+  padding: 4px 12px;
+  font-size: 15px;
+  line-height: 1.45;
+  transform: translateX(-50%);
+}
+
 /* A ring on the map round the person or the place the eye is drawn to ---------------------------------- */
 
 .ping {
@@ -190,19 +260,6 @@
 
 .guide-dock {
   display: contents;
-}
-
-/* The two buttons of the help beside the notebook, and the log of hints ---------------------------------- */
-
-.help-bar {
-  display: inline-flex;
-  flex: none;
-  gap: 6px;
-}
-
-.btn-help {
-  min-height: 34px;
-  padding: 2px 12px;
 }
 
 /* The opening page ------------------------------------------------------------------------------------ */

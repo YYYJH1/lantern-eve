@@ -12,6 +12,7 @@ import type { Offer } from "./frame.ts";
 import type { Play } from "./play.ts";
 import { askPreview, type Preview, type PreviewAction, type PreviewVerb } from "./preview.ts";
 import { type Name, readName } from "./scene.ts";
+import { proposalId, type Wants } from "./talk-frame.ts";
 import { type Clarified, type Gazette, type Night, type RecapLine, type Relation, readClarified, readGazette, readNight, readRecapLines, readSlice, type SliceFrame, STATEMENT_PARTS, type StatementLast, type StatementPart, type Task, type TaskAction } from "./slice.ts";
 import { readNightOn, writeNightOn } from "./guide-prefs.ts";
 import type { NoteValues } from "./play.ts";
@@ -23,13 +24,23 @@ export interface Fact {
   values: NoteValues;
 }
 
+/**
+ * What a request carries from where it began to its result. `auto`: the player has said yes already (to what a person asked in return), so
+ * the promise is sent as soon as the core has previewed it. `follow`: the request to look at again once this is done, which the player may
+ * go on with.
+ */
+interface Carry {
+  auto?: boolean;
+  follow?: Offer | null;
+}
+
 export type RequestState =
-  | { phase: "loading"; verb: PreviewVerb; npc: string; offer: Offer; token: number; stale: boolean }
+  | ({ phase: "loading"; verb: PreviewVerb; npc: string; offer: Offer; token: number; stale: boolean } & Carry)
   /** The host gave no preview: it did not answer in time, refused the call or has none. The player may ask again. */
-  | { phase: "failed"; verb: PreviewVerb; npc: string; offer: Offer }
-  | { phase: "preview"; verb: PreviewVerb; npc: string; offer: Offer; preview: Preview; actionId: string; stale: boolean }
-  | { phase: "sending"; verb: PreviewVerb; npc: string; offer: Offer; preview: Preview; actionId: string }
-  | { phase: "result"; verb: PreviewVerb; npc: string; offer: Offer; ok: boolean; reason: string | null; facts: Fact[]; reply: Name | null; cost: number | null };
+  | ({ phase: "failed"; verb: PreviewVerb; npc: string; offer: Offer } & Carry)
+  | ({ phase: "preview"; verb: PreviewVerb; npc: string; offer: Offer; preview: Preview; actionId: string; stale: boolean } & Carry)
+  | ({ phase: "sending"; verb: PreviewVerb; npc: string; offer: Offer; preview: Preview; actionId: string } & Carry)
+  | ({ phase: "result"; verb: PreviewVerb; npc: string; offer: Offer; ok: boolean; reason: string | null; facts: Fact[]; reply: Name | null; cost: number | null } & Carry);
 
 /** What the core made of the last judgement, for the pair it was about. */
 export interface JudgeOutcome {
@@ -41,9 +52,16 @@ export interface JudgeOutcome {
   reason: string | null;
 }
 
+/**
+ * The pair the notebook sets side by side: the claim, and the line shown against it. The core's words for them are `b` (the claim) and
+ * `a` (what is shown, which is the evidence), and the three answers are the relations it takes (`judge`).
+ */
 export interface PairState {
+  /** The line that is shown against the claim. */
   a: string | null;
+  /** The claim: the line that is being judged. */
   b: string | null;
+  /** The answer that was given and waits for the core's word. */
   relation: Relation | null;
   /** The id of the judgement that waits for the core's word. */
   waiting: string | null;
@@ -151,6 +169,10 @@ export interface FlowState {
   hintNone: boolean;
   /** The id of the call for a hint that waits for the core's word. */
   hintWaiting: string | null;
+  /** The topics asked of each person on this day, so that the list of questions puts the ones not asked first. */
+  asked: { day: number; by: Record<string, string[]> };
+  /** The proposals the player turned down (by the request and the token the core gives them, `proposalId`): the core goes on listing them, and the talk does not show them again. */
+  declined: string[];
   /** The statement card: the confirmation asked of the manager, and what waits for the core. */
   statement: StatementFlow;
   /** The full statement to show, until the player puts it away. */
@@ -180,6 +202,8 @@ const fresh = (): FlowState => ({
   suggest: null,
   hintNone: false,
   hintWaiting: null,
+  asked: { day: 0, by: {} },
+  declined: [],
   statement: freshStatement(),
   stated: null,
   pointed: null,
@@ -367,6 +391,12 @@ export class Flows {
     return me.x >= rect.x - 1 && me.x <= rect.x + rect.w && me.y >= rect.y - 1 && me.y <= rect.y + rect.h;
   }
 
+  /** Asks the talk with this person to open the list of small things to give, as the card of their hearts can. */
+  suggestGift(npc: string): void {
+    this.state.suggest = { verb: "gift", npc, since: this.play.now };
+    this.touch();
+  }
+
   takeSuggestion(npc: string | null): string | null {
     const wish = this.state.suggest;
     if (wish === null || wish.npc !== (npc ?? "")) return null;
@@ -385,9 +415,9 @@ export class Flows {
    * card says so and the player may ask again. `stale` is set when the request goes back to a new preview because the state
    * had moved on.
    */
-  begin(verb: PreviewVerb, npc: string, offer: Offer, stale = false): void {
+  begin(verb: PreviewVerb, npc: string, offer: Offer, stale = false, carry: Carry = {}): void {
     const token = ++this.seq;
-    this.state.request = { phase: "loading", verb, npc, offer, token, stale };
+    this.state.request = { phase: "loading", verb, npc, offer, token, stale, ...carry };
     this.touch();
     const action: PreviewAction = { verb, npc, ...this.bodyOf(offer) };
     const current = (): boolean => {
@@ -397,12 +427,14 @@ export class Flows {
     askPreview(this.play.hostClient, action).then(
       (preview) => {
         if (!current()) return;
-        this.state.request = { phase: "preview", verb, npc, offer, preview, actionId: this.play.hostClient.newActionId(), stale };
+        this.state.request = { phase: "preview", verb, npc, offer, preview, actionId: this.play.hostClient.newActionId(), stale, ...carry };
         this.touch();
+        // The player said yes to what the person asked in return: the promise goes out as the core previewed it.
+        if (carry.auto === true) this.confirm();
       },
       () => {
         if (!current()) return;
-        this.state.request = { phase: "failed", verb, npc, offer };
+        this.state.request = { phase: "failed", verb, npc, offer, ...carry };
         this.touch();
       },
     );
@@ -412,14 +444,14 @@ export class Flows {
   retry(): void {
     const now = this.state.request;
     if (now === null || now.phase !== "failed") return;
-    this.begin(now.verb, now.npc, now.offer);
+    this.begin(now.verb, now.npc, now.offer, false, { auto: now.auto, follow: now.follow });
   }
 
   confirm(): void {
     const now = this.state.request;
     if (now === null || now.phase !== "preview") return;
     const body: Record<string, unknown> = { ...this.bodyOf(now.offer), type: now.verb, action_id: now.actionId, version: now.preview.version };
-    this.state.request = { phase: "sending", verb: now.verb, npc: now.npc, offer: now.offer, preview: now.preview, actionId: now.actionId };
+    this.state.request = { phase: "sending", verb: now.verb, npc: now.npc, offer: now.offer, preview: now.preview, actionId: now.actionId, auto: now.auto, follow: now.follow };
     this.play.send(body, { subject: now.offer.name, npc: now.npc, flow: "request" });
     this.touch();
   }
@@ -429,6 +461,44 @@ export class Flows {
     this.state.request = null;
     this.seq++;
     this.touch();
+  }
+
+  /**
+   * The player says yes to what a person asked in return for a request: the promise is previewed by the core and made at once, and the card
+   * of the request, which was turned down, is offered again afterwards, to be looked at on the state as it is then.
+   */
+  accept(npc: string, wants: Wants): void {
+    this.begin("promise", npc, wants.offer, false, { auto: true, follow: wants.request });
+  }
+
+  /** The player says no: nothing is sent, and the proposal is not shown again while it stays the same (the same request, the same token). */
+  decline(wants: Pick<Wants, "key" | "token">): void {
+    const id = proposalId(wants);
+    if (wants.token === "" || this.state.declined.includes(id)) return;
+    this.state.declined = [...this.state.declined, id].slice(-20);
+    this.touch();
+  }
+
+  /** The player goes on with the request that came before a promise: it is previewed again. */
+  followUp(): void {
+    const now = this.state.request;
+    if (now === null || now.phase !== "result" || now.follow == null) return;
+    this.begin("entrust", now.npc, now.follow);
+  }
+
+  /** Remembers that a topic was asked of a person, on this day. */
+  noteAsked(npc: string, topic: string): void {
+    const day = this.play.view?.time.day ?? 0;
+    if (this.state.asked.day !== day) this.state.asked = { day, by: {} };
+    const known = this.state.asked.by[npc] ?? [];
+    if (!known.includes(topic)) this.state.asked.by[npc] = [...known, topic];
+    this.touch();
+  }
+
+  /** The topics already asked of a person on this day. */
+  askedOf(npc: string): ReadonlySet<string> {
+    const day = this.play.view?.time.day ?? 0;
+    return this.state.asked.day === day ? new Set(this.state.asked.by[npc] ?? []) : new Set();
   }
 
   /** The partner's latest line, as the frame shows it now. */
@@ -501,6 +571,7 @@ export class Flows {
       facts: this.factsOf(events),
       reply: this.replyOf(now.npc),
       cost: now.preview.cost,
+      follow: now.follow ?? null,
     };
     this.touch();
   }
@@ -539,7 +610,7 @@ export class Flows {
     if (now === null || now.phase !== "sending" || now.actionId !== actionId) return;
     if (reason === STALE) {
       // The state moved on since the preview: look again, and say why.
-      this.begin(now.verb, now.npc, now.offer, true);
+      this.begin(now.verb, now.npc, now.offer, true, { auto: now.auto, follow: now.follow });
       return;
     }
     // A person who answered with a no took the minutes of the act as much as one who said yes: the signal `replied` of the same call says so.
@@ -554,56 +625,59 @@ export class Flows {
       facts: [],
       reply: this.replyOf(now.npc),
       cost: answered ? now.preview.cost : null,
+      follow: now.follow ?? null,
     };
     this.touch();
   }
 
   // --- The notebook: pairing two lines and judging how they stand -----------------------------------------
 
-  /** Picks a line for the pair: the first, then the second. A line that is picked already is put back. */
-  pick(id: string): void {
+  /** Takes a line as the claim. The same line again puts it back, and the line that was shown against it goes with it. */
+  claim(id: string): void {
     const p = this.state.pair;
-    let { a, b } = p;
-    if (id === a) {
-      a = b;
-      b = null;
-    } else if (id === b) {
-      b = null;
-    } else if (a === null) {
-      a = id;
-    } else {
-      b = id;
-    }
-    this.state.pair = { a, b, relation: a === p.a && b === p.b ? p.relation : null, waiting: null, outcome: null };
+    this.state.pair = p.b === id ? freshPair() : { a: p.a === id ? null : p.a, b: id, relation: null, waiting: null, outcome: null };
     this.state.hintNone = false;
     this.touch();
   }
 
-  /** Sets the pair a hint lit side by side, with the relation when the core has said it: the player has only to judge. */
+  /** Shows a line against the claim. The same line again puts it back. A line cannot be shown against itself, and nothing is shown before there is a claim. */
+  present(id: string): void {
+    const p = this.state.pair;
+    if (p.b === null || id === p.b) return;
+    this.state.pair = { a: p.a === id ? null : id, b: p.b, relation: null, waiting: null, outcome: null };
+    this.state.hintNone = false;
+    this.touch();
+  }
+
+  /** Sets the claim and the line shown against it at once, as a hint does and as the tutorial does. */
+  setPair(shown: string, claim: string): void {
+    this.state.pair = { a: shown, b: claim, relation: null, waiting: null, outcome: null };
+    this.state.hintNone = false;
+    this.touch();
+  }
+
+  /** Sets the pair a hint lit side by side: the player has only to say how they stand. */
   useHint(): void {
     const hint = this.slice.hint;
     if (hint === null) return;
-    this.state.pair = { a: hint.a, b: hint.b, relation: hint.relation, waiting: null, outcome: null };
-    this.state.hintNone = false;
-    this.touch();
+    this.setPair(hint.a, hint.b);
   }
 
-  setRelation(relation: Relation | null): void {
-    this.state.pair = { ...this.state.pair, relation, outcome: null };
-    this.touch();
-  }
-
-  /** "Leave it for now": the player does not judge. */
+  /** "Look at another pair": nothing is judged and nothing is sent. */
   clear(): void {
     this.state.pair = freshPair();
     this.touch();
   }
 
-  judge(): void {
+  /**
+   * One of the three answers is given for the pair, and the core is asked at once: a wrong answer costs nothing and is not written down, so there
+   * is no second button to press. The mapping is the core's (`judge.py`): the line shown is `a`, the claim is `b`.
+   */
+  answer(relation: Relation): void {
     const p = this.state.pair;
-    if (p.a === null || p.b === null || p.relation === null || p.waiting !== null) return;
-    const id = this.play.send({ type: "judge", a: p.a, b: p.b, relation: p.relation }, { flow: "judge" });
-    this.state.pair = { ...p, waiting: id, outcome: null };
+    if (p.a === null || p.b === null || p.waiting !== null) return;
+    const id = this.play.send({ type: "judge", a: p.a, b: p.b, relation }, { flow: "judge" });
+    this.state.pair = { ...p, relation, waiting: id, outcome: null };
     this.touch();
   }
 

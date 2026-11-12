@@ -59,9 +59,11 @@ State (``state["world"]["goals"]``)::
               "ticks": ticks of work that count, "ordered": {helper: day they were asked}},
      "supply": {item: id of the delivery that was agreed},
      "lane": {"task": the keeper's task or 0, "lamps": {helper: task} asked, "hung": [helper] done},
-     "ending": {}}                            until the last night
+     "ending": {},                            until the last night
+     "moments"?: {"list", "held"}}            once the page watches the game (``moments``)
 
-Player actions: ``rally`` (``{"action_id", "type": "rally"}``) and, only when the config
+Player actions: ``rally`` (``{"action_id", "type": "rally"}``), ``moment`` (the page lets the world
+go on from a moment of the festival: ``moments``) and, only when the config
 ``dev_actions`` is 1, ``dev_goal`` (``{"action_id", "type": "dev_goal", "op", "npc"?,
 "value"?}``) whose ops are ``join``, ``material`` and ``lane`` (each with an ``npc``), ``truth``,
 ``reconcile`` and ``grudge`` (with a ``value`` from 0 to 100 for the grudge between the family
@@ -69,24 +71,27 @@ heads). Both answer with ``action_ack``.
 
 Events: ``rally``; ``joined`` (``npc``, ``round``, ``how``: call, persuasion or dev); ``promised``
 (``household``); ``agreed`` (``npc``, ``what``: bamboo, timber or lane); ``flag`` (``flag``);
-``goal`` (``goal``); and ``ending`` (``ending``, ``label``, ``hidden``, ``inputs``, ``passage``,
-``promised``, ``turnout``, ``reveal``, ``epilogue``; ``label`` and the ``label`` of each of
-``hidden`` are ``{"zh", "en"}``, and so is every label of the reveal).
+``goal`` (``goal``); ``moment`` (see ``moments``); and ``ending`` (``ending``, ``label``,
+``hidden``, ``inputs``, ``passage``, ``promised``, ``turnout``, ``festival``, ``reveal``,
+``epilogue``; ``label`` and the ``label`` of each of ``hidden`` are ``{"zh", "en"}``, and so is
+every label of the reveal). The ``festival`` is what a page needs to stage the last night: the way
+the parade goes, whether the families are together, who lights the main lantern, the crowd by
+district and where the named people stand (``festival``).
 
 The frame: ``ending`` is null until the last night. In the frame of the call that made the ending
 it is the ending event, ``{"kind", "tick", "ending", "label", "hidden", "inputs", "passage",
-"promised", "turnout", "reveal", "epilogue"}``, and in every frame after it the same without the
-``reveal`` and the ``epilogue`` (the compact form). A call that only pauses, on the tick after the
-ending, simulates nothing, and its frame is still the first. ``lanterns`` are ``{"household",
-"place", "x", "y"}``, one for each household that promised, in the order they did, hung at its
-door. The ``hud`` gets
-``promised`` (the households), ``turnout`` (the people expected, see ``turnout``), ``bridge``
-and ``ending``. ``bridge`` is
+"promised", "turnout", "festival", "reveal", "epilogue"}``, and in every frame after it the same
+without the ``reveal`` and the ``epilogue`` (the compact form). A call that only pauses, on the
+tick after the ending, simulates nothing, and its frame is still the first. ``lanterns`` are
+``{"household", "place", "x", "y"}``, one for each household that promised, in the order they did,
+hung at its door. The ``hud`` gets ``promised`` (the households), ``turnout`` (the people expected,
+see ``turnout``), ``bridge`` and ``ending``. ``bridge`` is
 ``{"done": helpers who joined, at most ``need``, "need", "percent", "hours", "hours_need", "state":
-broken, repairing, mended or detour, "lacking"?: an item id, or ``{"zh", "en"}`` for hands}`` and
-``ending`` the id of the ending, or the empty string. Once the game has ended they stay as they
-were on the last night. The verb ``rally`` is added to ``hud.verbs`` while the player is free to
-walk and the call has not been made.
+broken, repairing, mended or detour, "short": helpers the crew still lacks, "families_missing":
+the families with nobody in the crew (``goals_work.shortfall``), "lacking"?: an item id, or
+``{"zh", "en"}`` for hands}`` and ``ending`` the id of the ending, or the empty string. Once the
+game has ended they stay as they were on the last night. The verb ``rally`` is added to
+``hud.verbs`` while the player is free to walk and the call has not been made.
 """
 
 from __future__ import annotations
@@ -98,11 +103,13 @@ from lantern_core.world.bridge import (
     bonds,
     clock,
     crowd,
+    festival,
     goals_call,
     goals_ending,
     goals_rules,
     goals_state,
     goals_work,
+    moments,
     weather,
 )
 from lantern_core.world.bridge.lore import lore
@@ -426,16 +433,19 @@ def tick(sim: Sim) -> None:
     goals_state.evaluate(sim, g)
     if now.day >= sim.world.config["days"] and now.phase == clock.NIGHT and now.phase_tick == 0:
         _finish(sim, g)
+    else:
+        moments.look(sim)
 
 
 def _finish(sim: Sim, g: dict[str, Any]) -> None:
     """The last night: the ending, the reveal, and the numbers of the festival kept as they are.
 
     The state keeps ``{"tick", "id", "hidden": [ids], "inputs": {flag: bool}, "passage", "weather",
-    "promised", "turnout", "reveal", "epilogue": [[person, entry]]}`` (the epilogue is the entries
-    of the lists of the people who carry the days that the last night chose, see ``roles``), and the
-    event ``ending`` the same with the names of the endings in both languages and the epilogue in
-    words (``goals_ending.wire`` makes it, for the event and for the frames).
+    "promised", "turnout", "festival", "reveal", "epilogue": [[person, entry]]}`` (the festival is
+    what a page needs to stage the night, see ``festival``; the epilogue is the entries of the lists
+    of the people who carry the days that the last night chose, see ``roles``), and the event
+    ``ending`` the same with the names of the endings in both languages and the epilogue in words
+    (``goals_ending.wire`` makes it, for the event and for the frames).
     """
     from lantern_core.world.bridge import roles  # not at the top: it reads the goals
 
@@ -455,6 +465,7 @@ def _finish(sim: Sim, g: dict[str, Any]) -> None:
         "weather": sky,
         "promised": households,
         "turnout": expected,
+        "festival": festival.build(sim.world, state, how, inputs["reconciled"], expected),
         "reveal": reveal,
         "epilogue": roles.epilogue(sim.world, state, sim.now),
     }
@@ -502,6 +513,7 @@ def frame(world: BridgeWorld, state: dict[str, Any], out: dict[str, Any]) -> Non
     done = g["ending"]
     # the whole ending in the frame of the call that made it, and without its reveal after that
     out["ending"] = ending(world_state, compact=bool(done) and state["tick"] != done["tick"] + 1)
+    moments.frame(world_state, out)
     verbs = hud.get("verbs")
     if isinstance(verbs, list) and "move" in verbs and not g["ending"] and g["call"]["open"] < 0:
         from lantern_core.world.bridge import player  # not at the top: player may use goals
@@ -583,4 +595,5 @@ def apply_dev(sim: Sim, body: dict[str, Any]) -> None:
 ACTIONS = {
     "rally": (validate_rally, apply_rally),
     "dev_goal": (validate_dev, apply_dev),
+    **moments.ACTIONS,
 }

@@ -44,8 +44,11 @@ export const MAX_SPEED = 4;
 /** The most a skip to the next thing may ask for (the message `speed` with `skip`): the days it passes over are waited out, not played. */
 export const MAX_SKIP_SPEED = 12;
 
-/** The most the page may keep with a save, in characters of JSON. The notes are a few lines, not a second save. */
-export const MAX_PAGE_NOTES = 16_384;
+/**
+ * The most the page may keep with a save, in characters of JSON: the paper of the morning and the summary of the night (a few lines), and the small
+ * pictures of the moments of the game (at most three of at most 40,000 characters each). The notes are not a second save.
+ */
+export const MAX_PAGE_NOTES = 163_840;
 
 /** The notes a page sent with a save if they are a plain object of a size worth keeping, else nothing. */
 export function keptNotes(page: unknown): PageNotes | undefined {
@@ -702,7 +705,7 @@ export class HostRuntime {
     if (this.mode === "failed") throw new HostError("failed", "the session stopped on an error and cannot be saved");
     if (this.mode === "loading") throw new HostError("busy", "a load is running");
     const replay = this.buildReplay();
-    const label = name !== undefined && name.trim() !== "" ? name.trim() : `tick ${replay.final.tick}`;
+    const label = name === undefined ? "" : name.trim();
     const notes = keptNotes(page);
     return this.env.saves.put(
       { name: label, savedAt: this.env.wallClockIso(), tick: replay.final.tick, hash: replay.final.hash, ...(notes === undefined ? {} : { page: notes }) },

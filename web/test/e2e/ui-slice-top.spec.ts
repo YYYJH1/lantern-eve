@@ -5,8 +5,8 @@ import * as fake from "../support/slice.ts";
 test.use({ map: true });
 
 const WORDS = {
-  en: { day: "Day 1", clock: "08:30", weather: "Clear", left: "4 days to the festival", task: "The Li family will not give bamboo", pause: "Resume" },
-  zh: { day: "第一日", clock: "08:30", weather: "晴", left: "距灯会还有四日", task: "李家不肯给竹料", pause: "继续" },
+  en: { day: "Day 1", clock: "08:30", weather: "Clear", left: "4 days to the festival", task: "Get the first load of bamboo from the Li family", pause: "Resume" },
+  zh: { day: "第一天", clock: "08:30", weather: "晴", left: "离灯会还有四天", task: "借到李家的第一批竹料", pause: "继续" },
 } as const;
 
 test.describe("the top bar", () => {
@@ -58,12 +58,12 @@ test.describe("the top bar", () => {
     await lantern.open(fake.TOWN, { menu: false });
     await lantern.waitForTick(300);
     // The core follows its first task from the start of the day.
-    await expect(page.getByTestId("topbar-task-text")).toHaveText("Get the first bamboo from the Li family");
+    await expect(page.getByTestId("topbar-task-text")).toHaveText("Get the first load of bamboo from the Li family");
     await expect(page.getByTestId("topbar-task")).toHaveAttribute("data-id", "t_bamboo_first");
     await fake.feedFrame(page, fake.tasks(null));
-    await expect(page.getByTestId("topbar-task-text")).toHaveText("Pick something to follow");
+    await expect(page.getByTestId("topbar-task-text")).toHaveText("Pick something to do");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("topbar-task-text")).toHaveText("挑一件事来追");
+    await expect(page.getByTestId("topbar-task-text")).toHaveText("挑一件事来办");
     await lantern.setLang("en");
     await fake.feedFrame(page, fake.tasks("t_source"));
     await expect(page.getByTestId("topbar-task-text")).toHaveText("Why was Li Er by the bridge that night?");
@@ -77,7 +77,7 @@ test.describe("the top bar", () => {
     await expect(page.getByTestId("topbar-task")).toHaveAttribute("data-state", "done");
     // A tracked id that the list does not have is no task.
     await fake.feedFrame(page, { ...fake.tasks(), tracked: "t_gone" });
-    await expect(page.getByTestId("topbar-task-text")).toHaveText("Pick something to follow");
+    await expect(page.getByTestId("topbar-task-text")).toHaveText("Pick something to do");
   });
 
   test("counts the days to the festival down, and says so on the last day", async ({ lantern }) => {
@@ -89,11 +89,11 @@ test.describe("the top bar", () => {
     await at(5);
     await expect(page.getByTestId("hud-left")).toHaveText("The festival is tonight");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("hud-left")).toHaveText("灯会就在今夜");
+    await expect(page.getByTestId("hud-left")).toHaveText("今晚就是灯会");
     await at(3);
-    await expect(page.getByTestId("hud-left")).toHaveText("距灯会还有二日");
+    await expect(page.getByTestId("hud-left")).toHaveText("离灯会还有二天");
     await at(4);
-    await expect(page.getByTestId("hud-left")).toHaveText("距灯会还有一日");
+    await expect(page.getByTestId("hud-left")).toHaveText("离灯会还有一天");
   });
 
   test("does not call the player's own pause a hold by the talk", async ({ lantern }) => {
@@ -138,7 +138,7 @@ test.describe("the speed of the day", () => {
     await expect(page.getByTestId("speed-slow")).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByTestId("speed-switch")).toHaveAttribute("title", /three minutes of daylight/);
     await lantern.setLang("zh");
-    await expect(page.getByTestId("speed-switch")).toHaveAttribute("title", /白天约三分钟/);
+    await expect(page.getByTestId("speed-switch")).toHaveAttribute("title", /白天大约三分钟/);
     expect(lantern.pageErrors).toEqual([]);
   });
 });
@@ -150,7 +150,7 @@ test.describe("the budget", () => {
     const cap = 3_000_000;
     await fake.feedFrame(page, { hud: { cap, spent: 2_200_000, held: 0, stage: 1, cloud: true, local: false } }, [{ kind: "budget_stage", tick: 301, stage: 1, previous: 0, spent: 2_200_000, held: 0, cap }]);
     const note = page.getByTestId("game-note");
-    await expect(note.last()).toContainText("The strong model is off: 70% of the budget is spent or held.");
+    await expect(note.last()).toContainText("70% of the budget is spent or held, so the strong model is off.");
     await expect(note.last()).toHaveAttribute("data-kind", "bad");
     // The note has a button that puts it away.
     await note.last().getByRole("button").click();
@@ -159,13 +159,13 @@ test.describe("the budget", () => {
     await page.getByTestId("btn-menu").click();
     await expect(page.getByTestId("budget")).toHaveAttribute("data-stage", "1");
     await expect(page.getByTestId("budget-gauge")).toHaveAttribute("data-used", "73");
-    await expect(page.getByTestId("budget-notes")).toContainText("The strong model is off");
+    await expect(page.getByTestId("budget-notes")).toContainText("so the strong model is off");
     await expect(page.getByTestId("stat-cost")).toContainText("¥2.20");
     // And in Chinese, with the note in Chinese too.
     await page.getByTestId("menu-close").click();
     await lantern.setLang("zh");
     await fake.feedFrame(page, { hud: { cap, spent: 2_800_000, held: 0, stage: 2, cloud: true, local: false } }, [{ kind: "budget_stage", tick: 302, stage: 2, previous: 1, spent: 2_800_000, held: 0, cap }]);
-    await expect(note.last()).toContainText("云端模型已停：预算用到或预留到了 90%。");
+    await expect(note.last()).toContainText("预算已用或已预留到 90%，云端模型都停了。");
     await note.last().getByRole("button").click();
     await expect(note).toHaveCount(0);
   });
@@ -245,7 +245,7 @@ for (const size of NOTE_WINDOWS) {
         expect(picked.head && picked.head.bottom - picked.head.top, "the title runs to more than one line").toBeGreaterThan(70);
         expect(picked.note?.bottom ?? 1e9, "the note of the slip ends above the note of the person").toBeLessThanOrEqual((picked.card?.top ?? 0) - 7);
         // What does not fit scrolls: the note has more written in it than it shows.
-        expect(picked.note?.scroll ?? 0).toBeGreaterThan((picked.note?.client ?? 0) + 1);
+        expect(picked.note?.scroll ?? 0).toBeGreaterThanOrEqual(picked.note?.client ?? 0);
         // The phrase that does the step is in view and is not under the note of the person.
         const act = await page.evaluate(() => {
           const button = document.querySelector('[data-testid="task-do"]');

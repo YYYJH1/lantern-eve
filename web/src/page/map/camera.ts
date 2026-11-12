@@ -1,5 +1,42 @@
 import { clamp } from "./geometry.ts";
 
+/** Where a camera stands: its place on the screen, its zoom, and whether the player (or a show) moved it from the fit. */
+export interface CameraPose {
+  x: number;
+  y: number;
+  zoom: number;
+  moved: boolean;
+}
+
+/**
+ * Where a show looks: the world point in the middle of the view, and the zoom as a multiple of the zoom that shows the whole
+ * town (1 is the whole town, 2 is twice as close).
+ */
+export interface Eye {
+  x: number;
+  y: number;
+  zoom: number;
+}
+
+/**
+ * What a show needs of the map to move its camera (`director.ts`), and what the map gives it (`stage-camera.ts`). A show is not
+ * played on a map that cannot draw (a page opened with `?map=off`, a browser without WebGL), and the page goes on without it.
+ */
+export interface CameraPort {
+  /** Whether a map is there to be moved: it draws, and the town is on it. */
+  ready(): boolean;
+  /** Where the camera stands, to give it back as it was. */
+  pose(): CameraPose;
+  /** Puts the camera back as it was. */
+  restore(pose: CameraPose): void;
+  /** Where the camera looks now. */
+  eye(): Eye;
+  /** Where the camera looks when the whole town is shown. */
+  town(): Eye;
+  /** Moves the camera to look there, and has the map drawn. */
+  look(eye: Eye): void;
+}
+
 /**
  * The camera of the map: where the world is on the screen. A world point (wx, wy) is at
  * (wx * zoom + x, wy * zoom + y) in screen pixels. The camera starts fitted to the screen and
@@ -53,6 +90,56 @@ export class Camera {
 
   get minZoom(): number {
     return this.fitZoom * 0.8;
+  }
+
+  /** The zoom that shows the whole world, which a multiple of the fit is counted from. */
+  get fitScale(): number {
+    return this.fitZoom;
+  }
+
+  /** The size of the view in pixels, as `setView` last had it. */
+  get size(): { width: number; height: number } {
+    return { width: this.viewW, height: this.viewH };
+  }
+
+  /** The world point in the middle of the view. */
+  get centre(): { x: number; y: number } {
+    return this.unproject(this.viewW / 2, this.viewH / 2);
+  }
+
+  /** The world point in the middle of the view when the whole world is shown. */
+  get townCentre(): { x: number; y: number } {
+    return { x: this.worldX + this.worldW / 2, y: this.worldY + this.worldH / 2 };
+  }
+
+  /**
+   * Puts the world point (wx, wy) in the middle of the view at this zoom (held between the least and the most the camera allows),
+   * and counts the camera as moved, so that it stays where it is put. It is how a show moves the camera.
+   */
+  lookAt(wx: number, wy: number, zoom: number): void {
+    this.zoom = clamp(zoom, this.minZoom, Camera.MAX_ZOOM);
+    this.x = this.viewW / 2 - wx * this.zoom;
+    this.y = this.viewH / 2 - wy * this.zoom;
+    this.moved = true;
+    this.clampPan();
+  }
+
+  /** Where the camera stands, to put it back with `restore`. */
+  pose(): CameraPose {
+    return { x: this.x, y: this.y, zoom: this.zoom, moved: this.moved };
+  }
+
+  /** Puts the camera back where `pose` had it: a camera that followed the window goes on following it. */
+  restore(pose: CameraPose): void {
+    if (!pose.moved) {
+      this.fit();
+      return;
+    }
+    this.zoom = clamp(pose.zoom, this.minZoom, Camera.MAX_ZOOM);
+    this.x = pose.x;
+    this.y = pose.y;
+    this.moved = true;
+    this.clampPan();
   }
 
   get fitted(): boolean {

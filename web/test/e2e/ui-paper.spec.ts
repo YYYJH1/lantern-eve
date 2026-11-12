@@ -33,7 +33,7 @@ async function snap(page: Page, name: string): Promise<void> {
 const EN = {
   head: "The 4 poles of bamboo that Li Da promised have reached the Stone Bridge.",
   news: ["Granny Li no longer stands in the way.", "Li Da promised to bring 4 poles of bamboo."],
-  talk: ["The street talks of little else than the festival, and people are already counting the lanterns at each door.", "The street has split into two camps, one for the Li family and one for the Zhou family, and neither can win the other over."],
+  talk: ["The street talks of little but the festival. People are already counting the lanterns at each door.", "The street has split into two camps, one for the Li family and one for the Zhou family. Neither can win the other over."],
   title: "The Town Gazette",
   issue: "Day 2, morning",
   today: "The rest of the bamboo",
@@ -46,9 +46,9 @@ const EN = {
 const ZH = {
   head: "李大答应的四根竹料，已经送到石桥。",
   news: ["李老太撤回了阻拦。", "李大答应送来四根竹料。"],
-  talk: ["街上都在说灯会，哪家挂几盏灯，已经有人在数了。", "街上分成了两拨，一拨向着李家，一拨向着周家，谁也说不服谁。"],
+  talk: ["街上都在说灯会。哪家挂几盏灯，已经有人在数了。", "街上分成了两拨，一拨向着李家，一拨向着周家。谁也说不服谁。"],
   title: "镇报",
-  issue: "第二日，清晨",
+  issue: "第二天，清晨",
   today: "凑齐竹料",
   when: "石桥，卯时 06:00 到 09:00",
   next: "下一步：按约好的时间去桥边，看竹料送到没有。",
@@ -207,7 +207,7 @@ const NIGHT_EN = {
   changed: "Li Da promised to bring 4 poles of bamboo.",
   blocked: "Get the timber from the Zhou family",
   blocker: "Shopkeeper Zhou has not agreed yet",
-  step: "Get the first bamboo from the Li family",
+  step: "Get the first load of bamboo from the Li family",
   when: "Stone Bridge, 06:00 to 07:00",
   none: ["Nothing stands in your way for now.", "Nothing is set for tomorrow."],
   done: "Rest for the night",
@@ -218,10 +218,10 @@ const NIGHT_ZH = {
   changed: "李大答应送来四根竹料。",
   blocked: "取得周家的木料",
   blocker: "周掌柜还没松口",
-  step: "取得李家的第一批竹料",
+  step: "借到李家的第一批竹料",
   when: "石桥，卯时 06:00 到 07:00",
   none: ["眼下没有什么拦着你。", "明天没有定下的事。"],
-  done: "歇下",
+  done: "去歇着",
 } as const;
 
 test.describe("the summary of the night", () => {

@@ -82,7 +82,7 @@ test.describe("the days after the first, on the real core, in Chinese on the lig
     await expect(page.getByTestId("topbar-task-text")).toHaveText("凑齐竹料");
     const card = page.getByTestId("task-card");
     await expect(card).toHaveAttribute("data-id", "t_bamboo_rest");
-    await expect(page.getByTestId("task-why")).toHaveText("桥要十根竹料，到了四根，李大又答应送四根。");
+    await expect(page.getByTestId("task-why")).toHaveText("桥要十根竹料，已经到了四根。李大又答应送四根。");
     await expect(page.getByTestId("task-next")).toHaveText("按约好的时间去桥边，看竹料送到没有。");
     await expect(page.getByTestId("task-window")).toHaveText("石桥，辰时 07:00 到 10:00"); // today: the day is left out
     await expect(page.getByTestId("task-do")).toHaveCount(0); // nothing to do but be there
@@ -119,23 +119,23 @@ test.describe("the days after the first, on the real core, in Chinese on the lig
     expect(frame.site).toEqual({ bamboo: 10, timber: 8 });
     expect(frame.board.truth.state).toBe("open");
     expect(frame.board.peace).toMatchObject({ state: "open", witnessed: false });
-    await expect(page.getByTestId("topbar-task-text")).toHaveText("第三天早上施工");
+    await expect(page.getByTestId("topbar-task-text")).toHaveText("第三天早上开工");
     await expect(page.getByTestId("task-card")).toHaveAttribute("data-id", "t_work_3");
     await expect(page.getByTestId("task-next")).toHaveText("早上去桥边，看帮手开工。");
     await expect(page.getByTestId("task-window")).toHaveText("石桥，辰时 08:00 到 12:00");
     await expect(page.getByTestId("task-do")).toHaveCount(1); // the button came at seven, an hour before the window
-    await expect(page.getByTestId("task-why")).toHaveText("五个帮手一早上能做五个钟头，桥还差十个钟头。");
+    await expect(page.getByTestId("task-why")).toHaveText("照这几个帮手，再干两个早上桥就修完了。");
     await snap(page, "third-morning-bar", "zh-light-1280x760");
     await openBoard(page);
     await expect(page.getByTestId("board-site")).toHaveAttribute("data-bamboo", "10");
     await expect(page.getByTestId("board-site")).toHaveAttribute("data-timber", "8");
     await expect(page.getByTestId("board-both")).toHaveCount(0); // both families have someone: nothing to warn of
-    await expect(page.getByTestId("board-helper")).toHaveText(["李家一人", "周家一人", "无家族三人"]);
+    await expect(page.getByTestId("board-helper")).toHaveText(["李家一人", "周家一人", "别家三人"]);
     await expect(page.getByTestId("board-helpers").locator(".helper-total")).toHaveText("有五人");
     await expect(page.getByTestId("board-helpers").locator(".helper-total")).toHaveAttribute("data-need", "5");
     await expect(page.getByTestId("board-hours")).toHaveAttribute("data-done", "0");
     await expect(page.getByTestId("board-hours")).toContainText("要十个钟头");
-    await expect(page.getByTestId("board-window")).toContainText("第三日 辰时 08:00 到 12:00，石桥");
+    await expect(page.getByTestId("board-window")).toContainText("第三天 辰时 08:00 到 12:00，石桥");
     await expect(page.getByTestId("board-tab-truth")).toHaveAttribute("data-state", "open");
     await page.getByTestId("board-tab-peace").click();
     await expect(page.getByTestId("board-peace")).toHaveAttribute("data-state", "open");
@@ -203,7 +203,7 @@ test.describe("the paper and the night, on the real core, in Chinese on the ligh
     expect(kept.gazette?.day).toBe(2);
     expect(kept.gazette?.head.kind).toBe("delivery");
     await expect(page.getByTestId("gazette-title")).toHaveText("镇报");
-    await expect(page.getByTestId("gazette-issue")).toContainText("第二日");
+    await expect(page.getByTestId("gazette-issue")).toContainText("第二天");
     await expect(page.getByTestId("gazette-head")).toHaveText(kept.gazette?.head.text.zh ?? "");
     await expect(page.getByTestId("gazette-item")).toHaveText((kept.gazette?.news ?? []).map((item) => item.text.zh));
     await expect(page.getByTestId("gazette-talk-line")).toHaveCount(kept.gazette?.talk.length ?? 0);
@@ -232,7 +232,7 @@ test.describe("the paper and the night, on the real core, in Chinese on the ligh
     await expect(night).toBeVisible({ timeout: 420_000 });
     kept = await keptOf(page);
     expect(kept.night?.day).toBe(2);
-    await expect(page.getByTestId("night-issue")).toContainText("第二日");
+    await expect(page.getByTestId("night-issue")).toContainText("第二天");
     await expect(page.getByTestId("night-changed-text")).toHaveText(kept.night?.changed.text.zh ?? "");
     await expect(page.getByTestId("night-blocked")).toHaveAttribute("data-id", kept.night?.blocked?.id ?? "");
     await expect(page.getByTestId("night-step")).toHaveAttribute("data-id", kept.night?.step?.id ?? "");
@@ -248,7 +248,7 @@ test.describe("the paper and the night, on the real core, in Chinese on the ligh
 
     // --- seven o'clock of the third day: another paper, the issue of that day
     await expect(paper).toBeVisible({ timeout: 300_000 });
-    await expect(page.getByTestId("gazette-issue")).toContainText("第三日");
+    await expect(page.getByTestId("gazette-issue")).toContainText("第三天");
     kept = await keptOf(page);
     expect(kept.gazette?.day).toBe(3);
     await expect(page.getByTestId("gazette-head")).toHaveText(kept.gazette?.head.text.zh ?? "");
@@ -270,7 +270,7 @@ test.describe("the paper and the night, on the real core, in Chinese on the ligh
     await letGo(page);
     // the dusk of the second day goes by with no card, and the morning after has its paper
     await expect(page.getByTestId("gazette")).toBeVisible({ timeout: 300_000 });
-    await expect(page.getByTestId("gazette-issue")).toContainText("第三日");
+    await expect(page.getByTestId("gazette-issue")).toContainText("第三天");
     expect((await keptOf(page)).night).toBeNull();
     await expect(page.getByTestId("night")).toHaveCount(0);
     expect(lantern.pageErrors).toEqual([]);

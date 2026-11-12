@@ -140,8 +140,14 @@ export class ReplayLoadError extends Error {
   }
 }
 
+/** A recording as it was read: what the host plays, and for a save of this browser what the save says of itself (its name and its tick). */
+export interface LoadedReplay {
+  replay: unknown;
+  saved: SaveMeta | null;
+}
+
 /** The recording a name stands for, as the host will read it. */
-export async function loadReplay(id: string): Promise<unknown> {
+export async function loadReplay(id: string): Promise<LoadedReplay> {
   const ref = refOf(id);
   if (ref === null) throw new ReplayLoadError("bad_link", "that is not the name of a recording");
   if (ref.source === "browser") {
@@ -152,7 +158,7 @@ export async function loadReplay(id: string): Promise<unknown> {
       throw new ReplayLoadError("storage", String(err instanceof Error ? err.message : err));
     }
     if (found === undefined) throw new ReplayLoadError("not_found", `this browser has no save ${ref.save}`);
-    return found.replay;
+    return { replay: found.replay, saved: found.meta };
   }
   let response: Response;
   try {
@@ -163,7 +169,7 @@ export async function loadReplay(id: string): Promise<unknown> {
   if (response.status === 404) throw new ReplayLoadError("not_found", `the server has no recording ${ref.name}`);
   if (!response.ok) throw new ReplayLoadError("network", `the server answered ${response.status}`);
   try {
-    return await response.json();
+    return { replay: await response.json(), saved: null };
   } catch {
     throw new ReplayLoadError("network", "the server did not send a recording");
   }

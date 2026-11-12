@@ -76,16 +76,16 @@ TRUTH_TOLD, RECONCILED, RECONCILE_SEEN = "truth_told", "reconciled", "reconcile_
 # why a statement in public fell short, by what assembly.missed says
 SHORT = {
     "named": {
-        "zh": f"在场有名有姓的人不到{numerals.zh_count(assembly.MIN_NAMED)}位",
-        "en": f"Fewer than {assembly.MIN_NAMED} named people were there",
+        "zh": f"在场的熟面孔不到{numerals.zh_count(assembly.MIN_NAMED)}个",
+        "en": f"Fewer than {assembly.MIN_NAMED} familiar faces were there",
     },
     "accepted": {
-        "zh": f"在场的人里接受的不到{numerals.zh_share(assembly.ACCEPT_PERCENT)}",
-        "en": f"Fewer than {assembly.ACCEPT_PERCENT}% of those there accepted",
+        "zh": f"在场的人里信的不到{numerals.zh_share(assembly.ACCEPT_PERCENT)}",
+        "en": f"Fewer than {assembly.ACCEPT_PERCENT}% of those there believed it",
     },
     "elder_absent": {"zh": "族长不在场", "en": "The elder was not there"},
     "elder_refused": {
-        "zh": "族长在场，但没有被说服",
+        "zh": "族长在场，可没被说服",
         "en": "The elder was there but was not convinced",
     },
 }
@@ -96,14 +96,15 @@ ACTS = (
         "id": peace.STOP,
         "text": {
             "zh": (
-                f"一家的当家不再公开指控：谣言当众说清时在场的当家，和事后得知的当家，"
-                f"各放下{peace.STOP_DROP}点积怨，桥的事说清之后接受的当家各放下{assembly.GRUDGE_DROP}点"
+                f"闲话当众说清了，两家当家就不再当着人互相指责。当时在场的和事后听说的，"
+                f"积怨各降{peace.STOP_DROP}点。桥的事说清时，"
+                f"信了的再各降{assembly.GRUDGE_DROP}点"
             ),
             "en": (
-                f"A head of a family stops accusing in public: each head who is there when the "
-                f"rumour is cleared, or comes to know of it afterwards, lets go of "
-                f"{peace.STOP_DROP} points of grudge, and each who accepts the truth once the "
-                f"matter of the bridge is cleared up lets go of {assembly.GRUDGE_DROP} points"
+                f"A head stops accusing the other family in public: each head who is there "
+                f"when the rumour is cleared up, or hears of it later, drops "
+                f"{peace.STOP_DROP} points of grudge. Once the truth is told, each head who "
+                f"believes it drops {assembly.GRUDGE_DROP} more"
             ),
         },
     },
@@ -111,12 +112,12 @@ ACTS = (
         "id": peace.WORK,
         "text": {
             "zh": (
-                f"两家的帮手同一个早上在桥边一起干活：两位当家各放下{peace.WORK_DROP}点积怨，"
-                f"最多{numerals.zh_count(peace.WORK_MORNINGS)}个早上"
+                f"两家的帮手同一个早上在桥边干活，两家当家的积怨各降{peace.WORK_DROP}点。"
+                f"最多算{numerals.zh_count(peace.WORK_MORNINGS)}个早上"
             ),
             "en": (
-                f"Helpers of both families work at the bridge the same morning: both heads let go "
-                f"of {peace.WORK_DROP} points of grudge, for up to {peace.WORK_MORNINGS} mornings"
+                f"Helpers of both families work at the bridge the same morning: each head's grudge "
+                f"drops by {peace.WORK_DROP}, for up to {peace.WORK_MORNINGS} mornings"
             ),
         },
     },
@@ -124,12 +125,13 @@ ACTS = (
         "id": peace.MEAL,
         "text": {
             "zh": (
-                f"两位当家同席，有人见证：积怨降{assembly.MEAL_DROP}点，"
-                f"真相说清之后降{assembly.MEAL_DROP_AFTER_TRUTH}点"
+                f"两家当家当着人同桌吃饭，积怨降{assembly.MEAL_DROP}点。"
+                f"桥的事说清以后再吃，降{assembly.MEAL_DROP_AFTER_TRUTH}点"
             ),
             "en": (
-                f"A meal for both heads with witnesses: the grudge falls by {assembly.MEAL_DROP}, "
-                f"or by {assembly.MEAL_DROP_AFTER_TRUTH} once the truth is told"
+                f"Both heads share a meal while others see it: the grudge drops by "
+                f"{assembly.MEAL_DROP}, or by {assembly.MEAL_DROP_AFTER_TRUTH} once the truth is "
+                f"told"
             ),
         },
     },
@@ -137,15 +139,15 @@ ACTS = (
 
 # why no work was done in a morning
 NO_HANDS = {
-    "zh": "帮手还没凑够，没有施工",
-    "en": "There were not enough helpers, so no work was done",
+    "zh": "帮手没凑够",
+    "en": "There were not enough helpers",
 }
 NO_BOTH = {
-    "zh": "两家的人还没都在帮手里，没有施工",
-    "en": "One of the families had no helper in the crew yet, so no work was done",
+    "zh": "帮手里少了一家的人",
+    "en": "One of the families had nobody among the helpers",
 }
-RAIN = {"zh": "下大雨，没有施工", "en": "Heavy rain: no work was done"}
-LATE = {"zh": "修桥的期限已过", "en": "The time to mend the bridge has run out"}
+RAIN = {"zh": "下了大雨", "en": "It rained hard"}
+LATE = {"zh": "修桥的期限过了", "en": "The time to mend the bridge has run out"}
 
 
 # ---------------------------------------------------------------------------- the bridge

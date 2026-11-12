@@ -125,10 +125,8 @@ def test_nothing_held_bears_on_anything_at_the_start_and_every_part_is_a_gap():
         ("rumour", [], None, True),
     ]
     assert (card["can_state"], card["used_today"], card["last"]) == (False, False, None)
-    assert card["why_not"]["en"] == (
-        "The full statement waits for the public meeting on the evening of the fourth day"
-    )
-    assert card["why_not"]["zh"] == "完整陈述要等到第四天傍晚的公议"
+    assert card["why_not"]["en"] == "The statement has to wait for the evening of the fourth day"
+    assert card["why_not"]["zh"] == "要等第四天傍晚，才能照讲稿当众说"
 
 
 def test_an_option_is_shown_once_a_note_bears_on_it_and_the_counts_are_the_notes_for_and_against():
@@ -462,12 +460,12 @@ def test_a_part_that_did_not_hold_costs_trust_with_everyone_there_and_names_the_
     )
     last = frame(game)["last"]
     assert last["wrong"] == ["cause", "course", "rumour"] and last["told"] is False
-    for part in ("Cause", "Course", "How the rumour began"):
+    for part in ("How the bridge broke", "What happened that night", "Why people got it wrong"):
         assert part in last["why"]["en"]
     assert (
-        "成因" in last["why"]["zh"]
-        and "经过" in last["why"]["zh"]
-        and "误会缘由" in last["why"]["zh"]
+        "桥是怎么坏的" in last["why"]["zh"]
+        and "那晚的经过" in last["why"]["zh"]
+        and "大家为什么会误会" in last["why"]["zh"]
     )
 
 
@@ -557,13 +555,15 @@ def test_a_part_fails_as_contradicted_unseen_or_unsourced_from_the_notebook_alon
     know(game, "pr_flood_damaged")  # replaced by what the manager saw (in order of the notebook)
     assert statement.failure(section, "cause", boat)[1] == "contradicted"
     words = statement.failure_words(world_of(game), ["cause", "contradicted", "xiao_man"])
-    assert words == {
-        "zh": "成因：这和小满亲眼所见矛盾",
-        "en": "Cause: this contradicts what Xiaoman saw with their own eyes",
+    assert words == {  # the part, then what was wrong with it
+        "zh": "「桥是怎么坏的」这一条，和小满亲眼看见的不一样",
+        "en": "The part “How the bridge broke” goes against what Xiaoman saw with their own eyes",
     }
     own = statement.failure_words(world_of(game), ["cause", "contradicted", PLAYER])
-    assert own["en"] == "Cause: this contradicts what you saw with your own eyes"
-    assert own["zh"] == "成因：这和你亲眼所见矛盾"
+    assert own["en"] == (
+        "The part “How the bridge broke” goes against what you saw with your own eyes"
+    )
+    assert own["zh"] == "「桥是怎么坏的」这一条，和你亲眼看见的不一样"
 
 
 # ------------------------------------------------------------------------------ the frame

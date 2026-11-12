@@ -16,11 +16,7 @@ import json
 
 _SPEECH = r"""
 {
-  "addresses": {
-    "friend": {"en": "friend", "zh": "朋友"},
-    "manager": {"en": "Manager", "zh": "总管"},
-    "none": {"en": "", "zh": ""}
-  },
+  "addresses": {"manager": {"en": "Manager", "zh": "总管"}, "none": {"en": "", "zh": ""}},
   "aliases": {
     "apprentice": {"en": ["Afu", "apprentice"], "zh": ["阿福", "学徒"]},
     "cha_laoban": {"en": ["teahouse owner"], "zh": ["老板娘", "茶馆老板"]},
@@ -65,11 +61,11 @@ _SPEECH = r"""
     "stranger": {"en": [], "zh": ["陌生人", "外乡客"]},
     "t_apprentice_towel": {"en": ["blue cloth", "cloth", "towel"], "zh": ["蓝布巾", "布巾"]},
     "t_deposit": {"en": ["down payment"], "zh": ["订金"]},
-    "t_he_boat": {"en": ["boat", "skiff"], "zh": ["船", "小船"]},
+    "t_he_boat": {"en": ["boat", "skiff"], "zh": ["船", "小船", "老何的船"]},
     "t_li_er_lantern": {"en": ["Li Er's lantern"], "zh": ["李二的灯笼"]},
     "t_rail": {
       "en": ["railing", "rail", "bridge railing", "handrail"],
-      "zh": ["栏杆", "桥栏", "石栏"]
+      "zh": ["石桥栏杆", "桥栏", "石栏"]
     },
     "t_repair_ledger": {"en": ["ledger", "repair ledger"], "zh": ["修船记录", "账本"]},
     "t_sample_lantern": {"en": ["sample lantern"], "zh": ["样灯"]},
@@ -237,8 +233,8 @@ _SPEECH = r"""
     "curt": {"en": "Hmph.", "zh": "哼。"},
     "eager": {"en": "Oh!", "zh": "哎呀！"},
     "plain": {"en": "", "zh": ""},
-    "sad": {"en": "Alas.", "zh": "唉。"},
-    "warm": {"en": "Ha.", "zh": "呵呵。"},
+    "sad": {"en": "Oh dear.", "zh": "唉。"},
+    "warm": {"en": "Good.", "zh": "好啊。"},
     "wary": {"en": "Hm.", "zh": "嗯。"}
   },
   "motives": {

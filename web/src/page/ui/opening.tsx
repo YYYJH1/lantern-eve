@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import { type Lang, t } from "../../i18n/index.ts";
+import { lanternFestivalOn } from "../eggs.ts";
 import type { PageState } from "../client.ts";
 import { readHintsOn, readTutorialPref, writeHintsOn, writeTutorialPref } from "../guide-prefs.ts";
 import type { LoadFailure } from "../load-failure.ts";
@@ -44,6 +45,8 @@ export function OpeningPage({ s, lang, theme, canContinue, ready, failed, anothe
   const [anyway, setAnyway] = useState(false);
   const small = tooSmall(size.width, size.height) && !anyway;
   const saved = s.saves.length > 0;
+  // The day of the player's computer is a Lantern Festival, by the table of the page: one more line says so.
+  const festival = lanternFestivalOn(new Date());
   const broken = s.phase === "failed";
   const status = broken ? "failed" : ready ? "ready" : "loading";
   return (
@@ -75,6 +78,11 @@ export function OpeningPage({ s, lang, theme, canContinue, ready, failed, anothe
           <p class="opening-goal" data-testid="opening-goal">
             {t("opening.goal")}
           </p>
+          {festival ? (
+            <p class="opening-today" data-testid="opening-today">
+              {t("egg.festival")}
+            </p>
+          ) : null}
           <ul class="opening-things" data-testid="opening-things" aria-label={t("opening.things")}>
             {THINGS.map((id) => (
               <li key={id} data-thing={id}>

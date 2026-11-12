@@ -19,124 +19,142 @@ PHRASES: dict[str, dict[str, str]] = {
     # a conversation that does not start
     "asleep": {"zh": "呼……呼……（睡熟了）", "en": "Zzz... (fast asleep)"},
     "busy": {
-        "zh": "对不住，我正忙着，回头再聊。",
-        "en": "Sorry, I am in the middle of something. Another time.",
+        "zh": "我这会儿正忙着，等会儿再来吧。",
+        "en": "I'm busy just now. Come back a bit later.",
     },
     # a conversation that ends
     "timeout": {"zh": "我得去干活了。", "en": "I have to get back to work."},
     # an answer that says nothing
-    "unknown": {"zh": "这个我不清楚。", "en": "I don't know anything about that."},
-    "evade": {"zh": "这事我不想多说。", "en": "I would rather not talk about that."},
+    "unknown": {"zh": "这事我不知道。", "en": "I don't know anything about that."},
+    "evade": {"zh": "这事我不想说。", "en": "I'd rather not talk about that."},
     # what comes before an answer that is not quite the one asked for
-    "not_said": {"zh": "我可没说过那样的话。", "en": "I never said that."},
-    "not_so": {"zh": "不是这样的。", "en": "No, that is not so."},
+    "not_said": {"zh": "我没说过那样的话。", "en": "I never said that."},
+    "not_so": {"zh": "不是这样的。", "en": "No, it wasn't like that."},
     # a keeper who will not open the door to a stranger
     "keeper_no": {
-        "zh": "这个嘛……咱们还不熟，改天再说吧。",
-        "en": "Hmm... we hardly know each other. Not today.",
+        "zh": "咱们还不熟，改天再说吧。",
+        "en": "We hardly know each other. Another day.",
     },
     # what a person says to something the manager told them
-    "took_in": {"zh": "原来是这样，我记下了。", "en": "I see. I will remember that."},
+    "took_in": {"zh": "原来是这样。我记下了。", "en": "I see. I'll remember that."},
     "knew": {"zh": "这个我早就知道了。", "en": "I knew that already."},
-    "doubted": {"zh": "我听到的可不是这样。", "en": "That is not what I have heard."},
+    "doubted": {"zh": "我听到的可不是这样。", "en": "That's not what I heard."},
     "caught": {
-        "zh": "你在撒谎！往后你说的话我不会再信了。",
-        "en": "You are lying! I will not believe a word you say again.",
+        "zh": "原来你骗了我。往后你的话，我不信了。",
+        "en": "So you lied to me. I won't believe you again.",
     },
     # what a person says to a promise
-    "deal": {"zh": "那就一言为定。", "en": "Then it is a deal."},
-    "empty": {"zh": "空口白话，我可不信。", "en": "Empty words. I do not believe them."},
+    "deal": {"zh": "好，就这么说定了。", "en": "All right, it's a deal."},
+    "empty": {"zh": "光说不算，我不信。", "en": "Talk is cheap. I don't believe it."},
     "kept_thanks": {
-        "zh": "总管说话算数，这份情我记着。",
-        "en": "The Manager keeps their word. I will remember this.",
+        "zh": "你说到做到，我记着。",
+        "en": "You did what you said. I won't forget it.",
     },
     # what a person says to a request
-    "will_do": {"zh": "行，这事我应下了。", "en": "All right. I will see to it."},
-    "cannot": {"zh": "这个忙我可帮不上。", "en": "I cannot help you with that."},
+    "will_do": {"zh": "行，这事我来办。", "en": "All right, I'll do it."},
+    "cannot": {"zh": "这个忙我帮不上。", "en": "I can't help you with that."},
     "turned_down": {
         "zh": "对不住，这事我不能答应。",
-        "en": "I am sorry, I cannot agree to that.",
+        "en": "Sorry, I can't agree to that.",
     },
-    "said_already": {"zh": "我说过了。", "en": "I have told you already."},
+    "said_already": {"zh": "我刚才说过了。", "en": "I've told you already."},
     "closed": {
-        "zh": "这会儿不方便，换个时辰再来。",
+        "zh": "这会儿不行，换个时辰再来。",
         "en": "Not now. Come back at another hour.",
     },
-    "needs_nod": {"zh": "这得先过我娘那一关。", "en": "My mother has to agree to that first."},
-    "nothing_to_say": {"zh": "这事我没什么好说的。", "en": "I have nothing to say about that."},
+    "needs_nod": {
+        "zh": "这事我做不了主，得先问过家里。",
+        "en": "It's not mine to decide. I have to ask at home first.",
+    },
+    "nothing_to_say": {"zh": "这事我没什么可说的。", "en": "I've nothing to say about that."},
     "testified": {
-        "zh": "我说的，都是我亲眼看见的。",
-        "en": "What I tell you is what I saw with my own eyes.",
+        "zh": "我说的都是我亲眼看见的。",
+        "en": "What I tell you is what I saw myself.",
     },
     "too_late": {
-        "zh": "天色已晚，明早再来说吧。",
-        "en": "It is too late. Ask me again in the morning.",
+        "zh": "太晚了，明天早上再来吧。",
+        "en": "It's too late. Come back in the morning.",
     },
-    "will_ask": {"zh": "好，我去跟对方说说。", "en": "All right. I will have a word with them."},
+    "will_ask": {"zh": "好，我去替你说说。", "en": "All right. I'll go and speak for you."},
     "will_call": {
-        "zh": "好，我这就召集族里的人到祠堂来。",
-        "en": "Very well. I will call the clan to the hall.",
+        "zh": "好，我这就去叫大家到祠堂。",
+        "en": "All right. I'll go and call everyone to the hall.",
     },
     # an answer that says nothing of the matter and points the way: to a person who was heard
-    # speaking of it, or to the one the script marks as keeping up with the talk of the town.
-    # ``{name}`` is the name of that person (``named``), and these two are the only lines with one
+    # speaking of it, or to the one the script marks as keeping up with the talk of the town (the
+    # teahouse keeper, whose name says where the keeper is found). ``{name}`` is the name of that
+    # person (``named``), and these two are the only lines with one
     "point_heard": {
-        "zh": "这事我不清楚，不过听{name}说起过，你去问问。",
-        "en": "I don't know, but I heard {name} speak of it. Go and ask.",
+        "zh": "这事我说不清。我听{name}提起过，你去问问。",
+        "en": "I don't know. I heard {name} talk about it, so go and ask.",
     },
     "point_hub": {
-        "zh": "这事我不清楚，镇上的消息{name}最灵通，你去问问。",
-        "en": "I don't know. Ask {name}, who keeps up with the talk of the town.",
+        "zh": "这事我不知道。你去问问{name}，镇上的消息那儿最多。",
+        "en": "I don't know. Ask {name}, who hears all the news.",
     },
     # what a person says when the way is closed (the hard condition of the script)
     "hard_hc_li_bamboo": {
-        "zh": "那桩谣言没当众说清楚，我家一根竹子也不借。",
-        "en": "Not one pole of bamboo until that slander is cleared in front of everyone.",
+        "zh": "那个谣言不当众说清楚，李家一根竹子也不借。",
+        "en": "Not one pole of Li bamboo until that rumour is cleared up in public.",
     },
     # and when the reason is the rumour that she knows of, and the manager's silence about it
     "hard_hc_li_bamboo_rumour": {
-        "zh": "镇上都在说李家毁了桥。你这总管一声不吭，竹料我不借。",
-        "en": "The town says the Li family wrecked the bridge. You said nothing, so no bamboo.",
+        "zh": "镇上都在说李家弄坏了桥，你这个总管一句话也不说。竹料不借。",
+        "en": "The whole town says the Li family broke the bridge, and you say nothing. No bamboo.",
     },
-    "hard_other": {"zh": "这事免谈。", "en": "Out of the question."},
+    "hard_other": {"zh": "这事没得商量。", "en": "That's out of the question."},
     # what the elder says after the manager has spoken in public
     "elder_yes": {
         "zh": "老夫听明白了，这事就这么定了。",
-        "en": "I have heard enough. Let that settle it.",
+        "en": "I've heard enough. That settles it.",
     },
     "elder_no": {
-        "zh": "凭这些，老夫还不能下定论。",
-        "en": "That is not enough for me to settle it.",
+        "zh": "就凭这些，老夫还定不下来。",
+        "en": "That isn't enough for me to settle it.",
     },
     # the first evening and the morning after: what is said when an objection falls, when someone
     # confirms in public what they saw and no more, when a batch is promised for the morning and
     # when the bamboo is at the bridge
     "objection_withdrawn": {
-        "zh": "既然说清楚了，我不再拦着。",
-        "en": "Now that it is cleared up, I will no longer stand in the way.",
+        "zh": "既然说清楚了，我就不拦着了。",
+        "en": "Now that it's cleared up, I won't stand in the way.",
     },
     "witness_in_public": {
         "zh": "我只说我亲眼看见的。",
         "en": "I only say what I saw with my own eyes.",
     },
     "batch_promised": {
-        "zh": "好，第一批明早送到。",
-        "en": "Agreed. The first batch will arrive tomorrow morning.",
+        "zh": "好，第一批明天早上送到。",
+        "en": "All right. The first batch comes tomorrow morning.",
     },
     "bamboo_arrived": {
-        "zh": "竹料已经送到桥边。",
-        "en": "The bamboo has arrived at the bridge.",
+        "zh": "竹料送到桥边了。",
+        "en": "The bamboo is at the bridge now.",
     },
     # what a person says when asked again for what they have promised, or for what the bridge has
     # enough of. ``{amount}``, ``{item}`` and ``{when}`` are the poles, what they are (bamboo or
     # timber) and the day and hour they fall due, and these two are the lines with slots of goods
     "promise_open": {
         "zh": "我答应过了，{when}把{amount}根{item}送到桥边。",
-        "en": "I have promised already: {amount} poles of {item} at the bridge {when}.",
+        "en": "I've promised already: {amount} poles of {item} at the bridge {when}.",
     },
     "goods_enough": {
         "zh": "桥边的{item}已经够了。",
         "en": "There is enough {item} at the bridge already.",
+    },
+    # what a person says to a small thing given them, by how they take it (``gifts``): ``{item}`` is
+    # the thing
+    "gift_like": {
+        "zh": "{item}啊，这个我喜欢。多谢。",
+        "en": "Ah, {item}. Just what I like. Thanks.",
+    },
+    "gift_neutral": {
+        "zh": "{item}？好，谢谢你想着我。",
+        "en": "Some {item}? Thank you for thinking of me.",
+    },
+    "gift_dislike": {
+        "zh": "{item}啊……这个我不大碰。还是谢谢你。",
+        "en": "Ah, {item}... I don't really use these. Thank you all the same.",
     },
 }
 
@@ -146,6 +164,8 @@ NAMED = ("point_heard", "point_hub")
 # the codes whose texts have slots for the goods of the commitments, and which slots (``converse``
 # fills them from the promise or the item the state keeps with the line)
 GOODS = {"promise_open": ("amount", "item", "when"), "goods_enough": ("item",)}
+# the codes of the answer to a gift, by how the person takes it, each with the slot of the thing
+GIFT = {"like": "gift_like", "neutral": "gift_neutral", "dislike": "gift_dislike"}
 
 
 def phrase(code: str) -> dict[str, str]:

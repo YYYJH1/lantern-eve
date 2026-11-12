@@ -3,7 +3,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import type { Replay } from "../../src/shared/protocol.ts";
 import { replayInCpython } from "../support/fixtures.ts";
-import { talkTo, untilHeld } from "../support/real.ts";
+import { openRequest, talkTo, untilHeld } from "../support/real.ts";
 import { startServerHost } from "../support/server-host.ts";
 
 // The same card as on the browser host, against a real `lantern-eve play`: the preview is asked of the server (the call `preview` of
@@ -32,8 +32,7 @@ test.describe("a request on the server host", () => {
       await talkTo(page, "li_laotai");
       await untilHeld(page);
 
-      await page.getByTestId("verb-entrust").click();
-      await page.locator('[data-testid="picker-option"][data-id="lend"]').click();
+      await openRequest(page, "lend");
       const card = page.getByTestId("request-card");
       await expect(card).toHaveAttribute("data-phase", "preview");
       // The server answers the call, and the card says what it answered.
@@ -42,7 +41,7 @@ test.describe("a request on the server host", () => {
       expect(core.odds).toBe("low");
       await expect(page.getByTestId("request-asks").locator("dd")).toHaveText(core.asks.en);
       await expect(page.getByTestId("request-blocker")).toHaveText(core.blockers.map((b) => b.en));
-      await expect(page.getByTestId("request-cost")).toHaveAttribute("data-minutes", "20");
+      await expect(card).toHaveAttribute("data-cost", "20");
       await expect(card).not.toHaveAttribute("data-fake", /.*/);
       // A call the server cannot read is an error reply, and the page does not stop.
       const refused = await page.evaluate(() => window.__lantern.client.call({ op: "preview", action: { verb: "dance", npc: "li_laotai" } }).then(
@@ -61,7 +60,7 @@ test.describe("a request on the server host", () => {
       }
       await expect(card).toHaveAttribute("data-phase", "result", { timeout: 30_000 });
       await expect(page.getByTestId("request-result")).toHaveAttribute("data-ok", "false");
-      await expect(page.getByTestId("request-result")).toHaveText("×They will not even discuss it until something else is settled.");
+      await expect(page.getByTestId("request-result")).toHaveText("×Granny Li has a condition you have not met yet. That comes first.");
       await expect(page.getByTestId("request-spent")).toHaveText("That took 20 minutes.");
       const replay = await page.evaluate(() => window.__lantern.client.exportReplay());
       const sent = replay.records.filter((r) => r[2] === "player" && r[3].type === "entrust");

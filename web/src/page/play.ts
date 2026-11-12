@@ -17,17 +17,22 @@
  * ending it gets and keeps it, and when a frame is all it has it shows the label and the numbers and
  * asks the host for the whole.
  */
-import type { CoreEvent, HostToPage, SaveMeta } from "../shared/protocol.ts";
+import type { CoreEvent, HostToPage, PageNotes, SaveMeta } from "../shared/protocol.ts";
 import { type AutoMark, Autosave } from "./autosave.ts";
 import type { HostClient } from "./client.ts";
 import { dealingNote, refusalKey } from "./deals.ts";
+import { Director, type DirectorEnv, readMoments } from "./director.ts";
+import { Eggs, isAct } from "./eggs.ts";
 import { endingFromHud, type EndingView, readEnding } from "./ending.ts";
+import { Album, cardsOf, type MomentCard } from "./moments.ts";
 import { Flows } from "./flows.ts";
 import { type LeavesAt, readFrame, readLeavesAt, type ViewFrame } from "./frame.ts";
 import { Guide } from "./guide.ts";
 import { WorldHold } from "./hold.ts";
 import type { MessageKey } from "../i18n/index.ts";
 import { readNotebook } from "./notebook.ts";
+import { type HeartWhy, whyOf } from "./relations.ts";
+import { entryOfAnswer } from "./talk-frame.ts";
 import { failureOf, type SaveFailure, SaveNotices } from "./save-notice.ts";
 import { type Name, parseScene, type Scene } from "./scene.ts";
 import { Skip } from "./skip.ts";
@@ -61,11 +66,33 @@ export interface PlayNote {
 }
 
 /** What the player does in a talk, as the lines of the talk name it. */
-export type TalkAct = "ask" | "source" | "tell" | "entrust" | "promise";
-export type TalkLine = { who: "you"; how: TalkAct; subject: Name } | { who: "them"; text: Name; /** The people the line sends the player to. */ points?: string[] };
+export type TalkAct = "ask" | "source" | "tell" | "entrust" | "promise" | "gift";
+export type TalkLine =
+  | { who: "you"; how: TalkAct; subject: Name }
+  | {
+      who: "them";
+      text: Name;
+      /** The people the line sends the player to. */
+      points?: string[];
+      /** The line of the notebook this answer wrote, when it did: the answer can be followed by asking who told them. */
+      entry?: string;
+    };
 
 /** The player's actions that are a line of a talk, and the act each is. */
-const TALK_ACTS: Readonly<Record<string, TalkAct>> = { ask: "ask", ask_source: "source", tell: "tell", entrust: "entrust", promise: "promise" };
+const TALK_ACTS: Readonly<Record<string, TalkAct>> = { ask: "ask", ask_source: "source", tell: "tell", entrust: "entrust", promise: "promise", gift: "gift" };
+
+/** A heart that has just moved, shown for a moment in the talk. */
+export interface HeartPopState {
+  id: number;
+  npc: string;
+  /** In half hearts, negative for a loss. */
+  delta: number;
+  why: HeartWhy;
+}
+
+/** How long a heart that moved stays on show, in milliseconds. */
+export const HEART_POP_MS = 6000;
+
 
 export interface Destination {
   x: number;
@@ -105,6 +132,10 @@ export interface PlayState {
   saveFailed: SaveFailure | null;
   /** Somebody the page draws the eye to on the map for a few seconds: a person a reply pointed to, a person a step of the guide is about. */
   ping: Ping | null;
+  /** The person whose hearts are open on a card, or null. */
+  heartsOpen: string | null;
+  /** The hearts that moved a moment ago, newest last. */
+  pops: HeartPopState[];
 }
 
 /** A ring on the map round a person or a place, until `until` on the clock of the page. */
@@ -123,11 +154,13 @@ export interface Sent {
   approach?: boolean;
   /** The flow of the slice (a request with its preview, a judgement, a hint, a speech in public) that waits for the answer, which `Flows` takes. */
   flow?: "request" | "judge" | "hint" | "clarify" | "statement";
+  /** An action of the page and not of the player's, which says nothing when the core turns it down (the show controller's). */
+  silent?: boolean;
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 
-const fresh = (): PlayState => ({ notes: [], destination: null, approach: null, talk: null, thinking: null, fresh: [], ending: null, endingOpen: false, saved: null, saveFailed: null, ping: null });
+const fresh = (): PlayState => ({ notes: [], destination: null, approach: null, talk: null, thinking: null, fresh: [], ending: null, endingOpen: false, saved: null, saveFailed: null, ping: null, heartsOpen: null, pops: [] });
 
 /** How long the line that says the game was saved by itself stays over the map, in milliseconds. */
 export const SAVED_MS = 3500;
@@ -149,10 +182,16 @@ export class Play {
   readonly guide: Guide = new Guide(this);
   /** The button that skips to the next thing: when it is offered, and the run at a high pace that it begins. */
   readonly skip: Skip = new Skip(this);
+  /** The shows on the map: the moments of the festival, and the festival night before the ending page (`director.ts`). */
+  readonly director: Director;
   /** The saves the page makes by itself, each morning and at the ending (`autosave.ts`). */
   readonly autosave: Autosave;
   /** What the page has said of saves that failed, which outlives a new game: the trouble is the browser's. */
   private readonly saveNotices = new SaveNotices();
+  /** The pictures of the moments of this game, which the ending page shows and a save keeps if it has room (`moments.ts`). */
+  readonly album: Album = new Album();
+  /** The small secrets of the town: the riddle lantern, the watchman's verse, a rumour about the manager (`eggs.ts`). */
+  readonly eggs: Eggs = new Eggs(this);
 
   private readonly sent = new Map<string, Sent>();
   private noteId = 1;
@@ -176,14 +215,27 @@ export class Play {
   constructor(
     private readonly client: HostClient,
     private readonly readOnly = false,
+    clock?: DirectorEnv,
   ) {
+    this.director = new Director(this, clock);
     this.hold = new WorldHold(client);
     this.autosave = new Autosave(client);
     this.autosave.onSaved = (mark) => this.noteSaved(mark);
     this.autosave.onFailed = (err) => this.noteSaveFailed(err);
     client.tap((message) => this.onMessage(message));
     // A save keeps what the page has that the core does not: the paper or the recap of the morning and the summary of the night, until the player puts them away.
-    if (!readOnly) client.pageNotes = () => this.flows.keep();
+    if (!readOnly) client.pageNotes = () => this.keepNotes();
+  }
+
+  /** What a save keeps with the game: what the flows keep (the paper of the morning, the summary of the night), the pictures of the moments and the riddles that were guessed. Null where there is none. */
+  private keepNotes(): PageNotes | null {
+    const notes: PageNotes = { ...(this.flows.keep() ?? {}), ...(this.album.keep() ?? {}), ...(this.eggs.keep() ?? {}) };
+    return Object.keys(notes).length === 0 ? null : notes;
+  }
+
+  /** The moments of the game as the foot of the ending page shows them, in the order they happened. Empty where the game has none. */
+  get momentCards(): MomentCard[] {
+    return cardsOf(readMoments(this.view?.raw.moments), this.album);
   }
 
   /** Whether this is the page of a recording, which acts for nobody. */
@@ -282,6 +334,8 @@ export class Play {
   /** Sends an action of the manager and remembers what it was about, to read the core's answer by. */
   send(body: Record<string, unknown>, extra: Omit<Sent, "type"> = {}): string {
     if (this.readOnly) return "";
+    if (extra.silent !== true && isAct(String(body.type))) this.eggs.acted();
+    this.guide.noteUsed(body);
     const id = this.client.player(body);
     this.sent.set(id, { type: String(body.type), ...extra });
     if (this.sent.size > 40) {
@@ -346,11 +400,54 @@ export class Play {
   }
 
   ask(topic: string, subject: Name): void {
-    this.send({ type: "ask", topic }, { subject });
+    const partner = this.state.talk?.npc;
+    if (partner !== undefined) this.flows.noteAsked(partner, topic);
+    this.send({ type: "ask", topic }, { subject, ...this.addressee() });
+  }
+
+  /** Gives one of the small things of the day to the person talked to. `subject` names it for the lines of the talk. */
+  gift(item: string, subject: Name): void {
+    this.send({ type: "gift", item }, { subject, ...this.addressee() });
+  }
+
+  /**
+   * Whom an act of a talk is addressed to: the person named in its fields, else the person talked to, so that a refusal can say who
+   * said no ("李大没答应"). Nothing outside a talk.
+   */
+  private addressee(fields: Record<string, unknown> = {}): { npc?: string } {
+    const npc = typeof fields.npc === "string" && fields.npc !== "" ? fields.npc : this.state.talk?.npc;
+    return npc === undefined ? {} : { npc };
+  }
+
+  /** Opens the card of the hearts of a person, where the player pressed their hearts. */
+  openHearts(npc: string): void {
+    if (this.state.heartsOpen === npc) return;
+    this.state.heartsOpen = npc;
+    this.client.touch();
+  }
+
+  closeHearts(): void {
+    if (this.state.heartsOpen === null) return;
+    this.state.heartsOpen = null;
+    this.client.touch();
+  }
+
+  private popHeart(event: CoreEvent): void {
+    const npc = typeof event.npc === "string" ? event.npc : "";
+    const delta = typeof event.delta === "number" && Number.isFinite(event.delta) ? Math.trunc(event.delta) : 0;
+    if (npc === "" || delta === 0) return;
+    const id = this.noteId++;
+    this.state.pops.push({ id, npc, delta, why: whyOf(event.why) });
+    if (this.state.pops.length > 3) this.state.pops.shift();
+    setTimeout(() => {
+      if (!this.state.pops.some((p) => p.id === id)) return;
+      this.state.pops = this.state.pops.filter((p) => p.id !== id);
+      this.client.touch();
+    }, HEART_POP_MS);
   }
 
   askSource(entry: string, subject: Name): void {
-    this.send({ type: "ask_source", entry }, { subject });
+    this.send({ type: "ask_source", entry }, { subject, ...this.addressee() });
   }
 
   listen(): void {
@@ -370,7 +467,7 @@ export class Play {
    * of its body are the town's own, and `subject` names it for the lines of the talk.
    */
   other(verb: string, fields: Record<string, unknown>, subject?: Name): void {
-    this.send({ ...fields, type: verb }, subject === undefined ? {} : { subject });
+    this.send({ ...fields, type: verb }, { ...(subject === undefined ? {} : { subject }), ...this.addressee(fields) });
   }
 
   // --- The page ---------------------------------------------------------------------------
@@ -411,6 +508,9 @@ export class Play {
       this.flows.reset();
       this.guide.reset();
       this.skip.reset();
+      this.director.reset();
+      this.album.reset();
+      this.eggs.reset();
       this.autosave.reset();
       this.frameEvents = [];
       this.view = null;
@@ -424,7 +524,10 @@ export class Play {
     if (message.type === "loaded") {
       // The game was rebuilt from a save, and the frame of its last tick has come. What the page kept with the save comes back.
       this.flows.restore(message.info.page);
+      this.album.restore(message.info.page);
+      this.eggs.restore(message.info.page);
       this.skip.reset();
+      this.client.touch();
       return;
     }
     if (message.type === "ending") {
@@ -476,8 +579,14 @@ export class Play {
     const had = this.state.ending;
     if (had !== null && (had.reveal !== null || ending.reveal === null)) return;
     this.state.ending = ending;
-    if (had === null) this.state.endingOpen = true;
+    if (had === null) this.openEnding(ending);
     this.client.touch();
+  }
+
+  /** The ending is known for the first time: its page opens, after the show of the last night if there is one (`director.ts`), which opens it when it is over. */
+  private openEnding(ending: EndingView): void {
+    this.state.endingOpen = false;
+    if (!this.director.beginEnding(ending)) this.state.endingOpen = true;
   }
 
   /** Asks the host, once for each game, for the whole ending when the page has seen only the frame's. */
@@ -517,6 +626,9 @@ export class Play {
           // The words the person has on show as the talk opens are their greeting. The bar says them too.
           const greeting = view.bubbles.find((b) => b.npc === event.npc && this.tick < b.until);
           this.state.talk = { npc: event.npc, lines: [], leavesAt: readLeavesAt(event.leaves_at), ...(greeting === undefined ? {} : { opening: greeting.text }) };
+          // What the page had somebody say over the map is put away for a talk, and the slip of the riddle lantern with it.
+          this.eggs.hush();
+          this.eggs.closeRiddle();
         }
         break;
       case "replied":
@@ -556,6 +668,11 @@ export class Play {
       case "rally":
         this.note("info", "note.rally");
         break;
+      case "hearts":
+        // A heart moved: said on the spot, in the talk, when it is the person talked to. Of anybody else's nothing is said: a speech in public moves the
+        // hearts of everybody who heard it, and the card of each says what changed.
+        if (typeof event.npc === "string" && view.player?.talk?.npc === event.npc) this.popHeart(event);
+        break;
       case "budget_stage":
         // The budget crossed a limit, up or down: say what the gate does now.
         if (event.stage === 0 || event.stage === 1 || event.stage === 2) {
@@ -567,11 +684,13 @@ export class Play {
         break;
       case "ending":
         this.state.ending = readEnding(event);
-        this.state.endingOpen = true;
+        this.openEnding(this.state.ending);
         this.state.talk = null;
         this.state.thinking = null;
         this.state.approach = null;
         this.state.destination = null;
+        this.eggs.hush();
+        this.eggs.closeRiddle();
         // The story is over. The town stays as it was until the player starts another game.
         this.client.pause();
         this.autosave.ending(view.time);
@@ -592,6 +711,7 @@ export class Play {
     const meta = id === null ? undefined : this.sent.get(id);
     if (meta === undefined || event.result === "duplicate") return;
     if (id !== null) this.sent.delete(id);
+    if (meta.silent === true) return;
     const reason = typeof event.reason === "string" ? event.reason : null;
     if (event.result === "rejected") {
       // A request with a preview and a judgement show the answer where they were made, and not in a note over the map.
@@ -607,7 +727,8 @@ export class Play {
       const said = view.bubbles.find((b) => b.npc === talk.npc && this.tick < b.until);
       if (said !== undefined) {
         const pointer = this.pointerOf(talk.npc);
-        talk.lines.push(pointer === null ? { who: "them", text: said.text } : { who: "them", text: said.text, points: [pointer] });
+        const wrote = meta.type === "ask" ? entryOfAnswer(this.frameEvents as ReadonlyArray<Record<string, unknown>>, talk.npc) : null;
+        talk.lines.push({ who: "them", text: said.text, ...(pointer === null ? {} : { points: [pointer] }), ...(wrote === null ? {} : { entry: wrote }) });
       }
     }
     if (meta.flow !== undefined && id !== null) this.flows.onApplied(meta.flow, id);
@@ -644,6 +765,7 @@ export class Play {
     const entries = readNotebook(view.raw);
     this.flows.afterFrame(entries === null ? null : new Set(entries.map((e) => e.id)));
     this.guide.afterFrame(view, tick);
+    this.director.afterFrame(view.raw);
     if (entries !== null) {
       const ids = entries.map((e) => e.id);
       if (this.knownEntries !== null) {
@@ -712,13 +834,16 @@ export class Play {
       const id = view.hud.ending;
       if (known !== null && typeof known.ending === "string" && known.ending !== "") {
         state.ending = readEnding(known);
-        state.endingOpen = true;
+        this.openEnding(state.ending);
         if (state.ending.reveal === null) this.askForEnding();
       } else if (typeof id === "string" && id !== "") {
         state.ending = endingFromHud(id, view.hud);
-        state.endingOpen = true;
+        this.openEnding(state.ending);
       }
     }
+
+    // The small secrets of the town: what was said over the map is put away when its time is up, and the manager who stands still is counted.
+    this.eggs.afterFrame(view);
 
     // A run that skips to the next thing ends when there is something to do.
     this.skip.afterFrame();

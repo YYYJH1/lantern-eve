@@ -5,8 +5,9 @@
 /* The book lies between the placard at the top left and the bookmarks of the ledger at the right edge, and covers neither. */
 
 .notebook {
-  /* While a line of the help is up over it (--line-room, which the page measures), the book starts below the line and ends where it always did. */
-  --lift: max(0px, var(--line-room, 0px) - 84px);
+  /* The book starts under the slip (--slip-room: one line lower for each line the title of the slip runs to after the first) and, while a line of the help is up over it
+     (--line-room, which the page measures), below the line, and ends where it always did. */
+  --lift: max(0px, var(--slip-room) - 84px, var(--line-room, 0px) - 84px);
   position: absolute;
   top: calc(84px + var(--lift));
   right: 70px;
@@ -283,20 +284,32 @@
   font-weight: 500;
 }
 
-.note-meta {
-  position: absolute;
-  top: 6px;
-  right: 2px;
-  font-size: 15px;
+/* The button that takes a line into a pair stands in a column of its own at the right of the line, which takes the room it needs, so that long words never run
+   under it, in a narrow page either. */
+.note-cols.is-pairable {
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12px;
 }
 
-.note-pick.ink-act {
+.note-cols.is-pairable .note-text {
+  padding-right: 0;
+}
+
+.note-meta {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: start;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.note-meta .ink-act {
   min-height: 0;
   padding: 0 2px 6px;
   font-weight: 400;
 }
 
-.note-pick.is-on.ink-act {
+.note-meta .ink-act.is-on {
   font-weight: 500;
 }
 
@@ -360,40 +373,58 @@
   font-weight: 500;
 }
 
-.relations {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 20px;
+/* The three answers, each a name and a small example under it, side by side: three columns of 7 em at the least, which the narrow page of a book that is open at two pages (some 450 px)
+   has room for. In two rows the pair is taller than the page that the smallest window leaves it. */
+.answers {
+  display: grid;
+  gap: 6px 10px;
+  grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));
   margin-top: 2px;
 }
 
-.relation {
-  position: relative;
+.answer {
+  display: grid;
+  align-content: start;
+  gap: 2px;
   margin: 0;
-  padding: 4px 8px 6px;
-  border: 0;
+  padding: 6px 10px 8px;
+  border: 1.5px solid var(--ink);
   background: none;
   color: inherit;
   font: inherit;
-  font-size: 15px;
+  text-align: left;
   cursor: pointer;
 }
 
-.relation:focus-visible {
+.answer:hover:not(:disabled),
+.answer:focus-visible {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.answer:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 1px;
 }
 
-.relation.is-on {
+.answer:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.answer-name {
+  font-size: 16px;
   font-weight: 500;
 }
 
-.relation > svg.circle {
-  position: absolute;
-  top: -2px;
-  left: -4px;
-  width: calc(100% + 8px);
-  height: calc(100% + 4px);
+.answer-eg {
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+/* An answer that was not right is struck through, so that the player sees which ones they have tried. */
+.answer.is-tried .answer-name {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
 }
 
 .pairing-buttons {
@@ -457,9 +488,6 @@
 }
 
 /* The minutes stand a space off the name of the act. */
-.judgments .ink-act > .verb-cost {
-  margin-left: 0.5em;
-}
 
 .judgment-where,
 .judgment-no {

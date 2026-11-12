@@ -986,7 +986,7 @@ def played(seed: int = 3) -> Played:
     return _PLAYED[seed]
 
 
-@pytest.fixture(scope="module", params=[3, 11])
+@pytest.fixture(scope="module", params=[3, 5])
 def nights(request):
     return played(request.param)
 

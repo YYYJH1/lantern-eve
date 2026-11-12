@@ -6,6 +6,7 @@ import type { Scene } from "../scene.ts";
 import { buttonTasks, type CardNotes, commitmentsOf, type SliceFrame, tasksAbout, windowOf } from "../slice.ts";
 import { placeName } from "./common.tsx";
 import { agreedText, clockText, dayLabel, minutesText, roleText } from "./format.ts";
+import { Hearts } from "./hearts.tsx";
 import { count } from "./paper-text.ts";
 import { whenWhere } from "./slip-text.ts";
 import { InkAct } from "./ink.tsx";
@@ -20,10 +21,10 @@ export interface TalkControl {
   onTalk(id: string): void;
 }
 
-function Favours({ notes, lang }: { notes: CardNotes; lang: Lang }) {
+function Favours({ notes, lang, name }: { notes: CardNotes; lang: Lang; name: string }) {
   const n = notes.favours;
   if (n === null) return null;
-  const text = n > 0 ? t("person.favours.owes", { n: count(lang, n) }) : n < 0 ? t("person.favours.owed", { n: count(lang, -n) }) : t("person.favours.none");
+  const text = n > 0 ? t("person.favours.owes", { n: count(lang, n) }) : n < 0 ? t("person.favours.owed", { name, n: count(lang, -n) }) : t("person.favours.none");
   return (
     <div data-testid="person-favours" data-favours={n}>
       <dt>{t("person.favours")}</dt>
@@ -98,6 +99,7 @@ export function PersonCard({ id, frame, scene, slice, lang, play, control }: Per
   const leaves = me?.talk?.npc === person.id ? me.talk.leavesAt : null;
   const bio = pick(person.bio, lang);
   const role = roleText(person, lang);
+  const relation = frame?.relations.get(person.id);
   const rows: Array<[string, string | null]> = [
     [t("person.activity"), activity === undefined ? null : pick(activity, lang)],
     [t("person.family"), family === undefined ? null : pick(family, lang)],
@@ -165,7 +167,7 @@ export function PersonCard({ id, frame, scene, slice, lang, play, control }: Per
             </dd>
           </div>
         )}
-        {notes === null ? null : <Favours notes={notes} lang={lang} />}
+        {notes === null ? null : <Favours notes={notes} lang={lang} name={pick(person.name, lang)} />}
         {notes === null ? null : <Stance notes={notes} lang={lang} />}
         {rows
           .filter((row): row is [string, string] => row[1] !== null)
@@ -188,6 +190,11 @@ export function PersonCard({ id, frame, scene, slice, lang, play, control }: Per
             {pick(person.name, lang)}
           </h2>
           {role === null ? null : <p class="person-role">{role}</p>}
+          {relation === undefined || !relation.known ? null : (
+            <div class="person-hearts" data-testid="person-hearts">
+              <Hearts value={relation.hearts} size="s" onOpen={() => play.openHearts(person.id)} />
+            </div>
+          )}
         </div>
       </div>
       {bio === "" ? null : talking ? (
@@ -219,7 +226,7 @@ export function PersonCard({ id, frame, scene, slice, lang, play, control }: Per
       )}
       {talking ? (
         <details class="facts-fold" data-testid="person-facts">
-          <summary>{t("person.details")}</summary>
+          <summary>{t("person.details", { name: pick(person.name, lang) })}</summary>
           {facts}
         </details>
       ) : (

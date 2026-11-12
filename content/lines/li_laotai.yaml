@@ -1,155 +1,176 @@
-# Granny Li, the matriarch of the Li family. Stately and unhurried, proud of her house and wary
-# of the Zhou family. She calls herself an old woman, and the festival manager by their title.
+# Granny Li, the head of the Li house. Short sentences with an elder's weight, a sigh now and then;
+# fond of her family and never soft in speech. She calls herself an old woman now and then, her sons
+# by their place in the family, and the manager by their title.
 person: li_laotai
 voice:
-  zh: 李家的老太太。说话缓而稳，自称老婆子，句子短，带着长辈的分量。
-  en: The Li matriarch. Slow and stately, speaks of herself as an old woman, in short sentences with an elder's weight.
+  zh: "李家的老太太，家里的大事都由她拿主意。话短，一句是一句，有长辈的分量，偶尔叹口气。自称老婆子，但不是句句都带。疼儿孙，嘴上却不软。最在乎老二的名声、李家的脸面，竹料是李家的东西，不轻易松口。不想说的事就一句「这事你别问我，问我也是这句话」。真急了是护着老二：「我家老二不是那种人。」"
+  en: "The old lady of the Li house, who settles every big matter in the family. Short sentences, each one meant, with an elder's weight and now and then a sigh. Calls herself an old woman, though not in every sentence. Fond of her children and grandchildren, never soft in speech. Cares most for her second son's good name, the face of the Li house and the bamboo, which is the family's and not lightly lent. What she will not discuss gets one line: don't ask me, you will hear the same answer. Roused, she stands up for her second son: my youngest is not that kind."
+call:
+  fam_li: {zh: 我们家, en: our family}
+  li_da: {zh: 老大, en: my eldest}
+  li_er: {zh: 老二, en: my youngest}
+  li_xiaomei: {zh: 小妹, en: Xiaomei}
+  old_he: {zh: 老何, en: Boatman He}
+  zhou_niangzi: {zh: 周家的, en: the Zhou woman}
+  zhou_zhanggui: {zh: 周家那个掌柜, en: that Zhou shopkeeper}
 lines:
   asleep:
-    - {zh: "唔……老骨头乏了……再让我躺一会儿……（睡熟了）", en: "Mm... these old bones are tired... let me lie a little longer... (fast asleep)"}
-    - {zh: "呼……呼……谁家的孩子……别吵……（睡熟了）", en: "Zzz... whose child is that... hush now... (fast asleep)"}
+    - {zh: "唔……老二……别出门……（睡熟了）", en: "Mm... my youngest... don't go out... (fast asleep)"}
+    - {zh: "呼……竹子……谁也不借……（睡熟了）", en: "Zzz... the bamboo... not to anyone... (fast asleep)"}
   busy:
-    - {zh: "老婆子手上有事。改日再来吧。", en: "This old woman has things to see to. Come another day."}
-    - {zh: "总管见谅，老婆子这会儿抽不开身。", en: "Forgive me, Manager. I cannot spare a moment just now."}
+    - {zh: "这会儿走不开，你过一阵再来。", en: "I can't stop now. Come back in a while."}
+    - {zh: "我手上有事。回头再说吧。", en: "I have something to see to. Another time."}
   timeout:
-    - {zh: "天色不早了。老婆子该回去张罗了。", en: "The day is wearing on. This old woman must go back to her household."}
-    - {zh: "家里人还等着我。就说到这儿吧。", en: "My household is waiting for me. Let us leave it there."}
+    - {zh: "时候不早了，我得走了。", en: "It's getting on. I have to go."}
+    - {zh: "我得走了。有话改天再说。", en: "I must be going. The rest can wait for another day."}
   unknown:
-    - {zh: "这件事老婆子一概不知。", en: "This old woman knows nothing about that."}
-    - {zh: "这事我从没听说过。", en: "I have never heard a word of it."}
+    - {zh: "没听说过。", en: "Not a word of it reached me."}
+    - {zh: "这事我不清楚。", en: "That's nothing I know about."}
   evade:
-    - {zh: "这事就不必多提了。", en: "There is no need to speak of that."}
-    - {zh: "老婆子不想说这个。", en: "This old woman would rather not say."}
+    - {zh: "这事你别问我，问我也是这句话。", en: "Don't ask me about that. You'll hear the same answer every time."}
+    - {zh: "不提了。这事我不想说。", en: "Let it be. I'd rather not speak of it."}
   not_said:
-    - {zh: "老婆子可没说过这样的话。", en: "This old woman never said any such thing."}
-    - {zh: "这话不是我说的。", en: "Those were not my words."}
+    - {zh: "我可没说过这话。", en: "No such word ever passed my lips."}
+    - {zh: "这话不是我说的。我只知道这个。", en: "Those weren't my words. This is what I know."}
   not_so:
-    - {zh: "不对。事情不是这样的。", en: "No. That is not how it was."}
-    - {zh: "你说岔了。不是那么回事。", en: "You have it wrong. It was not like that."}
+    - {zh: "哪有这种事。", en: "Nothing of the sort."}
+    - {zh: "你听岔了。", en: "You heard it wrong."}
   keeper_no:
-    - {zh: "咱们还不熟络。这事改日再说吧。", en: "We are not yet well acquainted. Another day."}
-    - {zh: "老婆子不轻易让生人进门。请回吧。", en: "This old woman does not open her door to strangers lightly. Please go."}
+    - {zh: "咱们才见过几面，这个不能给你看。", en: "We've met only a few times. I can't show you this."}
+    - {zh: "老婆子不给生人看。", en: "I don't show that to strangers."}
   took_in:
-    - {zh: "原来如此。老婆子记下了。", en: "So that is how it is. This old woman will remember it."}
-    - {zh: "嗯。你的话我收下了。", en: "Hm. I have taken your words to heart."}
+    - {zh: "原来是这么回事。", en: "So that's how it was."}
+    - {zh: "嗯，你的话我听进去了。", en: "Hm. I've taken in what you said."}
   knew:
-    - {zh: "这事老婆子早就知道了。", en: "This old woman has known that for some time."}
-    - {zh: "你不说我也晓得。", en: "You need not tell me. I knew it already."}
+    - {zh: "这事我早知道了。", en: "I've known that a while."}
+    - {zh: "你不说我也晓得。", en: "You needn't tell me. I knew."}
   doubted:
-    - {zh: "老婆子听来的可不是这样。", en: "That is not what this old woman was told."}
-    - {zh: "这话和我听到的对不上。", en: "That does not agree with what I have heard."}
+    - {zh: "我听来的不是这么回事。", en: "That isn't what I was told."}
+    - {zh: "这跟我听来的对不上。", en: "That doesn't fit what I heard."}
   caught:
-    - {zh: "你竟敢骗我这把老骨头！往后你的话，我一个字也不信！", en: "You dare lie to an old woman! I will not believe another word you say!"}
-    - {zh: "原来你一直在撒谎！从今往后，别指望我再信你！", en: "So you have been lying to me! Do not expect my trust again!"}
+    - {zh: "原来你拿瞎话哄我。往后你的话，我一句也不信。", en: "So you were feeding me lies. I won't believe another word of yours."}
+    - {zh: "好啊，连老婆子你也敢骗！", en: "So you'd lie even to an old woman!"}
   deal:
-    - {zh: "好。老婆子应下了。", en: "Good. This old woman agrees."}
-    - {zh: "那就这么定了。", en: "Then it is settled."}
+    - {zh: "行，老婆子信你这一回。", en: "Very well. I'll take you at your word this once."}
+    - {zh: "那就这么定了。", en: "Then that's settled."}
   empty:
-    - {zh: "空口许诺，老婆子不信。", en: "Empty promises. This old woman does not believe them."}
-    - {zh: "光说不做的话，我听得多了。", en: "I have heard plenty of talk with nothing behind it."}
+    - {zh: "你手里没有的东西，许了也是白许。", en: "You can't promise what you haven't got."}
+    - {zh: "光说不做的话，我听得多了。", en: "I've heard plenty of talk with nothing behind it."}
   kept_thanks:
-    - {zh: "总管说到做到。这份情老婆子记着。", en: "The Manager does as they say. This old woman will remember the kindness."}
-    - {zh: "你守了信用。李家不会忘的。", en: "You kept your word. The Li family will not forget it."}
+    - {zh: "你说到做到。老婆子记着你的好。", en: "You did what you said. I won't forget your kindness."}
+    - {zh: "答应的事你办了。李家不会忘的。", en: "You did what you promised. The Li house won't forget it."}
   will_do:
-    - {zh: "行。这事老婆子替你办。", en: "Very well. This old woman will see to it."}
-    - {zh: "好。包在我身上。", en: "Good. Leave it to me."}
+    - {zh: "行。这事我应下了。", en: "Very well. I'll agree to it."}
+    - {zh: "好，交给我吧。", en: "Good. Leave it with me."}
   cannot:
-    - {zh: "这个忙老婆子帮不上。", en: "This old woman cannot help you with that."}
-    - {zh: "这事我使不上力。", en: "I have no strength to lend to that."}
+    - {zh: "这事找我没用，办不了。", en: "No use asking me. It's not in my hands."}
+    - {zh: "这个我出不上力。", en: "That's nothing I can lend a hand to."}
   turned_down:
-    - {zh: "对不住。这件事老婆子不能答应。", en: "I am sorry. This old woman cannot agree to that."}
-    - {zh: "恕我直言，这事不行。", en: "Forgive my bluntness. It cannot be done."}
+    - {zh: "这事老婆子不能答应。", en: "That I can't agree to."}
+    - {zh: "不行，这个我应不了。", en: "No. I can't say yes to that."}
   said_already:
-    - {zh: "这话老婆子已经说过了。", en: "This old woman has said so already."}
-    - {zh: "我说过一遍了。不必再问。", en: "I have said it once. There is no need to ask again."}
+    - {zh: "这话老婆子说过了。", en: "I've said that already."}
+    - {zh: "说过一遍了，还是那句话。", en: "I said it once. The answer hasn't changed."}
   closed:
-    - {zh: "这会儿不方便。改个时辰来吧。", en: "Not just now. Come back at another hour."}
-    - {zh: "眼下不是时候。晚些再来吧。", en: "This is not the time. Come back later."}
+    - {zh: "这会儿不方便，换个时辰来吧。", en: "This isn't a good time. Come at another hour."}
+    - {zh: "眼下不是时候。晚些再来。", en: "This isn't the time. Come back later."}
   needs_nod:
-    - {zh: "这事不是老婆子一人能定的。得先问过族长。", en: "That is not for this old woman alone to decide. The elder must be asked first."}
-    - {zh: "没有族长点头，老婆子不敢应承。", en: "Without the elder's nod, this old woman cannot promise."}
+    - {zh: "这事老婆子一个人定不了，得先问过族长。", en: "I can't decide that alone. The elder must be asked first."}
+    - {zh: "族长不点头，我不敢应。", en: "Without the elder's nod, I won't say yes."}
   nothing_to_say:
-    - {zh: "这事老婆子没什么可说的。", en: "This old woman has nothing to say on that."}
-    - {zh: "此事无话可说。", en: "There is nothing to be said about it."}
+    - {zh: "这事我没看见，说不出什么。", en: "I didn't see it, so I've nothing to tell."}
+    - {zh: "那晚我早早睡了，什么也没瞧见。", en: "I went to bed early that night and saw nothing."}
   testified:
-    - {zh: "我说的每一句，都是亲眼所见。", en: "Every word I give you is something I saw with my own eyes."}
-    - {zh: "老婆子不说虚话。看见什么，就说什么。", en: "This old woman does not tell tales. I say only what I saw."}
+    - {zh: "老婆子不说虚话，看见什么说什么。", en: "I don't tell tales. I say what I saw."}
+    - {zh: "这些都是我亲眼见的。", en: "All of that I saw with my own eyes."}
   too_late:
-    - {zh: "天色已晚。明早再来吧。", en: "The hour is late. Come again in the morning."}
-    - {zh: "夜深了。明天一早再说。", en: "It is late. We will speak in the morning."}
+    - {zh: "天晚了，明早再来吧。", en: "It's late. Come again in the morning."}
+    - {zh: "夜深了，明天一早再说。", en: "It's dark now. We'll talk first thing tomorrow."}
   will_ask:
-    - {zh: "好。老婆子去同对方说一声。", en: "Good. This old woman will have a word with them."}
-    - {zh: "这话我替你带到。", en: "I shall carry that word for you."}
+    - {zh: "好，我去替你说一声。", en: "Good. I'll go and put in a word for you."}
+    - {zh: "这话我替你带到。", en: "I'll carry the word for you."}
   will_call:
-    - {zh: "好。老婆子这就去招呼大家到祠堂来。", en: "Good. This old woman will call everyone to the hall at once."}
-    - {zh: "我去把人都叫到祠堂。", en: "I will gather them all at the hall."}
+    - {zh: "好，我这就去叫人到祠堂。", en: "Good. I'll go and call people to the hall."}
+    - {zh: "我去把人都叫到祠堂。", en: "I'll gather them all at the hall."}
   hard_hc_li_bamboo:
-    - {zh: "那桩谣言一天不当众讲清楚，我李家的竹子就一根也不借。", en: "Until that slander is cleared in front of everyone, not one pole of Li bamboo leaves this house."}
-    - {zh: "谣言不当众澄清，老婆子就不松口。竹子你别想了。", en: "Clear that slander in front of everyone, or you will get no bamboo from me."}
+    - {zh: "那些闲话一天不当众说清，李家的竹子一根也不借。", en: "Until that talk is cleared up in front of everyone, not one pole of Li bamboo goes out."}
+    - {zh: "先当着大家把话说清楚。不然竹子你别想。", en: "Clear it up in front of everyone first. Until then, forget the bamboo."}
   hard_hc_li_bamboo_rumour:
-    - {zh: "镇上都说我家老二毁了桥。你这总管一声不吭，竹料不借。", en: "The whole town says my second son wrecked the bridge. You say not a word, Manager, so there is no bamboo."}
-    - {zh: "满镇的闲话，都落在李家头上。总管一声不吭，老婆子不借竹料。", en: "Idle talk all over town, and it falls on the Li house. The Manager stays silent, so this old woman lends no bamboo."}
+    - {zh: "满镇都说我家老二弄坏了桥。你这个总管一声不吭，竹子我不借。", en: "The whole town says my youngest broke the bridge. You haven't said a word, Manager, so no bamboo."}
+    - {zh: "闲话都落在老二头上了，你一句也不说。竹子不借。", en: "All the talk has landed on my youngest, and you say nothing. No bamboo."}
   hard_other:
-    - {zh: "此事免谈。", en: "That is out of the question."}
-    - {zh: "不行。再提也没用。", en: "No. Asking again will not help."}
+    - {zh: "这事不用再提。", en: "There's no point raising it."}
+    - {zh: "不行，再提也是不行。", en: "No. Asking again won't change it."}
   elder_yes:
-    - {zh: "老婆子听明白了。就这么办吧。", en: "I understand it now. Let it be so."}
-    - {zh: "你说得在理。老婆子心里有数了。", en: "You make sense. This old woman is satisfied."}
+    - {zh: "听明白了。就这么办吧。", en: "I understand it now. Let it be done."}
+    - {zh: "你说得在理，我没话说。", en: "You make sense. I've nothing against it."}
   elder_no:
-    - {zh: "光凭这些，老婆子还不能信。", en: "On this alone, this old woman cannot believe it."}
-    - {zh: "话还没说够。不能就这么定下来。", en: "Not enough has been said to settle it."}
+    - {zh: "光凭这几句，我还不能信。", en: "On these few words alone, I can't believe it yet."}
+    - {zh: "话还没说透，我再看看。", en: "It hasn't been said fully. I'll wait and see."}
   objection_withdrawn:
-    - {zh: "既然当众说清了，老婆子不再拦着。", en: "Since it has been cleared in front of everyone, this old woman will no longer stand in the way."}
-    - {zh: "这口气老婆子咽下了。你去办吧。", en: "This old woman has swallowed her anger. Go and see to it."}
+    - {zh: "既然当众说清了，我就不拦着了。", en: "Since it's been cleared up in front of everyone, I won't stand in the way."}
+    - {zh: "话说清楚了。竹子的事，你去找老大吧。", en: "It's been cleared up. For the bamboo, go and see my eldest."}
   witness_in_public:
-    - {zh: "老婆子只讲亲眼所见，一字不添。", en: "This old woman tells only what she saw, and adds not a word."}
-    - {zh: "看到多少，老婆子说多少。", en: "This old woman says as much as she saw."}
+    - {zh: "我只说亲眼看见的，别的不添。", en: "I tell only what I saw, and I add nothing."}
+    - {zh: "看到多少，我就说多少。", en: "I say as much as I saw."}
   batch_promised:
-    - {zh: "也罢。明早叫李大送去桥边。", en: "Very well. Tomorrow morning Li Da will take it to the bridge."}
-    - {zh: "竹料老婆子借了。明早到桥边。", en: "This old woman lends the bamboo. It will be at the bridge in the morning."}
+    - {zh: "好，明早叫老大送到桥边。", en: "Good. My eldest will bring it to the bridge in the morning."}
+    - {zh: "竹料我借了，明早送到桥边。", en: "I'll lend the bamboo. It will be at the bridge in the morning."}
   bamboo_arrived:
-    - {zh: "竹料到桥边了。老婆子说话算数。", en: "The bamboo has reached the bridge. This old woman keeps her word."}
-    - {zh: "李家的竹子，到了。", en: "The Li bamboo has arrived."}
+    - {zh: "竹料到桥边了。我说话算数。", en: "The bamboo is at the bridge. I keep my word."}
+    - {zh: "李家的竹子送到了，一根不少。", en: "The Li bamboo is there, every pole of it."}
   promise_open:
-    - {zh: "老婆子应过了。{when}送{amount}根{item}到桥边。", en: "This old woman gave her word already: {amount} poles of {item} to the bridge {when}."}
-    - {zh: "说定的事，不改了。{amount}根{item}，{when}送到桥边。", en: "What is settled stays settled. It is {amount} poles of {item}, at the bridge {when}."}
+    - {zh: "我答应过了，{when}送{amount}根{item}到桥边。", en: "I gave my word already. It's {amount} poles of {item}, at the bridge {when}."}
+    - {zh: "说定的事不改。{when}，{amount}根{item}送到桥边。", en: "What's settled stays settled. It's {amount} poles of {item} at the bridge {when}."}
   goods_enough:
-    - {zh: "桥边的{item}够用了。老婆子不再添。", en: "The {item} at the bridge is enough. This old woman will add no more."}
-    - {zh: "{item}已经够数。不必再送。", en: "There is {item} enough. No more need be sent."}
+    - {zh: "桥边的{item}够用了，我不再添。", en: "There's enough {item} at the bridge. I won't add more."}
+    - {zh: "{item}已经够数了，不用再送。", en: "The {item} is all there. No need to send more."}
   point_heard:
-    - {zh: "这件事老婆子不清楚。听{name}说起过，总管不妨去问问。", en: "This old woman does not know. I heard {name} speak of it, so the Manager may ask them."}
-    - {zh: "老婆子没听说过。倒是{name}提到过几句，总管去问吧。", en: "I have heard nothing of it, but I believe {name} said a few words on it. Ask them."}
+    - {zh: "这个我不清楚。倒是听{name}提过几句，你去问问。", en: "I don't know about that. I did hear {name} say a few words on it, so go and ask."}
+    - {zh: "我没留心这事。{name}说起过，你问问去。", en: "I paid it no mind, but {name} spoke of it. Go and ask."}
   point_hub:
-    - {zh: "老婆子不问闲事。镇上的消息，总管去找{name}。", en: "This old woman asks after no gossip. For the talk of the town, the Manager should see {name}."}
-    - {zh: "这事我不知。{name}耳目众多，总管去请教吧。", en: "I cannot say. The Manager may consult {name}, who has many ears in town."}
+    - {zh: "老婆子不打听闲事。镇上的消息，你去问{name}。", en: "I don't go after gossip. For the news of the town, ask {name}."}
+    - {zh: "这事我不知道。{name}那儿人来人往，你去问问。", en: "I don't know. People come and go all day at {name}'s, so ask there."}
+  gift_like:
+    - {zh: "{item}啊，软和。老婆子就爱这一口。", en: "Ah, {item}, nice and soft. Just what I like at my age."}
+    - {zh: "{item}？你倒有心，我收下了。", en: "Some {item}? That's thoughtful of you. I'll take them."}
+  gift_neutral:
+    - {zh: "{item}啊，放着吧。难为你想着。", en: "Some {item}. Set that down there. Kind of you to think of me."}
+    - {zh: "{item}也好，家里用得着。", en: "Some {item}, then. We'll find a use for that at home."}
+  gift_dislike:
+    - {zh: "{item}我不沾。你拿回去吧。", en: "I don't touch {item}. Take it back."}
+    - {zh: "{item}啊……我这把年纪不碰了。心意领了。", en: "Ah, {item}... not at my age. I'll take the thought."}
 frames:
   seen:
-    - {zh: "老婆子亲眼瞧见的：{line}。", en: "This old woman saw it with her own eyes: {line}."}
-    - {zh: "我就在场。亲眼所见：{line}。", en: "I was there. I saw it myself: {line}."}
+    - {zh: "{line}。这是老婆子亲眼看见的。", en: "{line}. These old eyes saw it."}
+    - {zh: "{line}，我这双眼睛看着的。", en: "{line}, and these eyes of mine watched it."}
   heard:
-    - {zh: "听{teller}说起过：{line}。", en: "I had it from {teller}: {line}."}
-    - {zh: "{teller}告诉过我：{line}。", en: "{teller} said to this old woman that {line}."}
+    - {zh: "{teller}跟我讲，说{line}。", en: "{teller} came and told me that {line}."}
+    - {zh: "是{teller}跟我说的。说是{line}。", en: "I had it from {teller}, who said that {line}."}
   unknown:
-    - {zh: "听人说起：{line}。", en: "I have heard it said that {line}."}
-    - {zh: "有人传了话：{line}。", en: "Someone passed word that {line}."}
+    - {zh: "外头有人传，说{line}。", en: "There's talk going round that {line}."}
+    - {zh: "说是{line}。谁先说的，我记不得了。", en: "Word is that {line}. Who said it first, I can't remember."}
   own:
-    - {zh: "依老婆子看：{line}。", en: "In this old woman's view, {line}."}
-    - {zh: "我的看法是：{line}。", en: "My judgment is that {line}."}
+    - {zh: "要我看哪，{line}。", en: "As I see it, {line}."}
+    - {zh: "老婆子活了这把年纪，看得出{line}。", en: "At my age I can tell that {line}."}
   guess_own:
-    - {zh: "老婆子不敢断言。{hedge}{line}。", en: "This old woman will not swear to it. {hedge} {line}."}
-    - {zh: "说不准。{hedge}{line}。", en: "I cannot be sure. {hedge} {line}."}
+    - {zh: "我不敢说准，{hedge}{line}。", en: "I won't swear to it, but {hedge} {line}."}
+    - {zh: "说不准的事。{hedge}{line}。", en: "Nobody can be sure. {hedge} {line}."}
   guess_heard:
-    - {zh: "{teller}说过些话。{hedge}{line}。", en: "{teller} told me about it. {hedge} {line}."}
-    - {zh: "{teller}提起过。{hedge}{line}。", en: "I had a word of it from {teller}. {hedge} {line}."}
+    - {zh: "{teller}自己也是猜的，{hedge}{line}。", en: "{teller} was guessing too, and {hedge} {line}."}
+    - {zh: "听{teller}那么一说，{hedge}{line}。", en: "The way {teller} put it, {hedge} {line}."}
   guess_unknown:
-    - {zh: "听人说起，{hedge}{line}。", en: "Someone mentioned it. {hedge} {line}."}
-    - {zh: "不知谁说的。{hedge}{line}。", en: "I do not know who said it. {hedge} {line}."}
+    - {zh: "不知道谁先说的，{hedge}{line}。", en: "I don't know who started it. {hedge} {line}."}
+    - {zh: "外头瞎猜的，{hedge}{line}。", en: "It's just people guessing, but {hedge} {line}."}
   rival:
-    - {zh: "可{teller}也对老婆子说过：{line}。", en: "Yet {teller} told this old woman otherwise: {line}."}
-    - {zh: "老婆子也听{teller}提过另一种：{line}。", en: "This old woman also heard another account from {teller}: {line}."}
+    - {zh: "可{teller}跟我讲的不一样，说{line}。", en: "But {teller} told me different, that {line}."}
+    - {zh: "{teller}那儿还有个说法，说是{line}。", en: "{teller} has another version, that {line}."}
+  known:
+    - {zh: "{line}。这还用问。", en: "{line}. That needs no asking."}
+    - {zh: "{line}，镇上老老少少都知道。", en: "{line}. Young and old in this town know that."}
 hedges:
-  - {zh: 老身想来, en: I would think}
-  - {zh: 多半是, en: I suspect}
+  - {zh: 多半是, en: I'd say}
+  - {zh: 我寻思, en: I suspect}
 # What she says by the state of the game (world/bridge/roles.py): a greeting as a talk opens, a last
 # word as the manager leaves, and the epilogue of the ending page. The first entry whose conditions
 # all hold is the one. She is wary of the manager and slow to warm, so her greeting follows what
@@ -158,89 +179,89 @@ greet:
   - id: new
     when: [{kind: acquainted, is: new}]
     lines:
-      - {zh: "你就是族长请来的总管？老婆子先看看你。", en: "So you are the Manager the elder sent for? This old woman will look you over first."}
+      - {zh: "你就是族长请来的总管？老婆子姓李，李家的事我说了算。", en: "So you're the Manager the elder sent for? I'm Granny Li, and in the Li house my word goes."}
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
-      - {zh: "你应过老婆子的事，没有办成。老婆子记着。", en: "You gave this old woman your word and did not keep it. It is not forgotten."}
+      - {zh: "答应我的事，你没办。老婆子记着呢。", en: "You promised me and didn't do it. I haven't forgotten."}
   - id: festival
     when: [{kind: after, day: 5, hour: 15}]
     lines:
-      - {zh: "今夜游灯。老婆子的灯，天亮就挂上了。", en: "The lanterns cross tonight. The lamp at this old woman's door was hung at dawn."}
+      - {zh: "今晚游灯了。我门口的灯，一早就挂上了。", en: "The lanterns go round tonight. I hung the one at my door first thing this morning."}
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
-      - {zh: "周家掌柜肯同李家坐一桌了。老婆子这口气，总算顺了。", en: "The Zhou shopkeeper sat at one table with the Li house. This old woman can breathe again."}
+      - {zh: "周家那个掌柜肯跟我们坐一桌了。这口气，总算顺了。", en: "That Zhou shopkeeper sat down at one table with us. I can breathe easier at last."}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "桥是怎么坏的，满镇都听明白了。李家人不必再低着头走路。", en: "The whole town has heard how the bridge broke. The Li house need not walk with heads bowed any more."}
+      - {zh: "桥是怎么坏的，大家都听明白了。李家人不用再低着头走路了。", en: "Everyone knows now how the bridge broke. The Li family can walk with their heads up again."}
   - id: kept
     when: [{kind: promised, state: kept}]
     lines:
-      - {zh: "你应老婆子的事，办成了。李家记下这一笔。", en: "What you promised this old woman was done. The Li house enters it in your favour."}
+      - {zh: "答应我的事你办成了，李家记你的好。", en: "You did what you promised me. The Li house won't forget it."}
   - id: bamboo
     when: [{kind: commitment, by: li_da, item: bamboo, state: delivered}]
     lines:
-      - {zh: "竹料到桥边了。老婆子应下的，一根不少。", en: "The bamboo is at the bridge. Every pole this old woman promised."}
+      - {zh: "老大把竹料送到桥边了，一根不少。", en: "My eldest has taken the bamboo to the bridge, every pole of it."}
   - id: cleared
     when: [{kind: knows, props: [pr_set_straight]}]
     lines:
-      - {zh: "那桩闲话当众说清了。老婆子心里松了些。", en: "The slander was cleared in front of everyone. This old woman rests a little easier."}
+      - {zh: "那些闲话当众说清了，我心里松快些了。", en: "That talk was cleared up in front of everyone. I feel a little easier."}
   - id: again
     when: [{kind: acquainted, is: today}]
     lines:
-      - {zh: "总管又来了。说吧。", en: "The Manager again. Speak."}
-      - {zh: "还有事？老婆子听着。", en: "More business? This old woman is listening."}
+      - {zh: "总管又来了。说吧。", en: "Back again, Manager. Go on."}
+      - {zh: "还有事？我听着呢。", en: "Something more? I'm listening."}
   - id: plain
     lines:
-      - {zh: "总管来了。有话就说吧。", en: "The Manager is here. Say what you came to say."}
-      - {zh: "坐。李家的事，不能急着说。", en: "Sit down. The affairs of the Li house are not to be rushed."}
+      - {zh: "总管来了？有话就说。", en: "You've come, Manager? Say what you came to say."}
+      - {zh: "坐吧，有话慢慢说。", en: "Sit down. Take your time."}
 chat:
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
-      - {zh: "老婆子等着你兑现。", en: "This old woman is waiting for you to keep your word."}
+      - {zh: "你答应的事，我还等着。", en: "I'm still waiting on what you promised."}
   - id: festival
     when: [{kind: after, day: 5, hour: 15}]
     lines:
-      - {zh: "今夜灯会上见，总管。", en: "See you at the lanterns tonight, Manager."}
+      - {zh: "晚上灯会上见，总管。", en: "See you at the lanterns tonight, Manager."}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "话说明白了，老婆子也踏实了。", en: "It is told plainly now, and this old woman can rest."}
+      - {zh: "话说开了，我也踏实了。", en: "It's out in the open, and I can rest."}
   - id: bamboo
     when: [{kind: commitment, by: li_da, item: bamboo, state: delivered}]
     lines:
-      - {zh: "桥上的活，别误了。", en: "Do not let the work at the bridge slip."}
+      - {zh: "桥上的活，别误了。", en: "Don't let the work at the bridge slip."}
   - id: plain
     lines:
-      - {zh: "去吧，别误了正事。", en: "Go on, and mind the work."}
-      - {zh: "慢走。老婆子不送了。", en: "Mind the road. This old woman will not see you out."}
+      - {zh: "去吧，别误了正事。", en: "Go on, and don't neglect the work."}
+      - {zh: "慢走。老婆子不送了。", en: "Mind how you go. I won't see you out."}
 epilogue:
   - id: word_broken
     when: [{kind: promised, state: broken}]
-    text: {zh: "李老太记着总管没兑现的那句话。灯会再热闹，老人家也只在李家门口看了看。", en: "Granny Li kept in mind the promise that was not kept. However bright the festival, the old woman watched it from the Li doorway."}
+    text: {zh: "李老太一直记着总管答应了却没办的那件事。灯会再热闹，老人家也只在李家门口站了站。", en: "Granny Li never forgot what the Manager had promised and not done. However lively the festival, the old woman only stood a while at the Li doorway."}
   - id: full_kept
     when: [{kind: flag, flag: bridge_fixed}, {kind: flag, flag: truth_told}, {kind: flag, flag: reconciled}, {kind: promised, state: kept}]
-    text: {zh: "李老太拄着拐杖，慢慢走过了石桥。总管应的事办了，老人家点了点头。", en: "Granny Li crossed the Stone Bridge with a stick in hand. The Manager's promise was kept, and the old woman nodded."}
+    text: {zh: "李老太拄着拐杖，慢慢走过了石桥。总管答应的事办到了，老人家点了点头。", en: "Granny Li crossed the Stone Bridge slowly, leaning on a stick. The Manager had kept the promise, and the old woman nodded."}
   - id: full
     when: [{kind: flag, flag: bridge_fixed}, {kind: flag, flag: truth_told}, {kind: flag, flag: reconciled}]
-    text: {zh: "李老太拄着拐杖，慢慢走过了石桥。桥那头的周家掌柜拱手，老人家点了点头。", en: "Granny Li crossed the Stone Bridge with a stick in hand. At the far end the Zhou shopkeeper bowed, and the old woman nodded."}
+    text: {zh: "李老太拄着拐杖，慢慢走过了石桥。桥那头的周掌柜拱了拱手，老人家点了点头。", en: "Granny Li crossed the Stone Bridge slowly, leaning on a stick. Shopkeeper Zhou bowed at the far end, and the old woman nodded."}
   - id: bridge_peace
     when: [{kind: flag, flag: bridge_fixed}, {kind: flag, flag: reconciled}]
-    text: {zh: "李老太过了桥，在桥头同周家掌柜说了几句家常。", en: "Granny Li crossed the bridge and had a few quiet words with the Zhou shopkeeper at the far end."}
+    text: {zh: "李老太过了桥，在桥头跟周掌柜说了几句家常。", en: "Granny Li crossed the bridge and chatted a while with Shopkeeper Zhou at the far end."}
   - id: bridge
     when: [{kind: flag, flag: bridge_fixed}]
-    text: {zh: "李老太站在桥头，看李家借出的竹子绑在栏杆上。灯过去了，老人家没有过桥。", en: "Granny Li stood at the head of the bridge and looked at the bamboo that the Li house had lent, bound into the rail. The lanterns went by, and the old woman did not cross."}
+    text: {zh: "李老太站在桥头，看着李家借出的竹子绑在栏杆上。灯过去了，老人家没有过桥。", en: "Granny Li stood at the bridgehead and looked at the bamboo that the Li house had lent, tied into the railing. The lanterns went by, and the old woman did not cross."}
   - id: unused
     when: [{kind: flag, flag: detour_done}, {kind: commitment, by: li_da, item: bamboo, state: delivered}]
-    text: {zh: "桥没有修成，李家借出的竹料还堆在桥边。李老太跟着灯，从庙后的夹道走了一遭。", en: "The bridge was not mended, and the bamboo that the Li house had lent still lay by the bridge. Granny Li followed the lanterns along the lane behind the temple."}
+    text: {zh: "桥没修成，李家借出的竹料还堆在桥边。李老太跟着灯，从庙后的夹道走了一趟。", en: "The bridge was not mended, and the bamboo that the Li house had lent still lay by the bridge. Granny Li followed the lanterns along the lane behind the temple."}
   - id: detour
     when: [{kind: flag, flag: detour_done}]
-    text: {zh: "李老太跟着灯，从庙后的夹道走了一遭。", en: "Granny Li followed the lanterns along the lane behind the temple."}
+    text: {zh: "李老太跟着灯，从庙后的夹道慢慢走了一趟。", en: "Granny Li walked slowly behind the lanterns along the lane behind the temple."}
   - id: lent_apart
     when: [{kind: commitment, by: li_da, item: bamboo, state: delivered}]
     text: {zh: "李老太看着桥边那堆没用上的竹料，一句话也没说。", en: "Granny Li looked at the unused bamboo by the bridge and said nothing."}
   - id: apart
-    text: {zh: "李老太守着李家的灯，没有往桥边去。", en: "Granny Li kept the Li family's lamps at home and did not go to the bridge."}
+    text: {zh: "李老太守着李家的灯，没有往桥边去。", en: "Granny Li kept the Li family's lanterns at home and did not go to the bridge."}

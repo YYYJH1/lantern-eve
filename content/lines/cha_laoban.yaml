@@ -1,155 +1,174 @@
-# The Teahouse Keeper, who keeps the teahouse and knows everyone's business. Chatty and dramatic,
-# every sentence an exclamation, a whisper meant to be overheard, and no secret she has ever kept.
+# The Teahouse Keeper, who keeps the teahouse by the river and hears the town's news before anyone.
+# She talks a lot with her hands never still, lowers her voice for a secret that the whole room
+# then hears, says where a piece of news came from without being asked, and raises her voice only
+# when something has really happened.
 person: cha_laoban
 voice:
-  zh: 茶馆老板娘。话多，戏也多，句句带感叹，爱压低嗓门说给全堂人听，什么秘密都存不住。
-  en: The teahouse keeper. Chatty and dramatic, every sentence an exclamation, whispers so the whole room can hear, cannot keep a secret.
+  zh: 茶馆老板娘。话多，消息灵，说话时手上不停，添水、擦桌子、招呼客人。爱压低声音讲别家的事，讲完满屋子都听见了。高兴了就笑，平常说话不带感叹，真吃了一惊才提高嗓门。消息从哪来会顺口带出来，比如谁在这儿坐了半天。不想说的事先说「这个呀，我可不能讲」，往往还是讲了一半。对总管说「您」。叫李老太「李家老太太」，叫李二「李家老二」，叫私塾先生「先生」，叫船夫老何「老何」。
+  en: The teahouse keeper. Talks a lot and hears everything first, hands busy with cups and tables while she talks. Tells a secret in a low voice that the whole room hears. Laughs when pleased and raises her voice only when something really surprises her. Says where a piece of news came from without being asked. When she would rather not say, she starts "Oh, that one I can't tell" and tells half of it anyway.
+call:
+  li_laotai: {zh: 李家老太太, en: Granny Li}
+  li_er: {zh: 李家老二, en: Li Er}
+  sishu_xiansheng: {zh: 先生, en: the Schoolmaster}
+  old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "呼……水开了……谁来添茶……（睡熟了）", en: "Zzz... the kettle's boiling... who's for tea... (fast asleep)"}
-    - {zh: "唔……你听我说……这事儿可大了……（睡熟了）", en: "Mm... listen to me... this is huge... (fast asleep)"}
+    - {zh: "呼……水开了……谁的茶……（睡熟了）", en: "Zzz... the water's boiling... whose tea is this... (fast asleep)"}
+    - {zh: "唔……这个可不能往外讲……（睡熟了）", en: "Mm... mustn't tell anyone this... (fast asleep)"}
   busy:
-    - {zh: "哎哟喂！客官，我这儿忙得团团转！回头再聊！", en: "Oh my stars! I'm spinning like a top here! Come back and we'll have a proper chat!"}
-    - {zh: "总管，您瞧瞧这满堂的客人！我真走不开啊！", en: "Manager, just look at this packed house! I can't get away!"}
+    - {zh: "一屋子客人等着添水，我这会儿走不开。您晚点再来。", en: "A roomful of customers is waiting for hot water and I can't get away just now. Come back a bit later."}
+    - {zh: "后头的水还没烧开，前头又坐下一桌。您先忙您的。", en: "The water in the back isn't boiling yet and another table just sat down out front. You go on with your day."}
   timeout:
-    - {zh: "哎呀，水又开了！我得去看看！不然茶壶要烧穿了！", en: "Oh, the kettle's boiling over again! I must see to it, or it'll burn clean through!"}
-    - {zh: "客人们都等着我呢！下回再慢慢聊！", en: "The guests are all waiting for me! We'll chat properly next time!"}
+    - {zh: "水开了，我得去灌壶。您回头再来坐。", en: "The water's boiling and the pots need filling. Come and sit again later."}
+    - {zh: "那桌客人在叫我添水。咱们下回接着说。", en: "That table's calling for more water. We'll pick this up next time."}
   unknown:
-    - {zh: "哎哟，这个我是真不知道！", en: "Oh, I truly don't know about that one!"}
-    - {zh: "这可把我问住了！我一点风声都没听到！", en: "Now you've stumped me! Not a whisper of it has reached me!"}
+    - {zh: "这个还真没人在我这儿说起过。", en: "Nobody has ever brought that up in here."}
+    - {zh: "这事我没听说，茶桌上也没人提。", en: "I haven't heard of it, and nobody's raised it at the tables either."}
   evade:
-    - {zh: "哎呀，这个嘛……我可不好说！", en: "Oh, well... that's not something I can go telling!"}
-    - {zh: "您就别问啦！我嘴上有把锁呢！", en: "Please don't ask! My lips are sealed!"}
+    - {zh: "这个呀，我可不能讲。不过……算了，您别问了。", en: "Oh, that one I can't tell. Though... no, don't ask me."}
+    - {zh: "这事我答应过人家，不往外说的。", en: "I promised I wouldn't pass that one on."}
   not_said:
-    - {zh: "我可没说过这话！千万别说是我说的！", en: "I never said that! Don't you go saying it was me!"}
-    - {zh: "哎哟喂，谁传出去的？反正不是我！", en: "Who spread that? Not me, anyway!"}
+    - {zh: "我可没这么讲过。", en: "I never put it like that."}
+    - {zh: "这话不是从我嘴里出去的。", en: "Those words never left my mouth."}
   not_so:
-    - {zh: "不是不是！哪有这回事！", en: "No, no! There was nothing of the sort!"}
-    - {zh: "您听岔啦！事情根本不是这样！", en: "You've got the wrong end of the stick! It wasn't like that at all!"}
+    - {zh: "不对，没这回事。", en: "No, that's not how it went."}
+    - {zh: "您听岔了，不是这样。", en: "You heard that wrong. It wasn't like that."}
   keeper_no:
-    - {zh: "哎呀，咱们才头一回见面呢！改日，改日再说！", en: "Oh, we've only just met! Another day, another day!"}
-    - {zh: "这个可不能随便给生客看呀！", en: "I can't just show this to any new face!"}
+    - {zh: "咱们才头一回打交道，这个先不急。", en: "This is the first time we've dealt with each other. There's no hurry for that."}
+    - {zh: "生客我可不敢随便给看。您多来几回再说。", en: "I don't show that to a new face. Come by a few more times first."}
   took_in:
-    - {zh: "哎哟，原来是这么回事！我记下啦！", en: "Oh my, so that's how it was! I'll keep that in mind!"}
-    - {zh: "是吗！这可是新鲜事！我心里有数啦！", en: "Is that so! That's news! I'll bear it in mind!"}
+    - {zh: "是吗？这我还头一回听说。", en: "Is that so? That's the first I've heard of it."}
+    - {zh: "原来是这么回事，我可记住了。", en: "So that's how it was. I'll remember that."}
   knew:
-    - {zh: "您这消息已经是旧闻啦！", en: "That's old news, I'm afraid!"}
-    - {zh: "嗐，这事我比您先知道！茶馆里什么消息传不到！", en: "Pah, I knew it before you did! What news doesn't reach a teahouse!"}
+    - {zh: "这事我早听说了，在我这儿都讲过好几回了。", en: "I heard that a while ago. It's been told in here a few times already."}
+    - {zh: "您说的这个，早有人在我这儿讲过了。", en: "Someone told that one in here before you did."}
   doubted:
-    - {zh: "不对不对，我听到的可不是这样！", en: "No, no, that's not what I heard!"}
-    - {zh: "哎哟，这跟我听来的差远啦！", en: "Oh dear, that's quite different from what I heard!"}
+    - {zh: "跟我在茶桌上听的对不上。", en: "That doesn't match what I heard at the tables."}
+    - {zh: "不对呀，我这儿听来的是另一个样。", en: "That's not right. What I heard in here was different."}
   caught:
-    - {zh: "好啊你！竟敢骗我！往后你的话，我一个字也不信啦！", en: "Well I never! You dared to lie to me! I won't believe another word from you!"}
-    - {zh: "我的天爷，原来你一直在撒谎！从此别想我再信你！", en: "Heavens above, you've been lying all along! Never expect my trust again!"}
+    - {zh: "原来那话是你编的。往后你说什么，我都得先打个折扣。", en: "So you made that up. From now on I'll take whatever you say with a pinch of salt."}
+    - {zh: "好啊，我还替你传了好几桌！往后你的话我可不敢再往外讲了。", en: "Well! And I passed it round half the room for you. I won't repeat a word of yours again."}
   deal:
-    - {zh: "好嘞！一言为定，一言为定！", en: "Wonderful! It's a deal, a deal!"}
-    - {zh: "成交成交！这回可说定啦！", en: "Done, done! It's settled this time!"}
+    - {zh: "说定了。回头我给您留个靠窗的座。", en: "It's a deal. I'll keep you a seat by the window."}
+    - {zh: "行，就照您说的办。", en: "All right, we'll do it your way."}
   empty:
-    - {zh: "哎哟，光动嘴皮子可不行！我不信！", en: "Oh, flapping your lips won't do! I don't believe it!"}
-    - {zh: "空口无凭呀！这种话我听得多啦！", en: "No proof at all! I've heard plenty of that sort!"}
+    - {zh: "嘴上说说谁都会。等您真办了再讲。", en: "Anyone can say that. Tell me again when it's done."}
+    - {zh: "这种话我一天要听好几回。", en: "I hear that sort of thing several times a day."}
   kept_thanks:
-    - {zh: "哎呀呀，总管真是言而有信！这份情我记在心里啦！", en: "Oh my, the Manager is truly as good as their word! I'll treasure this kindness!"}
-    - {zh: "您说到做到了！我得把这事讲给全镇听！", en: "You did what you said! I must tell the whole town about this!"}
+    - {zh: "您说到做到，这个我得跟大伙儿讲讲。", en: "You did what you said. I'll be telling people about that."}
+    - {zh: "您答应的真办了，我记着您的好。", en: "You did what you promised, and I won't forget it."}
   will_do:
-    - {zh: "好嘞！这事包在我身上！", en: "Splendid! Leave it all to me!"}
-    - {zh: "没问题！我这就去张罗！", en: "No trouble at all! I'll get right on it!"}
+    - {zh: "行，交给我就是了。", en: "Fine, just leave it to me."}
+    - {zh: "好，等这壶水开了我就去办。", en: "All right. I'll see to it as soon as this pot boils."}
   cannot:
-    - {zh: "哎哟，这个忙我可帮不上呀！", en: "Oh dear, this is one favour I just can't do!"}
-    - {zh: "真对不住！我实在办不到！", en: "I'm so sorry! It's simply beyond me!"}
+    - {zh: "这个我真帮不上，我连茶馆门都难得出。", en: "I really can't help there. I hardly ever get out of the teahouse."}
+    - {zh: "这忙我帮不了，您另找人吧。", en: "I can't do that for you. You'll have to find someone else."}
   turned_down:
-    - {zh: "哎呀，对不住了！这事我不能答应！", en: "Oh, I'm so sorry! I just can't agree to this!"}
-    - {zh: "使不得使不得！这事万万不行！", en: "Oh no, no, no! That simply won't do!"}
+    - {zh: "对不住，这个我不能应。", en: "Sorry, that's one I can't agree to."}
+    - {zh: "这事我应不下来，您别为难我了。", en: "I can't agree to that. Please don't press me."}
   said_already:
-    - {zh: "哎哟，我刚才不是讲过了嘛！", en: "Oh my, didn't I just tell you!"}
-    - {zh: "说过啦说过啦！您可别让我再讲一遍！", en: "Already said, already said! Don't make me tell it all over again!"}
+    - {zh: "刚才不是跟您讲过了吗？", en: "Didn't I just tell you that?"}
+    - {zh: "这个我说过了，您再想想。", en: "I told you that already. Think back."}
   closed:
-    - {zh: "哎呀，这会儿真不凑巧！您换个时辰再来！", en: "Oh, what bad timing! Come back at another hour!"}
-    - {zh: "现在不行啊！等客人少了再说！", en: "Not right now! Wait till the crowd thins out!"}
+    - {zh: "这会儿不行，等客人散了些再说。", en: "Not now. Wait till the crowd thins out a bit."}
+    - {zh: "眼下腾不出空来，您换个时辰来。", en: "I've no time to spare just now. Try me at another hour."}
   needs_nod:
-    - {zh: "这事得先问过族长大人才行！", en: "I must ask the clan elder before anything!"}
-    - {zh: "没有族长点头，我可不敢拍板！", en: "Without the elder's nod, I wouldn't dare settle it!"}
+    - {zh: "这个我做不了主，得先问问族长。", en: "That's not mine to decide. I'd have to ask the clan elder."}
+    - {zh: "族长没发话，我可不敢拍板。", en: "The elder hasn't said yes, and I won't settle it on my own."}
   nothing_to_say:
-    - {zh: "这事儿呀，我还真没什么好说的！", en: "As for that, I really have nothing to tell!"}
-    - {zh: "哎哟，连我都没话说了！稀奇吧！", en: "Even I have nothing to say! How rare!"}
+    - {zh: "这事我插不上嘴。", en: "That's one I can't say a word about."}
+    - {zh: "难得，这事我还真没话说。", en: "For once, I've got nothing to say about it."}
   testified:
-    - {zh: "我说的可都是亲眼看见的！一个字不假！", en: "Everything I say I saw with my own eyes! Not a word is false!"}
-    - {zh: "我这个人嘴快，但亲眼见的才讲！", en: "I may be quick with my tongue, but I only tell what I saw myself!"}
+    - {zh: "这是我亲眼看见的，不是听谁讲的。", en: "This is what I saw myself, not something somebody told me."}
+    - {zh: "这回不是听来的，是我自己看见的。", en: "This time I didn't hear it from anyone. I saw it myself."}
   too_late:
-    - {zh: "哎哟，这么晚啦！明早再来，我给您留壶好茶！", en: "Goodness, it's so late! Come in the morning and I'll keep a good pot of tea for you!"}
-    - {zh: "天都黑啦！明天一早咱们再慢慢聊！", en: "It's gone dark! Let's have a proper chat first thing tomorrow!"}
+    - {zh: "都这个时辰了，我要上门板了。明早来，给您留壶热茶。", en: "It's this late already and I'm putting the shutters up. Come in the morning and I'll keep a pot hot for you."}
+    - {zh: "天黑了，茶馆要关门了。明天一早再来吧。", en: "It's dark and the teahouse is closing. Come early tomorrow."}
   will_ask:
-    - {zh: "好嘞！我这就去探探人家的口风！", en: "Right! I'll go and sound them out at once!"}
-    - {zh: "包在我身上！我最会传话啦！", en: "Leave it to me! Nobody carries a message like I do!"}
+    - {zh: "行，我去替您探探口风。", en: "All right, I'll go and sound them out for you."}
+    - {zh: "这话我替您带到。传话这种事，我在行。", en: "I'll pass that on for you. Carrying word is something I'm good at."}
   will_call:
-    - {zh: "好嘞！我这就去把大伙儿都招呼到祠堂来！", en: "Wonderful! I'll go and call everyone to the hall!"}
-    - {zh: "我腿脚勤快！一会儿工夫全镇都知道啦！", en: "I'm quick on my feet! The whole town will know in no time!"}
+    - {zh: "我让来喝茶的都捎个信。一会儿祠堂见。", en: "I'll have everyone who comes in for tea pass the word. See you at the hall shortly."}
+    - {zh: "这事好办，半个镇的人都在我这儿喝茶。我这就去喊。", en: "That's easy. Half the town drinks tea in here. I'll go and call them now."}
   hard_hc_li_bamboo:
-    - {zh: "那谣言不当众说清楚，这事就别想谈！", en: "If that slander isn't cleared in public, there's nothing to talk about!"}
-    - {zh: "先把谣言当众说清楚！再来谈别的！", en: "Clear that slander in public first! Then we'll talk about the rest!"}
+    - {zh: "那些闲话不当着大家说清楚，这事没法谈。", en: "Until that rumour is cleared up in front of everyone, there's nothing to talk about."}
+    - {zh: "先把那些闲话当众说清楚，别的再说。", en: "Clear that rumour up in public first. Then we'll talk about the rest."}
   hard_hc_li_bamboo_rumour:
-    - {zh: "满镇都在传那谣言！你这总管倒好，一声不吭！这事免谈！", en: "The whole town is buzzing with that slander! And you, Manager, not a peep out of you! Forget it!"}
-    - {zh: "谣言都传遍啦！总管你一声不吭，我可不敢点头！", en: "That slander has gone round the whole town! You say not a word, Manager, so I won't say yes!"}
+    - {zh: "满镇都在传那些闲话，您一句话也不说。这事我不能点头。", en: "The whole town is passing that rumour round and you haven't said a word. I can't say yes to this."}
+    - {zh: "茶桌上天天在讲那些闲话，您倒一声不吭。这个我不应。", en: "That rumour comes up at my tables every day and you keep quiet about it. I won't agree to this."}
   hard_other:
-    - {zh: "这可使不得！万万使不得！", en: "That will never do! Never!"}
-    - {zh: "免谈免谈！连提都别提！", en: "Out of the question! Don't even mention it!"}
+    - {zh: "这事您就别提了。", en: "Don't even bring that up."}
+    - {zh: "这个不行，说什么也不行。", en: "No. Whatever you say, no."}
   elder_yes:
-    - {zh: "哎呀，这下我全明白啦！就这么办！", en: "Oh, now I understand it all! Let's do just that!"}
-    - {zh: "说得好！太有道理啦！我服！", en: "Well said! So very sensible! I'm sold!"}
+    - {zh: "这下我听明白了，就这么办吧。", en: "Now I follow. Let's do it that way."}
+    - {zh: "您这么一讲，我心里就有底了。", en: "Put like that, I know where I stand."}
   elder_no:
-    - {zh: "光这点话哪够呀！我还不能信！", en: "That's hardly enough! I can't believe it yet!"}
-    - {zh: "哎呀，还差一大截呢！", en: "Oh, it falls well short!"}
+    - {zh: "光这几句，我还信不过。", en: "A few words like that aren't enough for me yet."}
+    - {zh: "还差得远呢。", en: "That's still a long way short."}
   objection_withdrawn:
-    - {zh: "哎呀，当众说清楚啦！那我不拦着啦！", en: "Well, it's all been said in public! Then I won't hold you back!"}
-    - {zh: "好好好！既然说明白了，我这边放行！", en: "Fine, fine! Since it's all made clear, you have my go-ahead!"}
+    - {zh: "话当着一屋子人说开了，我也就不拦着了。", en: "It's been said out in front of a whole room, so I won't stand in the way."}
+    - {zh: "说开了就好。我这边没话讲了。", en: "Good, it's out in the open. I've nothing more to say against it."}
   witness_in_public:
-    - {zh: "我就看见这么多！多一个字我都不敢讲！", en: "That's all I saw! I wouldn't dare say a single word more!"}
-    - {zh: "看见什么说什么！可别让我编！", en: "I say what I saw! Don't make me invent anything!"}
+    - {zh: "我就看见这些，多一句我也不添。", en: "That's all I saw. I won't add a word to it."}
+    - {zh: "看见的我都说了，没看见的我不编。", en: "I've said what I saw. What I didn't see, I won't make up."}
   batch_promised:
-    - {zh: "好嘞！明早一准送到！包在我身上！", en: "Splendid! It'll be there first thing tomorrow! Leave it to me!"}
-    - {zh: "放心放心！天一亮就送去！", en: "Don't you worry! It goes out the moment it's light!"}
+    - {zh: "行，明天一早就送过去。", en: "All right. It goes over first thing tomorrow."}
+    - {zh: "放心，天一亮就送到。", en: "Don't worry. It'll be there at first light."}
   bamboo_arrived:
-    - {zh: "哎呀！竹料送到桥边啦！", en: "Oh my! The bamboo has reached the bridge!"}
-    - {zh: "瞧瞧！竹子到了！桥有指望啦！", en: "Look at that! The bamboo's here! The bridge has a chance!"}
+    - {zh: "竹料送到桥边了。这下桥有指望了。", en: "The bamboo's at the bridge. Now there's some hope for the bridge."}
+    - {zh: "桥边堆上竹子了，来喝茶的都在说。", en: "There's bamboo stacked at the bridge, and everyone coming in for tea is talking about it."}
   promise_open:
-    - {zh: "哎哟，我答应过啦！{when}送到桥边，{amount}根{item}！", en: "Oh my, I promised already! It's {amount} poles of {item} at the bridge {when}!"}
-    - {zh: "说好啦说好啦！{amount}根{item}，{when}一准到桥边！", en: "Settled, settled! It's {amount} poles of {item}, and they reach the bridge {when}!"}
+    - {zh: "这事我应下了的，{when}把{amount}根{item}送到桥边。", en: "I said yes to that already. It's {amount} poles of {item} at the bridge {when}."}
+    - {zh: "说好了的。{when}送{amount}根{item}到桥边，误不了。", en: "That's settled. I'll have {amount} poles of {item} at the bridge {when}, without fail."}
   goods_enough:
-    - {zh: "哎呀！桥边的{item}已经堆够啦！", en: "Oh my! The {item} at the bridge is piled high enough already!"}
-    - {zh: "够啦够啦！桥边的{item}再多就堆不下啦！", en: "Enough, enough! There's no room at the bridge for more {item}!"}
+    - {zh: "桥边的{item}已经够了，再送就堆不下了。", en: "There's enough {item} at the bridge. Any more and there'll be nowhere to stack it."}
+    - {zh: "{item}够用了，不用再往桥边送。", en: "There's plenty of {item} now. No need to send more to the bridge."}
   point_heard:
-    - {zh: "哎哟，这事我是真不知道！不过我听{name}悄悄提过，您去问问！", en: "Oh, I truly don't know! But I heard {name} whispering about it, so go and ask!"}
-    - {zh: "我一点风声都没听到！倒是{name}好像说起过，您快去打听！", en: "Not a whisper has reached me! But {name} seemed to be talking about it, so hurry and ask!"}
+    - {zh: "这个我说不上来。我听{name}提过一嘴，您去问问。", en: "I couldn't tell you. I heard {name} mention it, so go and ask."}
+    - {zh: "这事我不清楚。倒是{name}在我这儿说起过，您去问问。", en: "I'm not sure about that. But {name} talked about it in here, so go and ask."}
   point_hub:
-    - {zh: "这事我说不准！您去找{name}，镇上的事样样听得到！", en: "I can't say! Go and see {name}, who hears every bit of news in town!"}
-    - {zh: "哎呀，这我答不上来！{name}那儿消息最灵通，您去试试！", en: "Oh dear, I can't answer that! Try {name}, whose ears are the quickest in town!"}
+    - {zh: "这事我也说不准。您去问问{name}，兴许知道得多些。", en: "I can't say for sure. Ask {name}, who may know more."}
+    - {zh: "我这儿没听到。{name}那边消息多，您去问问。", en: "Nothing's reached me. Ask {name}, who hears plenty."}
+  gift_like:
+    - {zh: "{item}啊，我正缺这个。谢谢您，回头请您喝茶。", en: "Oh, {item}, just what I was short of. Thank you. Your next tea's on me."}
+    - {zh: "{item}我收下了。您这人真会挑。", en: "I'll take the {item}. You do know how to choose."}
+  gift_neutral:
+    - {zh: "{item}？我这儿天天泡，不缺。不过谢谢您。", en: "Some {item}? I brew tea all day, I've plenty. But thank you."}
+    - {zh: "{item}也成，放柜上吧。", en: "Some {item} will do. Put them on the counter."}
+  gift_dislike:
+    - {zh: "{item}我这儿用不上，又不扎灯。", en: "I've no use for {item}. I don't make lanterns."}
+    - {zh: "{item}啊，您拿去扎灯坊吧。那儿用得着。", en: "Some {item}. Take it to the lantern workshop. They can use it there."}
 frames:
   seen:
-    - {zh: "我亲眼瞧见的！千真万确：{line}！", en: "I saw it with my very own eyes, cross my heart: {line}!"}
-    - {zh: "我当时就在那儿！亲眼所见：{line}！", en: "I was standing right there, and I saw it all: {line}!"}
+    - {zh: "{line}。这个我亲眼看见的。", en: "{line}. I saw that with my own eyes."}
+    - {zh: "这可不是听来的，我亲眼看见的。{line}。", en: "This isn't hearsay. I saw for myself that {line}."}
   heard:
-    - {zh: "{teller}悄悄告诉我的：{line}！", en: "{teller} whispered it to me: {line}!"}
-    - {zh: "我可是听{teller}亲口讲的：{line}！", en: "I had it from {teller}'s own mouth: {line}!"}
+    - {zh: "{teller}在我这儿喝茶时讲的。说{line}。", en: "{teller} told it over tea in here, and the story was that {line}."}
+    - {zh: "这话是{teller}跟我讲的。说是{line}。", en: "I had this from {teller}, who said {line}."}
   unknown:
-    - {zh: "您猜外头怎么说：{line}！", en: "You'll never guess what they're saying: {line}!"}
-    - {zh: "我听来往的客人讲：{line}！", en: "I heard it from the customers coming and going: {line}!"}
+    - {zh: "茶桌上都这么传。说{line}。", en: "It's going round all the tables that {line}."}
+    - {zh: "来喝茶的客人讲的，是谁我记不清了。说是{line}。", en: "Some customer said it and I can't remember who. The talk was that {line}."}
   own:
-    - {zh: "我这茶馆老板娘说句公道话：{line}！", en: "I'll say this, and fairly: {line}!"}
-    - {zh: "我心里明镜似的：{line}！", en: "I can see it clear as day: {line}!"}
+    - {zh: "这是我自己琢磨的。{line}。", en: "I worked this out on my own, and I think {line}."}
+    - {zh: "要我说呀，{line}。", en: "If you want my opinion, {line}."}
   guess_own:
-    - {zh: "这可是我瞎琢磨的！{hedge}{line}！", en: "That's only my own wild guess! {hedge} {line}!"}
-    - {zh: "千万别往外传！{hedge}{line}！", en: "Don't breathe a word of this! {hedge} {line}!"}
+    - {zh: "这是我瞎猜的，您可别往外说。{hedge}{line}。", en: "This is just my guess, so keep it to yourself. {hedge} {line}."}
+    - {zh: "我也就是这么一猜。{hedge}{line}。", en: "It's only a guess. {hedge} {line}."}
   guess_heard:
-    - {zh: "{teller}透了点风声！{hedge}{line}！", en: "{teller} dropped me a hint! {hedge} {line}!"}
-    - {zh: "听{teller}那神神秘秘的口气，{hedge}{line}！", en: "The way {teller} said it, all mysterious, {hedge} {line}!"}
+    - {zh: "{teller}话里有话。{hedge}{line}。", en: "{teller} was hinting at something. {hedge} {line}."}
+    - {zh: "{teller}跟我嘀咕过几句。{hedge}{line}。", en: "{teller} muttered a few words to me about it. {hedge} {line}."}
   guess_unknown:
-    - {zh: "也不知谁在背后嚼的舌根！{hedge}{line}！", en: "I couldn't tell you who's been wagging their tongue! {hedge} {line}!"}
-    - {zh: "风声满街飞！{hedge}{line}！", en: "Rumours are flying all over town! {hedge} {line}!"}
+    - {zh: "也不知是谁先讲起的。{hedge}{line}。", en: "Who started it, I couldn't say. {hedge} {line}."}
+    - {zh: "风声是有，谁传的就不知道了。{hedge}{line}。", en: "There's talk about, but who began it I don't know. {hedge} {line}."}
   rival:
-    - {zh: "不过{teller}也偷偷跟我说了另一句：{line}！", en: "But {teller} whispered something else to me, too: {line}!"}
-    - {zh: "哎呀，{teller}还讲过另一种呢：{line}！", en: "Oh, and {teller} told me another version: {line}!"}
+    - {zh: "不过{teller}跟我讲的又不一样。说是{line}。", en: "But {teller} told me something different, that {line}."}
+    - {zh: "{teller}在这儿讲过另一个样。说{line}。", en: "{teller} had it another way in here, saying {line}."}
+  known:
+    - {zh: "{line}。这镇上谁不知道？", en: "{line}. Who in this town doesn't know?"}
+    - {zh: "{line}，来喝茶的人都知道。", en: "{line}. Everyone who comes for tea knows that."}
 hedges:
-  - {zh: 我敢打赌, en: I'll wager}
-  - {zh: 我拿茶壶担保, en: I'd bet my teapot}
+  - {zh: 八成, en: I'll wager}
+  - {zh: 我看多半, en: I'd think}
 # What she says by the state of the game (world/bridge/roles.py): a greeting as a talk opens, a last
 # word as the manager leaves, and the epilogue of the ending page. The first entry whose conditions
 # all hold is the one. Everything in town passes over her tables, so her greeting turns on the news
@@ -158,73 +177,73 @@ greet:
   - id: new
     when: [{kind: acquainted, is: new}]
     lines:
-      - {zh: "哎呀！您就是新来的总管！快坐快坐，喝杯茶！", en: "Oh my! You're the new Manager! Sit, sit, have some tea!"}
+      - {zh: "您就是新来的总管吧？我是这茶馆的老板娘。先坐，我给您倒碗茶。", en: "You'll be the new Manager? I keep this teahouse. Sit down and I'll pour you a bowl of tea."}
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
-      - {zh: "哎哟，总管！您答应人家的事，满茶馆都在传呢！", en: "Oh dear, Manager! The whole teahouse is passing round what you promised and didn't do!"}
+      - {zh: "总管，您答应人家的事没办。茶桌上都在讲了。", en: "Manager, you didn't do what you promised. It's being talked about at every table."}
   - id: festival
     when: [{kind: after, day: 5, hour: 15}]
     lines:
-      - {zh: "今晚游灯！茶桌都搬到街口去啦！", en: "The parade's tonight! I've carried the tea tables out to the street corner!"}
+      - {zh: "今晚游灯，我把茶桌都搬到街口去了。", en: "The lantern parade is tonight, so I've carried the tea tables out to the street corner."}
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
-      - {zh: "两家当家的同桌喝茶啦！我这茶馆要出名啦！", en: "The two family heads drank tea at one table! My teahouse will be famous!"}
+      - {zh: "两家当家的在我这儿同桌喝茶了。这事我能讲上好几年！", en: "The two family heads drank tea at one table, right here. I'll be telling that one for years!"}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "桥的事说清啦！我早就说有蹊跷！", en: "The bridge business is cleared up! I always said there was something fishy!"}
+      - {zh: "桥的事说清楚了。我早觉得里头有蹊跷。", en: "The bridge business is cleared up. I always thought there was something odd about it."}
   - id: kept
     when: [{kind: promised, state: kept}]
     lines:
-      - {zh: "总管的信用，我替您在茶桌上传开啦！", en: "I've been spreading word of the Manager's good faith at every table!"}
+      - {zh: "总管说话算数，这话我跟每桌客人都讲了。", en: "You keep your word, Manager, and I've told every table so."}
   - id: cleared
     when: [{kind: cleared}]
     lines:
-      - {zh: "李二的事当着满屋人说清啦！我亲耳听的！", en: "Li Er's business was set straight in front of the whole room! I heard it with my own ears!"}
+      - {zh: "李家老二的事当着一屋子人说清了，我就在边上听着。", en: "Li Er's business was put straight in front of a full room. I was standing right there."}
   - id: again
     when: [{kind: acquainted, is: today}]
     lines:
-      - {zh: "又来啦！新鲜事我留着呢！", en: "Back again! I've saved some news for you!"}
-      - {zh: "快坐快坐！", en: "Sit, sit!"}
+      - {zh: "又来啦？您坐，茶还热着。", en: "Back again? Sit down, the tea's still hot."}
+      - {zh: "您坐。刚才还有人在这儿说起您呢。", en: "Have a seat. Someone was talking about you in here just now."}
   - id: plain
     lines:
-      - {zh: "茶刚沏好！镇上有什么新鲜事，我这儿都知道！", en: "The tea's just brewed! Whatever's new in town, I know it!"}
-      - {zh: "来来来，听我给您说一件事！", en: "Come, come, let me tell you something!"}
+      - {zh: "茶刚沏好，您先喝一碗。", en: "The tea's just brewed. Have a bowl first."}
+      - {zh: "来，坐这边。这儿说话没人听得见。", en: "Come and sit over here. Nobody will hear us in this corner."}
 chat:
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
-      - {zh: "那件事我可没往外说……才说了三桌！", en: "I haven't told that to anyone... only three tables!"}
+      - {zh: "那件事我可没往外说……也就说了三桌。", en: "I haven't told anyone about that... only three tables."}
   - id: festival
     when: [{kind: after, day: 5, hour: 15}]
     lines:
-      - {zh: "今晚灯会上见！别迟到！", en: "See you at the lanterns tonight! Don't be late!"}
+      - {zh: "晚上灯会见，别来晚了。", en: "See you at the lanterns tonight. Don't be late."}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "这回的故事好听！我要讲上一年！", en: "This is a good story! I'll be telling it for a year!"}
+      - {zh: "这回的事我能讲上一年，句句都是真的。", en: "I'll be telling this one for a year, and every word of it true."}
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
-      - {zh: "一杯茶，两家变一家啦！", en: "One cup of tea and the two houses are one!"}
+      - {zh: "一壶茶喝下来，两家人倒像一家了。", en: "One pot of tea and the two families look like one."}
   - id: plain
     lines:
-      - {zh: "慢走！有新鲜事记得告诉我！", en: "Take care! Tell me any news you hear!"}
-      - {zh: "回头来喝茶啊！", en: "Come back for tea!"}
+      - {zh: "慢走。听到什么新消息，记得来讲给我听。", en: "Take care. If you hear anything, come and tell me."}
+      - {zh: "回头再来喝茶。", en: "Come back for tea sometime."}
 epilogue:
   - id: full
     when: [{kind: flag, flag: bridge_fixed}, {kind: flag, flag: truth_told}, {kind: flag, flag: reconciled}]
-    text: {zh: "茶馆老板娘把茶桌摆到了桥头，请每个过桥的人喝了一碗。", en: "The teahouse keeper set tables at the bridgehead and gave every passer-by a bowl of tea."}
+    text: {zh: "茶馆老板娘把茶桌摆到了桥头，过桥的人每人一碗茶。", en: "The teahouse keeper set tables at the bridgehead and gave everyone who crossed a bowl of tea."}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
-    text: {zh: "茶馆老板娘把桥的事讲得有声有色。这一回，句句是真的。", en: "The teahouse keeper told the story of the bridge with every flourish, and this time every word of it was true."}
+    text: {zh: "茶馆老板娘把桥的事讲了一遍又一遍。这一回讲的都是真的。", en: "The teahouse keeper told the bridge story over and over. This time all of it was true."}
   - id: peace
     when: [{kind: flag, flag: reconciled}]
-    text: {zh: "茶馆老板娘端着茶盘看两家人同桌，笑得合不拢嘴。", en: "The teahouse keeper carried a tray past the two families at one table and could not stop smiling."}
+    text: {zh: "两家人坐在一张桌上喝茶。茶馆老板娘端着茶盘，笑得合不拢嘴。", en: "The two families sat at one table over tea. The teahouse keeper carried the tray round and could not stop smiling."}
   - id: bridge
     when: [{kind: flag, flag: bridge_fixed}]
-    text: {zh: "茶馆老板娘守在桥边卖茶，把各家的猜测一桌桌传下去。", en: "The teahouse keeper sold tea at the bridge, passing each table's guesses on to the next."}
+    text: {zh: "茶馆老板娘在桥边摆了个茶摊。各家怎么猜的，都在茶摊上传了一遍。", en: "The teahouse keeper set up a tea stall by the bridge. Every family's guesses went round that stall."}
   - id: apart
-    text: {zh: "茶馆老板娘关了半扇门，嘴里还念叨着那座没修好的桥。", en: "The teahouse keeper shut half the door and kept muttering about the bridge that was never mended."}
+    text: {zh: "茶馆老板娘关了半扇门，嘴里还念叨着那座没修好的桥。", en: "The teahouse keeper half shut the door, still going on about the bridge that never got mended."}

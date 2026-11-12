@@ -115,7 +115,31 @@ KINDS = ("delivery", "stance", "promise")  # the kinds of line of the recap, mos
 NO_TASK = 0
 OPEN, ENOUGH = PROMISED, "enough"  # how a supplier stands: a promise of theirs is open, or no need
 PROMISE_OPEN, GOODS_ENOUGH = "promise_open", "goods_enough"  # the fixed lines of ``phrases``
-NUMERALS = numerals.DIGITS  # the digits of a day: 第二日
+NUMERALS = numerals.DIGITS  # the digits of a day: 第二天
+# The parts of the day from the hour each begins, as a person says them in Chinese and in English
+PARTS = (
+    (0, "凌晨", "night"),
+    (5, "早上", "morning"),
+    (10, "上午", "morning"),
+    (12, "中午", "noon"),
+    (13, "下午", "afternoon"),
+    (17, "傍晚", "evening"),
+    (20, "晚上", "night"),
+)
+EN_CLOCK = (
+    "twelve",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+    "ten",
+    "eleven",
+)
 
 
 # ---------------------------------------------------------------------------- the script
@@ -442,19 +466,66 @@ def item_words(item: Any) -> dict[str, str]:
 
 
 def when_words(day: int, hour: int) -> dict[str, str]:
-    """The day and the hour a promise falls due, as a person says them: 第二日07:00前, and by 07:00
+    """The day and the hour a promise falls due, as a person says them: 第二天07:00前, and by 07:00
     on day 2. The day is the number of the game day, so the words do not change as time passes."""
     numeral = NUMERALS[day] if 0 < day < len(NUMERALS) else str(day)
-    return {"zh": f"第{numeral}日{hour:02d}:00前", "en": f"by {hour:02d}:00 on day {day}"}
+    return {"zh": f"第{numeral}天{hour:02d}:00前", "en": f"by {hour:02d}:00 on day {day}"}
+
+
+def spoken_when(today: int, day: int, hour: int) -> dict[str, str]:
+    """The day and the hour a promise falls due, said by a person on day ``today``: 明早七点前 and
+    by seven tomorrow morning, 今天下午一点前, 后天傍晚前 and by the evening of the day after
+    tomorrow, 第四天傍晚前 and by the evening of day 4. Today and tomorrow have the hour as the
+    clock says it, in characters (七点, 两点), with the part of the day (明早 for the morning hours
+    of tomorrow, 今早 for those of today). Later days have the part of the day, and the hour too
+    for the morning, since nobody says "before the morning". A day before today has the dated
+    words of ``when_words``."""
+    ahead = day - today
+    if ahead < 0:
+        return when_words(day, hour)
+    zh_part, en_part = next((zh, en) for start, zh, en in reversed(PARTS) if hour >= start)
+    twelve = hour % 12
+    zh_clock = "零点" if hour == 0 else numerals.zh_count(twelve or 12) + "点"
+    en_clock = "midnight" if hour == 0 else EN_CLOCK[twelve]
+    if ahead <= 1:
+        zh_day = "今" if ahead == 0 else "明"
+        zh = f"{zh_day}早{zh_clock}前" if zh_part == "早上" else f"{zh_day}天{zh_part}{zh_clock}前"
+        if en_part == "noon":
+            return {"zh": zh, "en": "by noon today" if ahead == 0 else "by noon tomorrow"}
+        if hour == 0:
+            return {"zh": zh, "en": "by midnight tonight" if ahead == 0 else "by midnight tomorrow"}
+        when = {
+            ("morning", 0): "this morning",
+            ("afternoon", 0): "this afternoon",
+            ("evening", 0): "this evening",
+            ("night", 0): "tonight",
+        }.get((en_part, ahead), f"tomorrow {en_part}")
+        return {"zh": zh, "en": f"by {en_clock} {when}"}
+    numeral = NUMERALS[day] if day < len(NUMERALS) else str(day)
+    zh_day = "后天" if ahead == 2 else f"第{numeral}天"
+    en_day = "the day after tomorrow" if ahead == 2 else f"day {day}"
+    early = zh_part in ("凌晨", "早上", "上午")
+    zh = f"{zh_day}{zh_part}{zh_clock if early else ''}前"
+    if en_part == "noon":
+        return {"zh": zh, "en": f"by noon on {en_day}"}
+    if early and hour != 0:
+        return {"zh": zh, "en": f"by {en_clock} on the morning of {en_day}"}
+    return {"zh": zh, "en": f"by the {en_part} of {en_day}"}
 
 
 def say_goods(
-    world_state: dict[str, Any], said: dict[str, str], code: str, lead: str
+    world_state: dict[str, Any],
+    said: dict[str, str],
+    code: str,
+    lead: str,
+    today: int | None = None,
 ) -> dict[str, str]:
     """The line ``code`` (``promise_open`` or ``goods_enough``) as ``said`` has it, with the slots
     filled in: the amount, the item and the day and hour of the promise whose number is ``lead``,
     or the item ``lead`` for the bridge that has enough of it. ``said`` is the plain words or the
-    words of a person's voice, and the state keeps only the code and ``lead``."""
+    words of a person's voice, and the state keeps only the code and ``lead``. The time is said
+    as a person says it on day ``today`` (``spoken_when``), and by the day of the game, as the
+    cards have it (``when_words``), where the caller names no day."""
     if code == PROMISE_OPEN:
         row = find(world_state, lead)
         if row is not None:
@@ -463,7 +534,9 @@ def say_goods(
                 said,
                 amount=row["amount"],
                 item=item_words(row["item"]),
-                when=when_words(due["day"], due["hour"]),
+                when=when_words(due["day"], due["hour"])
+                if today is None
+                else spoken_when(today, due["day"], due["hour"]),
             )
     return fill(said, item=item_words(lead))
 
@@ -601,14 +674,19 @@ def _join(names: list[dict[str, str]], lang: str) -> str:
 
 
 Found = dict[str, list[tuple[int, list[int], dict[str, str]]]]
+YOU = {"zh": "你", "en": "You"}  # the manager, as the recap and the summary of the night name them
 
 
-def found(world: BridgeWorld, journal: list[list[Any]]) -> Found:
+def found(
+    world: BridgeWorld, journal: list[list[Any]], *, manager: dict[str, str] | None = None
+) -> Found:
     """What the journal can say, by kind (``KINDS``), the newest first within a kind: for each
     ``(number, events, text)``, the number of the event it is about, the numbers of the events it is
     made from, and its words in both languages. A person who withdrew an objection comes before a
     claim that was set straight in public (both are of the kind ``stance``). It is the recap, and
-    the paper (``gazette``) makes its items from the same lines."""
+    the paper (``gazette``) makes its items from the same lines. ``manager`` is how the lines name
+    the manager: you (``YOU``), as the recap does, unless the caller names them otherwise (the
+    paper of the morning says the Manager)."""
     said = rules().recap
     promised = {row[3]["id"]: row[0] for row in journal if row[1] == "commitment"}
     said_by_kind: Found = {k: [] for k in KINDS}
@@ -634,7 +712,8 @@ def found(world: BridgeWorld, journal: list[list[Any]]) -> Found:
             if changed:
                 names = [_person(world, r["npc"]) for r in changed[:3]]
                 both = {lang: _join(names, lang) for lang in ("zh", "en")}
-                clarified.append((number, [number], fill(said["clarified"], names=both)))
+                words = fill(said["clarified"], names=both, manager=manager or YOU)
+                clarified.append((number, [number], words))
         elif kind == "commitment":
             text = fill(
                 said["promise"],

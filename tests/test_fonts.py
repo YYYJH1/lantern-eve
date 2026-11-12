@@ -101,14 +101,14 @@ def test_the_title_face_covers_the_names_of_the_tasks_and_of_the_people() -> Non
         "说清",
         "说和",
         "桥修好了",
-        "第三天早上施工",
+        "第三天早上开工",
         "李老太",
     ):
         assert set(word) <= have, word
     # The words are found in the sources, not in a list written here that could drift from them.
     words = chars.title_text()
     assert "灯会前夕" in words
-    assert "第三天早上施工" in words
+    assert "第三天早上开工" in words
     # What the slip says while there is no task to follow stands in the same face.
     for lang in ("zh", "en"):
         for key in ("top.task.pick", "top.task.idle", "top.task.over"):

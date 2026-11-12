@@ -90,13 +90,13 @@ def test_a_reply_that_passes_is_shown_and_nothing_else_is_asked(monkeypatch):
 
 def test_a_reply_that_the_core_writes_is_shown_in_the_speakers_voice(monkeypatch):
     sourced = reply(
-        [belief("pr_gengfu_round", "self_seen")], zh="x", en="y", mood="sad", address="friend"
+        [belief("pr_gengfu_round", "self_seen")], zh="x", en="y", mood="sad", address="manager"
     )
     host = play(monkeypatch, [sourced], setup=lambda g: hold(g, "gengfu", "pr_gengfu_round"))
     (row,) = host.shown()
     assert row[2:4] == ["line", "core"]
-    assert row[4].startswith("唉。") and "，朋友" in row[4]
-    assert row[5].startswith("Alas. ") and ", friend" in row[5]
+    assert row[4].startswith("唉。") and "，总管" in row[4]
+    assert row[5].startswith("Oh dear. ") and ", Manager" in row[5]
     assert host.section()["by"] == {"core": 1}
 
 
@@ -258,7 +258,11 @@ def test_words_of_the_player_cannot_make_an_act_legal(monkeypatch):
     asks = {3: [Ask("gengfu", "i1", prompt(obey))]}
     host = play(monkeypatch, [UNPROVEN, UNPROVEN], asks)
     assert [r[2] for r in host.shown()] == ["template"]
-    every = json.dumps(host.frames, ensure_ascii=False)
+    # what the town says of each person is in every frame, and is not what the player typed
+    every = json.dumps(
+        [{k: v for k, v in frame.items() if k != "people"} for frame in host.frames],
+        ensure_ascii=False,
+    )
     assert "李二" not in every and "Li Er" not in every
     counts = host.section()
     assert counts["errors"] == {"path": 2} and counts["codes"] == {"path:no_belief": 2}

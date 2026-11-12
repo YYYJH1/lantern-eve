@@ -524,3 +524,120 @@ def test_the_cognition_model_can_read_the_tables_and_the_script_from_the_module(
     assert book.props.check(tables, book.registry) == []
     assert {e.id for e in book.registry.of_type("person")} <= set(PEOPLE)
     assert all(e.label_en for e in book.registry)
+
+
+# ------------------------------------------------------------------------------ what people like
+
+
+def test_every_person_has_a_line_of_the_town_in_both_languages_the_things_they_like_and_a_return():
+    gifts = {g["id"] for g in SCRIPT["gifts"]}
+    for person in CAST["people"]:
+        assert set(person["intro"]) == {"zh", "en"} and person["intro"]["zh"]
+        assert person["likes"] and set(person["likes"] + person["dislikes"]) <= gifts
+        assert person["ask"]["what"] in tc.ASK_KINDS
+    assert [g["id"] for g in SCRIPT["gifts"]] == ["tea", "pastry", "lantern_paper", "wine"]
+
+
+def test_a_person_with_no_line_of_the_town_is_refused():
+    def mutate(src: cc.Sources) -> None:
+        del person_src(src, "li_da")["intro"]
+
+    assert has(check(mutate), "people.", "intro", "Field required")
+
+
+@pytest.mark.parametrize(
+    ("zh", "en", "needle"),
+    [
+        ("", "A line.", "intro (zh) is empty"),
+        ("李家的人。", "", "intro (en) is empty"),
+        ("英文" + "李" * 60, "A line.", "at most 60"),
+        ("李家的人。", "A" * 201, "at most 200"),
+        ("李家的人；做竹料。", "A line.", "semicolon or a dash"),
+        ("李家的人。", "Li Da -- the eldest.", "semicolon or a dash"),
+        ("他是李家的人。", "A line.", "he or she"),
+        ("李家的人。", "She is of the Li family.", "he or she"),
+        ("Li family", "A line.", "must be Chinese"),
+        ("李家的人。", "李家的人。", "must be English"),
+        ("李家的人。\n又一行", "A line.", "one line"),
+    ],
+)
+def test_the_line_of_the_town_is_held_to_its_limits(zh, en, needle):
+    def mutate(src: cc.Sources) -> None:
+        person_src(src, "li_da")["intro"] = {"zh": zh, "en": en}
+
+    assert has(check(mutate), "li_da", needle)
+
+
+@pytest.mark.parametrize(
+    ("likes", "dislikes", "needle"),
+    [
+        (["jade"], [], "not a small thing of the script"),
+        (["tea"], ["jade"], "not a small thing of the script"),
+        (["tea", "tea"], [], "lists a thing twice"),
+        (["tea"], ["tea"], "share a thing"),
+        ([], ["wine"], "likes at least one"),
+    ],
+)
+def test_what_a_person_likes_has_to_be_the_small_things_of_the_script(likes, dislikes, needle):
+    def mutate(src: cc.Sources) -> None:
+        person = person_src(src, "li_da")
+        person["likes"], person["dislikes"] = likes, dislikes
+
+    assert has(check(mutate), "li_da", needle)
+
+
+@pytest.mark.parametrize(
+    "ask",
+    [
+        {"what": "kiss"},
+        {"what": "stall"},
+        {"what": "stall", "item": "middle"},
+        {"what": "stall", "item": "front", "amount": 5},
+        {"what": "role", "item": "mayor"},
+        {"what": "wage", "amount": 15},
+        {"what": "wage", "amount": 10, "item": "x"},
+        {"what": "slot", "item": "9"},
+        {"what": "slot", "amount": 3},
+    ],
+)
+def test_the_return_a_person_asks_has_to_be_a_promise_the_manager_can_make(ask):
+    def mutate(src: cc.Sources) -> None:
+        person_src(src, "li_da")["ask"] = ask
+
+    assert has(check(mutate), "li_da", "ask")
+
+
+def test_the_return_that_is_a_place_in_the_programme_may_name_the_place_or_leave_it_free():
+    for ask in ({"what": "slot"}, {"what": "slot", "item": "3"}):
+
+        def mutate(src: cc.Sources, ask: dict = ask) -> None:
+            person_src(src, "li_da")["ask"] = ask
+
+        assert check(mutate) == []
+
+
+def test_the_small_things_of_a_script_are_checked():
+    def twice(src: cc.Sources) -> None:
+        src.scripts["broken_bridge"]["gifts"].append(dict(src.scripts["broken_bridge"]["gifts"][0]))
+
+    def bad_gain(src: cc.Sources) -> None:
+        src.scripts["broken_bridge"]["gifts"][0]["gain"] = 0
+
+    def bad_name(src: cc.Sources) -> None:
+        src.scripts["broken_bridge"]["gifts"][0]["en"] = "茶叶"
+
+    def too_many(src: cc.Sources) -> None:
+        gifts = src.scripts["broken_bridge"]["gifts"]
+        gifts += [{"id": f"x{n}", "zh": "东西", "en": "a thing", "gain": 4} for n in range(9)]
+
+    assert has(check(twice), "gifts", "listed twice")
+    assert has(check(bad_gain), "gain")
+    assert has(check(bad_name), "gifts", "English")
+    assert has(check(too_many), "gifts", "at most")
+
+
+def test_a_cast_that_names_a_thing_the_script_does_not_have_is_refused_even_with_no_gifts():
+    def mutate(src: cc.Sources) -> None:
+        src.scripts["broken_bridge"]["gifts"] = []
+
+    assert has(check(mutate), "not a small thing of the script")

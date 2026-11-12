@@ -1,16 +1,18 @@
 /**
  * The help the world gives without a popup. When something the player has not met yet appears, it is signalled where it
- * is: a glow on the button, a ring on the map. Each signal is one hint, and the hints that have been given are kept in a
- * small log that the player can open again. A player who is stuck can ask the clan elder, who answers in three levels,
- * and who comes by himself when nothing has moved for a while of the day the player could have used.
+ * is: a glow on the button, a ring on the map, and a line the clan elder says near the foot of the map. Each signal is one hint, and the
+ * hints that have been given are kept in a list in the menu that the player can light again. The hints of the story are five, all
+ * of the first day; the cards that teach an act the first time it is of use are in `teach.ts`. A player who is stuck can ask the clan
+ * elder, who answers in three levels, and who comes by himself when nothing has moved for a while of the day the player could have used.
  *
  * Everything here is a rule of the page, worked out from what the frame shows. It calls no model and adds nothing the
- * player could not have read off the screen. The words are in the interface (`hint.*`, `elder.*`).
+ * player could not have read off the screen. The words are in the interface (`cue.*`, `teach.*`, `elder.*`).
  */
 import type { MessageKey } from "../i18n/index.ts";
 import type { NotebookEntry } from "./notebook.ts";
 import type { Ping } from "./play.ts";
 import { type Commitment, isLive, type Judgment, type Task, type TaskWindow } from "./slice.ts";
+import { TEACH_DEFS } from "./teach.ts";
 import { examplePair, isFirstHand, isHearsay, proofAppeared, TASK } from "./tutorial.ts";
 
 /** What a hint's rule reads of the game, once for each frame. */
@@ -21,12 +23,22 @@ export interface HintContext {
   verbs: ReadonlySet<string>;
   /** The person the player is talking to. */
   talking: string | null;
+  /** Whether the talk shows an answer that can be followed back, with the phrase beside it that asks who told them (`followedEntry`). */
+  follow: boolean;
   /** Whether the frame says when the person has to go. */
   leaves: boolean;
   /** How many things somebody promised the manager. */
   promised: number;
   /** Whether a lead was given. */
   leads: number;
+  /** The day of the game. */
+  day: number;
+  /** The acts that have been taught, or that the player has used (kept per browser). */
+  taught: ReadonlySet<string>;
+  /** The kinds of request the town puts forward to the person talked to (`player.offers.entrust`): material, lend, lane, testify, join, persuade, convene. */
+  asks: ReadonlySet<string>;
+  /** The verbs of the tasks that are open or blocked, and for a request `entrust:<kind>` (`liveAsks`). */
+  live: ReadonlySet<string>;
 }
 
 export interface HintDef {
@@ -34,6 +46,9 @@ export interface HintDef {
   /** The key of the element the glow goes on (`signal` in the interface). */
   target: string;
   text: MessageKey;
+  /** For the card that teaches an act: its name, and which act it is, which using the act settles. */
+  title?: MessageKey;
+  act?: string;
   /**
    * What the hint is for a player who chose the brief guidance, whose task card has no next step and no button for it: the place and the line of
    * a wording that does not point at either. A hint that has none says the same to everyone.
@@ -48,28 +63,24 @@ export interface HintDef {
 const ring = (id: string, kind: Ping["kind"]): Ping => ({ id, kind, until: 0 });
 
 /**
- * The hints of the first day, in the order they are looked at. Each is given once, and each is about a step of the day as the core
- * plays it: Granny Li refuses over the rumour (`blocked`), the telling is followed back to the clerk who saw it (`track`, `source`),
- * two lines are set side by side and judged (`compare`), the rumour is set straight at the teahouse in the evening (`evening`,
- * `speak`), Granny Li lets go of the bamboo (`opened`), and somebody promises it (`promised`).
+ * The hints of the story, all of the first day, in the order they are looked at. Each is given once, and each is about a step of the day as
+ * the core plays it: the first line of the notebook, two lines to set side by side, Granny Li refuses over the rumour (`blocked`), the
+ * telling is followed back to the clerk who saw it (`source`), and the rumour is set straight at the teahouse in the evening. The cards
+ * that teach an act follow them (`TEACH_DEFS`).
  */
 export const HINTS: readonly HintDef[] = [
-  { id: "notebook", target: "btn-notebook", text: "hint.notebook", when: (c) => c.entries.length >= 1 },
+  { id: "notebook", target: "btn-notebook", text: "cue.notebook", when: (c) => c.entries.length >= 1 },
   // Something to set side by side: the core's task of the words says so, or else a rumour and a line heard at first hand.
-  { id: "compare", target: "btn-notebook", text: "hint.compare", when: (c) => proofAppeared({ tasks: c.tasks, entries: c.entries, judgments: [], verbs: c.verbs, refused: false }) },
-  { id: "chips", target: "topic-chips", text: "hint.chips", when: (c) => c.talking !== null && c.verbs.has("ask") },
-  { id: "leaves", target: "talk-badge", text: "hint.leaves", when: (c) => c.talking !== null && c.leaves },
-  { id: "blocked", target: "task-card", text: "hint.blocked", brief: { target: "task-card", text: "hint.blocked.brief" }, when: (c) => c.tracked?.state === "blocked" },
-  { id: "track", target: "task-more", text: "hint.track", when: (c) => c.verbs.has("track") },
+  { id: "compare", target: "btn-notebook", text: "cue.compare", when: (c) => proofAppeared({ tasks: c.tasks, entries: c.entries, judgments: [], verbs: c.verbs, refused: false }) },
+  { id: "blocked", target: "task-card", text: "cue.blocked", when: (c) => c.tracked?.state === "blocked" },
   // The task of the question who started the talk is the one that is followed, and its button says whom to ask next.
   {
     id: "source",
     target: "task-do",
-    text: "hint.source",
-    brief: { target: "task-card", text: "hint.source.brief" },
+    text: "cue.source",
+    brief: { target: "task-card", text: "cue.source.brief" },
     when: (c) => c.tracked?.id === TASK.who && c.tracked.state === "open" && c.tracked.action?.verb === "ask_source",
   },
-  { id: "lead", target: "leads", text: "hint.lead", when: (c) => c.leads > 0 },
   {
     id: "evening",
     target: "task-card",
@@ -80,22 +91,17 @@ export const HINTS: readonly HintDef[] = [
       return place === undefined ? null : ring(place, "place");
     },
   },
-  { id: "speak", target: "verb-speak", text: "hint.speak", when: (c) => c.verbs.has("speak") },
-  // Granny Li has let go: the task of the bamboo is open again, and the person to ask is now Li Da.
-  {
-    id: "opened",
-    target: "task-do",
-    text: "hint.opened",
-    brief: { target: "task-card", text: "hint.opened.brief" },
-    when: (c) => c.tracked?.id === TASK.bamboo && c.tracked.state === "open" && c.tracked.action?.npc === "li_da",
-  },
-  { id: "promised", target: "commitments", text: "hint.promised", when: (c) => c.promised > 0 },
+  ...TEACH_DEFS,
 ];
 
 /** One hint that was given: which, and when in the game. */
 export interface HintEntry {
   id: string;
   text: MessageKey;
+  /** The name of the act, for a card that teaches one. Null for a hint of the story. */
+  title: MessageKey | null;
+  /** The act a card teaches, which using it settles. Null for a hint of the story. */
+  act: string | null;
   target: string;
   /** The tick it was given at. */
   tick: number;
@@ -113,6 +119,8 @@ export class Hints {
   lit: { id: string; target: string; until: number } | null = null;
   private readonly given = new Set<string>();
   private readonly waiting: HintEntry[] = [];
+  /** The cards of acts that were of use when the player began to look: they are given the next time the act is of use, not the first. */
+  private readonly armed = new Set<string>();
 
   /**
    * Looks at the game and gives the hints that are due. Returns the hints given just now. `brief` is whether the player chose the brief guidance:
@@ -121,10 +129,17 @@ export class Hints {
   check(ctx: HintContext, tick: number, at: HintEntry["at"], now: number, brief = false): HintEntry[] {
     const gave: HintEntry[] = [];
     for (const def of HINTS) {
-      if (this.given.has(def.id) || !def.when(ctx)) continue;
+      if (this.given.has(def.id)) continue;
+      const due = def.when(ctx);
+      // A card that was held back is let go once its act is not of use, and comes the next time it is.
+      if (this.armed.has(def.id)) {
+        if (!due) this.armed.delete(def.id);
+        continue;
+      }
+      if (!due) continue;
       const wording = brief && def.brief !== undefined ? def.brief : { target: def.target, text: def.text };
       this.given.add(def.id);
-      const entry: HintEntry = { id: def.id, text: wording.text, target: wording.target, tick, at };
+      const entry: HintEntry = { id: def.id, text: wording.text, title: def.title ?? null, act: def.act ?? null, target: wording.target, tick, at };
       this.log.push(entry);
       this.waiting.push(entry);
       gave.push(entry);
@@ -150,9 +165,16 @@ export class Hints {
     return HINTS.find((hint) => hint.id === id);
   }
 
-  /** Marks the hints that are due already as given, with no signal and no line in the log: what is true is not news. */
+  /**
+   * Marks the hints that are due already as given, with no signal and no line in the log: what is true is not news. A card that teaches an act is
+   * not given for good: the act is of use now, and was not taught, so its card waits for the next time the act is of use.
+   */
   absorb(ctx: HintContext): void {
-    for (const def of HINTS) if (def.when(ctx)) this.given.add(def.id);
+    for (const def of HINTS) {
+      if (this.given.has(def.id) || !def.when(ctx)) continue;
+      if (def.act === undefined) this.given.add(def.id);
+      else this.armed.add(def.id);
+    }
   }
 
   /** Lights a hint of the log again, for the player who asks to see it. */
@@ -165,6 +187,7 @@ export class Hints {
     this.log.length = 0;
     this.waiting.length = 0;
     this.given.clear();
+    this.armed.clear();
     this.lit = null;
   }
 }

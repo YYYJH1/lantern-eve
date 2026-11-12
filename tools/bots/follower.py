@@ -169,11 +169,22 @@ class Plan:
 class Follower(Bot):
     name = "follower"
 
-    def __init__(self, scene: dict[str, Any], seed: int = 0, mode: str = "tracked") -> None:
+    def __init__(
+        self,
+        scene: dict[str, Any],
+        seed: int = 0,
+        mode: str = "tracked",
+        gifts: dict[str, str] | None = None,
+    ) -> None:
         super().__init__(scene, seed)
         if mode not in MODES:
             raise ValueError(f"unknown mode {mode!r}; the modes are {', '.join(MODES)}")
         self.mode = mode
+        # with ``gifts`` (a small thing for each person, which the referee knows and tells the bot)
+        # it gives the thing in the first talk of a day with the person, while the town has a gift
+        # left. Without it the bot gives nothing, as it never did.
+        self.gifts = gifts
+        self.gifted: list[str] = []
         # every task seen: its words, when it came, how it stands
         self.tasks: dict[str, dict[str, Any]] = {}
         self.timeline: list[dict[str, Any]] = []
@@ -730,6 +741,16 @@ class Follower(Bot):
         return False
 
     def approach(self, plan: Plan, npc: str) -> Steps:
+        """Walk up to ``npc`` and open a talk, and give them their thing if the bot has one for
+        them. True once a talk is open with them."""
+        opened = yield from self.reach(plan, npc)
+        if opened and self.gifts and "gift" in self.o.verbs and npc in self.gifts:
+            result, _ = yield from self.act("gift", item=self.gifts[npc])
+            if result == "applied":
+                self.gifted.append(npc)
+        return opened
+
+    def reach(self, plan: Plan, npc: str) -> Steps:
         """Walk up to ``npc`` and open a talk. True once one is open with them."""
         self.check_window(plan, npc)
         declined, retry_at, sent, refused = 0, 0, -1000, 0

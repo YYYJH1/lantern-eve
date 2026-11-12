@@ -53,7 +53,7 @@ CHAIN_LABEL = {
 LABELS_EN = {
     "ending_full": "A perfect night",
     "ending_barely": "Just enough",
-    "ending_split": "Scattered: two families light their lamps apart",
+    "ending_split": "Each family lights its own lamps",
     "hidden_legend_of_lie": "The lie became a legend",
 }
 
@@ -72,10 +72,11 @@ def wire(done: dict[str, Any], *, compact: bool = False) -> dict[str, Any]:
     the keys of the ``ending`` event after ``kind`` and ``tick``: ``ending`` (the id of the base
     ending), its ``label`` and the ``hidden`` endings (each ``{"id", "label"}``), every label in
     both languages, then the ``inputs``, the ``passage``, the households that ``promised``, the
-    ``turnout``, the ``reveal`` and the ``epilogue``: for each person who carries the days (see
-    ``roles``) the one or two sentences about how it went for them, ``[{"npc", "id", "text":
-    {"zh", "en"}}]`` in the order of the cast. The compact form leaves out the ``reveal``, which is
-    most of the ending, and the ``epilogue``, and keeps what a page needs to say how the night went.
+    ``turnout``, the ``festival`` (what a page needs to stage the night, see ``festival``), the
+    ``reveal`` and the ``epilogue``: for each person who carries the days (see ``roles``) the one
+    or two sentences about how it went for them, ``[{"npc", "id", "text": {"zh", "en"}}]`` in the
+    order of the cast. The compact form leaves out the ``reveal``, which is most of the ending, and
+    the ``epilogue``, and keeps what a page needs to say how the night went and to stage it.
     """
     from lantern_core.world.bridge import roles  # not at the top: it reads the goals
 
@@ -88,6 +89,8 @@ def wire(done: dict[str, Any], *, compact: bool = False) -> dict[str, Any]:
         "promised": done["promised"],
         "turnout": done["turnout"],
     }
+    if "festival" in done:  # an ending that a core from before it made has none
+        out["festival"] = done["festival"]
     if not compact:
         out["reveal"] = done["reveal"]
         out["epilogue"] = roles.epilogue_wire(done.get("epilogue", []))

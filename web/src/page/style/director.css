@@ -1,0 +1,73 @@
+/* What a show puts over the map (ui/director.tsx): a veil, the words of the stop that is on, and the button that skips the festival night. */
+
+.director {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+
+/* The veil takes the pointer, so that the map and the page under it are not touched while a show plays. It draws nothing. */
+.director-veil {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.director-veil:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -6px;
+}
+
+.director[data-skippable="false"] .director-veil {
+  cursor: pointer;
+}
+
+.director-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 17%;
+  transform: translateX(-50%);
+  max-width: min(32rem, calc(100% - 4rem));
+  margin: 0;
+  padding: 0.35rem 0.9rem;
+  text-align: center;
+  text-wrap: balance; /* the words run to two or three lines of the slip, set in even lines, so that the last is not left with a word or two */
+  font-size: 1.1rem;
+  line-height: 1.6;
+  animation: director-caption-in 400ms ease-out both;
+  pointer-events: none;
+}
+
+/* A framed word is positioned in its own sheet (paper.css); here it is put in the bottom right corner, above what the corner keeps (the burner, the
+   notebook), and on paper of its own, since it lies over the map. The rule is a step more specific than the one of the frame. */
+.director .director-skip {
+  position: absolute;
+  right: 30px;
+  bottom: 104px;
+  background: var(--paper);
+  pointer-events: auto;
+}
+
+@keyframes director-caption-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .director-caption {
+    animation: none;
+  }
+}

@@ -2,73 +2,53 @@ import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 import { type Lang, pick, t } from "../../i18n/index.ts";
 import { refusalKey } from "../deals.ts";
 import { type Flows, keepOffer, type RequestState, requestOffer } from "../flows.ts";
-import { type FrameTalk, type TalkCosts, runsPastLeaving, type ViewFrame } from "../frame.ts";
+import { type FrameTalk, type Offer, runsPastLeaving, type ViewFrame } from "../frame.ts";
+import { isOffReason, readVerbsOffAny } from "../hud.ts";
+import { followedEntry, frontierEntries, readGiftHud, type TopicContext } from "../talk-frame.ts";
 import type { NotebookEntry } from "../notebook.ts";
 import type { Play, TalkLine } from "../play.ts";
 import type { Name, Scene } from "../scene.ts";
-import { Cost, personName, resolveValues } from "./common.tsx";
-import { lowerFirst } from "./format.ts";
-import { TopicChips } from "./chips.tsx";
+import { personName, resolveValues } from "./common.tsx";
+import { bare, lowerFirst } from "./format.ts";
+import { AskPanel } from "./ask-panel.tsx";
+import { contextItems } from "../context-items.ts";
+import { ContextRow, GivePanel, RestPanel } from "./context.tsx";
+import { GiftPanel } from "./gift.tsx";
 import { signalClass } from "./guide.tsx";
+import { HeartPop, Hearts } from "./hearts.tsx";
 import { count } from "./paper-text.ts";
 import { LinkedText } from "./pointers.tsx";
 import { InkAct, Tick, Underline } from "./ink.tsx";
-import { otherGroups, Picker, type PickerGroup, type PickerOption, sourceGroups, wayGroups, wayOffers } from "./picker.tsx";
+import { Picker, type PickerGroup, type PickerOption, sourceGroups } from "./picker.tsx";
+import { SayPanel } from "./say-panel.tsx";
 
 /**
- * What the player can do once they are talking. A verb is shown when the frame lists it, and left out when it does not.
- * Asking is not a button of this row: it is the row of topic tags above it (`TopicChips`).
+ * What the player can do once they are talking: four acts, and the one thing the talk puts forward besides them. Asking is a list of
+ * topics, asking a favour is one request named on its button, telling is a line of the notebook and how to tell it, and leaving ends the talk.
+ * An act the town cannot offer now is there all the same, greyed, and says why when it is pressed.
  */
-const IN_TALK = ["ask", "askSource", "tell", "entrust", "promise", "leave"] as const;
-type InTalk = (typeof IN_TALK)[number];
-/** The lists of choices a talk opens. `tellOther` is the submenu "say it another way". */
-type Choosing = "askSource" | "tell" | "tellOther" | "entrust" | "promise";
+const MAIN = ["ask", "entrust", "tell", "leave"] as const;
+type Main = (typeof MAIN)[number];
+
+/** The lists a talk opens above its strip. */
+type Panel = "ask" | "entrust" | "tell" | "give" | "rest" | "gift" | "askSource";
 
 const LABEL = {
-  ask: "verb.ask",
-  askSource: "verb.askSource",
-  tell: "verb.tell",
-  entrust: "verb.entrust",
-  promise: "verb.promise",
-  leave: "verb.leave",
+  ask: "talk.btn.ask",
+  entrust: "talk.btn.entrust",
+  tell: "talk.btn.tell",
+  leave: "talk.btn.leave",
 } as const;
 
 const HINT = {
-  ask: "verb.ask.hint",
-  askSource: "verb.askSource.hint",
-  tell: "verb.tell.hint",
-  entrust: "verb.entrust.hint",
-  promise: "verb.promise.hint",
-  leave: "verb.leave.hint",
+  ask: "talk.btn.ask.hint",
+  entrust: "talk.btn.entrust.hint",
+  tell: "talk.btn.tell.hint",
+  leave: "talk.btn.leave.hint",
 } as const;
 
-const PICKER_TITLE = {
-  askSource: "picker.source.title",
-  tell: "picker.tell.title",
-  tellOther: "picker.tellOther.title",
-  entrust: "picker.entrust.title",
-  promise: "picker.promise.title",
-} as const;
-
-/** The cost of each verb, in game minutes, where the frame says. */
-function costOf(costs: TalkCosts | null, verb: InTalk | "tellOther"): number | null {
-  if (costs === null) return null;
-  switch (verb) {
-    case "ask":
-      return costs.ask;
-    case "askSource":
-      return costs.askSource;
-    case "tell":
-    case "tellOther":
-      return costs.tell;
-    case "entrust":
-      return costs.entrust;
-    case "promise":
-      return costs.promise;
-    default:
-      return null;
-  }
-}
+/** The verb of the town each button asks for. */
+const VERB_OF: Readonly<Record<Main, string>> = { ask: "ask", entrust: "entrust", tell: "tell", leave: "leave" };
 
 const YOU = {
   ask: "talk.you.ask",
@@ -76,13 +56,15 @@ const YOU = {
   tell: "talk.you.tell",
   entrust: "talk.you.entrust",
   promise: "talk.you.promise",
+  gift: "talk.you.gift",
 } as const;
 
-function Line({ line, partner, lang, scene, onPoint }: { line: TalkLine; partner: string; lang: Lang; scene: Scene | null; onPoint(npc: string): void }) {
+function Line({ line, partner, lang, scene, onPoint, followUp, signal }: { line: TalkLine; partner: string; lang: Lang; scene: Scene | null; onPoint(npc: string): void; followUp: (() => void) | null; signal: (key: string) => string }) {
   if (line.who === "you") {
-    // A request or a promise is named by its offer, which says the act from the manager's side already ("请对方把竹料送到桥边",
-    // "Ask them to bring the bamboo to the bridge"), so its line is the offer after "you", lower-cased in English.
-    const subject = pick(line.subject, lang);
+    // A request or a promise is named by its offer, which says the act from the manager's side and names the person already ("请李大把竹料送到桥边",
+    // "Ask Li Da to bring the bamboo to the bridge"), so its line is the offer after "you", lower-cased in English.
+    // A line of the notebook asked after is quoted inside the sentence, without its own full stop.
+    const subject = line.how === "source" ? bare(pick(line.subject, lang)) : pick(line.subject, lang);
     const offered = line.how === "entrust" || line.how === "promise";
     return (
       <li class="talk-you" data-testid="talk-line" data-who="you" data-how={line.how}>
@@ -93,6 +75,11 @@ function Line({ line, partner, lang, scene, onPoint }: { line: TalkLine; partner
   return (
     <li class="talk-them" data-testid="talk-line" data-who="them" data-npc={partner}>
       <LinkedText text={pick(line.text, lang)} points={line.points ?? []} scene={scene} lang={lang} onPoint={onPoint} />
+      {followUp === null ? null : (
+        <InkAct seed={`follow-${line.entry ?? "x"}`} class={`talk-follow${signal("verb-askSource")}`} data-sig="verb-askSource" data-testid="talk-follow" data-entry={line.entry} onClick={followUp}>
+          {t("talk.follow")}
+        </InkAct>
+      )}
     </li>
   );
 }
@@ -100,9 +87,10 @@ function Line({ line, partner, lang, scene, onPoint }: { line: TalkLine; partner
 /**
  * What has been said in the talk so far, the newest at the bottom. It begins with what the person said as the talk opened, their greeting,
  * when they said one: the bar has the same words. The greeting is not a line of the talk (it
- * answers nothing the player did), so it has a test id of its own.
+ * answers nothing the player did), so it has a test id of its own. An answer that was passed on to the person (they heard it from somebody)
+ * has a phrase beside it that asks who told them.
  */
-export function TalkLog({ lines, opening, partner, lang, scene, onPoint }: { lines: readonly TalkLine[]; opening?: Name; partner: string; lang: Lang; scene: Scene | null; onPoint(npc: string): void }) {
+export function TalkLog({ lines, opening, partner, lang, scene, onPoint, entries, onFollow, signal = () => "" }: { lines: readonly TalkLine[]; opening?: Name; partner: string; lang: Lang; scene: Scene | null; onPoint(npc: string): void; entries?: readonly NotebookEntry[]; onFollow?: (entry: string, name: Name) => void; signal?: (key: string) => string }) {
   const list = useRef<HTMLOListElement>(null);
   useEffect(() => {
     const element = list.current;
@@ -116,9 +104,11 @@ export function TalkLog({ lines, opening, partner, lang, scene, onPoint }: { lin
           {pick(opening, lang)}
         </li>
       )}
-      {lines.map((line, i) => (
-        <Line key={i} line={line} partner={partner} lang={lang} scene={scene} onPoint={onPoint} />
-      ))}
+      {lines.map((line, i) => {
+        const entry = followedEntry(line, entries ?? []);
+        const follow = entry !== null && onFollow !== undefined ? () => onFollow(entry.id, entry.text) : null;
+        return <Line key={i} line={line} partner={partner} lang={lang} scene={scene} onPoint={onPoint} followUp={follow} signal={signal} />;
+      })}
     </ol>
   );
 }
@@ -134,7 +124,7 @@ function WillGo({ id, name }: { id: string; name: string }) {
 
 // --- A request: the preview first, and the result in the same place --------------------------------
 
-const ODDS_KEY = { high: "request.odds.high", mid: "request.odds.mid", low: "request.odds.low" } as const;
+const ODDS_KEY = { high: "request.odds.high2", mid: "request.odds.mid2", low: "request.odds.low2" } as const;
 
 function Preview({ request, flows, lang, late, owing }: { request: Extract<RequestState, { phase: "preview" | "sending" }>; flows: Flows; lang: Lang; late: string | null; owing: boolean }) {
   const { preview } = request;
@@ -164,7 +154,7 @@ function Preview({ request, flows, lang, late, owing }: { request: Extract<Reque
           <dt>{t("request.blockers")}</dt>
           <dd>
             {preview.blockers.length === 0 ? (
-              t("request.blockers.none")
+              t("request.blockers.none2")
             ) : (
               <ul class="request-blockers">
                 {preview.blockers.map((b, i) => (
@@ -178,7 +168,7 @@ function Preview({ request, flows, lang, late, owing }: { request: Extract<Reque
         </div>
         {preview.odds === null ? null : (
           <div data-testid="request-odds" data-odds={preview.odds}>
-            <dt>{t("request.odds")}</dt>
+            <dt>{t("request.odds2")}</dt>
             <dd>{t(ODDS_KEY[preview.odds])}</dd>
           </div>
         )}
@@ -203,7 +193,6 @@ function Preview({ request, flows, lang, late, owing }: { request: Extract<Reque
       <div class="request-buttons">
         <button type="button" class="ink-frame" data-testid="request-confirm" disabled={sending || owing} title={owing ? t("talk.time.paying") : undefined} onClick={() => flows.confirm()}>
           <span>{sending ? t("request.sending") : t("request.confirm")}</span>
-          {preview.cost === null ? null : <span class="verb-cost" data-testid="request-cost" data-minutes={preview.cost}>{t("talk.cost", { n: count(lang, preview.cost) })}</span>}
         </button>
         <InkAct seed="request-cancel" data-testid="request-cancel" disabled={sending} onClick={() => flows.cancel()}>
           {t("request.cancel")}
@@ -240,6 +229,11 @@ function Result({ request, flows, lang, name }: { request: Extract<RequestState,
       )}
       {request.cost !== null ? <p class="request-spent" data-testid="request-spent">{t("request.spent", { n: count(lang, request.cost) })}</p> : null}
       <div class="request-buttons">
+        {request.ok && request.follow != null ? (
+          <InkAct seed="request-follow" data-testid="request-follow" onClick={() => flows.followUp()}>
+            {t("request.follow")}
+          </InkAct>
+        ) : null}
         <InkAct seed="request-close" data-testid="request-close" onClick={() => flows.cancel()}>
           {t("request.close")}
         </InkAct>
@@ -263,7 +257,7 @@ function RequestCard({ flows, lang, scene, late, owing }: { flows: Flows; lang: 
   if (request === null) return null;
   const name = personName(scene, lang, request.npc);
   return (
-    <section ref={card} class="request paper-slip" data-testid="request-card" data-phase={request.phase} data-verb={request.verb} aria-live="polite">
+    <section ref={card} class="request paper-slip" data-testid="request-card" data-phase={request.phase} data-verb={request.verb} data-offer={request.offer.id} data-cost={"preview" in request ? (request.preview.cost ?? "") : ""} aria-live="polite">
       <h3 class="request-title">{t(request.verb === "promise" ? "request.title.promise" : "request.title", { name })}</h3>
       {request.phase === "loading" ? (
         <p class="request-loading" data-testid="request-loading">
@@ -304,29 +298,49 @@ export interface TalkAreaProps {
   entries: readonly NotebookEntry[];
 }
 
-/** Everything the player does in a talk, in one place: ask, tell, request, promise and leave. */
+/** How long the reason an act is greyed for stays under the acts, in milliseconds. */
+const OFF_MS = 5000;
+
+/** The reason an act is not on offer, in words. The core gives a code; a code the page has no words for is said in a general line. */
+export function offWords(reason: string, verb: string, name: string): string {
+  if (reason === "not_yet" && verb === "ask_source") return t("talk.off.not_yet.ask_source");
+  return isOffReason(reason) ? t(`talk.off.${reason}`, { name }) : t("talk.off.other");
+}
+
+/** Everything the player does in a talk, in one place: ask, ask for a favour, tell, leave and what the person is waiting for. */
 export function TalkArea({ lang, scene, frame, play, enabled, entries }: TalkAreaProps) {
   const talk = play.state.talk;
   const partner = talk?.npc ?? "";
   const frameTalk: FrameTalk | null = frame?.player?.talk ?? null;
   const costs = frameTalk?.costs ?? null;
+  const more = frameTalk?.more ?? null;
   const player = frame?.player ?? null;
+  const hud = frame?.hud ?? {};
   // While an act is being paid for the acts wait, so that they do not pile up; leaving does not.
   const owing = play.owing;
   const partnerName = personName(scene, lang, partner);
   /** What an act of this many minutes does to the talk: the person has to go once it is said, or not. */
   const late = (minutes: number | null): string | null => (frame !== null && runsPastLeaving(frame.time, frameTalk?.leavesAt ?? null, minutes) ? t("talk.willGo", { name: partnerName }) : null);
-  const [choosing, setChoosing] = useState<Choosing | null>(null);
-  /** The tags are lit for a moment when a task's button has asked for a question. */
+  const [panel, setPanel] = useState<Panel | null>(null);
+  /** The list of the others has the request on the button too, where a task's button opened it. */
+  const [entrustAll, setEntrustAll] = useState(false);
+  /** The list of questions is lit for a moment when a task's button has asked for a question. */
   const [flash, setFlash] = useState(false);
-  const close = useCallback(() => setChoosing(null), []);
+  /** The act that is greyed and was pressed: the reason it is greyed for is read from the frame when it is shown, and goes with it. */
+  const [off, setOff] = useState<string | null>(null);
+  const close = useCallback(() => setPanel(null), []);
   const flows = play.flows;
-  const on = (verb: InTalk): boolean => {
-    if (!play.playing) return false;
-    if (verb === "askSource") return enabled.has("askSource") || enabled.has("ask_source");
-    return enabled.has(verb);
-  };
-  const hasWays = on("tell") && wayOffers(player).length > 0;
+  const verbsOff = readVerbsOffAny(hud);
+  const gift = readGiftHud(hud);
+  const relation = frame?.relations.get(partner);
+  const on = (verb: string): boolean => play.playing && enabled.has(verb);
+  const items = contextItems(more, flows.state.declined);
+
+  // What was open is put away when the partner changes, before a task's button opens its list for the new talk (the effects run in this order).
+  useEffect(() => {
+    setPanel(null);
+    setOff(null);
+  }, [partner]);
 
   // A task's button asked for a verb of this talk: open its list as soon as the talk is on. A task that names the request has it ready, with its
   // preview, when the town puts it forward to this person now; else the list is opened, as for a task that names only the thing.
@@ -342,23 +356,56 @@ export function TalkArea({ lang, scene, frame, play, enabled, entries }: TalkAre
           ? keepOffer(player?.offers.promise ?? [], asked.item)
           : null;
     if (ready !== null) {
-      setChoosing(null);
+      setPanel(null);
       flows.begin(verb === "promise" ? "promise" : "entrust", partner, { id: ready.id, name: ready.name, body: ready.body });
-    } else if (verb === "tell" || verb === "entrust" || verb === "promise") setChoosing(verb);
-    else if (verb === "ask_source") setChoosing("askSource");
-    else if (verb === "ask") setFlash(true);
+    } else if (verb === "tell") setPanel("tell");
+    else if (verb === "gift") setPanel("gift");
+    else if (verb === "entrust") {
+      // A task that asks for the thing and names no request is asking for the one request the town puts forward, which is the red slip's. A task that
+      // names a request the town does not put forward now gets the list of everything that can be asked, the one on the button included.
+      if (asked?.request == null && more?.askFor != null) flows.begin("entrust", partner, more.askFor);
+      else {
+        setEntrustAll(true);
+        setPanel("entrust");
+      }
+    }
+    else if (verb === "promise") setPanel("give");
+    else if (verb === "ask_source") setPanel("askSource");
+    else if (verb === "ask") {
+      setPanel("ask");
+      setFlash(true);
+    }
   }, [wish, talk === null, partner]);
+  useEffect(() => {
+    if (panel !== "entrust") setEntrustAll(false);
+  }, [panel]);
   useEffect(() => {
     if (!flash) return;
     const timer = setTimeout(() => setFlash(false), 2400);
     return () => clearTimeout(timer);
   }, [flash]);
+  useEffect(() => {
+    if (off === null) return;
+    const timer = setTimeout(() => setOff(null), OFF_MS);
+    return () => clearTimeout(timer);
+  }, [off]);
 
   // A list of choices does not outlive the offer it was opened for, nor the moment the world stands still.
-  const stillOn = choosing === null || (!owing && (choosing === "tellOther" ? hasWays : on(choosing)));
+  const open =
+    panel === null ||
+    (!owing &&
+      (panel === "ask" || panel === "entrust" || panel === "tell"
+        ? on(panel)
+        : panel === "gift"
+          ? enabled.has("gift")
+          : panel === "askSource"
+            ? on("ask_source") || on("askSource")
+            : panel === "rest"
+              ? items.length > 1
+              : true));
   useEffect(() => {
-    if (!stillOn) setChoosing(null);
-  }, [stillOn]);
+    if (!open) setPanel(null);
+  }, [open]);
 
   if (talk === null) {
     // The person had to go once the act was said: what they answered stays where the player can read it, until it is put away.
@@ -371,86 +418,260 @@ export function TalkArea({ lang, scene, frame, play, enabled, entries }: TalkAre
       </section>
     );
   }
-  const name = personName(scene, lang, partner);
+  const name = partnerName;
+  const cancelRequest = (): void => {
+    // Starting something else puts away a request that was not confirmed.
+    if (flows.state.request !== null && flows.state.request.phase !== "sending") flows.cancel();
+  };
 
-  const press = (verb: Exclude<InTalk, "ask">): void => {
+  const press = (verb: Main): void => {
+    setOff(null);
     if (verb === "leave") {
-      setChoosing(null);
+      setPanel(null);
       flows.cancel();
       play.leave();
       return;
     }
-    // Starting something else puts away a request that was not confirmed.
-    if (flows.state.request !== null && flows.state.request.phase !== "sending") flows.cancel();
-    setChoosing((now) => (now === verb ? null : verb));
+    cancelRequest();
+    if (verb === "entrust") {
+      // With one request put forward the button asks for it; with none, or to ask for another, the list is the way.
+      if (more?.askFor != null) {
+        setPanel(null);
+        flows.begin("entrust", partner, more.askFor);
+      } else setPanel((now) => (now === "entrust" ? null : "entrust"));
+      return;
+    }
+    setPanel((now) => (now === verb ? null : verb));
   };
 
-  const groups = (verb: Choosing): PickerGroup[] => {
-    if (verb === "askSource") return sourceGroups(entries, lang);
-    if (verb === "tellOther") return wayGroups(player, lang);
-    return otherGroups(verb, player, entries, lang);
+  /** The core's reason an act is off, or null where it gives none. */
+  const reasonOf = (verb: string): string | null => verbsOff.get(verb) ?? null;
+  const wordsOf = (verb: string): string | null => {
+    const reason = reasonOf(verb);
+    return reason === null ? null : offWords(reason, verb, name);
   };
 
-  const choose = (verb: Choosing, option: PickerOption, group: PickerGroup): void => {
-    setChoosing(null);
-    if (verb === "askSource") play.askSource(option.id, option.name);
-    else if (verb === "entrust" || verb === "promise") flows.begin(verb, partner, { id: option.id, name: option.name, body: option.body ?? null });
-    else if (option.body != null) play.other("tell", option.body, option.name);
-    else play.other("tell", group.id === "notebook" ? { entry: option.id } : { choice: option.id }, option.name);
+  const pressOff = (verb: string): void => {
+    setPanel(null);
+    setOff(verb);
   };
 
-  /** One thing to say, as a word with a stroke under it. The minutes it costs are written after it, small. */
-  const button = (verb: Exclude<InTalk, "ask">) =>
-    on(verb) ? (
-      <button key={verb} type="button" class={`verb ink-act${choosing === verb ? " is-open" : ""}${signalClass(play, `verb-${verb}`)}`} data-sig={`verb-${verb}`} data-testid={`verb-${verb}`} aria-haspopup={verb === "leave" ? undefined : "dialog"} aria-expanded={verb === "leave" ? undefined : choosing === verb} disabled={verb !== "leave" && owing} title={t(HINT[verb])} onClick={() => press(verb)}>
-        <span>{t(LABEL[verb])}</span>
-        <Cost minutes={costOf(costs, verb)} id={verb} />
-        {verb === "leave" || late(costOf(costs, verb)) === null ? null : <WillGo id={verb} name={partnerName} />}
+  const chooseEntrust = (option: PickerOption, group: PickerGroup): void => {
+    setPanel(null);
+    // What can be promised is in the list of the others too, so that a promise can be made without having been turned down first.
+    flows.begin(group.id === "give" ? "promise" : "entrust", partner, { id: option.id, name: option.name, body: option.body ?? null });
+  };
+
+  const give = (item: { id: string; name: Name }): void => {
+    setPanel(null);
+    play.gift(item.id, item.name);
+  };
+
+  /** The label of a request on the button: the request put forward, or "Ask for a favour". */
+  const entrustLabel = more?.askFor != null ? pick(more.askFor.name, lang) : t(LABEL.entrust);
+
+  const mainButton = (verb: Main) => {
+    const button = mainButtonOnly(verb);
+    if (button === null || verb !== "entrust" || more?.askFor == null || (more.asksMore.length === 0 && more.give.preferred === null && more.give.more.length === 0)) return button;
+    return [
+      button,
+      <button key="entrust-more" type="button" class={`ink-act verb-more${panel === "entrust" ? " is-open" : ""}`} data-testid="entrust-more" aria-haspopup="dialog" aria-expanded={panel === "entrust"} disabled={owing || !on("entrust")} onClick={() => (cancelRequest(), setOff(null), setPanel((now) => (now === "entrust" ? null : "entrust")))}>
+        {t("asks.more")}
+        <Underline seed="entrust-more" />
+      </button>,
+    ];
+  };
+
+  const mainButtonOnly = (verb: Main) => {
+    const enabledNow = verb === "leave" ? play.playing : on(VERB_OF[verb]);
+    const reason = enabledNow ? null : wordsOf(VERB_OF[verb]);
+    // A button the town does not offer and gives no reason for is not drawn.
+    if (!enabledNow && reason === null) return null;
+    const cost = verb === "ask" ? costs?.ask : verb === "tell" ? costs?.tell : verb === "entrust" ? costs?.entrust : null;
+    const willGo = enabledNow && verb !== "leave" ? late(cost ?? null) : null;
+    const label = verb === "entrust" ? entrustLabel : t(LABEL[verb]);
+    const sig = verb === "ask" ? "topic-chips" : `verb-${verb}`;
+    return (
+      <button
+        key={verb}
+        type="button"
+        class={`verb ink-act${panel === verb || (verb === "ask" && panel === "askSource") ? " is-open" : ""}${enabledNow ? "" : " is-off"}${signalClass(play, `verb-${verb}`)}${verb === "ask" ? signalClass(play, "topic-chips") : ""}`}
+        data-sig={sig}
+        data-testid={`verb-${verb}`}
+        aria-haspopup={verb === "leave" || (verb === "entrust" && more?.askFor != null) ? undefined : "dialog"}
+        aria-expanded={verb === "leave" ? undefined : panel === verb}
+        aria-disabled={enabledNow ? undefined : true}
+        disabled={enabledNow && verb !== "leave" && owing}
+        title={reason ?? t(HINT[verb], { name })}
+        onClick={() => (enabledNow ? press(verb) : pressOff(VERB_OF[verb]))}
+      >
+        <span>{label}</span>
+        {willGo === null ? null : <WillGo id={verb} name={name} />}
         <Underline seed={verb} />
       </button>
-    ) : null;
+    );
+  };
 
-  const topics = on("ask") && choosing === null;
+  const groupsOfEntrust = (): PickerGroup[] => {
+    // A frame from before the keys has the town's offers to ask a person for, and those are the list.
+    const list = more === null ? (player?.offers.entrust ?? []).map((offer) => ({ ...offer, status: "open" as const, task: null })) : [...(entrustAll && more.askFor !== null ? [more.askFor] : []), ...more.asksMore];
+    const option = (item: (typeof list)[number]): PickerOption => ({ id: item.id, label: pick(item.name, lang), badge: item.status === "open" ? undefined : t(`asks.status.${item.status}`), name: item.name, body: item.body });
+    const persuade = list.filter((item) => item.body?.kind === "persuade");
+    const gives = [more?.give.preferred ?? null, ...(more?.give.more ?? [])].filter((offer): offer is Offer => offer !== null);
+    return [
+      { id: "asks", title: more?.askFor != null ? t("asks.others") : "", options: list.filter((item) => item.body?.kind !== "persuade").map(option) },
+      { id: "persuade", title: t("asks.persuade", { name }), options: persuade.map(option) },
+      { id: "give", title: t("give.title", { name }), options: gives.map((offer) => ({ id: offer.id, label: pick(offer.name, lang), name: offer.name, body: offer.body })) },
+    ];
+  };
+
+  const keepNow = (keep: { offer: { id: string; name: Name; body: Record<string, unknown> | null } }): void => {
+    setPanel(null);
+    cancelRequest();
+    flows.begin("promise", partner, keep.offer);
+  };
+
+  const topicContext: TopicContext = { partner, slice: play.slice, entries, fresh: play.state.fresh, asked: flows.askedOf(partner) };
+  const followUps = frontierEntries((frame?.raw as Record<string, unknown> | undefined)?.notebook, partner)
+    .map((id) => entries.find((e) => e.id === id))
+    .filter((e): e is NotebookEntry => e !== undefined);
+  const giftOpen = gift !== null && (enabled.has("gift") || verbsOff.has("gift"));
+  const giftOff = giftOpen && !enabled.has("gift") ? wordsOf("gift") : null;
+  const pops = play.state.pops.filter((pop) => pop.npc === partner);
+
   return (
     <section class="talk-area" data-testid="talk-area" data-npc={partner} aria-label={t("talk.with", { name })}>
       {costs === null ? null : (
         <p class="talk-area-note" data-testid="talk-time-note" data-paying={owing}>
-          {owing ? t("talk.time.paying") : t("talk.time")}
+          {owing ? t("talk.time.paying") : t("talk.time2")}
         </p>
       )}
-      <TalkLog lines={talk.lines} opening={talk.opening} partner={partner} lang={lang} scene={scene} onPoint={(npc) => play.pointTo(npc, partner)} />
+      {relation === undefined ? null : (
+        <div class="talk-head" data-testid="talk-head">
+          <Hearts value={relation.hearts} size="m" onOpen={() => play.openHearts(partner)} />
+          {pops.map((pop) => (
+            <HeartPop key={pop.id} delta={pop.delta} why={pop.why} name={name} />
+          ))}
+          {!giftOpen ? null : (
+            <button type="button" class={`ink-act gift-open${giftOff === null ? "" : " is-off"}${signalClass(play, "verb-gift")}`} data-testid="gift-open" data-sig="verb-gift" aria-disabled={giftOff === null ? undefined : true} aria-expanded={panel === "gift"} title={giftOff ?? t("gift.hint", { name })} onClick={() => (giftOff === null ? (cancelRequest(), setOff(null), setPanel((now) => (now === "gift" ? null : "gift"))) : pressOff("gift"))}>
+              {t("gift.open")}
+              <Underline seed="gift" />
+            </button>
+          )}
+        </div>
+      )}
+      <TalkLog lines={talk.lines} opening={talk.opening} partner={partner} lang={lang} scene={scene} onPoint={(npc) => play.pointTo(npc, partner)} entries={entries} onFollow={(entry, subject) => play.askSource(entry, subject)} signal={(key) => signalClass(play, key)} />
       <div class="verbs verbs-talk" role="group" aria-label={t("dialogue.inTalk")} data-testid="talk-verbs">
-        {button("askSource")}
-        {button("tell")}
-        {hasWays ? (
-          <button type="button" class={`verb verb-other ink-act${choosing === "tellOther" ? " is-open" : ""}`} data-testid="verb-tellOther" aria-haspopup="dialog" aria-expanded={choosing === "tellOther"} disabled={owing} title={t("verb.tellOther.hint")} onClick={() => setChoosing((now) => (now === "tellOther" ? null : "tellOther"))}>
-            <span>{t("verb.tellOther")}</span>
-            <Underline seed="tellOther" />
-          </button>
-        ) : null}
-        {button("entrust")}
-        {button("promise")}
-        {button("leave")}
+        {MAIN.map(mainButton)}
       </div>
+      {off === null || wordsOf(off) === null ? null : (
+        <p class="talk-off" data-testid="talk-off" data-verb={off} role="status">
+          {wordsOf(off)}
+        </p>
+      )}
+      <ContextRow
+        signal={(key) => signalClass(play, key)}
+        items={items}
+        name={name}
+        lang={lang}
+        disabled={owing}
+        restOpen={panel === "rest"}
+        onAccept={(wants) => {
+          setPanel(null);
+          cancelRequest();
+          flows.accept(partner, wants);
+        }}
+        onDecline={(wants) => flows.decline(wants)}
+        onKeep={keepNow}
+        onGive={() => {
+          cancelRequest();
+          setPanel((now) => (now === "give" ? null : "give"));
+        }}
+        onRest={() => setPanel((now) => (now === "rest" ? null : "rest"))}
+      />
       <div class="slips">
-        {topics ? (
-          <TopicChips topics={player?.topics ?? []} entries={entries} lang={lang} partner={partner} cost={costOf(costs, "ask")} willGo={late(costOf(costs, "ask"))} disabled={owing} flash={flash} signal={play.guide.signal("topic-chips")} onAsk={(topic) => {
-              if (flows.state.request !== null && flows.state.request.phase !== "sending") flows.cancel();
-              setChoosing(null);
+        {panel === "ask" ? (
+          <AskPanel
+            topics={player?.topics ?? []}
+            context={topicContext}
+            lang={lang}
+            partner={partner}
+            followUps={followUps}
+            disabled={owing}
+            willGo={late(costs?.ask ?? null)}
+            flash={flash}
+            signal={play.guide.signal("topic-chips")}
+            underRequest={flows.state.request !== null}
+            onAsk={(topic) => {
+              cancelRequest();
               play.ask(topic.id, topic.name);
-            }} />
-        ) : null}
-        {choosing === null ? null : (
-          <Picker
-            inline
-            testId={choosing === "tellOther" ? "picker-tellOther" : `picker-${choosing}`}
-            title={t(PICKER_TITLE[choosing])}
-            groups={groups(choosing)}
-            empty={choosing === "askSource" ? t("picker.source.empty") : t("picker.other.empty")}
-            onPick={(option, group) => choose(choosing, option, group)}
+            }}
+            onFollow={(entry) => {
+              cancelRequest();
+              play.askSource(entry.id, entry.text);
+            }}
             onClose={close}
           />
-        )}
+        ) : null}
+        {panel === "tell" ? (
+          <SayPanel
+            entries={entries}
+            offers={player?.offers.tell ?? []}
+            lang={lang}
+            name={name}
+            disabled={owing}
+            onTell={(entry, how) => {
+              setPanel(null);
+              play.other("tell", { entry: entry.id, how }, entry.text);
+            }}
+            onClose={close}
+          />
+        ) : null}
+        {panel === "entrust" ? (
+          <Picker inline testId="picker-entrust" title={t("asks.title", { name })} groups={groupsOfEntrust()} empty={t("picker.other.empty")} onPick={(option, group) => chooseEntrust(option, group)} onClose={close} />
+        ) : null}
+        {panel === "askSource" ? (
+          <Picker
+            inline
+            testId="picker-askSource"
+            title={t("picker.source.title2")}
+            groups={sourceGroups(entries, lang)}
+            empty={t("picker.source.empty2")}
+            onPick={(option) => {
+              setPanel(null);
+              play.askSource(option.id, option.name);
+            }}
+            onClose={close}
+          />
+        ) : null}
+        {panel === "give" && more !== null ? (
+          <GivePanel
+            give={more.give}
+            name={name}
+            lang={lang}
+            onPromise={(offer) => {
+              setPanel(null);
+              flows.begin("promise", partner, offer);
+            }}
+            onGift={() => setPanel("gift")}
+            onClose={close}
+          />
+        ) : null}
+        {panel === "rest" ? (
+          <RestPanel
+            items={items}
+            name={name}
+            lang={lang}
+            onKeep={keepNow}
+            onGive={() => setPanel("give")}
+            onAccept={(wants) => {
+              setPanel(null);
+              flows.accept(partner, wants);
+            }}
+            onClose={close}
+          />
+        ) : null}
+        {panel === "gift" && gift !== null ? <GiftPanel gift={gift} relation={relation} name={name} lang={lang} disabled={owing} onGive={give} onClose={close} /> : null}
         <RequestCard flows={flows} lang={lang} scene={scene} late={late} owing={owing} />
       </div>
     </section>

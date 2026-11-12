@@ -158,44 +158,44 @@ SLEEP = "sleep"  # the act of a routine in which nobody is to be found
 REASONS: dict[str, tuple[dict[str, str], dict[str, str]]] = {
     "done": (
         {
-            "zh": "「{old}」办成了，接着追踪「{new}」",
-            "en": "“{old}” is done. Now following “{new}”",
+            "zh": "「{old}」办成了，接着办「{new}」",
+            "en": "“{old}” is done. Now on to “{new}”",
         },
         {
-            "zh": "「{old}」办成了，眼下没有别的事项",
-            "en": "“{old}” is done. There is nothing else to follow for now",
+            "zh": "「{old}」办成了，眼下没有别的事要办",
+            "en": "“{old}” is done. There is nothing else to do for now",
         },
     ),
     "stale": (
         {
-            "zh": "「{old}」已经过期，改追踪「{new}」",
-            "en": "“{old}” has lapsed. Now following “{new}”",
+            "zh": "「{old}」过了时候，改办「{new}」",
+            "en": "“{old}” has lapsed. Now on to “{new}”",
         },
         {
-            "zh": "「{old}」已经过期，眼下没有别的事项",
-            "en": "“{old}” has lapsed. There is nothing else to follow for now",
+            "zh": "「{old}」过了时候，眼下没有别的事要办",
+            "en": "“{old}” has lapsed. There is nothing else to do for now",
         },
     ),
-    "new": ({"zh": "有了新的事项：「{new}」", "en": "A new task: “{new}”"}, {"zh": "", "en": ""}),
-    "chosen": ({"zh": "你改为追踪「{new}」", "en": "You now follow “{new}”"}, {"zh": "", "en": ""}),
+    "new": ({"zh": "添了一件事「{new}」", "en": "A new task: “{new}”"}, {"zh": "", "en": ""}),
+    "chosen": ({"zh": "你先办「{new}」", "en": "You do “{new}” first"}, {"zh": "", "en": ""}),
     "waiting": (
         {
-            "zh": "「{old}」眼下只能等，先看「{new}」",
-            "en": "“{old}” can only wait for now. Now following “{new}”",
+            "zh": "「{old}」眼下只能等，先办「{new}」",
+            "en": "“{old}” has to wait for now. Now on to “{new}”",
         },
         {"zh": "", "en": ""},
     ),
     "window": (
         {
-            "zh": "「{new}」的时间到了，改追踪它",
-            "en": "It is time for “{new}”. Now following it",
+            "zh": "「{new}」的时间到了，先办这件",
+            "en": "It is time for “{new}”. On to it",
         },
         {"zh": "", "en": ""},
     ),
     "ready": (
         {
-            "zh": "「{new}」有事可办了，改追踪它",
-            "en": "There is something to do for “{new}” now. Now following it",
+            "zh": "「{new}」现在能办了，先办这件",
+            "en": "“{new}” can be done now. On to it",
         },
         {"zh": "", "en": ""},
     ),
@@ -677,7 +677,7 @@ def follow(env: Env, section: dict[str, Any], sim: Sim | None) -> None:
 # why the task of a promise that was not kept is no longer followed: what it cost (a sentence of
 # its own, with its stop), then the next
 LAPSED = (
-    {"zh": "{lapse}改追踪「{new}」", "en": "{lapse} Now following “{new}”"},
+    {"zh": "{lapse}改办「{new}」", "en": "{lapse} Now on to “{new}”"},
     {"zh": "{lapse}", "en": "{lapse}"},
 )
 

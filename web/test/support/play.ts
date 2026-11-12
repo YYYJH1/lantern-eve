@@ -31,19 +31,32 @@ export const piecesAtRest = (page: Page) =>
     });
   });
 
+/**
+ * Waits for the map to have the town on it and for every piece to stand on its cell, for a test that reads where a figure is and then acts on that place. A page that draws two
+ * frames a second (two cores) has the pieces on their way for seconds, and a point that was read while a figure was on its way is not where the figure is when the click comes.
+ */
+export async function mapAtRest(page: Page): Promise<void> {
+  await mapDrawn(page);
+  await expect.poll(() => piecesAtRest(page), { timeout: 60_000 }).toBe(true);
+}
+
 /** Where the middle of a cell is, in the pixels of the map's own element. */
 export const cellOnScreen = async (page: Page, x: number, y: number) => {
   await mapDrawn(page);
   return page.evaluate(([a, b]) => window.__lantern.view.cellToScreen(a as number, b as number), [x, y]);
 };
 
-/** The note of the slip lies over a part of the map and takes a click meant for it, as the ledger does: a test that clicks the map has them put away first. */
+/** The note of the slip lies over a part of the map and takes a click meant for it, as the ledger does, and so do the small acts that hang over the manager: a test that clicks the map has them put away first. */
 export async function clearTheMap(page: Page): Promise<void> {
   // The presses are the page's own (a card of the days, a recap, may lie over the slip at the moment, and the test does not mean to press through it).
   const head = page.getByTestId("slip-head");
   if ((await head.count()) > 0 && (await head.getAttribute("aria-expanded")) === "true") await head.evaluate((el) => (el as HTMLElement).click());
   const board = page.getByTestId("board");
   if ((await board.count()) > 0 && (await board.getAttribute("data-open")) === "true") await page.getByTestId("board-tabs").locator("button.is-on").evaluate((el) => (el as HTMLElement).click());
+  // The acts that hang over the manager and over a pair that talks (listen in, look, speak up) lie over a few cells of the map, as the note of the slip does.
+  await page.evaluate(() => {
+    for (const chip of document.querySelectorAll<HTMLElement>(".map-chip")) chip.style.display = "none";
+  });
 }
 
 /**
@@ -100,16 +113,7 @@ export const onTheMap = (page: Page, spot: { x: number; y: number }): Promise<bo
     return document.elementFromPoint(box.left + x, box.top + y) === map;
   }, spot);
 
-/** Opens the note of the slip where a talk, the ledger or the notebook folded it, for a test that reads what is in it. */
-export async function openTheNote(page: Page): Promise<void> {
-  const head = page.getByTestId("slip-head");
-  // The page folds the note a moment after a talk begins, which a test that has just started one can be ahead of: it looks again after a moment.
-  await expect(async () => {
-    if ((await head.getAttribute("aria-expanded")) === "false") await head.click({ timeout: 2_000 });
-    await page.waitForTimeout(250);
-    expect(await head.getAttribute("aria-expanded")).toBe("true");
-  }).toPass({ timeout: 15_000 });
-}
+export { openTheNote } from "./note.ts";
 
 /**
  * A click on a point of the map. The note of the slip and the ledger are put away first. Where something else of the page still lies over the point

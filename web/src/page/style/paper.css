@@ -243,7 +243,7 @@ svg.circle {
 
 /* English is not spaced out as the Chinese titles are. */
 
-:root:lang(en) :is(.sheet-title, .paper-title, .ending-card-title, .ending-title, .menu-head h2, .menu-heading, .stmt-part-title, .opening-chapter, .opening-title, .opening-things li strong, .chips-title, .picker-title, .request-title, .picker-heading, .person-name, .person-subtitle, .gazette-label, .gazette-lead, .gazette-issue, .night-issue, .pairing-title, .stated-who, .drawer-tab, .opening-settings-head h2, .ink-act, .ink-frame, .hint-log-title) {
+:root:lang(en) :is(.sheet-title, .paper-title, .ending-card-title, .ending-title, .menu-head h2, .menu-heading, .stmt-part-title, .opening-chapter, .opening-title, .opening-things li strong, .chips-title, .picker-title, .request-title, .picker-heading, .person-name, .person-subtitle, .gazette-label, .gazette-lead, .gazette-issue, .night-issue, .pairing-title, .stated-who, .drawer-tab, .opening-settings-head h2, .ink-act, .ink-frame) {
   letter-spacing: 0.02em;
 }
 

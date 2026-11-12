@@ -1,14 +1,15 @@
 import { expect, test } from "@playwright/test";
 import type { NotebookEntry } from "../../src/page/notebook.ts";
 import type { Judgment, Task } from "../../src/page/slice.ts";
-import { examplePair, judged, proofAppeared, STEPS, TASK, Tutorial, type TutorialContext } from "../../src/page/tutorial.ts";
+import { CLERK, examplePair, judged, proofAppeared, STEPS, TASK, Tutorial, type TutorialContext } from "../../src/page/tutorial.ts";
 
 const name = (en: string) => ({ zh: en, en });
 
 const task = (id: string, state: Task["state"] = "open"): Task => ({ id, kind: "need", job: null, text: name(id), why: null, next: null, state, blocker: null, action: null, window: null, expected: null });
 
-const entry = (id: string, source: NotebookEntry["source"], marks: NotebookEntry["marks"] = []): NotebookEntry => ({ id, text: name(id), source, marks, chain: [] });
-const heard = (hand: number): NotebookEntry["source"] => ({ kind: "heard", who: name("someone"), hand });
+const entry = (id: string, source: NotebookEntry["source"], marks: NotebookEntry["marks"] = []): NotebookEntry => ({ id, text: name(id), source, at: null, marks, chain: [] });
+/** A line heard from somebody who saw it themselves (first hand), who heard it from another (second), or who cannot say from whom (any later). */
+const heard = (hand: number): NotebookEntry["source"] => ({ kind: "heard", who: name("someone"), whoId: "someone", how: hand === 1 ? "saw" : hand === 2 ? "heard" : "unsure", via: hand === 2 ? name("another") : null });
 
 /** A snapshot of the game, with what a test says of it and nothing else. */
 function game(over: { tasks?: Task[]; entries?: NotebookEntry[]; judgments?: Judgment[]; verbs?: string[]; refused?: boolean } = {}): TutorialContext {
@@ -26,8 +27,9 @@ const SAW = entry("n2", heard(1));
 const PROOF = [task(TASK.bamboo, "blocked"), task(TASK.proof)];
 
 test.describe("the tutorial of the first day", () => {
-  test("has six steps in an order, and does not begin by itself", () => {
-    expect(STEPS).toEqual(["goal", "ask", "refusal", "source", "compare", "evening"]);
+  test("has four steps in an order, the first two of them to the two people the day is about, and does not begin by itself", () => {
+    expect(STEPS).toEqual(["granny", "clerk", "compare", "evening"]);
+    expect(CLERK).toBe("zhou_huoji");
     const tutorial = new Tutorial();
     expect(tutorial.phase).toBe("off");
     expect(tutorial.on).toBe(false);
@@ -39,22 +41,18 @@ test.describe("the tutorial of the first day", () => {
   test("goes from card to card as the game says each step is done, and never by the clock", () => {
     const tutorial = new Tutorial();
     tutorial.begin();
-    expect(tutorial.card).toBe("goal");
-    // The goal and the first job are two cards one after the other: the first asks nothing.
+    expect(tutorial.card).toBe("granny");
+    // The goal and the first job are on one card: the card is put away, and the step waits for the thing.
     tutorial.dismiss(game());
-    expect(tutorial.card).toBe("ask");
-    tutorial.dismiss(game());
-    expect([tutorial.phase, tutorial.step]).toEqual(["doing", "ask"]);
+    expect([tutorial.phase, tutorial.step]).toEqual(["doing", "granny"]);
     // Time passes (the frames come and go), and the step waits for the thing and not for the clock.
     expect(tutorial.update(game())).toBe(false);
     expect(tutorial.phase).toBe("doing");
-    // The request was turned down: the task is blocked, and the next card is the refusal.
+    // The request was turned down: the task is blocked, and the next card is the clerk's, which says what the refusal was.
     expect(tutorial.update(game({ tasks: [task(TASK.bamboo, "blocked")] }))).toBe(true);
-    expect(tutorial.card).toBe("refusal");
+    expect(tutorial.card).toBe("clerk");
     tutorial.dismiss(game({ tasks: [task(TASK.bamboo, "blocked")] }));
-    expect(tutorial.card).toBe("source");
-    tutorial.dismiss(game({ tasks: [task(TASK.bamboo, "blocked")] }));
-    expect([tutorial.phase, tutorial.step]).toEqual(["doing", "source"]);
+    expect([tutorial.phase, tutorial.step]).toEqual(["doing", "clerk"]);
     // The clerk's word and the rumour are both in the notebook: the task that says so appears.
     tutorial.update(game({ tasks: PROOF, entries: [RUMOUR, SAW], verbs: ["move", "judge"] }));
     expect(tutorial.card).toBe("compare");
@@ -79,26 +77,21 @@ test.describe("the tutorial of the first day", () => {
     const refused = new Tutorial();
     refused.begin();
     refused.dismiss(game());
-    refused.dismiss(game());
     refused.update(game({ refused: true }));
-    expect(refused.card).toBe("refusal");
+    expect(refused.card).toBe("clerk");
     const granted = new Tutorial();
     granted.begin();
-    granted.dismiss(game());
     granted.dismiss(game({ tasks: [task(TASK.bamboo, "done")] }));
-    expect(granted.card).toBe("refusal");
+    expect(granted.card).toBe("clerk");
   });
 
   test("skips a step whose thing is done already, and shows the card of the next that is due", () => {
     const tutorial = new Tutorial();
     tutorial.begin();
-    tutorial.dismiss(game());
     const late = game({ tasks: [...PROOF], entries: [RUMOUR, SAW], refused: true });
     tutorial.dismiss(late);
-    // The ask is done at once, the refusal card comes, then the source, and with the proof there the compare card follows it.
-    expect(tutorial.card).toBe("refusal");
-    tutorial.dismiss(late);
-    expect(tutorial.card).toBe("source");
+    // The ask is done at once, the clerk's card comes, and with the proof there the compare card follows it.
+    expect(tutorial.card).toBe("clerk");
     tutorial.dismiss(late);
     expect(tutorial.card).toBe("compare");
   });
@@ -115,7 +108,7 @@ test.describe("the tutorial of the first day", () => {
     const open = new Tutorial();
     open.begin();
     const ctx = game({ tasks: [...PROOF, task(TASK.evening)], entries: [RUMOUR, SAW], refused: true, verbs: ["move"] });
-    for (let i = 0; i < 5; i++) open.dismiss(ctx);
+    for (let i = 0; i < 3; i++) open.dismiss(ctx);
     expect(open.card).toBe("evening");
   });
 

@@ -10,9 +10,9 @@ Modules
               ``TOWN``, ``CAST``, and for the cognition model ``TABLES`` and ``SCRIPT``
 ``sentences``  generated from ``content/tables/sentences.yaml``: the lines the townsfolk say
 ``voice_data`` generated from ``content/lines``: the ways each of the twenty people says the
-              fixed words of the town and frames what they tell, with ``voices`` (the choice among
-              them: by the person, the kind of line and a tick, in integers, so that the state
-              never knows)
+              fixed words of the town and frames what they tell, and the names each uses for the
+              others, with ``voices`` (the choice among them: by the person, the kind of line and
+              a tick, in integers, so that the state never knows)
 ``roles``     the ten people who carry the five days: the lists of their own in ``content/lines``
               (a greeting as a talk opens, a last word as the manager leaves, an epilogue for the
               ending page), each chosen by the state of the game as the first entry whose
@@ -48,14 +48,22 @@ Modules
               there make of it), ``objection`` (Granny Li's objection to lending the bamboo, and
               what Li Da has to know before he moves), ``peace`` (the deeds that lower the grudge
               between the families), ``repute`` (trust and the stars),
-              ``offers`` (what the frame puts forward), ``preview`` (what an action would ask,
-              give and cost, and what stands in its way, before it is made), ``reveal`` (the
-              manager's part of the ending), ``pace`` (how long their acts take, and the world
+              ``offers`` (what the frame puts forward), ``context`` (what a talk puts first: the
+              request, the return a person asks, the promises to keep and the promise to offer),
+              ``hearts`` (how close each person stands, for display), ``gifts`` (the small things
+              the manager gives, and what they learn of what people like), ``roster`` (the people,
+              one row each), ``encounters`` (where and when the manager met each person, what
+              each asked in return, where each note was written), ``unavailable`` (why an act is
+              off now), ``preview`` (what an action would ask, give and cost, and what stands in
+              its way, before it is made), ``reveal``
+              (the manager's part of the ending), ``pace`` (how long their acts take, and the world
               held while they talk) and ``converse`` (what the actions share)
 ``goals``     the festival's goals: the call for helpers and who joins (``goals_call``), the
               materials, the work on the bridge and the detour (``goals_work``), the flags, metrics
               and goals of the script (``goals_rules``, ``goals_state``), the turnout and the
-              ending with its reveal (``goals_ending``)
+              ending with its reveal (``goals_ending``) and the festival of the last night, which
+              a page stages from it (``festival``), and the moments of the game that the page
+              shows and the world is held for (``moments``)
 ``agenda``     the tasks the manager is told to do and the one they follow (``agenda_terms`` is the
               vocabulary their conditions are written in, and ``agenda_facts`` the numbers their
               words may carry), with ``cards``, the card of each person the manager has met or
@@ -187,16 +195,24 @@ and these three, which the subsystems of the festival manager and of the festiva
                     list is empty outside a conversation), and the person of the conversation
                     while a model is asked for their words (``replies``), else null
     "notebook" [{"id": str, "text": {"zh": str, "en": str},
-                 "source": {"kind": "seen"} | {"kind": "heard", "who": name, "hand": int},
+                 "source": {"kind": "seen"} | {"kind": "heard", "who": name, "how": "saw" |
+                 "heard" | "unsure", "via"?: name},
+                 "at": {"tick", "day", "hour", "minute", "place": id | null} | null,
                  "marks": [str], "chain": [name | null]}, ...]   what the player has heard and
-                    seen, in the order it was written; a ``name`` is ``{"zh", "en", "id"}``
+                    seen, in the order it was written; a ``name`` is ``{"zh", "en", "id"}``; what
+                    a teller said of how they know it is ``how`` (``via``: the person they heard
+                    it from), and no frame says how many hands it passed through; ``at`` is when
+                    and where the manager learned it (``encounters``)
     "ending"   null before the last night, then in the frame of the call that made the ending the
                     ``ending`` event as it was emitted (``{"kind", "tick", "ending", "label",
-                    "hidden", "inputs", "passage", "promised", "turnout", "reveal", "epilogue"}``;
-                    the ``epilogue`` is ``[{"npc", "id", "text": {"zh", "en"}}]``, one or two
-                    sentences for each of the ten people who carry the days, in the order of the
-                    cast), and in every frame after it the same without ``"reveal"`` and
-                    ``"epilogue"``; ``Game.ending_json()`` has the whole ending at any time
+                    "hidden", "inputs", "passage", "promised", "turnout", "festival", "reveal",
+                    "epilogue"}``; the ``festival`` is ``{"route": "bridge" | "lane" | "none",
+                    "together": bool, "lighter": [person], "bearers": {place: int}, "named":
+                    [{"npc", "place"}]}`` (``festival``); the ``epilogue`` is ``[{"npc", "id",
+                    "text": {"zh", "en"}}]``, one or two sentences for each of the ten people who
+                    carry the days, in the order of the cast), and in every frame after it the
+                    same without ``"reveal"`` and ``"epilogue"``; ``Game.ending_json()`` has the
+                    whole ending at any time
 
 and these three, which ``agenda`` adds (the shapes are in its docstring and in ``cards``)::
 
@@ -265,6 +281,41 @@ call that made them::
                     most urgent task that is blocked and what blocks it, and the first thing to do
                     tomorrow
 
+and these, which ``roster``, ``context``, ``gifts`` and ``unavailable`` add (the shapes are in their
+docstrings)::
+
+    "people"   [{"id", "known": bool, "hearts": 0..10, "likes_known":
+                 [{"item", "like"}], "gifts": int, "card": {...} | null, "met": [...],
+                 "asked": {...} | null}, ...]   the twenty
+                    people in the order of the cast: whether the manager has talked with them,
+                    how close they stand (half hearts), what the manager
+                    learned of what they like, the gifts they took, and for a person who is known
+                    the facts for the card of the hearts (among them ``waiting``, how many more
+                    acquaintances they wait for before they join the helpers, and ``joined``,
+                    whether they have), where and when the talks began and the return they asked
+                    (``roster``, ``encounters``)
+    "player.talk"   gains, in a talk, ``ask_for`` (the one request to put forward), ``asks_more``
+                    (the others), ``wants`` (the return the person asks), ``keep`` (the promise to
+                    keep first), ``give`` (the promise to offer) and ``queue`` (what the talk puts
+                    forward after the four acts, in order), see ``context``
+    "hud.gift"      ``{"day", "items", "given", "to"}``, the small things of the day (``gifts``)
+    "hud.verbs_off" ``{verb: reason}`` for each act that is not on ``hud.verbs`` (``unavailable``)
+    "hud.bridge"    gains ``short`` (the helpers the crew lacks) and ``families_missing`` (the
+                    families with nobody yet), see ``goals_work.shortfall``
+
+and these two, which ``moments`` adds to the frame of a game whose page has said that it shows the
+moments of the festival (``player action moment``, ``watch``) and to no other::
+
+    "moments"  [{"kind": "echo" | "together_work" | "both_banks", "tick": int, "place": id,
+                 "x": int, "y": int, "prop"?: id, "from"?: id, "round"?: int}, ...]
+                    the moments so far, in the order they happened, each kind at most once; an
+                    ``echo`` has the ``prop`` that came back to the manager and who they heard it
+                    from (``from``), and no count of the tellings it went through; a
+                    ``together_work`` has the game day of the morning (``round``)
+    "moment_hold" [kind, ...]   the moments the world is held for, oldest first: the world does not
+                    simulate until the page has lifted each with ``{"type": "moment", "op":
+                    "release", "kind": kind}``
+
 and this one, which ``board`` adds to the frame of a world that keeps the goals of the festival
 (the shape and what each part is made of are in its docstring)::
 
@@ -316,17 +367,22 @@ is true in the game, or what a person believes, changes neither::
                                                               and not from which story is true
     lanterns[]              public  household place x y       a lantern hung at the door of a
                                                               household that promised
-    hud                     known   keen spent held cap       the side panel: the money of the game,
-                                    stage cloud local verbs   what can be done, standing, promises,
-                                    reputation resources      the festival
-                                    pledges promised turnout
-                                    bridge ending
+    hud                     known   keen spent held cap       the side panel: money, what can be
+                                    stage cloud local verbs   done and why not, standing, promises,
+                                    verbs_off reputation      the day's gifts
+                                    resources pledges gift
+                                    promised turnout bridge
+                                    ending
     player                  known   x y activity talk costs   where the manager stands, whom they
                                     look offers topics        talk to, what acts cost, what is in
                                                               reach, what to say
     player.thinking         public  all                       whose words are being waited for
-    notebook[]              known   id text source marks      what the manager was told or saw, and
-                                    chain                     the hops of the trail they asked about
+    people[]                known   id known hearts           who each person is, how close they
+                                    likes_known gifts card    stand, what the manager learned of
+                                    met asked                 them, where they met
+    notebook[]              known   id text source at marks   what the manager was told or saw and
+                                    chain                     when, and the hops of the trail they
+                                                              asked about
     judgments[]             known   a b relation made         how two notes stand to each other, as
                                                               the manager judged it and the core
                                                               found it holds
@@ -363,6 +419,11 @@ is true in the game, or what a person believes, changes neither::
                                     window stop deadline      the work, the last statement in
                                     needs statement truth     public, the grudge
                                     peace
+    moments[]               known   kind tick place x y prop  the moments of the festival so far,
+                                    from round                and for an echo who brought the words
+                                                              back
+    moment_hold             known   all                       the moments the world is held for,
+                                                              until the page lets it go on
 
 The events, by kind (``projection.visible`` tells the ones a page may show)::
 
@@ -378,8 +439,12 @@ The events, by kind (``projection.visible`` tells the ones a page may show)::
     entrust_done entrust_withdrawn testified
     convened pledged pledge_empty pledge_kept
     pledge_broken spoke stated feast answered
+    hearts gifted                                   known   how close a person stands to the manager
+                                                            now, and how a small thing was taken
     rally joined promised agreed flag goal ending   known   the state of the festival, and the deeds
     eased                                                   that ease the grudge
+    moment                                          known   a moment of the festival that the page
+                                                            stops the world for
     task_changed                                    known   which task is followed, and why
     commitment recap                                known   a promise made to the manager, broken or
                                                             taken back; the recap of the morning
@@ -403,6 +468,9 @@ content that anyone may read from the first minute, so it is ``public``::
     cast[]                  public  id zh en role token       who each person is, as the page draws
                                     family home work          them: names, role, family, home and
                                                               workplace
+    cast[].intro            public  all                       what the town says in a line of who
+                                                              the person is, static content, the
+                                                              same in every game
     cast[].bio              public  all                       what the town says of the person,
                                                               static content that is the same in
                                                               every game
@@ -421,11 +489,13 @@ The scene
 ``width``, ``height``, ``layers`` (``terrain`` with the rows and the legend of characters,
 ``buildings`` with one rectangle per footprint, ``barriers``), ``places`` (id, ``zh`` and ``en``
 names, kind, indoor, rectangle, door, stands, cells), ``cast`` (id, ``zh`` and ``en`` names, role,
-``bio``, which is what the town says of the person, two sentences in both languages, ``token`` with
+``bio``, which is what the town says of the person, two sentences in both languages, ``intro``, the
+line the town says of who they are, ``token`` with
 the surname character and the English initial drawn on the piece, family, home, work),
-``families``, ``items``, ``activities``, ``weather``, ``phases``, ``time`` and ``player`` (the
-festival manager: ``token`` like those of the cast, ``start`` cell, and ``things``, the names of the
-things of the story). Every name is ``{"zh", "en"}`` or a pair of fields with those names.
+``families``, ``items``, ``gifts`` (the small things the market gives away each day),
+``activities``, ``weather``, ``phases``, ``time`` and ``player`` (the festival manager: ``token``
+like those of the cast, ``start`` cell, and ``things``, the names of the things of the story). Every
+name is ``{"zh", "en"}`` or a pair of fields with those names.
 
 The terrain legend has the ids ``river``, ``bridge``, ``street``, ``lane``, ``grass``, ``bank``,
 ``pier``, ``wall`` and ``building`` (the last two block). A place has one of the kinds ``house``,

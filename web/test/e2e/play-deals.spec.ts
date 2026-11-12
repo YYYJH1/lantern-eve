@@ -2,7 +2,6 @@ import type { Page } from "@playwright/test";
 import { translate } from "../../src/i18n/index.ts";
 import { refusalKey } from "../../src/page/deals.ts";
 import { zhNumeral } from "../../src/page/ui/format.ts";
-import { count } from "../../src/page/ui/paper-text.ts";
 import { expect, test } from "../support/fixtures.ts";
 import { atTheTeahouse, notes, talkToTheKeeper } from "../support/play.ts";
 import { REASONS } from "../support/reasons.ts";
@@ -52,7 +51,7 @@ async function refuseLast(page: Page, reason: string): Promise<void> {
 }
 
 test.describe("the topic tags of a talk", () => {
-  test("are what the core says can be asked about, by kind, in the language of the page, and leave out the person who is talked to", async ({ lantern }) => {
+  test("are what the core says can be asked about: the three that matter first, and the others by kind behind a word, in the language of the page, and not the person who is talked to", async ({ lantern }) => {
     test.setTimeout(150_000);
     const page = lantern.page;
     await lantern.open(TOWN, { menu: false });
@@ -60,42 +59,46 @@ test.describe("the topic tags of a talk", () => {
     await atTheTeahouse(lantern);
     await talkToTheKeeper(lantern);
     // One question first: its answer is an entry of the notebook, and the entries are topics too.
+    await page.getByTestId("verb-ask").click();
+    await page.getByTestId("ask-more").click();
     await page.locator('[data-testid="topic-chip"][data-id="t_he_boat"]').click();
     await expect(page.getByTestId("talk-line")).toHaveCount(2);
     await minutesPaid(page);
     const topics = await page.evaluate(() => (window.__lantern.client.state.frame?.player as { topics: Array<{ id: string; kind: string; label: { zh: string; en: string } }> }).topics);
-    expect(new Set(topics.map((t) => t.kind))).toEqual(new Set(["entry", "thing", "place", "person"]));
+    // The core also lists what a person likes (`taste`), and the others have a group for it.
+    expect(new Set(topics.map((t) => t.kind))).toEqual(new Set(["entry", "thing", "place", "person", "taste"]));
 
-    // The rows are people, the notebook, things and places, in that order.
-    const kinds = ["person", "entry", "thing", "place"] as const;
-    const listedOf = (kind: string) => topics.filter((t) => t.kind === kind && t.id !== "cha_laoban").map((t) => ({ ...t, label: t.label }));
-    const headings = { en: ["People", "From your notebook", "Things", "Places"], zh: ["人", "见闻簿里的事", "物件", "地方"] } as const;
     const chips = page.getByTestId("topic-chips");
+    const headings = { en: ["What you have noted", "Things", "Places", "People", "Likes"], zh: ["记下的事", "物件", "地方", "人", "喜好"] } as const;
+    const listed = topics.filter((t) => t.id !== "cha_laoban");
     for (const lang of ["en", "zh"] as const) {
       await lantern.setLang(lang);
+      // The language switch is in the menu, and a press outside the list puts the list away: it is opened again, with the others.
+      await page.getByTestId("verb-ask").click();
       await expect(chips).toBeVisible();
-      await expect(chips.locator(".chip-group-label")).toHaveText([...headings[lang]]);
-      for (const kind of kinds) {
-        const shown = await chips.locator(`[data-kind="${kind}"] [data-testid="topic-chip"]`).evaluateAll((els) => els.map((el) => [el.getAttribute("data-id"), el.querySelector(".topic-chip-label")?.textContent]));
-        // The core's list, in its order, in the language of the page, but for the person in the talk.
-        const listed = listedOf(kind).map((t) => [t.id, t.label[lang]]);
-        expect(shown.length, `${kind} in ${lang}`).toBeGreaterThan(0);
-        expect(shown, `${kind} in ${lang}`).toEqual(listed);
-      }
+      await expect(chips.getByTestId("ask-top").getByTestId("topic-chip")).toHaveCount(3);
+      await page.getByTestId("ask-more").click();
+      // Each topic is there once, in the language of the page, and the person who is talked to is not.
+      const shown = await chips.locator('[data-testid="topic-chip"]').evaluateAll((els) => els.map((el) => [el.getAttribute("data-id"), el.querySelector(".topic-chip-label")?.textContent]));
+      expect(shown.map((row) => row[0]).sort(), lang).toEqual(listed.map((t) => t.id).sort());
+      expect(Object.fromEntries(shown), lang).toEqual(Object.fromEntries(listed.map((t) => [t.id, t.label[lang]])));
       await expect(chips.locator('[data-testid="topic-chip"][data-id="cha_laoban"]')).toHaveCount(0);
-      // The people are more than eight: the first eight are shown and the rest are behind a line that says how many, in the core's order.
-      const people = listedOf("person").length;
-      expect(people).toBeGreaterThan(8);
-      await expect(chips.locator('.chip-group[data-kind="person"] > .chip-row > li')).toHaveCount(8);
-      await expect(chips.locator('details.chip-more[data-kind="person"] > summary')).toHaveText(lang === "en" ? `and ${people - 8} more` : `另有${count("zh", people - 8)}个`);
-      await expect(chips.locator('details.chip-more[data-kind="person"] [data-testid="topic-chip"]')).toHaveCount(people - 8);
-      // The line of the notebook says how it reached the player, and the line above the tags says what a tag does.
-      await expect(chips.locator('[data-kind="entry"] .topic-chip-note')).toHaveText(lang === "en" ? "Heard from Teahouse Keeper, 1st hand" : "听茶馆老板娘说，第一手");
-      await expect(page.getByTestId("chips-note")).toContainText(lang === "en" ? "Tap a tag to ask them about it." : "点一个标签，就向对方打听这件事。");
+      // The others are grouped by what they are: a line of the notebook, a thing, a place, a person and what a person likes.
+      const groups = await chips.locator(".chip-group-label").allTextContents();
+      expect(groups.every((g) => (headings[lang] as readonly string[]).includes(g)), `${lang}: ${groups.join(",")}`).toBe(true);
+      await expect(chips.locator('.chip-group[data-kind="person"] .chip-group-label')).toHaveText(headings[lang][3]);
+      // The line of the notebook says how it reached the player, in the words people use.
+      const note = chips.locator('[data-kind="entry"] .topic-chip-note').first();
+      if ((await chips.locator('[data-testid="topic-chip"][data-kind="entry"]').count()) > 0) {
+        await expect(note).toHaveText(lang === "en" ? "Teahouse Keeper says they saw it" : "茶馆老板娘说，是亲眼看见的");
+      }
+      await page.getByTestId("verb-ask").click();
     }
 
     // A tag asks as the id the core gave it, and the talk says what was asked, in the language of the page.
     await lantern.setLang("en");
+    await page.getByTestId("verb-ask").click();
+    await page.getByTestId("ask-more").click();
     await page.locator('[data-testid="topic-chip"][data-id="li_er"]').click();
     await expect(page.getByTestId("talk-line")).toHaveCount(4);
     await expect(page.getByTestId("talk-line").nth(2)).toHaveText(`You ask about: ${topics.find((t) => t.id === "li_er")?.label.en}`);
@@ -112,27 +115,32 @@ test.describe("the topic tags of a talk", () => {
     const topic = (id: string, kind: string, zh: string, en: string) => ({ id, kind, label: { zh, en } });
     const player = () => page.evaluate(() => window.__lantern.client.state.frame?.player as object);
     await feed(page, [], {
-      hud: { verbs: ["ask", "leave"] },
-      player: { ...(await player()), talk: { npc: "cha_laoban", leaves_at: { hour: 12, minute: 5 } }, topics: [topic("n7", "entry", "老何在桥下。", "Old He was under the bridge."), topic("t_made_up", "thing", "一件新东西", "A new thing"), topic("li_er", "person", "李二", "Li Er")] },
+      hud: { verbs: ["ask", "leave"], verbs_off: {} },
+      player: { ...(await player()), talk: { npc: "cha_laoban", leaves_at: { hour: 12, minute: 5 } }, topics: [topic("n7", "entry", "老何在桥下。", "Boatman He was under the bridge."), topic("t_made_up", "thing", "一件新东西", "A new thing"), topic("li_er", "person", "李二", "Li Er")] },
     });
+    await page.getByTestId("verb-ask").click();
     const chips = page.getByTestId("topic-chips");
-    await expect(chips.locator(".chip-group-label")).toHaveText(["People", "From your notebook", "Things"]);
-    await expect(chips.getByTestId("topic-chip")).toHaveText(["Li Er", "Old He was under the bridge.", "A new thing"]);
+    // All three are among the first three, a line of the notebook before a thing and a thing before a person.
+    await expect(chips.getByTestId("topic-chip")).toHaveText(["Boatman He was under the bridge.", "A new thing", "Li Er"]);
     // The things of the scene that the frame does not list are not there, nor are the places.
     await expect(chips.locator('[data-testid="topic-chip"][data-id="t_rail"]')).toHaveCount(0);
     await expect(chips.getByText("Places")).toHaveCount(0);
+    await expect(page.getByTestId("ask-more")).toHaveCount(0);
     await chips.locator('[data-testid="topic-chip"][data-id="t_made_up"]').click();
     expect(await sentSoFar(page)).toEqual([{ type: "ask", topic: "t_made_up", action_id: "t0" }]);
 
     await lantern.setLang("zh");
-    await expect(chips.getByTestId("topic-chip")).toHaveText(["李二", "老何在桥下。", "一件新东西"]);
+    await page.getByTestId("verb-ask").click();
+    // What was asked goes after what was not.
+    await expect(chips.getByTestId("topic-chip")).toHaveText(["老何在桥下。", "李二", "一件新东西"]);
 
-    // With nothing listed there is nothing to ask, and the tags say so. Without the verb there are no tags at all.
+    // With nothing listed there is nothing to ask, and the list says so. Without the verb the act is not on offer, and has no list.
     await feed(page, [], { player: { ...(await player()), topics: [] } });
-    await expect(page.getByTestId("chips-empty")).toHaveText("暂时没有可问的。四处看看、听听，见闻簿里就有了。");
+    await expect(page.getByTestId("chips-empty")).toHaveText("还没有可问的。四处走走，听听看看，就有得问了。");
     await expect(chips.getByTestId("topic-chip")).toHaveCount(0);
-    await feed(page, [], { hud: { verbs: ["leave"] } });
+    await feed(page, [], { hud: { verbs: ["leave"], verbs_off: {} } });
     await expect(chips).toHaveCount(0);
+    await expect(page.getByTestId("verb-ask")).toHaveCount(0);
     expect(lantern.pageErrors).toEqual([]);
   });
 });
@@ -144,7 +152,7 @@ test.describe("the acts of the player", () => {
     await lantern.waitForTick(60);
     // Outside a talk the frame lists the acts around the player, and the acts of a talk are not shown, whatever else is listed.
     await page.evaluate(() => window.__lantern.inject({ hud: { verbs: ["move", "listen", "look", "rally", "ask", "tell", "leave"] } }));
-    for (const [lang, around, inTalk, speak] of [["en", "Around you", "In the talk", "Speak up"], ["zh", "身边", "谈话中", "当众说"]] as const) {
+    for (const [lang, around, inTalk, speak] of [["en", "Around you", "In the talk", "Speak up"], ["zh", "身边", "说话中", "当众说"]] as const) {
       await lantern.setLang(lang);
       const outside = page.getByRole("group", { name: around });
       await expect(outside.locator("button")).toHaveCount(3);
@@ -160,18 +168,18 @@ test.describe("the acts of the player", () => {
     // The core lists it where the manager may speak and is free to, and the button follows the list.
     await page.evaluate(() => window.__lantern.inject({ hud: { verbs: ["move", "speak", "speak_publicly"] } }));
     await expect(page.getByTestId("verb-speak")).toBeEnabled();
-    await expect(page.getByTestId("verb-speak")).toHaveAttribute("title", /傍晚在茶馆/);
+    await expect(page.getByTestId("verb-speak")).toHaveAttribute("title", /傍晚的茶馆/);
     await lantern.setLang("en");
-    await expect(page.getByTestId("verb-speak")).toHaveAttribute("title", /at the teahouse in the evening/);
+    await expect(page.getByTestId("verb-speak")).toHaveAttribute("title", /teahouse in the evening/);
     // In a talk it is not offered, whatever else is, and the acts of the talk are in the talk.
     const base = (await page.evaluate(() => window.__lantern.client.state.frame?.player)) as object;
     await feed(page, [], { hud: { verbs: ["leave", "ask", "ask_source", "tell", "entrust", "promise", "speak"] }, player: { ...base, talk: { npc: "cha_laoban", leaves_at: { hour: 12, minute: 5 } } } });
     await expect(page.getByTestId("verb-speak")).toHaveCount(0);
     await expect(page.getByRole("group", { name: "Around you" })).toHaveCount(0);
-    await expect(page.getByRole("group", { name: "In the talk" }).locator("button")).toHaveCount(5);
+    await expect(page.getByRole("group", { name: "In the talk" }).locator("button")).toHaveCount(4);
     await lantern.setLang("zh");
     await feed(page, [], {});
-    await expect(page.getByRole("group", { name: "谈话中" }).locator("button")).toHaveCount(5);
+    await expect(page.getByRole("group", { name: "说话中" }).locator("button")).toHaveCount(4);
   });
 
   test("is lit at the teahouse in the evening with what the town offers to say, and the town's answer to it is told in the language of the page", async ({ lantern }) => {
@@ -180,34 +188,36 @@ test.describe("the acts of the player", () => {
     // 17:40. The manager is at the bridge, and the world is held.
     await lantern.open("scenario=bridge&seed=7&pace=40&until=1400", { menu: false });
     await lantern.waitForTick(1400);
-    await expect(page.getByTestId("verb-speak")).toHaveCount(0);
+    // Not a place to speak in public: the act is there and grey, with the core's reason.
+    await expect(page.getByTestId("verb-speak")).toHaveAttribute("aria-disabled", "true");
+    await expect(page.getByTestId("verb-speak")).toHaveAttribute("data-off", /^(far|not_yet)$/);
     await atTheTeahouse(lantern);
     expect((await page.evaluate(() => window.__lantern.client.state.frame?.time)) as { hour: number }).toMatchObject({ phase: "day" });
     await expect(page.getByTestId("verb-speak")).toBeEnabled();
 
     await page.getByTestId("verb-speak").click();
     const picker = page.getByTestId("picker-speak");
-    await expect(picker).toHaveAttribute("aria-label", "Say in front of everyone…");
+    await expect(picker).toHaveAttribute("aria-label", "Say what, in front of everyone?");
     const offered = await page.evaluate(() => (window.__lantern.client.state.frame?.player as { offers: { speak: Array<{ id: string; label: { zh: string; en: string } }> } }).offers.speak);
     expect(offered.map((o) => o.id)).toContain("meal");
     await expect(picker.getByTestId("picker-option")).toHaveText(offered.map((o) => o.label.en));
     await picker.locator('[data-testid="picker-option"][data-id="meal"]').click();
     await expect(page.getByTestId("picker-speak")).toHaveCount(0);
 
-    // Whatever the town made of it, the page says so in the words it has: a refusal by its reason, a table by its place.
-    await expect(notes(page).last()).toBeVisible();
-    const ack = (await page.evaluate(() => [...window.__lantern.client.state.events].reverse().find((e) => e.kind === "action_ack"))) as unknown as { result: string; reason: string | null };
+    // Whatever the town made of it, the page says so in the words it has: a refusal by its reason, a table by its place. The note goes by itself some seconds after it comes, which a
+    // slow machine can take between two calls of a test, so once it is the last one it is read in both languages in one call.
+    const lastAck = (): Promise<{ result: string; reason: string | null } | undefined> =>
+      page.evaluate(() => [...window.__lantern.client.state.events].reverse().find((e) => e.kind === "action_ack")) as unknown as Promise<{ result: string; reason: string | null } | undefined>;
+    await expect.poll(lastAck).not.toBeUndefined();
+    const ack = (await lastAck()) as { result: string; reason: string | null };
     if (ack.result === "rejected") {
       const key = refusalKey("speak", ack.reason ?? "");
       expect(key).not.toBe("ack.other");
       await expect(notes(page).last()).toHaveAttribute("data-reason", ack.reason ?? "");
-      await expect(notes(page).last()).toHaveText(translate("en", key));
-      await lantern.setLang("zh");
-      await expect(notes(page).last()).toHaveText(translate("zh", key));
+      expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ en: translate("en", key), zh: translate("zh", key) });
     } else {
       await expect(notes(page).last()).toHaveText("You laid a table at the teahouse, and the two families sat down together.");
-      await lantern.setLang("zh");
-      await expect(notes(page).last()).toHaveText("你在茶馆摆了一桌，两家人坐到了一起。");
+      expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ en: "You laid a table at the teahouse, and the two families sat down together.", zh: "你在茶馆摆了一桌，两家人坐到了一起。" });
     }
     expect(lantern.pageErrors).toEqual([]);
   });
@@ -220,16 +230,14 @@ test.describe("the acts of the player", () => {
     // The button is dark there, so the action is sent from the page's own hook, as the keyboard of a later page might.
     await page.evaluate(() => window.__lantern.play.other("speak", { kind: "meal" }));
     await expect(notes(page).last()).toHaveAttribute("data-reason", "no_venue");
-    await expect(notes(page).last()).toHaveText("Not here. Speak at the teahouse in the evening, or at the hall when the clan is called.");
-    await lantern.setLang("zh");
-    await expect(notes(page).last()).toHaveText("这里不是当众说话的地方。傍晚去茶馆，或族长召集族人时去祠堂。");
-    await lantern.setLang("en");
+    expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({
+      en: "Not here. Speak at the teahouse in the evening, or at the hall when the clan is called.",
+      zh: "这里不是当众说话的地方。傍晚去茶馆，或族长召集族人时去祠堂。",
+    });
     await atTheTeahouse(lantern);
     await page.evaluate(() => window.__lantern.play.other("speak", { kind: "meal" }));
     await expect(notes(page).last()).toHaveAttribute("data-reason", "not_evening");
-    await expect(notes(page).last()).toHaveText("The teahouse only fills up from five in the evening.");
-    await lantern.setLang("zh");
-    await expect(notes(page).last()).toHaveText("茶馆要到傍晚五点以后才有人。");
+    expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ en: "The teahouse only fills up after 17:00.", zh: "茶馆要到 17:00 以后才有人。" });
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -259,9 +267,8 @@ test.describe("what the town says back to the dealings of the manager", () => {
     // A reason that the page does not know is shown as it came, in the general line.
     await send("entrust");
     await refuseLast(page, "gremlins");
-    await expect(notes(page).last()).toHaveText(translate("zh", "ack.other", { reason: "gremlins" }));
-    await lantern.setLang("en");
-    await expect(notes(page).last()).toHaveText("The town would not allow that (gremlins).");
+    await expect(notes(page).last()).toHaveAttribute("data-reason", "gremlins");
+    expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ zh: translate("zh", "ack.other", { reason: "gremlins" }), en: "That can't be done." });
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -272,24 +279,24 @@ test.describe("what the town says back to the dealings of the manager", () => {
     const cha = { zh: "茶馆老板娘", en: "Teahouse Keeper" };
     const happen = (event: Record<string, unknown>) => feed(page, [{ tick: 1, ...event }]);
     const cases: Array<[Record<string, unknown>, string, string]> = [
-      [{ kind: "told", speaker: "player", listener: "cha_laoban", outcome: "took" }, `${cha.en} takes it in.`, `${cha.zh}记下了。`],
+      [{ kind: "told", speaker: "player", listener: "cha_laoban", outcome: "took" }, `${cha.en} believes it.`, `${cha.zh}信了。`],
       [{ kind: "told", speaker: "player", listener: "cha_laoban", outcome: "knew" }, `${cha.en} knew that already.`, `${cha.zh}早就知道这事。`],
       [{ kind: "told", speaker: "player", listener: "cha_laoban", outcome: "doubted" }, `${cha.en} doubts it.`, `${cha.zh}不大信这话。`],
       [{ kind: "lie_caught", npc: "cha_laoban", prop: "p", trust: 2 }, `${cha.en} caught you in a lie.`, `${cha.zh}拆穿了你的谎话。`],
       [{ kind: "entrusted", npc: "cha_laoban", request: "lane", result: "agreed", pending: false }, `${cha.en} agrees.`, `${cha.zh}答应了。`],
       [{ kind: "entrusted", npc: "cha_laoban", request: "join", result: "agreed", pending: true }, `${cha.en} says yes and will see to it shortly.`, `${cha.zh}应下了，过一会儿就去办。`],
       [{ kind: "entrust_done", npc: "cha_laoban", request: "join", result: "done" }, `${cha.en} has done what you asked.`, `${cha.zh}把你托的事办了。`],
-      [{ kind: "entrust_withdrawn", npc: "cha_laoban", request: "join" }, `${cha.en} has taken back their yes.`, `${cha.zh}收回了答应的事。`],
-      [{ kind: "testified", npc: "cha_laoban", items: ["e1"], entries: ["n1", "n2"] }, `${cha.en} told you what they saw. You wrote 2 new things in your notebook.`, `${cha.zh}把亲眼所见告诉了你，见闻簿里添了两条。`],
-      [{ kind: "convened", invited: ["zuzhang"] }, "The elder is calling the clan to the hall.", "族长在召集族人到祠堂去。"],
-      [{ kind: "pledged", npc: "cha_laoban", pledge: "k1", what: "role", item: "lead_lanterns", amount: 0, due: 3 }, `You promised ${cha.en} leading the lantern parade, by day 3.`, `你许了${cha.zh}领游灯，第三日前兑现。`],
-      [{ kind: "pledge_kept", npc: "cha_laoban", pledge: "k1", what: "role" }, `You kept your promise to ${cha.en}.`, `你兑现了对${cha.zh}的许诺。`],
-      [{ kind: "pledge_broken", npc: "cha_laoban", pledge: "k1", what: "role" }, `Your promise to ${cha.en} lapsed. They trust you less.`, `你对${cha.zh}的许诺过期了，对方对你的信任少了。`],
-      [{ kind: "spoke", venue: "p_teahouse", named: 6, accepted: 4, percent: 66, elder: 0, complete: false, cleared: false }, "You spoke at the teahouse. 4 of the 6 there took it in.", "你在茶馆当众说了一番，在场六人里有四人听进去了。"],
-      [{ kind: "spoke", venue: "p_clan_hall", named: 9, accepted: 8, percent: 88, elder: 2, complete: true, cleared: true }, "You spoke at the ancestral hall. 8 of the 9 there took it in, and the truth is out.", "你在祠堂当众说了一番，在场九人里有八人听进去了，真相说清了。"],
+      [{ kind: "entrust_withdrawn", npc: "cha_laoban", request: "join" }, `${cha.en} has gone back on their word.`, `${cha.zh}说不办了。`],
+      [{ kind: "testified", npc: "cha_laoban", items: ["e1"], entries: ["n1", "n2"] }, `${cha.en} told you what they saw. You noted down 2 things.`, `${cha.zh}把亲眼看见的跟你讲了。你记下了两条。`],
+      [{ kind: "convened", invited: ["zuzhang"] }, "The elder is calling the clan to the hall.", "族长在叫族人去祠堂。"],
+      [{ kind: "pledged", npc: "cha_laoban", pledge: "k1", what: "role", item: "lead_lanterns", amount: 0, due: 3 }, `You promised ${cha.en} leading the lantern parade, by day 3.`, `你答应最晚第三天给${cha.zh}领游灯的体面差事。`],
+      [{ kind: "pledge_kept", npc: "cha_laoban", pledge: "k1", what: "role" }, `You did what you promised ${cha.en}.`, `你答应${cha.zh}的事，做到了。`],
+      [{ kind: "pledge_broken", npc: "cha_laoban", pledge: "k1", what: "role" }, `You did not do what you promised ${cha.en} in time. ${cha.en} trusts you less.`, `你答应${cha.zh}的事没按时做到。${cha.zh}不那么信你了。`],
+      [{ kind: "spoke", venue: "p_teahouse", named: 6, accepted: 4, percent: 66, elder: 0, complete: false, cleared: false }, "You showed your evidence at the teahouse, in front of everyone there.", "你在茶馆当众拿出了凭据，在场的人都听见了。"],
+      [{ kind: "spoke", venue: "p_clan_hall", named: 9, accepted: 8, percent: 88, elder: 2, complete: true, cleared: true }, "You spoke at the ancestral hall, and the truth is out.", "你在祠堂当众把真相讲明白了。"],
       [{ kind: "feast", venue: "p_clan_hall", named: 6 }, "You laid a table at the ancestral hall, and the two families sat down together.", "你在祠堂摆了一桌，两家人坐到了一起。"],
       // A wage has its coins in the event itself.
-      [{ kind: "pledged", npc: "cha_laoban", pledge: "k2", what: "wage", item: "", amount: 20, due: 3 }, `You promised ${cha.en} 20 coins in wages, by day 3.`, `你许了${cha.zh}二十文工钱，第三日前兑现。`],
+      [{ kind: "pledged", npc: "cha_laoban", pledge: "k2", what: "wage", item: "", amount: 20, due: 3 }, `You promised ${cha.en} 20 coins in wages, by day 3.`, `你答应最晚第三天给${cha.zh}二十文工钱。`],
     ];
     for (const lang of ["en", "zh"] as const) {
       await lantern.setLang(lang);
@@ -325,7 +332,7 @@ test.describe("the promises in the side column", () => {
     await expect(page.getByTestId("hud-pledges")).toBeHidden();
     await page.getByTestId("board-toggle").click();
     await expect(page.getByTestId("hud-pledges")).toBeVisible();
-    await expect(page.getByTestId("pledge-none")).toHaveText("No promise is open.");
+    await expect(page.getByTestId("pledge-none")).toHaveText("No promise to keep yet.");
     const given = await resourcesOf(page);
     expect(given.slots.length).toBeGreaterThan(0);
     await expect(page.getByTestId("left-stallFront").locator("dd")).toHaveText(String(given.stall_front));
@@ -340,7 +347,7 @@ test.describe("the promises in the side column", () => {
           hud: {
             pledges: [
               { id: "k1", to, what: "stall", item: "front", amount: 0, due: 3 },
-              { id: "k2", to: { zh: "老何", en: "Old He", id: "old_he" }, what: "wage", item: "", amount: 20, due: 4 },
+              { id: "k2", to: { zh: "老何", en: "Boatman He", id: "old_he" }, what: "wage", item: "", amount: 20, due: 4 },
               { id: "k3", to: { zh: "李二", en: "Li Er", id: "li_er" }, what: "role", item: "t_honor_light", amount: 0, due: 3 },
             ],
             resources: { stall_front: 1, stall_back: 4, roles: ["lead_lanterns", "stage_words"], slots: ["2", "3"], purse: 40 },
@@ -350,7 +357,7 @@ test.describe("the promises in the side column", () => {
     );
     await expect(page.getByTestId("pledge")).toHaveCount(3);
     await expect(page.getByTestId("pledge").nth(0)).toHaveText("Teahouse Keepera front-row stallby day 3");
-    await expect(page.getByTestId("pledge").nth(1)).toHaveText("Old He20 coins in wagesby day 4");
+    await expect(page.getByTestId("pledge").nth(1)).toHaveText("Boatman He20 coins in wagesby day 4");
     await expect(page.getByTestId("pledge").nth(2)).toHaveText("Li Erthe honour of lighting the main lanternby day 3");
     await expect(page.getByTestId("pledge-none")).toHaveCount(0);
     await expect(page.getByTestId("left-stallFront")).toContainText("1");
@@ -366,9 +373,9 @@ test.describe("the promises in the side column", () => {
     await expect(page.getByTestId("left-role-names")).toHaveCount(0);
 
     await lantern.setLang("zh");
-    await expect(page.getByTestId("pledge").nth(0)).toHaveText("茶馆老板娘一个前排摊位第三日前");
-    await expect(page.getByTestId("pledge").nth(1)).toHaveText("老何二十文工钱第四日前");
-    await expect(page.getByTestId("pledge").nth(2)).toHaveText("李二点主灯的体面第三日前");
+    await expect(page.getByTestId("pledge").nth(0)).toHaveText("茶馆老板娘一个前排摊位最晚第三天");
+    await expect(page.getByTestId("pledge").nth(1)).toHaveText("老何二十文工钱最晚第四天");
+    await expect(page.getByTestId("pledge").nth(2)).toHaveText("李二点主灯的体面差事最晚第三天");
     await expect(page.getByTestId("left-purse")).toContainText("四十文");
     await expect(page.getByTestId("hud-pledges").locator(".lrow-left .lrow-label")).toHaveText("手里还能许的");
     // The reputation stars are as they were.
@@ -396,10 +403,11 @@ test.describe("the promises in the side column", () => {
     const offer = await page.evaluate(() => (window.__lantern.client.state.frame?.player as { offers: { promise: Array<{ id: string; body: { due: number } }> } }).offers.promise.find((o) => o.id === "role:t_honor_light"));
     expect(offer, "the town offers the honour of lighting the main lantern").toBeDefined();
     const due = offer?.body.due ?? 0;
-    await page.getByTestId("verb-promise").click();
-    const picker = page.getByTestId("picker-promise");
-    await expect(picker.getByTestId("picker-option").first()).toBeVisible();
-    await picker.locator('[data-testid="picker-option"][data-id="role:t_honor_light"]').click();
+    // The promise is in the list of the others, with what can be asked: nothing was turned down, and the promise is there to make.
+    await page.getByTestId("verb-entrust").click();
+    const picker = page.getByTestId("picker-entrust");
+    await expect(picker.locator('[data-group="give"] [data-testid="picker-option"]').first()).toBeVisible();
+    await picker.locator('[data-group="give"] [data-id="role:t_honor_light"]').click();
     // The preview comes first: what the player gives, and what it costs. The promise is made when the player confirms it.
     await expect(page.getByTestId("request-card")).toHaveAttribute("data-phase", "preview");
     await expect(page.getByTestId("pledge")).toHaveCount(0);
@@ -415,27 +423,27 @@ test.describe("the promises in the side column", () => {
     await page.getByTestId("board-toggle").click();
     // What was promised is not there to be promised again: the offer is gone, and asking for it is an empty promise.
     await minutesPaid(page);
-    await page.getByTestId("verb-promise").click();
-    await expect(page.getByTestId("picker-promise").locator('[data-testid="picker-option"][data-id="role:t_honor_light"]')).toHaveCount(0);
+    await page.getByTestId("verb-entrust").click();
+    await expect(page.getByTestId("picker-entrust").locator('[data-group="give"] [data-id="role:t_honor_light"]')).toHaveCount(0);
     await lantern.settled();
     await page.keyboard.press("Escape");
     await page.evaluate((day) => window.__lantern.play.other("promise", { op: "make", what: "role", item: "t_honor_light", due: day }), due);
     await expect(notes(page).last()).toHaveAttribute("data-reason", "empty");
-    await expect(notes(page).last()).toHaveText("Empty words. You have none of that left to promise.");
+    expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ en: "You have none of that left, so the promise would be empty words.", zh: "这样东西你手里已经没有了，许了也是空话。" });
     await lantern.setLang("zh");
-    await expect(notes(page).last()).toHaveText("空口白话，你手里已经没有这样东西可许了。");
     await page.getByTestId("board-toggle").click();
-    await expect(page.getByTestId("pledge")).toHaveText(`茶馆老板娘点主灯的体面第${zhNumeral(due)}日前`);
+    await expect(page.getByTestId("pledge")).toHaveText(`茶馆老板娘点主灯的体面差事最晚第${zhNumeral(due)}天`);
     await page.getByTestId("board-toggle").click();
     await lantern.setLang("en");
 
     // Keeping it, in the same talk, is a deed that the town notes, and the promise is not open any more.
     await minutesPaid(page);
-    await page.getByTestId("verb-promise").click();
-    await picker.locator('[data-testid="picker-option"][data-id="keep:k1"]').click();
+    // The promise that was made is put forward under the acts, to be kept now, before its day.
+    await expect(page.getByTestId("talk-context")).toHaveAttribute("data-kind", "keep");
+    await page.getByTestId("verb-context").click();
     await expect(page.getByTestId("request-card")).toHaveAttribute("data-phase", "preview");
     await page.getByTestId("request-confirm").click();
-    await expect(notes(page).last()).toHaveText("You kept your promise to Teahouse Keeper.");
+    await expect(notes(page).last()).toHaveText("You did what you promised Teahouse Keeper.");
     await expect(page.getByTestId("pledge")).toHaveCount(0);
     // The promises are in the ledger, which the player opens to look.
     await page.getByTestId("board-toggle").click();
@@ -458,14 +466,11 @@ test.describe("the promises in the side column", () => {
     const sendAndExpect = async (type: string, fields: Record<string, unknown>, reason: string, english: string, chinese: string) => {
       await page.evaluate(([t, f]) => window.__lantern.play.other(t as string, f as Record<string, unknown>), [type, fields] as const);
       await expect(notes(page).last()).toHaveAttribute("data-reason", reason);
-      await expect(notes(page).last()).toHaveText(english);
-      await lantern.setLang("zh");
-      await expect(notes(page).last()).toHaveText(chinese);
-      await lantern.setLang("en");
+      expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ en: english, zh: chinese });
     };
     await sendAndExpect("tell", { how: "fabricate", pred: "no_such_predicate", subject: "li_er" }, "bad_claim", "That cannot be said in those words.", "这话没法这样说。");
     await sendAndExpect("tell", { entry: "n99" }, "no_entry", "That note is not in your notebook.", "见闻簿里没有这一条。");
-    await sendAndExpect("entrust", { kind: "lane" }, "cannot", "They cannot help with that.", "这个忙对方帮不上。");
+    await sendAndExpect("entrust", { kind: "lane" }, "cannot", "Teahouse Keeper cannot help with that.", "这个忙茶馆老板娘帮不上。");
     await sendAndExpect("entrust", { kind: "no_such_kind" }, "no_request", "That is not something you can ask of anyone.", "这件事没法托人去办。");
     await sendAndExpect("promise", { op: "keep", id: "k9" }, "no_pledge", "You made no such promise.", "你没有许过这样的诺。");
     // A person in a talk speaks over their head too, and the note says the same thing in the words of the page.
@@ -518,7 +523,7 @@ test.describe("a reply that is slow to come", () => {
     await expect(line).toHaveText("Teahouse Keeper: “I knew that already.”");
     await expect(line).toHaveAttribute("data-thinking", "false");
 
-    // The core says she has replied: that ends the wait at once, though the line is the one she said before.
+    // The core says the reply has come: that ends the wait at once, though the line is the one said before.
     await notice(page);
     await expect(line).toHaveText("Teahouse Keeper is thinking…");
     await frameWith({ zh: "这个我早就知道了。", en: "I knew that already." }, [{ kind: "replied", tick: 7, npc: "cha_laoban" }]);

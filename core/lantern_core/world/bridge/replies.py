@@ -139,11 +139,12 @@ def _act(claim: Any) -> dict[str, str]:
     return act
 
 
-def _line(world_state: dict[str, Any]) -> dict[str, str]:
-    """The line on show in the plain words of the town: what the rules had the person say. It is
-    not in the person's voice, which a model gets from the note on how they speak, so that the
-    request, which the state keeps, does not depend on the voices."""
-    return dict(converse.words(world_state, world_state["player"]["line"], plain=True))
+def _line(world_state: dict[str, Any], today: int) -> dict[str, str]:
+    """The line on show in the plain words of the town: what the rules had the person say, as it
+    is said on day ``today``. It is not in the person's voice, which a model gets from the note on
+    how they speak, so that the request, which the state keeps, does not depend on the voices."""
+    line = world_state["player"]["line"]
+    return dict(converse.words(world_state, line, plain=True, today=today))
 
 
 def after_ask(
@@ -178,7 +179,7 @@ def after_ask(
         topic_props=props,
         subjects=() if props else (topic,),
         act=act,
-        line=_line(sim.state),
+        line=_line(sim.state, sim.now.day),
         rival=None if said.rival is None else _act(said.rival),
     )
     start(sim, talk, verb, turn)
@@ -200,7 +201,7 @@ def after(sim: Sim, body: dict[str, Any], mark: int) -> None:
 def _turn_of(sim: Sim, body: dict[str, Any], new: list[dict[str, Any]]) -> prompts.Turn | None:
     kind = body["type"]
     words = body.get("words", "")
-    line = _line(sim.state)
+    line = _line(sim.state, sim.now.day)
     ack = next((e for e in new if e["kind"] == "action_ack"), None)
     reason = ack["reason"] if ack is not None else None
     if kind == "tell":
@@ -264,7 +265,18 @@ def start(sim: Sim, talk: dict[str, Any], verb: str, turn: prompts.Turn) -> None
     if tier == tiers.RULE:
         return
     messages = prompts.reply_messages(sim.world, sim.state, sim.ctx.tick, talk["npc"], turn)
-    issue(sim, REPLY, verb, tier, messages, REPLY_TOKENS)
+    extra = about(turn) if verb in prompts.ASK_VERBS else {}
+    issue(sim, REPLY, verb, tier, messages, REPLY_TOKENS, **extra)
+
+
+def about(turn: prompts.Turn) -> dict[str, Any]:
+    """What the answer to a question may be about, kept with the request: the props and the
+    entities that were asked about, and the props of the answer of the rules, which are always
+    allowed (``speech.answer_problems`` holds the answer of a model to it)."""
+    kept = [act["prop"] for act in (turn.act, turn.rival) if act and "prop" in act]
+    return {
+        "about": {"props": list(turn.topic_props), "subjects": list(turn.subjects), "kept": kept}
+    }
 
 
 def answered(apply: Apply) -> Apply:

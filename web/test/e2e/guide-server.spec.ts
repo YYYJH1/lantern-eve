@@ -4,6 +4,7 @@ import { expect, test } from "@playwright/test";
 import type { Replay } from "../../src/shared/protocol.ts";
 import { replayInCpython } from "../support/fixtures.ts";
 import { startServerHost } from "../support/server-host.ts";
+import { pressStart } from "../support/start.ts";
 
 // The opening game on a real `lantern-eve play`: the same page, the same opening, the game that the core names and not one the page
 // made up, and what the server writes of it.
@@ -32,7 +33,7 @@ test.describe("the opening game on the server host", () => {
       await page.waitForTimeout(800);
       expect(await page.evaluate(() => ({ tick: window.__lantern.client.state.simTick, paused: window.__lantern.client.state.paused }))).toEqual({ tick: 0, paused: true });
 
-      await page.getByTestId("opening-start").click();
+      await pressStart(page);
       await expect(page.getByTestId("opening")).toHaveCount(0);
       await expect(page.getByTestId("status")).toHaveText("running");
       await page.waitForFunction(() => window.__lantern.client.state.simTick >= 60, undefined, { timeout: 60_000 });
@@ -83,14 +84,12 @@ test.describe("the opening game on the server host", () => {
     try {
       await page.goto(`${server.origin}/?host=ws&map=off`);
       await expect(page.getByTestId("opening-start")).toBeEnabled({ timeout: 90_000 });
-      await page.getByTestId("opening-start").click();
-      await expect(page.getByTestId("tutorial-card")).toHaveAttribute("data-step", "goal");
+      await pressStart(page);
+      await expect(page.getByTestId("tutorial-card")).toHaveAttribute("data-step", "granny");
       const held = await page.evaluate(() => window.__lantern.client.state.simTick);
       await page.waitForTimeout(1200);
       expect(await page.evaluate(() => window.__lantern.client.state.simTick)).toBe(held);
       await expect(page.getByTestId("status")).toHaveText("paused");
-      await page.getByTestId("tutorial-next").click();
-      await expect(page.getByTestId("tutorial-card")).toHaveAttribute("data-step", "ask");
       await page.getByTestId("tutorial-next").click();
       await expect(page.getByTestId("tutorial-chip")).toBeVisible();
       await expect(page.getByTestId("status")).toHaveText("running");

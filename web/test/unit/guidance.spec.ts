@@ -105,40 +105,39 @@ test.describe("the choice of guidance", () => {
 
 const name = (en: string) => ({ zh: en, en });
 const task = (id: string, state: Task["state"], over: Partial<Task> = {}): Task => ({ id, kind: "need", job: null, text: name(id), why: null, next: name(`next of ${id}`), state, blocker: null, action: null, window: null, expected: null, ...over });
-const idle = (over: Partial<HintContext> = {}): HintContext => ({ tasks: new Map(), tracked: null, entries: [], verbs: new Set(), talking: null, leaves: false, promised: 0, leads: 0, ...over });
+const idle = (over: Partial<HintContext> = {}): HintContext => ({ tasks: new Map(), tracked: null, entries: [], verbs: new Set(), talking: null, follow: false, leaves: false, promised: 0, leads: 0, day: 1, taught: new Set(), asks: new Set(), live: new Set(), ...over });
 const AT = { day: 1, hour: 8, minute: 30 };
 
 test.describe("the hints for a player with the brief guidance", () => {
   test("every hint that points at the button of the next step has a wording that points at the slip, in both languages", () => {
-    const pointing = HINTS.filter((hint) => hint.target === "task-do" || /note of the slip says (why, and )?what to try|says whom to ask next|task-do/.test(en[hint.text]));
-    expect(pointing.map((hint) => hint.id).sort()).toEqual(["blocked", "opened", "source"]);
+    const pointing = HINTS.filter((hint) => hint.target === "task-do" || /says who to ask next|task-do/.test(en[hint.text]));
+    expect(pointing.map((hint) => hint.id).sort()).toEqual(["source"]);
     for (const hint of pointing) {
       expect(hint.brief, hint.id).toBeDefined();
       expect(hint.brief?.target, hint.id).not.toBe("task-do");
-      const key = hint.brief?.text ?? "hint.log.title";
+      const key = hint.brief?.text ?? "slip.why";
       expect(hasMessage(key), key).toBe(true);
-      expect(en[key], key).not.toMatch(/what to try next|whom to ask next|ask Li Da/);
-      expect(zh[key], key).not.toMatch(/下一步|下一个该问谁|去请李大/);
+      expect(en[key], key).not.toMatch(/who to ask next/);
+      expect(zh[key], key).not.toMatch(/下一个该问谁/);
     }
     // The others say the same to everyone.
     for (const hint of HINTS.filter((h) => !pointing.includes(h))) expect(hint.brief, hint.id).toBeUndefined();
   });
 
   test("give the wording of the brief guidance, and the full one when it is not chosen", () => {
+    // What is in the way is said the same to everyone: the slip has it behind "Why" for both.
     const blocked = idle({ tracked: task("t_bamboo_first", "blocked") });
     const full = new Hints().check(blocked, 1, AT, 0, false);
-    expect(full.map((g) => [g.id, g.target, g.text])).toEqual([["blocked", "task-card", "hint.blocked"]]);
+    expect(full.map((g) => [g.id, g.target, g.text])).toEqual([["blocked", "task-card", "cue.blocked"]]);
     const brief = new Hints().check(blocked, 1, AT, 0, true);
-    expect(brief.map((g) => [g.id, g.target, g.text])).toEqual([["blocked", "task-card", "hint.blocked.brief"]]);
+    expect(brief.map((g) => [g.id, g.target, g.text])).toEqual([["blocked", "task-card", "cue.blocked"]]);
     const source = idle({ tracked: task("t_who_said", "open", { action: { verb: "ask_source", npc: "cha_laoban", place: null, item: null } }) });
-    expect(new Hints().check(source, 1, AT, 0, false).map((g) => [g.target, g.text])).toEqual([["task-do", "hint.source"]]);
-    expect(new Hints().check(source, 1, AT, 0, true).map((g) => [g.target, g.text])).toEqual([["task-card", "hint.source.brief"]]);
-    const opened = idle({ tracked: task("t_bamboo_first", "open", { action: { verb: "entrust", npc: "li_da", place: null, item: "bamboo" } }) });
-    expect(new Hints().check(opened, 1, AT, 0, true).map((g) => [g.target, g.text])).toEqual([["task-card", "hint.opened.brief"]]);
+    expect(new Hints().check(source, 1, AT, 0, false).map((g) => [g.target, g.text])).toEqual([["task-do", "cue.source"]]);
+    expect(new Hints().check(source, 1, AT, 0, true).map((g) => [g.target, g.text])).toEqual([["task-card", "cue.source.brief"]]);
     // The log keeps what was said, and lights where it was said.
     const hints = new Hints();
-    hints.check(blocked, 1, AT, 0, true);
-    expect(hints.log[0]).toMatchObject({ id: "blocked", text: "hint.blocked.brief", target: "task-card" });
+    hints.check(source, 1, AT, 0, true);
+    expect(hints.log[0]).toMatchObject({ id: "source", text: "cue.source.brief", target: "task-card" });
     expect(hints.lit?.target).toBe("task-card");
   });
 });

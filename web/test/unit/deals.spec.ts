@@ -55,9 +55,9 @@ test.describe("what a promise is", () => {
   test("is said in both languages for a stall, a role, a wage and a slot", () => {
     expect(pledgeName("stall", "front", 0)).toEqual({ zh: "一个前排摊位", en: "a front-row stall" });
     expect(pledgeName("stall", "back", 0)).toEqual({ zh: "一个后排摊位", en: "a back-row stall" });
-    expect(pledgeName("role", "t_honor_light", 0)).toEqual({ zh: "点主灯的体面", en: "the honour of lighting the main lantern" });
+    expect(pledgeName("role", "t_honor_light", 0)).toEqual({ zh: "点主灯的体面差事", en: "the honour of lighting the main lantern" });
     expect(pledgeName("role", "lead_lanterns", 0).en).toBe("leading the lantern parade");
-    expect(pledgeName("role", "stage_words", 0).zh).toBe("台上说吉祥话");
+    expect(pledgeName("role", "stage_words", 0).zh).toBe("上台说吉祥话的体面差事");
     expect(pledgeName("wage", "", 20)).toEqual({ zh: "二十文工钱", en: "20 coins in wages" });
     expect(pledgeName("wage", "", 2)).toEqual({ zh: "两文工钱", en: "2 coins in wages" });
     expect(pledgeName("wage", "", 120)).toEqual({ zh: "120文工钱", en: "120 coins in wages" });
@@ -185,10 +185,14 @@ test.describe("the words for what came of a dealing", () => {
   test("the notes read well: a few of them, in both languages", () => {
     const pledged = dealingNote(event("pledged", { npc: "cha", pledge: "k1", what: "stall", item: "front", amount: 0, due: 3 }), ctx);
     expect(pledged && said("en", pledged.key, pledged.values)).toBe("You promised Teahouse Keeper a front-row stall, by day 3.");
-    expect(pledged && said("zh", pledged.key, pledged.values)).toBe("你许了茶馆老板娘一个前排摊位，第三日前兑现。");
+    expect(pledged && said("zh", pledged.key, pledged.values)).toBe("你答应最晚第三天给茶馆老板娘一个前排摊位。");
     const spoke = dealingNote(event("spoke", { venue: "p_clan_hall", named: 9, accepted: 8, cleared: true }), ctx);
-    expect(spoke && said("en", spoke.key, spoke.values)).toBe("You spoke at the ancestral hall. 8 of the 9 there took it in, and the truth is out.");
-    expect(spoke && said("zh", spoke.key, spoke.values)).toBe("你在祠堂当众说了一番，在场九人里有八人听进去了，真相说清了。");
+    expect(spoke && said("en", spoke.key, spoke.values)).toBe("You spoke at the ancestral hall, and the truth is out.");
+    expect(spoke && said("zh", spoke.key, spoke.values)).toBe("你在祠堂当众把真相讲明白了。");
+    // How many took it in is the ledger's to say: the note tells what was done, without the count.
+    const shown = dealingNote(event("spoke", { venue: "p_teahouse", named: 9, accepted: 3 }), ctx);
+    expect(shown && said("zh", shown.key, shown.values)).toBe("你在茶馆当众拿出了凭据，在场的人都听见了。");
+    expect(shown && said("en", shown.key, shown.values)).toBe("You showed your evidence at the teahouse, in front of everyone there.");
     const caught = dealingNote(event("lie_caught", { npc: "cha" }), ctx);
     expect(caught && said("en", caught.key, caught.values)).toBe("Teahouse Keeper caught you in a lie.");
     expect(caught && said("zh", caught.key, caught.values)).toBe("茶馆老板娘拆穿了你的谎话。");

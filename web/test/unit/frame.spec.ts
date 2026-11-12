@@ -167,7 +167,7 @@ test.describe("the player in the frame", () => {
       y: 15,
       activity: "chat",
       // A frame that says nothing of what each act costs or when the person leaves reads as none.
-      talk: { npc: "cha_laoban", costs: null, leavesAt: null },
+      talk: { npc: "cha_laoban", costs: null, leavesAt: null, more: null },
       costs: null,
       look: ["t_rail"],
       offers: {
@@ -259,13 +259,13 @@ test.describe("the notebook", () => {
     expect(readNotebook({})).toBeNull();
     const entries = readNotebook({
       notebook: [
-        { id: "a", text: { zh: "甲", en: "A" }, source: { kind: "heard", who: { zh: "乙", en: "B" }, hand: 2 }, marks: ["unconfirmed", "nonsense"], chain: [{ zh: "乙", en: "B" }, null] },
+        { id: "a", text: { zh: "甲", en: "A" }, source: { kind: "heard", who: { zh: "乙", en: "B", id: "b" }, how: "heard", via: { zh: "丙", en: "C" } }, at: { tick: 40, day: 1, hour: 8, minute: 20, place: "p_teahouse" }, marks: ["unconfirmed", "nonsense"], chain: [{ zh: "乙", en: "B" }, null] },
         { id: "b", text: "plain", source: { kind: "seen" } },
         { text: "no id" },
       ],
     });
     expect(entries).toHaveLength(2);
-    expect(entries?.[0]).toMatchObject({ id: "a", marks: ["unconfirmed"], source: { kind: "heard", hand: 2 }, chain: [{ zh: "乙", en: "B" }, null] });
+    expect(entries?.[0]).toMatchObject({ id: "a", marks: ["unconfirmed"], source: { kind: "heard", whoId: "b", how: "heard", via: { zh: "丙", en: "C" } }, at: { tick: 40, day: 1, hour: 8, minute: 20, place: "p_teahouse" }, chain: [{ zh: "乙", en: "B" }, null] });
     expect(entries?.[1]).toMatchObject({ id: "b", text: { zh: "plain", en: "plain" }, source: { kind: "seen" }, marks: [], chain: [] });
   });
 
@@ -412,14 +412,14 @@ test.describe("the topics of a question", () => {
   test("are what the core lists, in its order, each with its name in both languages and its kind", () => {
     const read = readFrame(
       player([
-        { id: "n1", kind: "entry", label: { zh: "老何的船是他的。", en: "Old He's boat is his." } },
+        { id: "n1", kind: "entry", label: { zh: "渡船是老何的。", en: "The boat belongs to Boatman He." } },
         { id: "t_rail", kind: "thing", label: { zh: "石桥栏杆", en: "Stone Bridge Railing" } },
         { id: "p_bridge", kind: "place", label: { zh: "石桥", en: "Stone Bridge" } },
         { id: "li_er", kind: "person", label: { zh: "李二", en: "Li Er" } },
       ]),
     ).player;
     expect(read?.topics).toEqual([
-      { id: "n1", kind: "entry", name: { zh: "老何的船是他的。", en: "Old He's boat is his." } },
+      { id: "n1", kind: "entry", name: { zh: "渡船是老何的。", en: "The boat belongs to Boatman He." } },
       { id: "t_rail", kind: "thing", name: { zh: "石桥栏杆", en: "Stone Bridge Railing" } },
       { id: "p_bridge", kind: "place", name: { zh: "石桥", en: "Stone Bridge" } },
       { id: "li_er", kind: "person", name: { zh: "李二", en: "Li Er" } },
@@ -449,14 +449,14 @@ test.describe("the promises in the numbers of the side panel", () => {
     const hud = readHud({
       pledges: [
         { id: "k1", to: { zh: "茶馆老板娘", en: "Teahouse Keeper", id: "cha_laoban" }, what: "stall", item: "front", amount: 0, due: 3 },
-        { id: "k2", to: { zh: "老何", en: "Old He", id: "old_he" }, what: "wage", item: "", amount: 20, due: 4 },
+        { id: "k2", to: { zh: "老何", en: "Boatman He", id: "old_he" }, what: "wage", item: "", amount: 20, due: 4 },
         { to: "no id" },
       ],
       resources: { stall_front: 1, stall_back: 4, roles: ["t_honor_light", 3], slots: ["1", "2"], purse: 40 },
     });
     expect(hud.pledges).toEqual([
       { id: "k1", to: { zh: "茶馆老板娘", en: "Teahouse Keeper" }, what: "stall", item: "front", amount: 0, due: 3 },
-      { id: "k2", to: { zh: "老何", en: "Old He" }, what: "wage", item: "", amount: 20, due: 4 },
+      { id: "k2", to: { zh: "老何", en: "Boatman He" }, what: "wage", item: "", amount: 20, due: 4 },
     ]);
     expect(hud.resources).toEqual({ stallFront: 1, stallBack: 4, roles: ["t_honor_light"], slots: ["1", "2"], purse: 40 });
   });

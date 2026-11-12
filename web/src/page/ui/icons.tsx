@@ -108,12 +108,6 @@ export const CheckIcon = () => (
     <path d="M4.4 10.4l3.8 3.8 7.4-8" />
   </Svg>
 );
-export const EyeIcon = () => (
-  <Svg>
-    <path d="M2.2 10c1.8-3.4 4.6-5.2 7.8-5.2s6 1.8 7.8 5.2c-1.8 3.4-4.6 5.2-7.8 5.2S4 13.4 2.2 10z" />
-    <circle cx="10" cy="10" r="2.4" />
-  </Svg>
-);
 export const ClockIcon = () => (
   <Svg>
     <circle cx="10" cy="10" r="6.6" />

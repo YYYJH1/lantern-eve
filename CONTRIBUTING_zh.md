@@ -2,12 +2,12 @@
 
 # 参与贡献
 
-提 pull request 之前请先开 issue。
+提 pull request 之前，请先开一个 issue。
 
-## 文档的两种语言
+## 两种语言的文档
 
-给读者看的文档都有英文版（`X.md`，以它为准）和中文版（`X_zh.md`，放在同一目录）。改英文文档时，同时改中文版。`tests/test_doc_mirrors.py` 核对两份的首行都是语言切换行、标题层级逐个相同、代码块数目相同。
+给读者看的文档都有两份，英文的 `X.md` 和中文的 `X_zh.md`，放在同一个目录里，以英文版为准。改了英文文档，就要一起改中文版。`tests/test_doc_mirrors.py` 会核对这两份。第一行都得是语言切换，标题的层级和先后要一样，代码块的数目也要一样。
 
 ## 检查
 
-命令在 [docs/development_zh.md](docs/development_zh.md) 里。核心只用标准库，状态里没有浮点数。`tests/core/test_core_rules.py` 检查核心里除 `text/`（读取模型输出的辅助函数）以外的每个模块，发现 `/`、浮点数或遍历集合就会失败。
+命令都在 [docs/development_zh.md](docs/development_zh.md) 里。核心只用标准库，状态里不放浮点数。`tests/core/test_core_rules.py` 会逐个读核心的模块，`text/` 除外，那里是读模型回话的辅助函数。模块里只要用了 `/` 或浮点数，遍历了集合，调用了 `open`、`hash`、`print` 这类函数，或者导入了一小张清单以外的模块，测试就会失败。

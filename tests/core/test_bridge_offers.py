@@ -41,7 +41,8 @@ def test_in_a_conversation_the_manager_is_offered_what_they_can_tell_ask_and_pro
     frame = step(game)["frame"]
     assert set(frame["player"]["offers"]) == set(VERBS)
     assert frame["player"]["offers"]["speak"] == []  # it is no place to speak in public
-    assert frame["player"]["offers"]["tell"] and frame["player"]["offers"]["promise"]
+    assert frame["player"]["offers"]["promise"]
+    assert frame["player"]["offers"]["tell"] == []  # nothing in the notebook to tell
     verbs = frame["hud"]["verbs"]
     assert [v for v in player.VERB_ORDER if v in verbs] == verbs  # in the order of the list
     assert {"tell", "entrust", "promise"} <= set(verbs) and "speak" not in verbs
@@ -52,7 +53,8 @@ def test_an_offer_is_an_id_a_label_in_both_languages_and_the_fields_of_the_actio
     know(game, "pr_liner_damaged", "heard", "zhou_zhanggui", hop=2)
     for verb in ("tell", "entrust", "promise"):
         for offer in offered(game, verb):
-            assert set(offer) == {"id", "label", "body"}
+            assert set(offer) in ({"id", "label", "body"}, {"id", "label", "body", "lie"})
+            assert ("lie" in offer) == offer["id"].endswith(":as_seen")
             assert (
                 set(offer["label"]) == {"zh", "en"}
                 and offer["label"]["zh"]
@@ -82,26 +84,26 @@ def test_the_ways_of_telling_offered_for_an_entry_are_those_that_differ_from_the
     seen = know(game, "pr_rail_located")  # nothing heavier than where it is
     own = know(game, "pr_boat_scratched")
     tell = ids(game, "tell")
+    # a player tells a thing as it is, or says it was seen: what was only heard, said as if seen, is
+    # a lie about the source, and the offer says so
     assert [i for i in tell if i.startswith(heard["id"])] == [
+        f"{heard['id']}:faithful",
         f"{heard['id']}:as_seen",
-        f"{heard['id']}:hide_source",
-        f"{heard['id']}:sharpen",
     ]
-    assert not [i for i in tell if i.startswith(seen["id"])]  # seen, and nothing to sharpen
-    assert not [i for i in tell if i.startswith(own["id"])]
-    assert [i for i in tell if i.startswith("fab:")] == [
-        "fab:damaged:li_er",
-        "fab:damaged:zhou_dalang",
-        "fab:damaged:old_he",
-        "fab:damaged:fam_li",
-        "fab:damaged:fam_zhou",
-        "fab:flood",
-    ]
-    label = next(o for o in offered(game, "tell") if o["id"] == "fab:damaged:fam_li")["label"]
-    assert label == {
-        "zh": "编一个：李家弄坏了石桥栏杆",
-        "en": "Make up: the Li Family damaged the Stone Bridge Railing",
-    }
+    assert [i for i in tell if i.startswith(seen["id"])] == [f"{seen['id']}:faithful"]
+    assert [i for i in tell if i.startswith(own["id"])] == [f"{own['id']}:faithful"]
+    by_id = {o["id"]: o for o in offered(game, "tell")}
+    assert by_id[f"{heard['id']}:as_seen"]["lie"] is True
+    assert "lie" not in by_id[f"{heard['id']}:faithful"]
+    assert by_id[f"{heard['id']}:as_seen"]["body"] == {"entry": heard["id"], "how": "as_seen"}
+    assert by_id[f"{seen['id']}:faithful"]["body"] == {"entry": seen["id"], "how": "faithful"}
+    # nothing is made up, told with more drama or told without its source: the core takes all five
+    # ways of telling (and the bots use them), but the town puts forward these two
+    assert not [i for i in tell if i.startswith("fab:") or i.endswith((":sharpen", ":hide_source"))]
+    label = by_id[f"{heard['id']}:as_seen"]["label"]
+    assert label["zh"].startswith("说成我亲眼看见的：")
+    assert label["en"].startswith("Say I saw it myself")
+    assert by_id[f"{heard['id']}:faithful"]["label"]["zh"].startswith("照实说：")
 
 
 def test_the_ways_of_telling_are_named_in_the_list_as_the_page_names_them():
@@ -109,10 +111,10 @@ def test_the_ways_of_telling_are_named_in_the_list_as_the_page_names_them():
     heard = know(game, "pr_liner_damaged", "heard", "zhou_zhanggui", hop=2)
     sentence = notebook.sentence(notebook.view(state_of(game)["social"])[heard["prop"]])
     labels = {o["id"]: o["label"] for o in offered(game, "tell")}
-    for how in ("as_seen", "hide_source", "sharpen"):
+    for how, key in (("faithful", "say.faithful"), ("as_seen", "say.asSeen")):
         label = labels[f"{heard['id']}:{how}"]
         for lang, table in (("en", WEB_EN), ("zh", WEB_ZH)):
-            name = re.search(rf'"way\.{how}": "([^"]+)"', table).group(1)
+            name = re.search(rf'"{key}": "([^"]+)"', table).group(1)
             separator = ": " if lang == "en" else "："
             assert label[lang] == name + separator + sentence[lang], (how, lang)
 
@@ -134,8 +136,8 @@ def test_the_offers_kept_for_a_notebook_do_not_leak_into_another_game_that_reads
         state_of(game)["social"]["props"]["pr_x__as"] = f"damaged|what:t_rail,who:{who}||0|||"
         know(game, "pr_x__as", "heard", "cha_laoban")
         labels.append(offered(game, "tell")[0]["label"]["en"])
-    assert labels[0].endswith("Li Er damaged the Stone Bridge Railing.")
-    assert labels[1].endswith("Zhou Dalang damaged the Stone Bridge Railing.")
+    assert labels[0].endswith("Li Er broke the bridge railing.")
+    assert labels[1].endswith("Zhou Dalang broke the bridge railing.")
 
 
 @pytest.mark.parametrize(
@@ -158,31 +160,35 @@ def test_what_a_person_can_be_asked_is_what_the_town_can_do_with_them(who, hour,
 
 
 @pytest.mark.parametrize(
-    ("who", "hour", "her"),
+    ("who", "hour"),
     [
-        ("li_da", 10, []),
-        ("zhou_zhanggui", 10, []),
-        ("miaozhu", 10, ["请她打开庙后的夹道"]),
-        ("li_laotai", 10, ["请她把竹料借给灯会"]),
-        ("zuzhang", 10, []),
-        ("gengfu", 15, []),
-        ("cha_laoban", 10, []),
-        ("zhou_huoji", 10, []),
+        ("li_da", 10),
+        ("zhou_zhanggui", 10),
+        ("miaozhu", 10),
+        ("li_laotai", 10),
+        ("zuzhang", 10),
+        ("gengfu", 15),
+        ("cha_laoban", 10),
+        ("zhou_huoji", 10),
     ],
 )
-def test_the_offers_call_a_person_in_general_对方_and_never_他_or_她(who, hour, her):
-    """The cast has fixed sexes, so a label that is the same for anyone cannot say 他 or 她. The two
-    that are about one woman (the bamboo of Granny Li, the lane behind the temple) say 她."""
+def test_the_offers_name_the_person_asked_and_never_say_他_or_她_or_对方(who, hour):
+    """A label says whom it asks or promises by name, in both languages, so that the talk log reads
+    "你请李大把竹料送到桥边" and not "你请对方…". The cast has fixed sexes but the names make a
+    pronoun needless, and the offers of the list are all worded alike."""
     game = talking(who, hour=hour)
-    labels = [o["label"]["zh"] for verb in ("entrust", "promise") for o in offered(game, verb)]
-    assert labels and not any("他" in label for label in labels)
-    assert [label for label in labels if "她" in label] == her
-    assert all("对方" in label for label in labels if label.startswith(("请对方", "许对方")))
+    name = lore().names[who]
+    labelled = [o["label"] for verb in ("entrust", "promise") for o in offered(game, verb)]
+    assert labelled
+    for label in labelled:
+        assert name["zh"] in label["zh"] and name["en"] in label["en"], label
+        assert not any(word in label["zh"] for word in ("他", "她", "对方")), label
+        assert not any(word in label["en"].split() for word in ("them", "he", "she")), label
     if who == "miaozhu":
         english = [
             o["label"]["en"] for o in offered(game, "entrust") if o["body"]["kind"] == "lane"
         ]
-        assert english == ["Ask her to open the lane behind the temple"]
+        assert english == ["Ask the Temple Keeper to open the lane behind the temple"]
 
 
 def test_a_person_can_be_asked_to_talk_the_acquaintances_who_have_not_joined_round():
@@ -190,8 +196,8 @@ def test_a_person_can_be_asked_to_talk_the_acquaintances_who_have_not_joined_rou
     persuade = [o for o in offered(game, "entrust") if o["body"]["kind"] == "persuade"]
     targets = [o["body"]["target"] for o in persuade]
     assert targets[:3] == ["zhou_zhanggui", "zhou_niangzi", "zhou_dalang"] and len(targets) <= 8
-    assert persuade[0]["label"]["en"] == "Ask them to talk Shopkeeper Zhou round"
-    assert persuade[0]["label"]["zh"] == "请对方去劝周掌柜"
+    assert persuade[0]["label"]["en"] == "Ask Zhou's Clerk to talk Shopkeeper Zhou round"
+    assert persuade[0]["label"]["zh"] == "请周家伙计去劝周掌柜"
     trust(game, "zhou_huoji", 90)
     row = state_of(game)["social"]["bonds"]["zhou_zhanggui"]
     row[4 * CAST.index["zhou_huoji"] + bonds.TRUST] = 90  # he trusts his clerk, who is of his house
@@ -225,11 +231,11 @@ def test_what_is_left_to_promise_is_offered_and_what_is_open_to_this_person_to_b
     # an offer to keep a promise says what was promised, and never the number the core keeps it by
     labels = {o["id"]: o["label"] for o in offered(game, "promise")}
     assert labels["keep:k1"] == {
-        "zh": "兑现许诺：灯会上的前排摊位",
-        "en": "Keep your promise: a front-row stall at the festival",
+        "zh": "兑现许诺，给茶馆老板娘灯会上的前排摊位",
+        "en": "Keep your promise to the Teahouse Keeper: a front-row stall at the festival",
     }
     assert labels["keep:k3"]["en"] == (
-        "Keep your promise: the role of honour of lighting the main lantern"
+        "Keep your promise to the Teahouse Keeper: the role of honour of lighting the main lantern"
     )
     assert offered(talking("li_er"), "promise")[-1]["id"] == "slot:1"
 
@@ -269,7 +275,9 @@ def test_the_topics_are_the_entries_then_the_things_the_bridge_and_the_people_th
     know(game, "pr_boat_scratched")
     know(game, "pr_liner_damaged", "heard", "zhou_zhanggui", hop=2)
     frame = step(game)["frame"]
-    got = frame["player"]["topics"]
+    got = [t for t in frame["player"]["topics"] if t["kind"] != "taste"]
+    asked_about = [t["id"] for t in frame["player"]["topics"] if t["kind"] == "taste"]
+    assert asked_about == ["likes:li_er", "likes:zhou_zhanggui"]  # people the notes name
     registry = lore().book.registry
     things = [e.id for e in registry.of_type("thing")]
     people = [p for p in CAST.index if registry.get(p) is not None]
@@ -284,7 +292,7 @@ def test_the_topics_are_the_entries_then_the_things_the_bridge_and_the_people_th
     assert [t["label"] for t in got if t["kind"] == "person"] == [names[p] for p in people]
     assert {t["id"]: t["label"] for t in got}["p_bridge"] == {"zh": "石桥", "en": "Stone Bridge"}
     assert {t["id"]: t["label"] for t in got}["t_rail"] == {
-        "zh": "石桥栏杆",
+        "zh": "栏杆",
         "en": "Stone Bridge Railing",
     }
     scene = json.loads(game.scene_json())
@@ -307,9 +315,10 @@ def test_the_core_answers_every_topic_and_every_name_of_the_scene_that_it_answer
     trust(game, "li_da", 60)
     know(game, "pr_boat_scratched")
     know(game, "pr_liner_damaged", "heard", "zhou_zhanggui", hop=2)
-    got = [t["id"] for t in topics_of(game)]
-    for topic_id in got:
+    every = [t["id"] for t in topics_of(game)]
+    for topic_id in every:
         assert ack(act(game, "ask", topic=topic_id)) == ("applied", None), topic_id
+    got = [i for i in every if not i.startswith("likes:")]
     scene = json.loads(game.scene_json())
     named = [p["id"] for p in scene["cast"]] + [t["id"] for t in scene["player"]["things"]]
     named.append("p_bridge")
@@ -322,10 +331,10 @@ def test_the_core_answers_every_topic_and_every_name_of_the_scene_that_it_answer
 
 def test_the_topics_follow_the_notebook_and_the_standing_ones_are_made_once():
     game = talking("li_da")
-    first = topics_of(game)
+    first = [t for t in topics_of(game) if t["kind"] != "taste"]
     assert not [t for t in first if t["kind"] == "entry"]
     act(game, "ask", topic="p_bridge")  # the manager writes down what they are told
-    again = topics_of(game)
+    again = [t for t in topics_of(game) if t["kind"] != "taste"]
     entries = [t["id"] for t in again if t["kind"] == "entry"]
     assert entries == ["n1"] and len(again) == len(first) + 1
     assert [t for t in again if t["kind"] != "entry"] == first

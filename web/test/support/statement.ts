@@ -23,34 +23,34 @@ export interface FakeOption {
 const option = (id: string, text: Name, support: number, against: number, entries: string[]): FakeOption => ({ id, text, support, against, entries });
 
 export const TITLES: Record<PartId, Name> = {
-  cause: n("成因", "Cause"),
-  course: n("经过", "Course"),
-  rumour: n("误会缘由", "How the rumour began"),
+  cause: n("桥是怎么坏的", "How the bridge broke"),
+  course: n("那晚的经过", "What happened that night"),
+  rumour: n("大家为什么会误会", "Why people got it wrong"),
 };
 
 /** What can be said in each part. The lists are the same in every game; the counts are what the manager holds. */
 export const OPTIONS: Record<PartId, FakeOption[]> = {
   cause: [
-    option("c_boat", n("老何的船撞断的", "Old He's boat struck it"), 2, 0, ["n_scrape", "n_boat"]),
-    option("c_flood", n("秋汛冲坏的", "The autumn flood broke it"), 0, 1, ["n_scrape"]),
-    option("c_li_er", n("李二弄坏的", "Li Er broke it"), 1, 1, ["n_clerk", "n_scrape"]),
-    option("c_dalang", n("周家大郎醉酒踢断的", "Zhou Dalang kicked it in, drunk"), 0, 0, []),
+    option("c_boat", n("船夫老何夜里撑船，船头撞断了栏杆", "Boatman He's boat struck the railing in the night"), 2, 0, ["n_scrape", "n_boat"]),
+    option("c_flood", n("秋汛的水头冲松了旧榫，栏杆自己断了", "The flood water loosened the old joints and the railing gave way by itself"), 0, 1, ["n_scrape"]),
+    option("c_li_er", n("李二下手弄断了栏杆", "Li Er broke the railing"), 1, 1, ["n_clerk", "n_scrape"]),
+    option("c_dalang", n("周家大郎喝醉了酒，一脚踢断了栏杆", "Zhou Dalang, drunk, kicked the railing down"), 0, 0, []),
   ],
   course: [
-    option("r_night_boat", n("夜里，船从河道一侧撞断了栏杆", "At night a boat hit the rail from the river side"), 1, 0, ["n_boat"]),
-    option("r_old_joints", n("汛水冲松了旧榫，栏杆自己塌了", "The flood loosened the old joints and the rail fell"), 0, 0, []),
-    option("r_kicked_in", n("有人从桥面一侧把栏杆踢断了", "Somebody kicked the rail out from the deck"), 0, 0, []),
+    option("r_night_boat", n("船夫老何夜里撑船从桥下过，船头撞上了栏杆。事后老何悄悄把船修好了", "Boatman He poled under the bridge in the night and the bow struck the railing. Afterwards the boatman quietly mended the boat"), 1, 0, ["n_boat"]),
+    option("r_old_joints", n("夜里水头打上桥，把旧榫冲松了。栏杆是自己断的，桥上桥下都没有人", "The flood water hit the bridge in the night and loosened the old joints. The railing gave way by itself, with nobody on the bridge or under it"), 0, 0, []),
+    option("r_kicked_in", n("周家大郎夜里在酒肆喝醉了。晃到桥上，一脚踢断了栏杆", "Zhou Dalang got drunk at the tavern in the night, staggered onto the bridge and kicked the railing down"), 0, 0, []),
   ],
   rumour: [
-    option("u_clerk_saw", n("伙计只看见李二在桥边，传话的人添上了后半句", "The clerk only saw Li Er by the bridge, and the telling added the rest"), 2, 0, ["n_clerk", "n_broke"]),
-    option("u_made_up", n("有人凭空编出来的", "Somebody made it up from nothing"), 0, 1, ["n_clerk"]),
-    option("u_spread", n("有人故意放出风来败坏李家", "Somebody spread it on purpose to hurt the Li family"), 0, 0, []),
+    option("u_clerk_saw", n("周家伙计只看见李二在桥边找灯笼。周掌柜记着旧怨，猜是李二弄坏的。话越传越重，又添上了「故意」「眼红」", "Zhou's Clerk only saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou, holding an old grudge, guessed that Li Er broke the railing. The story grew as it went round and picked up “on purpose” and “envy”"), 2, 0, ["n_clerk", "n_broke"]),
+    option("u_made_up", n("周家伙计编了瞎话，李二那晚根本不在桥边", "Zhou's Clerk made it up, and Li Er was not at the bridge that night"), 0, 1, ["n_clerk"]),
+    option("u_spread", n("周家故意把话传出去，想坏了李家的名声", "The Zhou family spread it on purpose to ruin the name of the Li family"), 0, 0, []),
   ],
 };
 
 /** Why a full statement cannot be made yet, in the core's words. */
-export const WHY_NOT = n("要等到第四天傍晚，在茶馆才能完整陈述", "A full statement can only be made at the teahouse from the evening of the fourth day");
-export const WHY_USED = n("今天的陈述已经做过了", "Today's statement has been made");
+export const WHY_NOT = n("要等第四天傍晚，才能照讲稿当众说", "The statement has to wait for the evening of the fourth day");
+export const WHY_USED = n("今天已经照讲稿说过一回", "A statement has been made today already");
 
 /** The parts of the card, with a choice made in those named. A part named in `gaps` has nothing held behind any option. */
 export function partsOf(chosen: Partial<Record<PartId, string>> = {}, gaps: readonly PartId[] = []): Array<Record<string, unknown>> {
@@ -90,7 +90,7 @@ export const LAST_WRONG = {
   elder: "accepted",
   told: false,
   wrong: ["cause"],
-  why: n("这和老何亲眼所见对不上", "That does not fit what Old He saw himself"),
+  why: n("「桥是怎么坏的」这一条，和船夫老何亲眼看见的不一样。", "The part “How the bridge broke” goes against what Boatman He saw with their own eyes."),
 };
 
 /** The statement made last that told the truth. */

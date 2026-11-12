@@ -49,11 +49,28 @@ export const PAGE_SIDE = String.raw`
     /**
      * Gives the world back to the talk: the script's own pause is lifted, and so is the page's hold for an open notebook, so that
      * the core's hold is the only one left and the bar says that time is held. Nothing runs, because the talk holds the clock.
+     * It returns when the host has said twice in a row that none of the script's holds is among its reasons to stand still: what the
+     * host said before it read the lifting may still be on its way, and it says its reasons again within half a second.
      */
     letHold() {
       const client = L().client;
-      client.resume();
-      client.resume('page');
+      return new Promise((resolve, reject) => {
+        let clean = 0;
+        const timer = setTimeout(() => {
+          off();
+          reject(new Error('the host did not say that the world is held by the talk alone'));
+        }, 20000);
+        const off = client.tap((m) => {
+          if (m.type !== 'stats') return;
+          clean = m.stats.reasons.includes('user') || m.stats.reasons.includes('page') ? 0 : clean + 1;
+          if (clean < 2) return;
+          off();
+          clearTimeout(timer);
+          resolve();
+        });
+        client.resume();
+        client.resume('page');
+      });
     },
     /**
      * One tick: the host answers a resume with a tick and a pause with a held world. The script's resume lifts the hold that the
@@ -236,23 +253,29 @@ export const PAGE_SIDE = String.raw`
       }
       return last;
     },
-    /** Puts the camera on a block of cells: the block is centred and fills as much of the map as it can. */
-    frameCells(x0, y0, x1, y1) {
+    /**
+     * Puts the camera so that a cell of the town is at a fraction of the width and of the height of the map (0.5, 0.5 is the middle), at a zoom
+     * of its own (1 shows the whole town).
+     */
+    lookAtCell(cx, cy, zoom, fx, fy) {
       const view = L().view;
       const canvas = document.querySelector('[data-testid=map]');
       // A cell on the screen is 32 pixels wide and 25.22 deep (web/src/page/map/projection.ts).
       const CELL = 32;
       const DEPTH = 25.22;
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-      const zoom = Math.min(width / ((x1 - x0) * CELL), height / ((y1 - y0) * DEPTH));
       const cam = view.camera;
       cam.zoom = zoom;
-      cam.x = width / 2 - ((x0 + x1) / 2) * CELL * zoom;
-      cam.y = height / 2 - ((y0 + y1) / 2) * DEPTH * zoom;
+      cam.x = canvas.clientWidth * fx - (cx + 0.5) * CELL * zoom;
+      cam.y = canvas.clientHeight * fy - (cy + 0.5) * DEPTH * zoom;
       cam.moved = true;
       view.zoomBy(1);
-      return { zoom, width, height };
+    },
+    /** A cell of the pile of bamboo at the bridge, which covers two cells at the west end of the deck, in the row just south of it: the one nearer the deck. */
+    pileCell() {
+      const bridge = L().client.state.scene.places.find((place) => place.kind === 'bridge');
+      if (bridge === undefined) throw new Error('the town has no bridge');
+      const [x, y, , height] = bridge.rect;
+      return { x: x - 1, y: y + height };
     },
   };
   window.__film = film;
@@ -311,7 +334,7 @@ export class Film {
     return this.page.evaluate('window.__film.holds()');
   }
 
-  /** Lifts the script's own pause in a talk, so that the page shows what the game shows: the core holds the time. */
+  /** Lifts the script's own pause in a talk, so that the page shows what the game shows: the core holds the time (the bar says so only then). */
   letHold() {
     return this.page.evaluate('window.__film.letHold()');
   }
@@ -390,9 +413,10 @@ export class Film {
     await this.page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 520, y: 26 });
   }
 
-  /** A picture of the page as it is, after it settles. */
+  /** A picture of the page as it is, after it settles. A talk that holds the world is shown as the game shows it, with no pause of the script's on it. */
   async shoot(seconds, clip = undefined) {
     await this.rest();
+    if (await this.holds()) await this.letHold();
     await this.settle(seconds);
     return this.page.screenshot({ clip });
   }

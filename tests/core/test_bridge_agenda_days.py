@@ -92,11 +92,12 @@ def test_the_words_of_every_task_write_the_same_known_slots_in_both_languages():
             assert zh == en <= set(agenda_facts.NAMES), (task["id"], option)
             assert option["zh"].count("{") == len(agenda_facts.SLOT.findall(option["zh"]))
             seen |= zh
-    # the tasks of the bridge use the numbers of the bamboo, the timber, the helpers and the work
-    # (the board has the rest: the hours done and needed, the families of the helpers, the deadline)
+    # the tasks of the bridge use the numbers of the bamboo, the timber and the helpers the work
+    # takes, and say the work that is left in mornings (the board has the rest: the hours done,
+    # needed and left, the helpers who joined and their families, the deadline and the grudge)
     assert {"bamboo_need", "bamboo_site", "bamboo_open", "timber_need", "timber_open"} <= seen
-    assert {"crew", "helpers", "needy", "helper"} <= seen
-    assert {"morning", "hours_left", "grudge"} <= seen
+    assert {"crew", "needy", "helper", "work_mornings"} <= seen
+    assert not seen & {"hours", "hours_left", "morning", "helpers", "grudge"}
 
 
 def test_the_numbers_of_a_new_game_are_what_the_bridge_needs_and_nobody_has_brought():
@@ -124,10 +125,11 @@ def test_the_numbers_of_a_new_game_are_what_the_bridge_needs_and_nobody_has_brou
         "hours_need": 10,
         "work_from": {"zh": "08:00", "en": "08:00"},
         "work_to": {"zh": "12:00", "en": "12:00"},
-        "deadline": {"zh": "第四日18:00前", "en": "by 18:00 on day 4"},
+        "deadline": {"zh": "第四天18:00前", "en": "by 18:00 on day 4"},
         "helper": {"zh": "周娘子", "en": "Madam Zhou"},  # of a family with nobody, who knows most
         "hours_left": 10,
         "morning": 0,  # no crew, no work
+        "work_mornings": {"zh": "几个早上", "en": "a few more mornings"},  # nor mornings to count
     }
 
 
@@ -195,7 +197,7 @@ def test_numbers_are_put_in_as_digits_in_english_and_as_characters_in_chinese():
     }
     assert agenda_facts.slots(words) == {"bamboo_need", "bamboo_site", "needy", "deadline"}
     assert agenda_facts.fill(words, facts) == {
-        "zh": "桥要十根竹料，桥边才有零根。请李、周两家的人答应，第四日18:00前",
+        "zh": "桥要十根竹料，桥边才有零根。请李、周两家的人答应，第四天18:00前",
         "en": "The bridge needs 10 poles and has 0. Ask both families, by 18:00 on day 4",
     }
     # a score keeps its digits in Chinese too, and a time or a name is said in each language
@@ -245,8 +247,8 @@ def test_the_words_of_the_card_in_the_frame_carry_the_numbers_of_the_moment():
     act(game, "leave")
     rest = tasks_of(frame_now(game))["t_bamboo_rest"]
     assert rest["why"] == {
-        "zh": "桥要十根竹料，到了四根，李大又答应送四根。",
-        "en": "The bridge needs 10 poles of bamboo and has 4, and Li Da has promised 4 more.",
+        "zh": "桥要十根竹料，已经到了四根。李大又答应送四根。",
+        "en": "The bridge needs 10 poles of bamboo and has 4. Li Da has promised 4 more.",
     }
     assert (
         rest["action"] is None and rest["window"]["place"] == "p_bridge"

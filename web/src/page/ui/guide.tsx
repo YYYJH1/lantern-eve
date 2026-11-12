@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useRef } from "preact/hooks";
 import { type Lang, type MessageKey, pick, t } from "../../i18n/index.ts";
 import { REST_WORDS, restOf } from "../firstday.ts";
 import { GUIDANCES } from "../guide-prefs.ts";
@@ -11,9 +11,9 @@ import { STEPS, type StepId, TASK, type TutorialPhase } from "../tutorial.ts";
 import { personName, placeName } from "./common.tsx";
 import { bare, clockText, dayLabel, spanText } from "./format.ts";
 import { count } from "./paper-text.ts";
-import { EyeIcon } from "./icons.tsx";
 import { whenWhere } from "./slip-text.ts";
 import { CloseCorner, InkAct, Underline } from "./ink.tsx";
+import { ANSWER_KEY } from "./pairing-text.ts";
 import { actionLabel, EXPECTED_SHOWN } from "./taskcard.tsx";
 
 /** The class that lights an element the help points at, and the key that tells which it is. */
@@ -79,15 +79,23 @@ interface BodyProps {
   verbs: ReadonlySet<string>;
 }
 
+/** The title of the card of each step. */
+const TITLE: Readonly<Record<StepId, MessageKey>> = {
+  granny: "tut.granny.title",
+  clerk: "tut.clerk.title",
+  compare: "tut.pair.title",
+  evening: "tut.evening.title",
+};
+
 /** What the card of a step says, with the words of the game itself where the game has them. */
 function StepBody({ step, play, scene, lang, slice, verbs }: BodyProps) {
   const task = trackedTask(slice.tasks);
   const bamboo = slice.tasks?.list.find((x) => x.id === TASK.bamboo) ?? task;
   switch (step) {
-    case "goal":
+    case "granny":
       return (
         <>
-          <p>{t("tut.goal.body")}</p>
+          <p>{t("tut.granny.body")}</p>
           {task === null ? null : (
             <div class="tut-task" data-testid="tut-task">
               <span class="tut-task-label">{t("tut.goal.task")}</span>
@@ -97,12 +105,10 @@ function StepBody({ step, play, scene, lang, slice, verbs }: BodyProps) {
           )}
         </>
       );
-    case "ask":
-      return <p>{t("tut.ask.body", { name: personName(scene, lang, bamboo?.action?.npc ?? "li_laotai") })}</p>;
-    case "refusal":
+    case "clerk":
       return (
         <>
-          <p>{t("tut.refusal.body")}</p>
+          <p>{t("tut.clerk.body")}</p>
           {bamboo === null ? null : (
             <dl class="tut-facts" data-testid="tut-refusal">
               {bamboo.blocker === null ? null : (
@@ -117,27 +123,19 @@ function StepBody({ step, play, scene, lang, slice, verbs }: BodyProps) {
                   <dd>{pick(bamboo.why, lang)}</dd>
                 </div>
               )}
-              {bamboo.next === null ? null : (
-                <div data-testid="tut-next">
-                  <dt>{t("task.next")}</dt>
-                  <dd>{pick(bamboo.next, lang)}</dd>
-                </div>
-              )}
             </dl>
           )}
         </>
       );
-    case "source":
-      return <p>{t("tut.source.body")}</p>;
     case "compare": {
       const pair = play.guide.pair;
       return (
         <>
-          {pair === null ? <p>{t("tut.source.body")}</p> : <p data-testid="tut-pair">{t("tut.compare.body", { a: bare(pick(pair.a.text, lang)), b: bare(pick(pair.b.text, lang)) })}</p>}
+          {pair === null ? <p>{t("tut.clerk.body")}</p> : <p data-testid="tut-pair">{t("tut.pair.body", { a: bare(pick(pair.a.text, lang)), b: bare(pick(pair.b.text, lang)) })}</p>}
           <p class="tut-relation" data-testid="tut-relation" data-relation="unsupported">
-            {t(REL_KEY.unsupported)}
+            {t(ANSWER_KEY.unsupported)}
           </p>
-          {verbs.has("judge") ? <p>{t("tut.compare.judge")}</p> : null}
+          {verbs.has("judge") ? <p>{t("tut.pair.judge")}</p> : null}
         </>
       );
     }
@@ -180,7 +178,7 @@ function StepBody({ step, play, scene, lang, slice, verbs }: BodyProps) {
 }
 
 /** The line of what to do until the step is done. */
-const CHIP = { ask: "tut.ask.chip", source: "tut.source.chip", compare: "tut.compare.chip" } as const;
+const CHIP = { granny: "tut.ask.chip", clerk: "tut.clerk.chip", compare: "tut.pair.chip" } as const;
 
 /** The clan elder at the bottom of the map: the card of a step, which holds the world, and between cards the line of what to do. */
 function Tutorial({ play, scene, lang, slice, verbs }: { play: Play; scene: Scene | null; lang: Lang; slice: SliceFrame; verbs: ReadonlySet<string> }) {
@@ -199,7 +197,7 @@ function Tutorial({ play, scene, lang, slice, verbs }: { play: Play; scene: Scen
   if (card !== null) {
     const token = scene?.cast.find((p) => p.id === "zuzhang")?.token[lang] ?? t("tut.who").charAt(0);
     return (
-      <section class="tut paper-slip" data-testid="tutorial-card" data-step={card} data-n={guide.number} role="dialog" aria-label={t(`tut.${card}.title`)}>
+      <section class="tut paper-slip" data-testid="tutorial-card" data-step={card} data-n={guide.number} role="dialog" aria-label={t(TITLE[card])}>
         <div class="tut-main">
           <header class="tut-head">
             <span class="tut-token" aria-hidden="true" lang={lang === "zh" ? "zh-CN" : "en"}>
@@ -211,7 +209,7 @@ function Tutorial({ play, scene, lang, slice, verbs }: { play: Play; scene: Scen
             </div>
           </header>
           <h2 class="tut-title" data-testid="tutorial-title">
-            {t(`tut.${card}.title`)}
+            {t(TITLE[card])}
           </h2>
           <div class="tut-body">
             <StepBody step={card} play={play} scene={scene} lang={lang} slice={slice} verbs={verbs} />
@@ -229,7 +227,7 @@ function Tutorial({ play, scene, lang, slice, verbs }: { play: Play; scene: Scen
       </section>
     );
   }
-  const text = tutorial.phase === "waiting" ? (step === "evening" ? t("tut.evening.wait") : null) : step === "ask" || step === "source" || step === "compare" ? t(CHIP[step], { name: personName(scene, lang, slice.tasks?.list.find((x) => x.id === TASK.bamboo)?.action?.npc ?? "li_laotai") }) : null;
+  const text = tutorial.phase === "waiting" ? (step === "evening" ? t("tut.evening.wait") : null) : step === "granny" || step === "clerk" || step === "compare" ? t(CHIP[step], { name: personName(scene, lang, slice.tasks?.list.find((x) => x.id === TASK.bamboo)?.action?.npc ?? "li_laotai") }) : null;
   if (text === null) return null;
   return <TutorialLine step={step} phase={tutorial.phase} number={guide.number} total={total} text={text} onSkip={() => guide.skipTutorial()} />;
 }
@@ -254,21 +252,39 @@ function TutorialLine({ step, phase, number, total, text, onSkip }: { step: Step
 
 // --- The hint of the world ------------------------------------------------------------------------------------------
 
-/** The hint that is lit, in one line near the bottom of the map. It is not a window: nothing waits for it. */
-function HintPill({ play }: { play: Play }) {
+/** The seal of the clan elder, who is the one who speaks up: the character of his surname, from the scene. */
+function elderToken(scene: Scene | null, lang: Lang): string {
+  return scene?.cast.find((p) => p.id === "zuzhang")?.token[lang] ?? t("tut.who").charAt(0);
+}
+
+/**
+ * The hint that is lit: what the clan elder says, in a line or two near the bottom of the map, with his seal at its head, and for an act
+ * that is taught the name of the act over the words. It is not a window: nothing waits for it, and the button it is about glows.
+ */
+function HintPill({ play, scene, lang }: { play: Play; scene: Scene | null; lang: Lang }) {
   const guide = play.guide;
   const lit = guide.hints.lit;
   if (!guide.hintsOn || guide.tutorial.on || lit === null) return null;
   const entry = guide.hints.log.find((e) => e.id === lit.id);
   if (entry === undefined) return null;
-  return <HintLine id={entry.id} text={entry.text} onClose={() => guide.touched(lit.target)} />;
+  return <HintLine id={entry.id} text={entry.text} title={entry.title} token={elderToken(scene, lang)} lang={lang} onClose={() => guide.touched(lit.target)} />;
 }
 
-function HintLine({ id, text, onClose }: { id: string; text: MessageKey; onClose: () => void }) {
+function HintLine({ id, text, title, token, lang, onClose }: { id: string; text: MessageKey; title: MessageKey | null; token: string; lang: Lang; onClose: () => void }) {
   const line = useLineRoom<HTMLParagraphElement>();
   return (
-    <p class="hint-pill paper-slip" data-testid="hint-pill" data-hint={id} role="status" ref={line}>
-      <span class="hint-pill-text">{t(text)}</span>
+    <p class="hint-pill paper-slip" data-testid="hint-pill" data-hint={id} data-card={title !== null} role="status" ref={line}>
+      <span class="tut-token" aria-hidden="true" lang={lang === "zh" ? "zh-CN" : "en"}>
+        {token}
+      </span>
+      <span class="hint-pill-body">
+        {title === null ? null : (
+          <strong class="hint-pill-title" data-testid="hint-pill-title">
+            {t(title)}
+          </strong>
+        )}
+        <span class="hint-pill-text">{t(text)}</span>
+      </span>
       <CloseCorner label={t("menu.close")} testid="hint-pill-close" onClose={onClose} />
     </p>
   );
@@ -289,7 +305,7 @@ export function GuideDock({ play, scene, lang, slice, verbs }: { play: Play; sce
   }, [play]);
   return (
     <div class="guide-dock" data-testid="guide-dock">
-      <HintPill play={play} />
+      <HintPill play={play} scene={scene} lang={lang} />
       <Tutorial play={play} scene={scene} lang={lang} slice={slice} verbs={verbs} />
     </div>
   );
@@ -297,74 +313,53 @@ export function GuideDock({ play, scene, lang, slice, verbs }: { play: Play; sce
 
 // --- The log of hints, and asking the elder ---------------------------------------------------------------------------
 
-/** The button of the help that opens the log of hints (the elder is the seal of the corner, `corner.tsx`). */
-export function HelpBar({ play, lang }: { play: Play; lang: Lang }) {
+/**
+ * The hints that have been given, in the menu: when each was given, what it said, and a button that lights what it is about once more.
+ * They are the cues of the story and the cards that taught an act. A closed line, so that the menu stays short.
+ */
+export function HintList({ play, lang, onShow }: { play: Play; lang: Lang; onShow: () => void }) {
   const guide = play.guide;
-  const [open, setOpen] = useState(false);
   const log = guide.hints.log;
-  const root = useRef<HTMLSpanElement>(null);
-  // Set up before the log is painted, so that a key pressed the moment it opens is heard.
-  useLayoutEffect(() => {
-    if (!open) return;
-    const onDown = (event: PointerEvent): void => {
-      if (event.target instanceof Node && root.current?.contains(event.target) === true) return;
-      setOpen(false);
-    };
-    const onKey = (event: KeyboardEvent): void => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("pointerdown", onDown, true);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", onDown, true);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
   if (!guide.active) return null;
   return (
-    <span class="help-bar" ref={root} data-testid="help-bar">
-      <button type="button" class="btn btn-help" data-testid="btn-hints" aria-expanded={open} aria-controls="hint-log" onClick={() => setOpen((now) => !now)}>
-        <EyeIcon />
-        <span>{t("hint.log.open", { n: log.length })}</span>
-      </button>
-      {open ? (
-        <div class="hint-log paper-slip" id="hint-log" data-testid="hint-log" role="dialog" aria-label={t("hint.log.title")}>
-          <h3 class="hint-log-title">{t("hint.log.title")}</h3>
-          {guide.hintsOn ? null : (
-            <p class="hint-log-off" data-testid="hint-log-off">
-              {t("hint.log.off")}
-            </p>
-          )}
-          {log.length === 0 ? (
-            <p class="hint-log-empty" data-testid="hint-log-empty">
-              {t("hint.log.empty")}
-            </p>
-          ) : (
-            <ol class="hint-log-list">
-              {[...log].reverse().map((entry) => (
-                <li key={entry.id} data-testid="hint-log-entry" data-hint={entry.id}>
-                  <span class="hint-log-when">
-                    {dayLabel(lang, entry.at.day)} {clockText(entry.at.hour, entry.at.minute)}
-                  </span>
-                  <span class="hint-log-text">{t(entry.text)}</span>
-                  <InkAct
-                    seed={entry.id}
-                    data-testid="hint-show"
-                    onClick={() => {
-                      guide.hints.again(entry.id, performance.now());
-                      setOpen(false);
-                      play.touch();
-                    }}
-                  >
-                    {t("hint.log.show")}
-                  </InkAct>
-                </li>
-              ))}
-            </ol>
-          )}
-        </div>
-      ) : null}
-    </span>
+    <details class="menu-hints-list" data-testid="hint-log">
+      <summary data-testid="btn-hints">{t("hint.log.open", { n: log.length })}</summary>
+      {guide.hintsOn ? null : (
+        <p class="hint-log-off" data-testid="hint-log-off">
+          {t("hint.log.off")}
+        </p>
+      )}
+      {log.length === 0 ? (
+        <p class="hint-log-empty" data-testid="hint-log-empty">
+          {t("hint.log.empty")}
+        </p>
+      ) : (
+        <ol class="hint-log-list">
+          {[...log].reverse().map((entry) => (
+            <li key={entry.id} data-testid="hint-log-entry" data-hint={entry.id}>
+              <span class="hint-log-when">
+                {dayLabel(lang, entry.at.day)} {clockText(entry.at.hour, entry.at.minute)}
+              </span>
+              <span class="hint-log-text">
+                {entry.title === null ? null : <strong>{t(entry.title)}</strong>}
+                {t(entry.text)}
+              </span>
+              <InkAct
+                seed={entry.id}
+                data-testid="hint-show"
+                onClick={() => {
+                  guide.hints.again(entry.id, performance.now());
+                  onShow();
+                  play.touch();
+                }}
+              >
+                {t("hint.log.show")}
+              </InkAct>
+            </li>
+          ))}
+        </ol>
+      )}
+    </details>
   );
 }
 

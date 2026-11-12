@@ -402,3 +402,83 @@
   background: var(--paper);
   font-size: 17px;
 }
+
+/* Choosing a line of the tree shows what that telling changed (ui/ending.tsx, ending-diff.ts). */
+
+.tree-hop {
+  cursor: pointer;
+}
+
+/* The telling that has the focus or is chosen is marked on its line, in the red of the seal and heavier: a frame round the whole group would lie over the words. */
+.tree-hop:focus,
+.tree-hop:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.tree-hop:focus-visible .tree-edge {
+  stroke: var(--rouge);
+}
+
+.tree-edge-hit {
+  stroke: transparent;
+  stroke-width: 14;
+  pointer-events: stroke;
+}
+
+/* The words of the tree are not what is pressed: a line that runs under them can be chosen where they lie, and the name of a person still shows its note
+   from the frame it stands in. */
+.tree text {
+  pointer-events: none;
+}
+
+.tree-hop.is-picked .tree-edge {
+  stroke: var(--rouge);
+  stroke-width: 4;
+}
+
+.tree-hop.is-picked .tree-flag circle {
+  stroke: var(--rouge);
+}
+
+.tree-diff,
+.tree-diff-hint {
+  margin: 4px 0 0;
+}
+
+.tree-diff {
+  padding: 6px 10px 8px;
+  border-left: 3px solid var(--ink);
+}
+
+.tree-diff-head {
+  margin: 0 0 4px;
+  font-weight: 500;
+}
+
+.tree-diff-row {
+  display: flex;
+  gap: 10px;
+  margin: 2px 0;
+}
+
+.tree-diff-label {
+  flex: none;
+  min-width: 4.5em;
+  font-size: 14px;
+}
+
+.tree-diff-text {
+  min-width: 0;
+}
+
+.tree-diff-mark {
+  background: color-mix(in srgb, var(--xiangse) 60%, transparent);
+  color: inherit;
+  border-bottom: 2px solid var(--yanzhi);
+}
+
+.tree-diff-note {
+  margin: 4px 0 0;
+  font-size: 14px;
+}

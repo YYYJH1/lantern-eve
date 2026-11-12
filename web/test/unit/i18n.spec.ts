@@ -30,21 +30,23 @@ test.describe("the two message tables", () => {
     expect(same.sort()).toEqual(["hud.none", "note.taskChanged.reason", "unit.money"]);
   });
 
-  test("say a person in general with 对方 or they, and keep he and she for the one person a text is about", () => {
+  test("say the person a text is about by name, a person in general with 人家 or they, and keep he and she for the one person a text is about", () => {
     // The cast has fixed sexes, so a text that speaks of whoever the player has picked cannot use 他 or 她 (he, she, his, her). The texts
-    // that remain are about one person: Old He (the ending), and Granny Li and the teahouse keeper (the elder's cards).
-    const fixed = ["ending.chain.ch_li_er_rumor", "ending.truth.v_boat", "tut.refusal.title", "tut.source.body"];
+    // that remain are about one person: Boatman He (the ending), and Granny Li and the teahouse keeper (the elder's cards).
+    const fixed = ["ending.truth.v_boat"];
     const zhNames = (Object.keys(zh) as Array<keyof typeof zh>).filter((key) => /[他她]/.test(zh[key].replace(/其他|他人|他们/g, "")));
     expect(zhNames.filter((key) => !fixed.includes(key))).toEqual([]);
     const enNames = (Object.keys(en) as Array<keyof typeof en>).filter((key) => /\b(he|she|him|her|his|hers|himself|herself)\b/i.test(en[key]));
     expect(enNames.filter((key) => !fixed.includes(key))).toEqual([]);
-    // The cards of a person say who they mean in the words themselves.
-    expect(zh["person.find"]).toBe("何时何地找对方");
-    expect(zh["person.favours.owed"]).toBe("你欠对方{n}份人情");
-    expect(zh["person.details"]).toBe("关于对方");
-    expect(en["person.find"]).toBe("Find them");
-    expect(en["person.favours.owed"]).toBe("You owe them {n}");
-    expect(en["person.details"]).toBe("About them");
+    // The cards of a person name the person, or need no name.
+    expect(zh["person.find"]).toBe("去哪找");
+    expect(zh["person.favours.owed"]).toBe("你欠{name}{n}份人情");
+    expect(zh["person.details"]).toBe("关于{name}");
+    expect(en["person.find"]).toBe("Where to find");
+    expect(en["person.favours.owed"]).toBe("You owe {name} {n}");
+    expect(en["person.details"]).toBe("About {name}");
+    // No text says 对方 where it could say who: the page passes the name, and a text with nobody at hand says 人家 or 托人.
+    expect((Object.keys(zh) as Array<keyof typeof zh>).filter((key) => zh[key].includes("对方"))).toEqual([]);
   });
 
   test("keep the English strings that the host tests read", () => {
@@ -52,7 +54,7 @@ test.describe("the two message tables", () => {
     expect(en["top.resume"]).toBe("Resume");
     expect(en["status.paused"]).toBe("paused");
     expect(en["status.running"]).toBe("running");
-    expect(translate("en", "notice.saved", { id: 1, tick: 120 })).toBe("saved #1 at tick 120");
+    expect(translate("en", "notice.saved", { when: "Day 1 08:00" })).toBe("saved, Day 1 08:00");
     expect(en["menu.keyHeld"]).toBe("key held");
     expect(en["menu.noKey"]).toBe("no key");
   });
@@ -71,7 +73,7 @@ test.describe("language", () => {
 
   test("fills placeholders, leaves an unknown one as it is, and follows the current language", () => {
     expect(translate("en", "hud.day", { n: 3 })).toBe("Day 3");
-    expect(translate("zh", "hud.day", { n: "三" })).toBe("第三日");
+    expect(translate("zh", "hud.day", { n: "三" })).toBe("第三天");
     expect(translate("en", "hud.day", {})).toBe("Day {n}");
     const seen: string[] = [];
     const stop = subscribeLang(() => seen.push(getLang()));

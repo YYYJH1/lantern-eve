@@ -1,0 +1,65 @@
+/* The slip of the riddle lantern: a small paper slip over the map like the card of the hearts, with the riddle in ink, the three answers as words with a stroke
+   under them, and, after a guess, the line of the lantern maker. Nothing here has a shadow, a radius or an entrance. */
+
+.sheet-riddle {
+  width: min(440px, calc(100% - 24px));
+}
+
+.riddle-day {
+  font-size: 15px;
+}
+
+.riddle-text {
+  margin: 10px 0 6px;
+  font-size: 19px;
+  line-height: 1.8;
+}
+
+.riddle-answers {
+  display: grid;
+  gap: 0;
+  margin: 4px 0 4px;
+  padding: 0 0 0 1.4em;
+  list-style: none;
+  font-size: 20px;
+}
+
+.riddle-answers li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  min-height: 34px;
+}
+
+.riddle-answers li.is-picked .ink-act {
+  font-weight: 500;
+  opacity: 1;
+}
+
+.riddle-answers svg.tick {
+  width: 26px;
+  height: 20px;
+  color: var(--tick);
+}
+
+.riddle-hint {
+  margin: 6px 0 2px;
+  font-size: 15px;
+}
+
+.riddle-said {
+  margin: 8px 0 2px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+  line-height: 1.7;
+}
+
+.riddle-maker {
+  margin-right: 0.8em;
+  font-weight: 500;
+}
+
+.ending-riddles {
+  margin: 8px 0 0;
+  text-align: center;
+}

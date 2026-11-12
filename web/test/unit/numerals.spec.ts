@@ -40,27 +40,28 @@ test.describe("the Chinese words that carry a count", () => {
     expect(zhOf("unit.households", 23)).toBe("二十三户");
     expect(zhOf("unit.people", 2)).toBe("两人");
     expect(zhOf("unit.coins", 40)).toBe("四十文");
-    expect(zhOf("chips.note.cost", 10)).toBe("点一个标签，就向对方打听这件事。每问一次花十分钟。");
-    expect(zhOf("chips.more", 4)).toBe("另有四个");
-    expect(zhOf("note.inspected.some", 3)).toBe("见闻簿里记下了三条新的。");
-    expect(zhOf("note.joinedMore", 1, { names: "老何、李大" })).toBe("老何、李大和另外一人答应来帮忙。");
-    expect(zhOf("note.testified.some", 2, { name: "老何" })).toBe("老何把亲眼所见告诉了你，见闻簿里添了两条。");
-    expect(zhOf("task.expected.more", 2)).toBe("另有两人");
+    expect(zhOf("slip.more", 3)).toBe("还有三件");
+    expect(zhOf("note.inspected.some", 3)).toBe("见闻簿里新记了三条。");
+    expect(zhOf("note.joinedMore", 1, { names: "老何、李大" })).toBe("老何、李大和另外一个人答应来帮忙。");
+    expect(zhOf("note.testified.some", 2, { name: "老何" })).toBe("老何把亲眼看见的跟你讲了。你记下了两条。");
+    expect(zhOf("task.expected.more", 2)).toBe("还有两人");
     expect(zhOf("person.favours.owes", 2)).toBe("欠你两份人情");
-    expect(zhOf("person.favours.owed", 3)).toBe("你欠对方三份人情");
-    expect(zhOf("talk.cost", 20)).toBe("二十分钟");
-    expect(zhOf("request.spent", 15)).toBe("这花了十五分钟。");
-    expect(zhOf("board.statement.judged", 3)).toBe("已判过三对见闻。");
+    expect(zhOf("person.favours.owed", 3, { name: "李大" })).toBe("你欠李大三份人情");
+    expect(zhOf("request.spent", 20)).toBe("花了二十分钟。");
+    expect(zhOf("request.spent", 15)).toBe("花了十五分钟。");
+    expect(zhOf("board.statement.judged", 3)).toBe("已经比过三对。");
   });
 
   test("read the same way when two counts stand in one sentence", () => {
     const two = { named: count("zh", 9), accepted: count("zh", 8), where: "祠堂" };
-    expect(said("zh", "note.spoke", two)).toBe("你在祠堂当众说了一番，在场九人里有八人听进去了。");
-    expect(said("zh", "note.spoke.cleared", two)).toBe("你在祠堂当众说了一番，在场九人里有八人听进去了，真相说清了。");
+    // The note over the map says what was done, and the ledger keeps how many took it in.
+    expect(said("zh", "note.spoke", two)).toBe("你在祠堂当众拿出了凭据，在场的人都听见了。");
+    expect(said("zh", "note.spoke.cleared", two)).toBe("你在祠堂当众把真相讲明白了。");
+    expect(said("zh", "clarify.sum", { n: count("zh", 9), changed: count("zh", 8) })).toBe("九个人里，八个改了主意。");
     expect(said("zh", "ending.told", { total: count("zh", 12), mutated: count("zh", 5) })).toBe("一共传了十二回，其中五回把话说走了样。");
-    const last = { when: "第三日 18:00", where: "茶馆", named: count("zh", 4), accepted: count("zh", 2), percent: 50 };
-    expect(said("zh", "board.truth.lastLine", last)).toBe("第三日 18:00，茶馆：到场四人，接受两人（50%）");
-    expect(said("zh", "board.statement.counts", { support: count("zh", 3), against: count("zh", 0) })).toBe("三条支持，零条矛盾");
+    const last = { when: "第三天 18:00", where: "茶馆", named: count("zh", 4), accepted: count("zh", 2), percent: 50 };
+    expect(said("zh", "board.truth.lastLine", last)).toBe("第三天 18:00在茶馆，到场四人，两人信了，占50%");
+    expect(said("zh", "board.statement.counts", { support: count("zh", 3), against: count("zh", 0) })).toBe("三条对得上，零条对不上");
   });
 
   test("put the measure word of the pole on the ledger's three counts, and leave English alone", () => {
@@ -76,15 +77,15 @@ test.describe("the Chinese words that carry a count", () => {
     expect(enOf("unit.people", 23)).toBe("23 people");
     expect(enOf("unit.coins", 40)).toBe("40 coins");
     expect(enOf("person.favours.owes", 2)).toBe("Owes you 2");
-    expect(enOf("talk.cost", 20)).toBe("20 min");
+    expect(enOf("request.spent", 20)).toBe("That took 20 minutes.");
     expect(enOf("request.spent", 15)).toBe("That took 15 minutes.");
-    expect(enOf("chips.more", 4)).toBe("and 4 more");
+    expect(enOf("slip.more", 3)).toBe("3 more");
     expect(enOf("task.expected.more", 2)).toBe("and 2 more");
   });
 
   test("have no space between a placeholder and its measure word, except where the figures are meant to stay", () => {
     const measure = /\{\w+\} (人|条|个|份|户|回|文|次|位|根|分钟|钟头|星|拍|毫秒|步|对|句|场|天|日|成|家|批)/;
-    // Digits stay on the developer screens (budget, the list of calls, saves and checkpoints, the cost of a tick, the gallery, the replay),
+    // Digits stay on the developer screens (budget, the list of calls, the cost of a tick),
     // in the step counter of the tutorial, in the stars of the manager's name (a score), and in three words of the board that no view
     // writes any more (their counts are said by `ledger.*`).
     const keepFigures = [
@@ -95,12 +96,6 @@ test.describe("the Chinese words that carry a count", () => {
       "calls.cap",
       "calls.latency",
       "calls.tick",
-      "gallery.ticks",
-      "menu.saveOption",
-      "notice.exported",
-      "notice.loadedLine",
-      "notice.saved",
-      "replay.tick",
       "tick.step",
       "tick.value",
       "tut.step",

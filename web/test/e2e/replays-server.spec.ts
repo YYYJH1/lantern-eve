@@ -95,10 +95,10 @@ test("the gallery lists the replays that the server wrote, plays one in the brow
     await expect(row).toHaveCount(1);
     await expect(row).toHaveAttribute("data-id", id);
     await expect(row).toHaveAttribute("data-source", "server");
-    await expect(row.getByTestId("gallery-name")).toHaveText("Game with seed 4242");
-    await expect(row.getByTestId("gallery-meta")).toContainText(/\d+ ticks, bridge, .* (KB|MB), core /);
+    await expect(row.getByTestId("gallery-name")).toHaveText("A game on the server");
+    await expect(row.getByTestId("gallery-meta")).toContainText(/recorded up to Day \d+ \d\d:\d\d, bridge, .* (KB|MB), core /);
     await page.getByTestId("gallery").getByTestId("lang-zh").click();
-    await expect(row.getByTestId("gallery-name")).toHaveText("种子 4242 的一局");
+    await expect(row.getByTestId("gallery-name")).toHaveText("服务器上的一局");
     await expect(page.getByTestId("gallery-server").locator("h3")).toContainText("这台服务器上打过的");
 
     // Watch it: the browser plays what the server wrote, with the core of its own.

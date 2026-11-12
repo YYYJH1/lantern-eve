@@ -217,7 +217,7 @@ class Script:
 
 def beats() -> list[Beat]:
     """The game, beat by beat."""
-    envy, at_bridge = Note("out of envy"), Note("Li Er was at the Stone Bridge last night.")
+    envy, at_bridge = Note("out of envy"), Note("Li Er was at the bridge last night.")
     return [
         # day 1, the morning: the head of the Zhou family
         Wait(1, 6, 30),

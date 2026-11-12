@@ -109,6 +109,19 @@ def frames_of_a_festival_that_has_begun():
     return seen
 
 
+def frames_of_a_watched_festival():
+    """A game whose page says that it shows the moments, and in which the first lanterns of both
+    banks hang: the frames have the moments and the hold."""
+    game = bridge(3, dev_actions=1)
+    seen = [act(game, "moment", op="watch")["frame"]]
+    for npc in ("li_da", "cha_laoban"):
+        seen.append(act(game, "dev_goal", op="join", npc=npc)["frame"])
+    seen.append(act(game, "moment", op="release", kind="both_banks")["frame"])
+    run_to(game, game.tick + 20)
+    seen.append(json.loads(game.step())["frame"])
+    return seen
+
+
 def frames_of_the_morning_after(every: int = 40):
     """The slice from the evening of the first day to the morning after, with the bamboo promised
     (the test action stands in for the persuasion), brought and told in the recap."""
@@ -139,6 +152,7 @@ def frames():
         frames_of_the_slice()
         + frames_of_the_town()
         + frames_of_a_festival_that_has_begun()
+        + frames_of_a_watched_festival()
         + frames_of_the_morning_after()
         + frames_of_a_judged_notebook()
     )
@@ -151,7 +165,7 @@ def test_every_key_and_field_of_a_real_frame_has_a_mark(frames):
     assert {k for frame in frames for k in frame} >= {
         "npcs", "time", "weather", "bubbles", "dots", "lanterns", "hud", "player", "notebook",
         "ending", "tasks", "tracked", "cards", "commitments", "site", "recap", "board", "gazette",
-        "night",
+        "night", "people",
     }  # fmt: skip
 
 
@@ -159,7 +173,14 @@ def test_every_row_of_the_audit_is_for_a_key_a_real_frame_has_and_so_is_every_fi
     frames,
 ):
     seen = {path for frame in frames for path in projection.paths(frame)}
-    optional = {"npcs[].status", "player.thinking"}  # absent when nobody sleeps, loads or waits
+    # absent when nobody sleeps, loads or waits, and from the moments of the kinds that lack them
+    optional = {
+        "npcs[].status",
+        "player.thinking",
+        "moments[].prop",
+        "moments[].from",
+        "moments[].round",
+    }
     for entry in projection.FRAME:
         assert entry.path in seen or entry.path.removesuffix("[]") in seen, entry.path
         for name in entry.fields:
@@ -255,10 +276,11 @@ def test_the_audit_lists_the_bio_of_a_person_as_public_static_content_of_the_sce
     assert projection.scene_problems(scene) == []
     seen = set(projection.paths({"cast": scene["cast"]}))
     assert {"cast[].bio", "cast[].bio.zh", "cast[].bio.en"} <= seen
+    assert {"cast[].intro", "cast[].intro.zh", "cast[].intro.en"} <= seen
     for path in sorted(seen):
         assert projection.mark_of(path, projection.SCENE) == "public", path
     assert {entry.mark for entry in projection.SCENE} == {"public"}
-    assert [entry.path for entry in projection.SCENE] == ["cast[]", "cast[].bio"]
+    assert [entry.path for entry in projection.SCENE] == ["cast[]", "cast[].intro", "cast[].bio"]
     for entry in projection.SCENE:
         assert entry.en.strip() and entry.zh.strip()
         for name in entry.fields:

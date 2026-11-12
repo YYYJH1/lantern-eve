@@ -7,6 +7,7 @@ import { expect, LanternPage, test } from "../support/fixtures.ts";
 import { hideTheSlip, mouseOnMap, onTheMap } from "../support/play.ts";
 import * as fake from "../support/slice.ts";
 import { alphaOfFrame, atlasTexel, clearPoint, clearStage, drawing, flatPoint, inject, mapStats, MANIFEST, MORNING, near, NIGHT, sampleAt, solidPoints, spread, stand } from "../support/sprites.ts";
+import { scaled } from "../support/time-scale.ts";
 
 // This spec looks at the map, so its pages draw it.
 test.use({ map: true });
@@ -134,7 +135,11 @@ test.describe("the people on the map are figures of the sprite kit", () => {
     expect(new Set(people.map((p) => p.sprite)).size).toBe(21);
     for (const p of people.filter((q) => q.sprite !== null)) expect(p.anim, p.id).toBe("idle");
 
-    // What is on the screen is what is in the atlas: near the middle of each body the pixel of the screen is the pixel of the frame.
+    // What is on the screen is what is in the atlas: near the middle of each body the pixel of the screen is the pixel of the frame. The tags over the
+    // heads are left off, since twenty people in a row would have theirs over each other's heads.
+    await page.evaluate(() => {
+      window.__lantern.view.headTags = false;
+    });
     await spread(page);
     await holdStill(page, true);
     for (const p of people.filter((q) => q.sprite !== null)) await figureIsAtlas(page, p.id);
@@ -286,13 +291,19 @@ test.describe("a figure walks, stands, talks and carries", () => {
   test("breathes when it stands, two frames at two a second, and no two people in step", async ({ lantern }) => {
     const page = lantern.page;
     await openTown(lantern);
+    // The people are looked at at the times the test chooses: a tenth of a second apart on a clock that it sets, with the map drawn once at each. On the clock of the page
+    // they would be looked at as often as the page happens to draw, which on two cores is every half second or so, and then every person changes frame at the same look.
     const seen = await page.evaluate(async () => {
       const view = window.__lantern.view;
+      let now = 0;
+      view.clock = () => now;
       const frames: Record<string, number[]> = {};
-      const until = performance.now() + 3_200;
-      while (performance.now() < until) {
+      for (let step = 0; step <= 32; step++) {
+        now = step * 0.1;
+        const drawn = view.stats().frames;
+        view.redraw();
+        while (view.stats().frames === drawn) await new Promise((resolve) => requestAnimationFrame(resolve));
         for (const p of view.drawing().people.filter((q) => q.sprite !== null && q.anim === "idle")) (frames[p.id] ||= []).push(p.frame);
-        await new Promise((resolve) => setTimeout(resolve, 60));
       }
       return frames;
     });
@@ -368,18 +379,23 @@ test.describe("a figure walks, stands, talks and carries", () => {
     // A frame that has `carrying` and no status (the core always sends both) is drawn the same.
     await stand(page, { zuzhang: { x: 22, y: 21, carrying: "tools", activity: "carry", status: undefined } });
     expect((await now()).get("zuzhang")).toMatchObject({ anim: "idle", marks: ["load"] });
-    // On the move he walks with the bamboo, and the carrying walk goes by the ground like the other.
+    // On the move he walks with the bamboo, and the carrying walk goes by the ground like the other. The page looks until he has arrived: the figure glides by the time between the
+    // map's frames, so how long the walk takes is how fast the page draws (a second on a development machine, three on two cores), and a fixed time holds too few looks there.
     await inject(page, { npcs: (await page.evaluate(() => (window.__lantern.client.state.frame as unknown as { npcs: unknown[] }).npcs)).map((n) => ((n as { id: string }).id === "li_da" ? { ...(n as object), x: 30, y: 21 } : n)) });
-    const walking = await page.evaluate(async () => {
+    const walking = await page.evaluate(async (limit) => {
       const rows: Array<{ anim: string | null; frame: number; moving: boolean; dir: string; walked: number }> = [];
-      const until = performance.now() + 1_200;
+      const until = performance.now() + limit;
+      let began = false;
       while (performance.now() < until) {
         const p = window.__lantern.view.drawing().people.find((q) => q.id === "li_da");
-        if (p !== undefined && p.moving) rows.push({ anim: p.anim, frame: p.frame, moving: p.moving, dir: p.dir, walked: p.walked });
+        if (p !== undefined && p.moving) {
+          began = true;
+          rows.push({ anim: p.anim, frame: p.frame, moving: p.moving, dir: p.dir, walked: p.walked });
+        } else if (began) break;
         await new Promise((resolve) => setTimeout(resolve, 30));
       }
       return rows;
-    });
+    }, scaled(5_000));
     expect(walking.length).toBeGreaterThan(3);
     expect(new Set(walking.map((r) => r.anim))).toEqual(new Set(["carry"]));
     expect(new Set(walking.map((r) => r.dir))).toEqual(new Set(["right"]));
@@ -1001,6 +1017,9 @@ test.describe("the map keeps its manners", () => {
   });
 
   test("draws the 2x atlas on a screen of high pixel density and the same figures at the same size", async ({ browser, servers }) => {
+    // The page draws four times the pixels, in software where there is no graphics card, and every sprite of the atlas is compared with the pixels the page picks by: the
+    // test takes a few minutes on two cores, where a development machine takes half a minute.
+    test.setTimeout(300_000);
     const context = await browser.newContext({ deviceScaleFactor: 2, viewport: { width: 1100, height: 700 } });
     const lantern = new LanternPage(await context.newPage(), servers, true);
     try {
@@ -1014,6 +1033,9 @@ test.describe("the map keeps its manners", () => {
       expect(await comparePickingPixels(lantern.page)).toBeGreaterThan(20_000);
       // The pixels are the atlas's at that scale, and the figure is the size it is at scale 1: a frame is as wide in the world as at 1x.
       await inject(lantern.page, { weather: "clear" });
+      await lantern.page.evaluate(() => {
+        window.__lantern.view.headTags = false;
+      });
       await spread(lantern.page);
       await holdStill(lantern.page, true);
       for (const id of ["cha_laoban", "li_da", "zhou_niangzi", "player"]) await figureIsAtlas(lantern.page, id);

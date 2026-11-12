@@ -48,8 +48,8 @@ test.describe("the button of a task that asks a person for something", () => {
     ["material, bamboo", act("entrust", { npc: "li_da", item: "bamboo", request: "material" }), "请李大送一批竹料", "Ask Li Da to send a batch of bamboo"],
     ["material, timber", act("entrust", { npc: "zhou_zhanggui", item: "timber", request: "material" }), "请周掌柜送一批木料", "Ask Shopkeeper Zhou to send a batch of timber"],
     ["lend", act("entrust", { npc: "li_laotai", item: "bamboo", request: "lend" }), "请李老太借出竹料", "Ask Granny Li to lend the bamboo"],
-    ["lane", act("entrust", { npc: "miaozhu", request: "lane" }), "请庙祝开庙后夹道", "Ask Temple Keeper to open the lane behind the temple"],
-    ["testify", act("entrust", { npc: "gengfu", request: "testify" }), "请更夫说说看见了什么", "Ask Watchman to say what they saw"],
+    ["lane", act("entrust", { npc: "miaozhu", request: "lane" }), "请庙祝打开庙后的夹道", "Ask Temple Keeper to open the lane behind the temple"],
+    ["testify", act("entrust", { npc: "gengfu", request: "testify" }), "请更夫说说亲眼看见了什么", "Ask Watchman to say what they saw"],
     ["join", act("entrust", { npc: "zhou_dalang", request: "join" }), "请周家大郎来帮忙", "Ask Zhou Dalang to help out"],
     ["persuade", act("entrust", { npc: "li_xiaomei", request: "persuade", target: "zhou_erlang" }), "请李小妹去劝周家二郎", "Ask Li Xiaomei to talk Zhou Erlang round"],
     ["convene", act("entrust", { npc: "zuzhang", request: "convene" }), "请族长召集族人", "Ask Clan Elder to call the clan"],
@@ -88,8 +88,8 @@ test.describe("the button of a task that speaks in public", () => {
     expect(label(act("speak", { kind: "evidence" }), "en")).toBe("Set the record straight in public");
     expect(label(act("speak", { kind: "meal" }), "zh")).toBe("摆一桌和解饭");
     expect(label(act("speak", { kind: "meal" }), "en")).toBe("Lay a table for peace");
-    expect(label(act("speak", { kind: "clarify" }), "zh")).toBe("当众澄清");
-    expect(label(act("speak", { kind: "clarify" }), "en")).toBe("Clear up the claim in public");
+    expect(label(act("speak", { kind: "clarify" }), "zh")).toBe("当众把这话说清");
+    expect(label(act("speak", { kind: "clarify" }), "en")).toBe("Clear up the talk in public");
   });
 
   test("is speaking up for a task that names no kind or one the page does not know", () => {
@@ -115,8 +115,8 @@ test.describe("the button of the other tasks", () => {
     expect(label(act("move", { place: "p_teahouse" }), "en")).toBe("Go to Teahouse");
     expect(label(act("look", { item: "bamboo" }), "en")).toBe("Look at Bamboo");
     expect(label(act("ask_source", { npc: "li_laotai" }), "zh")).toBe("问李老太听谁说的");
-    expect(label(act("judge"), "zh")).toBe("去见闻簿里判一判");
-    expect(label(act("judge"), "en")).toBe("Judge the lines in the notebook");
+    expect(label(act("judge"), "zh")).toBe("到见闻簿里比一比两句话");
+    expect(label(act("judge"), "en")).toBe("Compare two lines in the notebook");
     expect(label(act("dance"), "en")).toBe("Do it");
     expect(actionLabel({ ...task(null) }, SCENE, "en")).toBe("");
   });

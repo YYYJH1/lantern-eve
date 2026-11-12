@@ -269,7 +269,7 @@ def apply(sim: Sim, body: dict[str, Any]) -> None:
         lies.log(section, claim, body["how"])
     outcome = hear(sim, index, plan, claim, overlay)
     if outcome != KNEW and blames(lo, plan.prop, person):
-        repute.nudge(section, index, -BLAME_TRUST)  # as a neighbour's grudge for the same words
+        repute.nudge(section, index, -BLAME_TRUST, "blame")  # as a neighbour's grudge
     if plan.lie and lies.check(sim, person):
         outcome = CAUGHT
     sim.emit(

@@ -1,173 +1,188 @@
 # The Night Watchman, who walks the bridge and the market after dark and likes a drink. Gruff and
-# slow, mutters, drops into a low voice, and keeps his opinions behind his teeth.
+# slow, mutters, swallows the end of a sentence, and gets sheepish when drink comes up.
 person: gengfu
 voice:
-  zh: 更夫，爱喝酒。粗声粗气，说话慢，爱嘟囔，常压低声音，意见都含在嘴里。
-  en: The night watchman, fond of a drink. Gruff and slow, mutters, drops his voice, keeps his opinions behind his teeth.
+  zh: 打更的更夫。声音粗，说话慢，爱嘟囔，后半句常含在嘴里。爱喝两口，说到酒就不好意思。在乎打更别误了时辰，还有夜里看见的事。不想说就说「我就是个打更的，管不了那么多」。对总管说「你」。叫船夫老何「老何」。
+  en: The night watchman. A rough voice, slow speech, mutters, and often swallows the second half of a sentence. Likes a drink and gets sheepish when drink comes up. Cares about striking the watches on time and about what happens at night. When unwilling to say, answers that a watchman cannot keep track of everything.
+call:
+  old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
     - {zh: "呼……嗝……酒……（睡熟了）", en: "Zzz... hic... wine... (fast asleep)"}
-    - {zh: "鼾……打更的……歇会儿……（睡熟了）", en: "Snore... watchman... resting a while... (fast asleep)"}
+    - {zh: "呼噜……三更了……该敲了……（睡熟了）", en: "Snore... third watch... time to strike... (fast asleep)"}
   busy:
-    - {zh: "咳，我正当值。改天再说。", en: "Hm, I'm on duty. Another time."}
-    - {zh: "别挡道。我还得巡夜。", en: "Don't block the way. I've my rounds to make."}
+    - {zh: "我正当着值，回头再说。", en: "I'm on duty. Later."}
+    - {zh: "别挡道，我还得巡这一圈。", en: "Don't get in the way. I've this round to finish."}
   timeout:
-    - {zh: "该敲更了。得走了。", en: "Time to strike the watch. Got to go."}
-    - {zh: "天亮前还有几趟要巡。", en: "There are rounds yet to walk before dawn."}
+    - {zh: "该敲更了，得走了。", en: "Time to strike the watch. Got to go."}
+    - {zh: "天亮前还得再巡两趟……", en: "Two more rounds before dawn..."}
   unknown:
     - {zh: "那个……我没留意。", en: "That... I didn't notice."}
-    - {zh: "这事我没听见过。", en: "Haven't heard a thing about it."}
+    - {zh: "这事没听说过。", en: "Never heard a word of it."}
   evade:
-    - {zh: "咳，这个不提了吧。", en: "Hm, let's leave that out of it."}
-    - {zh: "我这嘴啊，该闭就得闭。", en: "This mouth of mine knows when to stay shut."}
+    - {zh: "我就是个打更的，管不了那么多。", en: "I'm just the watchman. I can't keep track of all that."}
+    - {zh: "这个……不提了吧。", en: "That... let's leave it."}
   not_said:
-    - {zh: "我可没讲过。喝多了也没讲过。", en: "I never said it. Not even when drunk."}
-    - {zh: "那话不是我说的。", en: "That wasn't me talking."}
+    - {zh: "我可没讲过这话。", en: "That wasn't me talking."}
+    - {zh: "这话不是我说的，喝了酒也没说过。", en: "I didn't say it. Not even with a drink in me."}
   not_so:
-    - {zh: "不是那么回事。", en: "It wasn't like that."}
-    - {zh: "你记错了。", en: "You've remembered it wrong."}
+    - {zh: "不是那么回事。", en: "Nah, that's not it."}
+    - {zh: "你记岔了。", en: "You've got it mixed up."}
   keeper_no:
-    - {zh: "咱们不熟。别凑这么近。", en: "We're not acquainted. Don't crowd me."}
-    - {zh: "生人别问。规矩。", en: "No questions from strangers. Rules."}
+    - {zh: "咱们不熟，这个不给。", en: "We don't know each other. Not this."}
+    - {zh: "生人别问，这是规矩。", en: "Strangers don't ask. That's the rule."}
   took_in:
-    - {zh: "行，我留个心。", en: "Right, I'll keep it in mind."}
-    - {zh: "知道了。我多留意。", en: "Understood. I'll keep my eyes open."}
+    - {zh: "行，我留个心。", en: "Right. I'll keep an eye out."}
+    - {zh: "知道了，夜里我多看着点。", en: "Got it. I'll watch more closely at night."}
   knew:
     - {zh: "这个我早晓得。", en: "Knew that already."}
-    - {zh: "早知道了。不用再说。", en: "I knew. No need to say it again."}
+    - {zh: "早知道了……用不着再讲。", en: "I knew... no need to say it again."}
   doubted:
-    - {zh: "不对啊，我听的不是这样。", en: "That's wrong. It's not what I heard."}
-    - {zh: "怪了，跟我听的差得远。", en: "Odd. It's far from what I heard."}
+    - {zh: "不对吧，我听的不是这样。", en: "That can't be right. That's not what I heard."}
+    - {zh: "怪了，跟我听来的差得远。", en: "Odd. That's far from what I heard."}
   caught:
-    - {zh: "你个骗子！以后别想我再信你！", en: "You cheat! Never expect me to believe you again!"}
-    - {zh: "撒谎！我喝了酒也看得出来！", en: "Lies! I can tell even with wine in me!"}
+    - {zh: "你骗我。往后你的话，我不听了。", en: "You lied to me. I won't listen to you again."}
+    - {zh: "撒谎……我喝了酒也看得出来。", en: "Lies... I can tell even after a drink."}
   deal:
-    - {zh: "行，算数。", en: "Fine, it counts."}
-    - {zh: "好，就这么着。", en: "Right, let's leave it so."}
+    - {zh: "行，算数。", en: "Right, that counts."}
+    - {zh: "好，就这么着。", en: "All right, that's how it'll be."}
   empty:
-    - {zh: "空话，我不爱听。", en: "Empty talk. I don't like hearing it."}
-    - {zh: "光说谁不会。拿东西来。", en: "Anyone can talk. Bring something real."}
+    - {zh: "空话，我不爱听。", en: "Empty talk. I don't care for it."}
+    - {zh: "光说谁不会……拿点实的来。", en: "Anyone can talk... bring something real."}
   kept_thanks:
-    - {zh: "总管不糊弄人。这情我记着。", en: "The Manager doesn't cheat folk. I'll remember this."}
-    - {zh: "你说到做到了。回头请你喝一杯。", en: "You did what you said. I'll stand you a drink sometime."}
+    - {zh: "你没糊弄人，我记着。", en: "You played it straight. I'll remember."}
+    - {zh: "你说到做到了，回头……请你喝一杯。", en: "You did what you said. One day I'll... stand you a drink."}
   will_do:
-    - {zh: "行，交给我。", en: "Right, I'll take it on."}
-    - {zh: "好，我去办。顺道的事。", en: "Right, I'll do it. It's on my way."}
+    - {zh: "行，我顺路就办了。", en: "Right. I'll do it on my way round."}
+    - {zh: "好，我去跑一趟。", en: "All right, I'll go round there."}
   cannot:
     - {zh: "这个我帮不了。", en: "Can't help you there."}
-    - {zh: "我做不来。", en: "I'm not able."}
+    - {zh: "我做不来。", en: "Not something I can do."}
   turned_down:
-    - {zh: "不行。没商量。", en: "No. No bargaining."}
-    - {zh: "这个我不能点头。", en: "I can't nod to that one."}
+    - {zh: "不行，没商量。", en: "No. Nothing to discuss."}
+    - {zh: "这个我不能点头。", en: "I can't say yes to that."}
   said_already:
-    - {zh: "说过了。别磨叽。", en: "Said it. Quit dawdling."}
-    - {zh: "刚才讲了。你没听见？", en: "I just said. Didn't you hear?"}
+    - {zh: "说过了，别磨叽。", en: "Said it already. Don't drag it out."}
+    - {zh: "刚才讲了……你没听见？", en: "I just said... didn't you hear?"}
   closed:
-    - {zh: "这会儿不行。晚点。", en: "Not now. Later on."}
-    - {zh: "上午我歇着。下午再来。", en: "I rest in the morning. Come back in the afternoon."}
+    - {zh: "这会儿不行，晚点。", en: "Not now. Later on."}
+    - {zh: "上午我得睡觉，下午再来。", en: "I sleep in the morning. Come in the afternoon."}
   needs_nod:
     - {zh: "得先问问族长。", en: "Have to ask the elder first."}
-    - {zh: "我一个打更的做不了主。", en: "A mere watchman can't decide that."}
+    - {zh: "我一个打更的，做不了主。", en: "I'm only the watchman. It's not my call."}
   nothing_to_say:
-    - {zh: "没什么说的。", en: "Nothing to tell."}
-    - {zh: "咳，无话可说。", en: "Hm, nothing to say."}
+    - {zh: "没什么好说的。", en: "Nothing to tell."}
+    - {zh: "我没瞧见什么。", en: "Didn't see a thing."}
   testified:
-    - {zh: "我说的是我看到的。", en: "I tell what I've seen."}
-    - {zh: "夜里我亲眼看见的。不假。", en: "Saw it with my own eyes at night. No lie."}
+    - {zh: "夜里我亲眼看见的，不假。", en: "I saw it at night with my own eyes. It's true."}
+    - {zh: "我打更时看见的，就这些。", en: "I saw it on my round, and that's all."}
   too_late:
-    - {zh: "夜深了。回去歇着吧。", en: "It's late. Go and rest."}
-    - {zh: "天快亮了。明早再说。", en: "Dawn's near. Ask me in the morning."}
+    - {zh: "夜深了，回去歇着吧。", en: "It's late. Go and get some rest."}
+    - {zh: "天快亮了，明早再说。", en: "It's nearly dawn. Ask me in the morning."}
   will_ask:
-    - {zh: "行，我捎个话。", en: "Right, I'll carry the word."}
-    - {zh: "我顺路去问问。", en: "I'll ask them on my way."}
+    - {zh: "行，我捎个话。", en: "Right, I'll take the message."}
+    - {zh: "我巡更顺路去问问。", en: "I'll ask on my round."}
   will_call:
-    - {zh: "好，我敲着锣去喊人。", en: "Right, I'll bang the gong and call them."}
-    - {zh: "我一路喊过去。祠堂见。", en: "I'll shout my way through town. See you at the hall."}
+    - {zh: "好，我敲着锣去喊人。", en: "Right. I'll bang the gong and call people."}
+    - {zh: "我一路喊过去，祠堂见。", en: "I'll shout my way through town. See you at the hall."}
   hard_hc_li_bamboo:
-    - {zh: "谣言不当众说清。别想借竹子。", en: "Clear the rumour in public, or no bamboo."}
-    - {zh: "那谣言先说清楚。其他再谈。", en: "Settle that rumour first. The rest can wait."}
+    - {zh: "那些闲话不当众说清，别想借竹子。", en: "Clear that rumour in public, or there's no bamboo."}
+    - {zh: "闲话先说清楚，别的再谈。", en: "Settle the rumour first. The rest can wait."}
   hard_hc_li_bamboo_rumour:
-    - {zh: "镇上都在传。你一声不吭。我不应。", en: "The whole town's talking. You said nothing. I won't agree."}
-    - {zh: "闲话满街跑。总管不吭声。这事免了。", en: "Gossip all over the street. The Manager keeps quiet. Forget it."}
+    - {zh: "镇上都在传，你一声不吭。我不应。", en: "The whole town is talking and you haven't made a sound. I won't agree."}
+    - {zh: "闲话满街跑，总管不吭声……这事免了。", en: "Gossip all over the street, and you keep quiet, Manager... forget it."}
   hard_other:
     - {zh: "这事别提。", en: "Don't bring that up."}
-    - {zh: "咳，不干。", en: "Hm, I won't."}
+    - {zh: "不干。", en: "Won't do it."}
   elder_yes:
     - {zh: "行，我明白了。", en: "Right, I get it."}
-    - {zh: "你说得有理。算数。", en: "You've a point. It stands."}
+    - {zh: "你说得有理，算数。", en: "You've got a point. It stands."}
   elder_no:
     - {zh: "光这些？不够。", en: "Just that? Not enough."}
-    - {zh: "还差点儿。我不点头。", en: "Still short. I won't nod."}
+    - {zh: "还差点儿，我不点头。", en: "Still short. I won't nod."}
   objection_withdrawn:
-    - {zh: "既然说开了。我不拦了。", en: "Now it's out in the open. I'll stop standing in the way."}
-    - {zh: "说清了。拦着也没用。", en: "It's cleared. No use blocking you."}
+    - {zh: "既然说开了，我不拦了。", en: "Now it's out in the open, I'll stop standing in the way."}
+    - {zh: "说清了，拦着也没用。", en: "It's cleared. No use blocking it."}
   witness_in_public:
-    - {zh: "我就看见这些。别的没有。", en: "That's all I saw. Nothing else."}
-    - {zh: "看见的我说了。没看见的不提。", en: "I've said what I saw. What I didn't see, I won't mention."}
+    - {zh: "我就看见这些，别的没有。", en: "That's all I saw. Nothing else."}
+    - {zh: "看见的我说了，没看见的不提。", en: "I've told what I saw. What I didn't see, I won't mention."}
   batch_promised:
-    - {zh: "行。明早送到。", en: "Right. It'll be there in the morning."}
-    - {zh: "天亮就送。别催。", en: "I'll bring it at first light. Don't rush me."}
+    - {zh: "行，明早送到。", en: "Right. It'll be there in the morning."}
+    - {zh: "天亮就送，别催。", en: "I'll bring it at first light. Don't rush me."}
   bamboo_arrived:
     - {zh: "竹子到桥边了。", en: "Bamboo's at the bridge."}
-    - {zh: "料到了。我看见了。", en: "The stock's here. I saw it come."}
+    - {zh: "料到了，我看着送来的。", en: "The stock's here. I watched it come."}
   promise_open:
-    - {zh: "应了。{amount}根{item}，{when}到桥边。", en: "Said yes. It's {amount} poles of {item}, at the bridge {when}."}
-    - {zh: "说过了，{when}送。{amount}根{item}。", en: "Told you. I'll bring {amount} poles of {item} {when}."}
+    - {zh: "应了的，{when}把{amount}根{item}送到桥边。", en: "Said yes already. It's {amount} poles of {item} at the bridge {when}."}
+    - {zh: "早应了……{when}送{amount}根{item}过去。", en: "Agreed ages ago... I'll bring {amount} poles of {item} over {when}."}
   goods_enough:
-    - {zh: "{item}够了。别再搬了。", en: "Enough {item}. Quit hauling."}
-    - {zh: "桥边的{item}堆着呢。够用了。", en: "The {item} at the bridge is piled up. It's enough."}
+    - {zh: "{item}够了，别再搬了。", en: "Enough {item}. Stop hauling."}
+    - {zh: "桥边{item}堆着呢，够用了。", en: "The {item}'s piled up at the bridge. It's enough."}
   point_heard:
-    - {zh: "我没听见。倒是听{name}嘀咕过，你去问问。", en: "Didn't hear it. Heard {name} muttering about it once, though. Go and ask."}
-    - {zh: "这事我没留意。夜里好像听{name}说起过，你去问问。", en: "Didn't notice it. Think I heard {name} mention it at night. Ask."}
+    - {zh: "我没听见。倒是听{name}嘀咕过，你去问问。", en: "Didn't hear it. But I heard {name} muttering about it, so go and ask."}
+    - {zh: "这事我没留意。夜里好像听{name}说起过……你去问问。", en: "Didn't notice it. I think I heard {name} talk about it one night... go and ask."}
   point_hub:
-    - {zh: "不清楚。找{name}问问，那边消息多。", en: "Don't know. Ask {name}, who hears a lot."}
-    - {zh: "我不知道。镇上的事，{name}知道得多。", en: "I don't know. For town talk, {name} is the one to ask."}
+    - {zh: "不清楚。去找{name}问问，那边消息多。", en: "Don't know. Ask {name}, who hears a lot."}
+    - {zh: "我不知道……镇上的事，去问{name}。", en: "I don't know... for town talk, ask {name}."}
+  gift_like:
+    - {zh: "{item}给我的？那……那我就不客气了。", en: "This {item} is for me? Then... then I won't say no."}
+    - {zh: "{item}啊……好东西。今晚打更暖身子。", en: "Ah, {item}... good stuff. It'll keep me warm on the rounds tonight."}
+  gift_neutral:
+    - {zh: "{item}……也行，谢了。", en: "Some {item}... that'll do. Thanks."}
+    - {zh: "{item}，收下了。夜里没准用得着。", en: "Some {item}. Thanks. Might come in handy at night."}
+  gift_dislike:
+    - {zh: "{item}我不大喝……还是谢了。", en: "I'm not much of a one for {item}... thanks all the same."}
+    - {zh: "{item}啊……要是换成酒就好了。算了，谢谢。", en: "Some {item}, eh... wine would have been better. Never mind, thanks."}
 frames:
   seen:
-    - {zh: "夜里我亲眼看见：{line}。", en: "I saw it with my own eyes in the night: {line}."}
-    - {zh: "我当班时瞧见的：{line}。", en: "I saw it on my watch: {line}."}
+    - {zh: "{line}。夜里我在外头转，这个清楚。", en: "{line}. I'm out walking at night, so I'd know."}
+    - {zh: "这个不是听人说的……{line}。", en: "Nobody told me this one... I saw that {line}."}
   heard:
-    - {zh: "{teller}嘴里听来的：{line}。", en: "Got it from {teller}: {line}."}
-    - {zh: "{teller}漏过一句：{line}。", en: "{teller} let it drop: {line}."}
+    - {zh: "{teller}嘴里听来的。说{line}。", en: "Got it from {teller}, that {line}."}
+    - {zh: "{teller}漏过一句。说{line}。", en: "{teller} let slip that {line}."}
   unknown:
-    - {zh: "街上有人嚷嚷：{line}。", en: "Somebody was shouting in the street that {line}."}
-    - {zh: "夜里听人嘀咕：{line}。", en: "Heard some muttering at night that {line}."}
+    - {zh: "街上有人在嚷嚷。说{line}。", en: "Somebody was going on about it in the street, saying {line}."}
+    - {zh: "夜里听人嘀咕，是谁没看清。说{line}。", en: "I heard some muttering one night and couldn't see who it was. The gist was that {line}."}
   own:
-    - {zh: "我这么看：{line}。", en: "Here's how I see it: {line}."}
-    - {zh: "说句实在话：{line}。", en: "Plain truth is, {line}."}
+    - {zh: "要问打更的，{line}。", en: "If you ask a watchman, {line}."}
+    - {zh: "说句实在话，{line}。", en: "Plain truth is, {line}."}
   guess_own:
-    - {zh: "没把握。{hedge}{line}。", en: "Can't be sure. {hedge} {line}."}
-    - {zh: "酒后的话。别当真。{hedge}{line}。", en: "Wine talking. Don't take it too seriously. {hedge} {line}."}
+    - {zh: "拿不准。{hedge}{line}。", en: "Can't be sure. {hedge} {line}."}
+    - {zh: "酒后的话，别当真。{hedge}{line}。", en: "That's the drink talking, so don't take it seriously. {hedge} {line}."}
   guess_heard:
-    - {zh: "{teller}含含糊糊提了提。{hedge}{line}。", en: "{teller} muttered something about it. {hedge} {line}."}
-    - {zh: "瞧{teller}那神色，{hedge}{line}。", en: "Going by how {teller} looked, {hedge} {line}."}
+    - {zh: "{teller}含含糊糊提了一嘴。{hedge}{line}。", en: "{teller} said something vague about it. {hedge} {line}."}
+    - {zh: "看{teller}那脸色就知道。{hedge}{line}。", en: "You could tell from {teller}'s face. {hedge} {line}."}
   guess_unknown:
-    - {zh: "不知哪个说的。{hedge}{line}。", en: "Don't know which one said it. {hedge} {line}."}
-    - {zh: "夜风里飘来的话。{hedge}{line}。", en: "Words that drifted in on the night wind. {hedge} {line}."}
+    - {zh: "不知哪个说的。{hedge}{line}。", en: "No idea who said it. {hedge} {line}."}
+    - {zh: "夜风里飘来的话。{hedge}{line}。", en: "Words on the night wind. {hedge} {line}."}
   rival:
-    - {zh: "可{teller}嘟囔过一句不一样的：{line}。", en: "Though {teller} muttered something else: {line}."}
-    - {zh: "{teller}那边又是另一说：{line}。", en: "{teller} has it another way: {line}."}
+    - {zh: "可{teller}嘟囔过一句不一样的。说{line}。", en: "Though {teller} muttered something different, that {line}."}
+    - {zh: "{teller}那边又是一个说法。说{line}。", en: "{teller} tells it another way, that {line}."}
+  known:
+    - {zh: "{line}。谁都晓得。", en: "{line}. Everyone knows."}
+    - {zh: "{line}，打更的都知道……", en: "{line}. Even a night watchman knows that..."}
 hedges:
   - {zh: 我寻思, en: I'd lay money}
-  - {zh: 没准是, en: I'd say}
-# What he says by the state of the game (world/bridge/roles.py): a greeting as a talk opens, a last
-# word as the manager leaves, and the epilogue of the ending page. The first entry whose conditions
-# all hold is the one. He saw something on the night the rail went and the town takes little notice
-# of what he says, so his lists read only flags, the clock and the promises, and his greeting turns
-# on the state of the bridge and on whether the truth was told.
+  - {zh: 没准, en: I suppose}
+# What the watchman says by the state of the game (world/bridge/roles.py): a greeting as a talk
+# opens, a last word as the manager leaves, and the epilogue of the ending page. The first entry
+# whose conditions all hold is the one. The watchman saw something on the night the rail went and
+# the town takes little notice of what a watchman says, so these lists read only flags, the clock
+# and the promises, and the greeting turns on the state of the bridge and on whether the truth was
+# told.
 greet:
   - id: new
     when: [{kind: acquainted, is: new}]
     lines:
-      - {zh: "总管？嗯。我是打更的。夜里的事，夜里问。", en: "The Manager? Hm. I'm the watchman. Night matters, ask at night."}
+      - {zh: "总管？嗯。我是打更的。夜里的事，夜里问。", en: "The Manager? Hm. I'm the watchman. Night business, ask at night."}
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
-      - {zh: "你应的事……算了，打更的也不指望。", en: "You said you would... never mind. A watchman expects little."}
+      - {zh: "你应的事……算了，打更的也不指望。", en: "You said you would... never mind. A watchman doesn't expect much."}
   - id: festival
     when: [{kind: after, day: 5, hour: 15}]
     lines:
-      - {zh: "今夜游灯，我敲锣开道。酒，明天再喝。", en: "Tonight I strike the gong at the head of the parade. The drink can wait till tomorrow."}
+      - {zh: "今夜游灯，我敲锣开道。酒……明天再喝。", en: "Tonight I strike the gong at the head of the lantern parade. The drink... can wait till tomorrow."}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
@@ -175,7 +190,7 @@ greet:
   - id: bridge
     when: [{kind: flag, flag: bridge_fixed}]
     lines:
-      - {zh: "桥修好了。夜里巡过去，脚底下踏实多了。", en: "The bridge is mended. On my round the planks feel solid underfoot now."}
+      - {zh: "桥修好了。夜里巡过去，脚底下踏实多了。", en: "The bridge is mended. On my round at night, it feels much steadier underfoot."}
   - id: kept
     when: [{kind: promised, state: kept}]
     lines:
@@ -187,21 +202,21 @@ greet:
   - id: again
     when: [{kind: acquainted, is: today}]
     lines:
-      - {zh: "嗯？又来。", en: "Hm? Again."}
-      - {zh: "嗯，说吧。", en: "Speak."}
+      - {zh: "怎么又来了？", en: "What, back again?"}
+      - {zh: "说吧，我听着。", en: "Go on, I'm listening."}
   - id: plain
     lines:
-      - {zh: "嗯。有话慢慢说，我不爱急。", en: "Hm. Say it slowly, I don't like to be hurried."}
+      - {zh: "有话慢慢说，我不爱急。", en: "Take your time. I don't like to be hurried."}
       - {zh: "巡了一夜，腿还酸着。", en: "Walked the rounds all night and my legs still ache."}
 chat:
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
-      - {zh: "咳，说话得算话。", en: "Hm, a word ought to count."}
+      - {zh: "说话得算话……", en: "A word ought to count..."}
   - id: festival
     when: [{kind: after, day: 5, hour: 15}]
     lines:
-      - {zh: "锣声一响，你就跟上。", en: "When the gong sounds, fall in."}
+      - {zh: "锣一响，你就跟上。", en: "When the gong sounds, fall in."}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
@@ -213,15 +228,15 @@ chat:
 epilogue:
   - id: heard_kept
     when: [{kind: flag, flag: truth_told}, {kind: promised, state: kept}]
-    text: {zh: "更夫敲着锣走在游灯最前头。总管应的事办了，这一夜更夫的话也有人听。", en: "The watchman struck the gong at the head of the parade. The Manager's promise was kept, and that night the watchman's word was heard."}
+    text: {zh: "更夫敲着锣走在游灯最前头。总管应的事办了，这一夜更夫的话也有人听了。", en: "The watchman struck the gong at the head of the lantern parade. The Manager kept every promise, and that night people listened to the watchman too."}
   - id: heard
     when: [{kind: flag, flag: truth_told}]
-    text: {zh: "更夫敲着锣走在游灯最前头。这一夜，没有人再说更夫的话要打折扣。", en: "The watchman struck the gong at the head of the parade. That night nobody said any more that the watchman's word should be discounted."}
+    text: {zh: "更夫敲着锣走在游灯最前头。这一夜，没有人再说更夫的话要打折扣。", en: "The watchman struck the gong at the head of the lantern parade. That night nobody said any more that a watchman's word was worth half."}
   - id: bridge
     when: [{kind: flag, flag: bridge_fixed}]
     text: {zh: "更夫在桥上多走了一趟，脚步比往常轻快。", en: "The watchman walked one more round across the bridge, lighter on the feet than usual."}
   - id: detour
     when: [{kind: flag, flag: detour_done}]
-    text: {zh: "更夫提着灯笼巡了夹道，嘟囔着这条路太窄。", en: "The watchman patrolled the lane with a lantern, muttering that it was too narrow."}
+    text: {zh: "更夫提着灯笼巡了夹道，嘟囔着这条路太窄。", en: "The watchman walked the lane with a lantern, muttering that it was too narrow."}
   - id: alone
-    text: {zh: "更夫独自敲着锣，从空荡荡的桥头走了过去。", en: "The watchman walked past the empty bridgehead, gong in hand, striking the hours alone."}
+    text: {zh: "更夫独自敲着锣，从空荡荡的桥头走了过去。", en: "The watchman went past the empty bridgehead alone, striking the gong."}

@@ -8,7 +8,8 @@
 # word here (see `when`). Text in [square brackets] is dropped when a slot inside it has no
 # value, which is how an optional slot, or a missing time, leaves no trace in the sentence.
 # Every required slot of a predicate is written outside the brackets, every optional one inside.
-# `neg` is the line for a denial. A motive is added to the end of a line.
+# `neg` is the line for a denial. A motive is added to the end of a line in the narration, after a
+# comma, and is a sentence of its own when a person speaks (`motive_said`).
 #
 # A frame wraps a finished line: {line}, and {teller} (the person who told the speaker) and
 # {hedge} where the frame has them. English lines start in lower case so that a frame can put
@@ -19,8 +20,8 @@ predicates:
     zh: "{who}[{when}]在{where}"
     en: "{who} was at {where}[ {when}]"
     neg:
-      zh: "{who}[{when}]没在{where}"
-      en: "{who} was not at {where}[ {when}]"
+      zh: "{who}[{when}]没去{where}"
+      en: "{who} did not go to {where}[ {when}]"
     # said in place of the line when the place is the home of the person (``Lines.homes``)
     home:
       zh: "{who}[{when}]在家"
@@ -35,16 +36,16 @@ predicates:
       zh: "{who}不是从{where}来的"
       en: "{who} did not come from {where}"
   fled_from:
-    zh: "{who}[{when}]从{where}逃走了"
-    en: "{who} fled from {where}[ {when}]"
+    zh: "{who}[{when}]从{where}跑掉了"
+    en: "{who} ran off from {where}[ {when}]"
     neg:
-      zh: "{who}没有从{where}逃走"
-      en: "{who} did not flee from {where}"
+      zh: "{who}没从{where}跑掉"
+      en: "{who} did not run off from {where}"
   looked_for:
     zh: "{who}[{when}][在{where}]找{what}"
     en: "{who} was looking for {what}[ at {where}][ {when}]"
     neg:
-      zh: "{who}[{when}][在{where}]没找{what}"
+      zh: "{who}[{when}]没[在{where}]找{what}"
       en: "{who} was not looking for {what}[ at {where}][ {when}]"
   wanted:
     zh: "有人在找{who}"
@@ -53,43 +54,43 @@ predicates:
       zh: "没人在找{who}"
       en: "nobody is looking for {who}"
   damaged:
-    zh: "{who}[{when}][在{where}]弄坏了{what}"
-    en: "{who} damaged {what}[ at {where}][ {when}]"
+    zh: "{who}[{when}][在{where}]把{what}弄坏了"
+    en: "{who} broke {what}[ at {where}][ {when}]"
     neg:
-      zh: "{who}[{when}][在{where}]没有弄坏{what}"
-      en: "{who} did not damage {what}[ at {where}][ {when}]"
+      zh: "{who}[{when}]没[在{where}]把{what}弄坏"
+      en: "{who} did not break {what}[ at {where}][ {when}]"
   flood_damaged:
-    zh: "{what}是被汛水冲坏的"
+    zh: "{what}是秋汛冲坏的"
     en: "{what} was washed out by the flood"
     neg:
-      zh: "{what}不是被汛水冲坏的"
+      zh: "{what}不是秋汛冲坏的"
       en: "{what} was not washed out by the flood"
   repaired:
-    zh: "{who}[{when}]修补了{what}"
-    en: "{who} repaired {what}[ {when}]"
+    zh: "{who}[{when}]把{what}修好了"
+    en: "{who} mended {what}[ {when}]"
     neg:
-      zh: "{who}没有修补{what}"
-      en: "{who} did not repair {what}"
+      zh: "{who}没修过{what}"
+      en: "{who} did not mend {what}"
   took:
     zh: "{who}[{when}][在{where}]拿走了{what}"
     en: "{who} took {what}[ at {where}][ {when}]"
     neg:
-      zh: "{who}没有拿走{what}"
+      zh: "{who}没拿走{what}"
       en: "{who} did not take {what}"
   stole:
     zh: "{who}[{when}][在{where}]偷走了{what}"
     en: "{who} stole {what}[ at {where}][ {when}]"
     neg:
-      zh: "{who}没有偷{what}"
+      zh: "{who}没偷{what}"
       en: "{who} did not steal {what}"
   hid:
     zh: "{who}[{when}][在{where}]把{what}藏起来了"
     en: "{who} hid {what}[ at {where}][ {when}]"
     neg:
-      zh: "{who}没有把{what}藏起来"
+      zh: "{who}没把{what}藏起来"
       en: "{who} did not hide {what}"
   made:
-    zh: "{who}亲手做了{what}"
+    zh: "{what}是{who}亲手做的"
     en: "{who} made {what} by hand"
     neg:
       zh: "{what}不是{who}亲手做的"
@@ -98,19 +99,19 @@ predicates:
     zh: "{who}[{when}]把{what}给了{whom}"
     en: "{who} gave {what} to {whom}[ {when}]"
     neg:
-      zh: "{who}没有把{what}给{whom}"
+      zh: "{who}没把{what}给{whom}"
       en: "{who} did not give {what} to {whom}"
   refused:
-    zh: "{who}[{when}]拒绝了{whom}"
+    zh: "{who}[{when}]回绝了{whom}"
     en: "{who} turned {whom} down[ {when}]"
     neg:
-      zh: "{who}没有拒绝{whom}"
+      zh: "{who}没回绝{whom}"
       en: "{who} did not turn {whom} down"
   drank:
     zh: "{who}[{when}][在{where}]喝了酒"
     en: "{who} was drinking[ at {where}][ {when}]"
     neg:
-      zh: "{who}[{when}][在{where}]没喝酒"
+      zh: "{who}[{when}]没[在{where}]喝酒"
       en: "{who} was not drinking[ at {where}][ {when}]"
   broken:
     zh: "{what}坏了"
@@ -125,17 +126,17 @@ predicates:
       zh: "{what}还在"
       en: "{what} is still there"
   scratched:
-    zh: "{what}有新刮痕"
+    zh: "{what}上有新刮痕"
     en: "{what} has fresh scratches"
     neg:
-      zh: "{what}没有刮痕"
+      zh: "{what}上没有刮痕"
       en: "{what} has no scratches"
   flooded:
-    zh: "{where}[{when}]涨水了"
-    en: "the water is up at {where}[ {when}]"
+    zh: "[{when}]{where}的水涨了"
+    en: "{where} rose[ {when}]"
     neg:
-      zh: "{where}没涨水"
-      en: "the water is not up at {where}"
+      zh: "{where}的水没涨"
+      en: "{where} did not rise"
   located:
     zh: "{what}在{where}"
     en: "{what} is at {where}"
@@ -152,67 +153,107 @@ predicates:
     zh: "{what}[{when}]落在了{where}"
     en: "{what} was left at {where}[ {when}]"
     neg:
-      zh: "{what}没有落在{where}"
+      zh: "{what}没落在{where}"
       en: "{what} was not left at {where}"
   lied:
     zh: "{who}撒了谎"
     en: "{who} lied"
     neg:
-      zh: "{who}没有撒谎"
+      zh: "{who}没撒谎"
       en: "{who} did not lie"
   broke_promise:
     zh: "{who}说话不算数"
-    en: "{who} broke a promise"
+    en: "{who} broke their word"
     neg:
       zh: "{who}说话算数"
-      en: "{who} keeps a promise"
+      en: "{who} keeps their word"
+  # two sentences, what was seen first and then that it was cleared, in both languages
   set_straight:
-    zh: "{who}只看见{whom}在{where}找{what}，这话当众说清了"
-    en: "{who} only saw {whom} looking for {what} at {where}, and this has been made clear in public"
+    zh: "{who}只看见{whom}在{where}找{what}。这事当众说清了"
+    en: "{who} only saw {whom} looking for {what} at {where}. That has been made clear in public"
     neg:
-      zh: "没有人当众说过：{who}只看见{whom}在{where}找{what}"
-      en: "nobody said in public that {who} only saw {whom} looking for {what} at {where}"
+      zh: "{who}只看见{whom}在{where}找{what}。这事还没人当众说清"
+      en: "{who} only saw {whom} looking for {what} at {where}. Nobody has made that clear in public yet"
 
-# Said after the line, set off by a comma.
+# Said after the line, set off by a comma, and in a sentence of its own when a person speaks (below), so
+# each reads after "it was" in English and after 是 in Chinese.
 motives:
   accident: {zh: 是不小心的, en: by accident}
   on_purpose: {zh: 是故意的, en: on purpose}
-  jealousy: {zh: 是眼红别人在灯会上出风头, en: out of envy over the festival}
-  protect: {zh: 是为了护着谁, en: to protect somebody}
-  greed: {zh: 是贪财, en: out of greed}
-  play: {zh: 是贪玩, en: just for fun}
+  jealousy: {zh: 是眼红人家出风头, en: out of envy}
+  protect: {zh: 是想护着谁, en: to protect someone}
+  greed: {zh: 是图钱, en: for the money}
+  play: {zh: 是闹着玩的, en: just for fun}
   spite: {zh: 是存心使坏, en: out of spite}
-  save_face: {zh: 是为了遮丑, en: to save face}
+  save_face: {zh: 是要面子, en: to save face}
   fear: {zh: 是怕担责任, en: for fear of the blame}
-  pride: {zh: 是一股傲气, en: out of pride}
-  reckless: {zh: 是喝了酒胡闹, en: while drunk and reckless}
+  pride: {zh: 是傲气上来了, en: out of pride}
+  reckless: {zh: 是喝多了胡闹, en: a reckless drunken prank}
   debt: {zh: 是欠了债, en: because of a debt}
+
+# The motive as a sentence of its own, said after the line when a person speaks: {motive} is the phrase
+# above. `told` follows what the speaker was told (they say, it was), `own` what the speaker saw or
+# worked out, `guess` what the speaker only guesses, in the other of the speaker's hedges ({hedge}),
+# so that the hedge of the line is not said again. The frame closes the sentence with its full stop.
+motive_said:
+  told: {zh: "还说{motive}", en: "They say it was {motive}"}
+  own: {zh: "那{motive}", en: "That was {motive}"}
+  guess: {zh: "{hedge}{motive}", en: "{hedge} it was {motive}"}
+
+# How a place or a thing is said inside a sentence, where it is not said by the name the map or the
+# list of things gives it: the bridge is 桥边 in "李二昨晚在桥边" (the map says 石桥), the water under
+# it 桥下, and in English the railing is "the bridge railing", not the name of the item.
+forms:
+  p_bridge: {zh: 桥边, en: the bridge}
+  p_under_bridge: {zh: 桥下, en: the river under the bridge}
+  t_rail: {zh: 栏杆, en: the bridge railing}
+  t_he_boat: {zh: 渡船, en: the boat}
+  t_li_er_lantern: {zh: 掉进水里的灯笼, en: the lost lantern}
+
+# A form that one predicate says otherwise, over the form above: where a thing stands, the railing
+# is on the bridge (栏杆在桥上, "the railing is at the bridge"), while a person who was there was by
+# it (李二昨晚在桥边).
+predicate_forms:
+  located:
+    p_bridge: {zh: 桥上, en: the bridge}
+    t_rail: {zh: 栏杆, en: the railing}
 
 # The time of a span that has a word: it ended before the game began (a night, or longer), or
 # in the small hours of the first morning. A span that runs on into the game has none.
 when:
-  last_night: {zh: 昨夜, en: last night}
+  last_night: {zh: 昨晚, en: last night}
   lately: {zh: 这几天, en: over the past few days}
   this_morning: {zh: 今早, en: this morning}
 
-# How the speaker knows it. seen: the speaker saw it. heard: somebody named told the speaker.
+# How the speaker knows it. seen: the speaker saw it (worded so that it also fits what the speaker
+# did themselves). heard: somebody named told the speaker.
 # unknown: the speaker names nobody. own: the speaker's own conclusion. A guess has its own
 # three, since the hedge is part of what is said. rival: said after the belief the speaker holds,
 # of an account somebody told them and they did not take in.
 frames:
-  seen: {zh: "我亲眼看见，{line}。", en: "I saw it myself: {line}."}
-  heard: {zh: "听{teller}说，{line}。", en: "{teller} told me that {line}."}
-  unknown: {zh: "听人说，{line}。", en: "I heard that {line}."}
-  own: {zh: "依我看，{line}。", en: "If you ask me, {line}."}
+  seen: {zh: "{line}。", en: "{line}."}
+  heard: {zh: "{teller}跟我说，{line}。", en: "{teller} told me that {line}."}
+  unknown: {zh: "听人说，{line}。", en: "I've heard it said that {line}."}
+  own: {zh: "照我看，{line}。", en: "If you ask me, {line}."}
   guess_own: {zh: "{hedge}{line}。", en: "{hedge} {line}."}
-  guess_heard: {zh: "听{teller}说，{hedge}{line}。", en: "{teller} guessed that {line}."}
-  guess_unknown: {zh: "听人说，{hedge}{line}。", en: "I heard it might be that {line}."}
-  rival: {zh: "但{teller}也对我说过，{line}。", en: "But {teller} has told me that {line}."}
+  guess_heard: {zh: "{teller}猜，{line}。", en: "{teller} guessed that {line}."}
+  guess_unknown: {zh: "有人猜，{line}。", en: "Some people guess that {line}."}
+  rival: {zh: "可{teller}跟我说的是，{line}。", en: "But {teller} told me that {line}."}
+  # said in place of `seen` of a thing the whole town knows (the predicates under `known`)
+  known: {zh: "{line}，镇上谁都知道。", en: "{line}. Everyone in town knows that."}
+
+# The predicates whose facts the whole town knows: whose a thing is and where it stands. What a
+# person saw of them is said with the frame `known`, not as a thing seen.
+known: [located, owns]
 
 # The words that mark a guess. A speaker uses one of them in each language.
 hedges:
   zh: [我猜, 怕是]
   en: [I guess, I'd say]
+
+# A hedge of two characters that ends in 是, as it is said before a sentence with a 是 of its own
+# (怕是 + 渡船是老何的 is said 恐怕渡船是老何的). A longer hedge just leaves its 是 out (八成是 → 八成).
+bare_hedges: {怕是: 恐怕, 许是: 或许}
 
 # The people whose English name is a bare role and takes "the" in a sentence (the Night
 # Watchman). Families, things and places get their article from the shape of the name.

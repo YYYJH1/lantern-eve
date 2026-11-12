@@ -46,9 +46,11 @@ Inputs
       something, ``{"type": "entrust", "kind": kind, "target"?: id, "cite"?: [ids]}`` asks them to
       do something (the kinds are ``material``, ``lane``, ``testify``, ``lend``, ``join``,
       ``persuade`` and ``convene``), ``{"type": "promise", "what": ..., ...}`` promises what the
-      manager holds and ``{"type": "promise", "op": "keep", "id": id}`` keeps a promise, all in a
-      conversation, and ``{"type": "speak", "kind"?: "evidence" | "meal" | "clarify" | "statement",
-      "evidence"?: [ids]}`` (also named ``speak_publicly``) speaks to the town, outside one, at
+      manager holds and ``{"type": "promise", "op": "keep", "id": id}`` keeps a promise, and
+      ``{"type": "gift", "item": id}`` gives a small thing of the day (it adds trust, see
+      ``lantern_core.world.bridge.gifts``), all in a conversation, and ``{"type": "speak",
+      "kind"?: "evidence" | "meal" | "clarify" | "statement", "evidence"?: [ids]}`` (also named
+      ``speak_publicly``) speaks to the town, outside one, at
       the teahouse in the evening or at the hall when the clan is called: with the kind
       ``"clarify"`` and ``"claim"``, ``"basis"`` (entries of the notebook) and ``"judgment"?`` it
       says that a claim goes beyond what a witness saw (see ``lantern_core.world.bridge.clarify``),
@@ -65,7 +67,10 @@ Inputs
       ``lantern_core.world.bridge.judge``). ``ask``, ``ask_source``, ``tell``, ``entrust`` and
       ``promise`` may carry the ``"version"`` of the state they were previewed on (see
       ``Game.preview_json``): the core rejects an action whose version is not the state's as
-      ``"stale"`` and does nothing. There are also test actions,
+      ``"stale"`` and does nothing. The page also says that it shows the moments of the festival
+      with ``{"type": "moment", "op": "watch"}``, once, as its game begins, and lets the world go
+      on from each one it holds with ``{"type": "moment", "op": "release", "kind": kind}`` (see
+      ``lantern_core.world.bridge.moments``). There are also test actions,
       which exist only when the config has ``dev_actions`` set to 1: ``{"type": "assign", "npc":
       id, "task": {...}}``, which posts an errand, and ``{"type": "dev_goal", "op": op, ...}``,
       which stands in for the persuasion that comes later (the ops are ``join``, ``material``,
@@ -115,7 +120,7 @@ Model replies
         {"acts": [act, ...],                  up to 3 acts, or none
          "line": {"zh": str, "en": str},      the sentence, when the model writes it
          "mood": "plain" | "warm" | "wary" | "sad" | "curt" | "eager",     "plain" if left out
-         "address": "none" | "manager" | "friend"}                         "none" if left out
+         "address": "none" | "manager"}                                    "none" if left out
 
         act = {"path": "belief" | "speculation" | "mutation" | "lie",
                "prop": prop id | {"pred", "args", "span", "neg", "motive", "parent", "op"},
@@ -182,11 +187,11 @@ Outputs
       night. In the frame of the call that made the ending it is the ending as the ``"ending"``
       event carries it (below), reveal and epilogue included. In every frame after that it is
       the compact form, the same object without ``"reveal"`` and ``"epilogue"``: ``{"kind",
-      "tick", "ending", "label", "hidden", "inputs", "passage", "promised", "turnout"}``, which
-      says how the night went. The reveal is most of the ending and a host sends ten frames a
-      second, so ``Game.ending_json()`` gives the whole ending at any time, to a host that loads
-      a game or comes back to one that is over. A page tells the two forms apart by the key
-      ``"reveal"``. Three keys more are for
+      "tick", "ending", "label", "hidden", "inputs", "passage", "promised", "turnout",
+      "festival"}``, which says how the night went and what a page needs to stage it. The reveal
+      is most of the ending and a host sends ten frames a second, so ``Game.ending_json()`` gives
+      the whole ending at any time, to a host that loads a game or comes back to one that is over.
+      A page tells the two forms apart by the key ``"reveal"``. Three keys more are for
       the tasks of the manager: ``"tasks"`` (what they are told to do, and where each stands),
       ``"tracked"`` (the id of the one they follow, or null) and ``"cards"`` (a card for each
       person they have met or heard of). Two more are for the notebook: ``"judgments"`` (what the
@@ -196,7 +201,9 @@ Outputs
       one frame, else null). Two more are the morning's Town Gazette and the night's summary:
       ``"gazette"`` (the Town Gazette of the morning, the recap grown, in the same frame) and
       ``"night"`` (the summary of the night, in the frame of the first tick of each night but
-      the last), both else null. The shape of every key, and
+      the last), both else null. A game that is watched by a page has two more, ``"moments"`` (the
+      moments of the festival so far) and ``"moment_hold"`` (the ones the world is held for). The
+      shape of every key, and
       what each package may put in it, is documented in the docstring of
       ``lantern_core.world.bridge`` (which also marks every key as known to the player, public on
       the map, or for tools only), of ``lantern_core.world.bridge.player``, of

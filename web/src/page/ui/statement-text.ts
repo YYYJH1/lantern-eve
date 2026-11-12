@@ -6,11 +6,14 @@
 import { type Lang, type MessageKey, pick, translate } from "../../i18n/index.ts";
 import { STATEMENT_PARTS, type StatementCard, type StatementOption, type StatementPart, type StatementPartCard } from "../slice.ts";
 
-/** The page's own name for each part, used where the frame gives none. */
+/**
+ * The question each part answers, which is how the card names it: the statement reads as three lines with a blank each, "How the bridge broke:
+ * ____. What happened that night: ____. Why people got it wrong: ____."
+ */
 export const PART_KEY: Readonly<Record<StatementPart, MessageKey>> = {
-  cause: "board.statement.cause",
-  course: "board.statement.course",
-  rumour: "board.statement.rumour",
+  cause: "blank.cause",
+  course: "blank.course",
+  rumour: "blank.rumour",
 };
 
 /** A part the frame leaves out: nothing to choose from, and a gap. */
@@ -21,10 +24,9 @@ export function partsOf(card: StatementCard): StatementPartCard[] {
   return STATEMENT_PARTS.map((part) => card.parts.find((p) => p.part === part) ?? emptyPart(part));
 }
 
-/** The name of a part: the core's own where the frame gives it, else the page's. */
-export function partName(part: StatementPartCard, lang: Lang): string {
-  const named = part.title === null ? "" : pick(part.title, lang);
-  return named === "" ? translate(lang, PART_KEY[part.part]) : named;
+/** The name of a part, as the question the blank answers. The card has one name for each part, in every place it names one. */
+export function partName(part: Pick<StatementPartCard, "part">, lang: Lang): string {
+  return translate(lang, PART_KEY[part.part]);
 }
 
 /** The option the manager chose for a part, if the list shows it. */
@@ -64,7 +66,7 @@ export function stateButton(card: StatementCard | null, waiting: boolean, lang: 
   return { enabled: false, why: translate(lang, "statement.why.none"), state: "unknown" };
 }
 
-/** The names of the parts, in a line: "Cause, Course" and 「成因、经过」. */
+/** The names of the parts, in a line: "How the bridge broke, What happened that night" and 「桥是怎么坏的、那晚的经过」. */
 export function partNames(card: StatementCard | null, parts: readonly StatementPart[], lang: Lang): string {
   const names = parts.map((part) => partName(card?.parts.find((p) => p.part === part) ?? emptyPart(part), lang));
   return names.join(lang === "zh" ? "、" : ", ");

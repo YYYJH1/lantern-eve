@@ -31,7 +31,7 @@ def says_pointing(out: dict[str, Any], person: str, code: str, who: str) -> None
     """The words over ``person``'s head are one of the ways they say the pointing line ``code``,
     naming ``who``."""
     text = bubble(out, person)
-    options = [phrases.named(v, lore().names[who]) for v in voices.variants(person, code)]
+    options = [phrases.named(v, voices.called(person, who)) for v in voices.variants(person, code)]
     assert text in options, (person, code, who, text)
 
 
@@ -39,15 +39,16 @@ def claim_wordings(
     prop: Prop, modality: str, source: str, speaker: str, pick: int = 0, lead: str = ""
 ) -> list[dict[str, str]]:
     """Every way ``speaker`` can word a claim of ``prop``: one for each variant of their frame,
-    and with a ``lead`` (a fixed line that opens the answer), each of the ways they say that."""
+    and with a ``lead`` (a fixed line that opens the answer), each of the ways they say that. The
+    people in it are named as ``speaker`` names them."""
     lo = lore()
     voice = VOICES[speaker]
-    key = frame_key(modality, source, speaker)
+    key = frame_key(modality, source, speaker, lo.lines.is_known(prop))
     out = []
     for variant in voice["frames"][key]:
         said = lo.lines.say(
             prop,
-            lo.names,
+            voices.names_for(speaker),
             modality=modality,
             claimed_source=source,
             speaker=speaker,

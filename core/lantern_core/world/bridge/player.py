@@ -26,6 +26,9 @@ State (``state["world"]["player"]``)::
      "seq", "cseq"            the numbers of the next entry and the next answer,
      "trust": [int] * 20      how far each person trusts the player, in cast order,
      "talked": [int] * 20     the game day of the last conversation that earned any,
+     "met": {id: [[tick, place]]}   where and when the talks with each person began, the last
+                              few (``encounters``; only once there was a talk),
+     "wanted": {id: [...]}    the return each person last asked (``encounters``; only once one did),
      "told": [[claim id, listener, prop id, way, lie, tick]]   what the player told, and how,
      "lies": [[claim id, listener, prop id, way, tick]]        the lies among those (``lies``),
      "caught": [[prop id, person, tick]]      who caught the player in which lie,
@@ -103,6 +106,10 @@ Actions
                Events: ``pledged``, ``pledge_empty``, ``pledge_kept``, ``pledge_broken``.
                Rejected: ``not_talking``, ``empty`` (the person does not believe an empty promise),
                ``bad_due``, ``no_pledge``, ``wrong_person``, ``kept_already``, ``lapsed``.
+``gift``       ``{"item": id, "npc"?: id}``, in a conversation: give the person a small thing of
+               the day, which adds trust and nothing else (see ``gifts``). One a day in the town
+               and two to a person. Takes no time. Events: ``gifted``. Rejected: ``not_talking``,
+               ``wrong_person``, ``unknown_item``, ``gift_today``, ``gift_full``.
 ``judge``      ``{"a": entry id, "b": entry id, "relation": "unsupported" | "contradicts" |
                "mismatch"}``: say how two notes stand to each other, the first being the evidence
                and the second the claim. The core checks the logic of the two and not what is true.
@@ -191,9 +198,11 @@ The frame
               "leaves_at"}`` in a conversation and null otherwise: ``costs`` is the game minutes
               of each of ``ask``, ``ask_source``, ``tell``, ``entrust`` and ``promise`` (every
               one is a key), and ``leaves_at`` is ``{"hour", "minute"}``, when the routine of the
-              person takes them away (they go when the world runs to it). ``player.costs`` is
-              in every frame, in a conversation or not: the game minutes of all six acts, the
-              five above and ``speak``, which is made outside a conversation and has no
+              person takes them away (they go when the world runs to it); in a conversation it has
+              six keys more, ``ask_for``, ``asks_more``, ``wants``, ``keep``, ``give`` and
+              ``queue``, which say what to put first (see ``context``). ``player.costs`` is in
+              every frame, in a conversation or not: the game minutes of all six acts, the five
+              above and ``speak``, which is made outside a conversation and has no
               ``talk`` to show its cost in. ``look`` lists the
               things and places within reach that hold evidence the player has not looked for.
               ``offers`` is ``{verb: [offer]}``
@@ -201,7 +210,8 @@ The frame
               {"zh", "en"}, "body": {...}}``: what to show and the fields of the action to send
               (see ``offers``). A verb has offers only where it can be used. ``topics`` is what
               ``ask`` takes now, ``[{"id", "kind", "label": {"zh", "en"}}]`` with ``kind`` one of
-              ``entry`` (a line of the notebook), ``thing``, ``place`` (the bridge) and ``person``:
+              ``entry`` (a line of the notebook), ``thing``, ``place`` (the bridge), ``person`` and
+              ``taste`` (what a person likes, ``likes:<person>``, see ``gifts``):
               the whole list in a conversation, and empty outside one. Every id in it is one that
               ``ask`` answers (a person the script does not name is not in it, and is refused
               as ``unknown_topic``).
@@ -225,7 +235,9 @@ The frame
               (and is free) ``speak``, which is listed with ``speak_publicly`` for the same
               reason. ``judge`` and ``hint`` are there, as ``track`` is, once the notebook has two
               entries. What the list says never depends on which variant of the story is true.
-``hud``       also has ``reputation`` (0 to 3 stars, the mean trust of the town in the manager
+``hud``       also has ``verbs_off`` (``{verb: reason}`` for each act that ``verbs`` does not list,
+              see ``unavailable``), ``gift`` (the small things of the day, see ``gifts``),
+              ``reputation`` (0 to 3 stars, the mean trust of the town in the manager
               against ``repute.STAR_LINES``), ``resources`` (what the manager still has to
               promise, see ``pledges.left``) and ``pledges`` (the promises still open, each
               ``{"id", "to": {"zh", "en", "id"}, "what", "item", "amount", "due"}``).
@@ -249,9 +261,12 @@ from lantern_core.world.bridge import (
     bt,
     clock,
     converse,
+    encounters,
     entrust,
     evidence,
+    gifts,
     gossip,
+    hearts,
     judge,
     lies,
     notebook,
@@ -302,6 +317,7 @@ VERB_ORDER = (
     "tell",
     "entrust",
     "promise",
+    "gift",
     "rally",
     "speak",
     "speak_publicly",
@@ -506,9 +522,13 @@ def apply_talk(sim: Sim, body: dict[str, Any]) -> None:
     day, before = sim.now.day, section["talked"][index]
     if before != day:
         section["talked"][index] = day
-        section["trust"][index] = max(
+        earned = max(
             section["trust"][index], min(RAPPORT_CEILING, section["trust"][index] + RAPPORT_STEP)
         )
+        if earned != section["trust"][index]:
+            repute.note(section, index, "talk")
+        section["trust"][index] = earned
+    encounters.record_talk(section, npc["id"], now)
     roles.greet(sim, npc["id"], before)  # the people who carry the days greet by the state of it
     sim.emit("talk_start", npc=npc["id"], leaves_at=_when(until))
     ack(sim, body)
@@ -595,6 +615,7 @@ def tick(sim: Sim) -> None:
     entrust.watch(sim)
     objection.watch(sim)
     peace.watch(sim)
+    hearts.sync(sim)
 
 
 def apply_look(sim: Sim, body: dict[str, Any]) -> None:
@@ -664,9 +685,11 @@ def _converse(
     else:
         claim_id, kept, new = notebook.take_answer(world_state, partner, said.claim)
         written = (kept, new)
+        sim.told.append((partner, said.claim.prop))
         if said.rival is not None:  # and the account somebody else told them, after the belief
             other, _, _ = notebook.take_answer(world_state, partner, said.rival)
             notebook.pair_rival(section, claim_id, other)
+            sim.told.append((partner, said.rival.prop))
         say(section, partner, talk["until"], "claim", claim_id, said.lead)
     converse.replied(sim, partner)
     if entry is not None and notebook.frontier(entry) == partner:
@@ -699,6 +722,8 @@ def apply_ask(sim: Sim, body: dict[str, Any]) -> None:
     if not section["talk"]:
         return ack(sim, body, "not_talking")
     topic = body["topic"]
+    if gifts.is_taste(topic):  # what a person likes (``gifts``)
+        return gifts.ask(sim, body)
     entry = notebook.find(section, topic)  # an entry of the notebook stands for what it says
     if entry is not None:
         topic = entry["prop"]
@@ -739,6 +764,7 @@ ACTIONS = {
     ),
     "speak": (assembly.validate, pace.timed("speak", assembly.apply)),
     "speak_publicly": (assembly.validate, pace.timed("speak", assembly.apply)),
+    **gifts.ACTIONS,  # a gift takes no game time
     **judge.ACTIONS,  # judge and hint take no time: they are not timed
     **statement.ACTIONS,  # nor does choosing an option of the statement card
 }
@@ -794,6 +820,8 @@ def verbs(
         have |= {"leave", "ask", "tell", "entrust", "promise"}
         if any(entry["trail"] for entry in section["notebook"]):
             have |= {"ask_source", "askSource"}
+        if gifts.can_give(world_state, clock.at(tick).day):
+            have.add("gift")
     elif not section["busy"]:
         have.add("move")
         for index, npc in enumerate(world_state["npcs"]["list"]):
@@ -811,6 +839,20 @@ def verbs(
     if judge.available(world_state):  # as is judging two notes, and asking for a hint
         have |= {"judge", "hint"}
     return [verb for verb in VERB_ORDER if verb in have]
+
+
+def tastes_to_ask(
+    world: BridgeWorld, world_state: dict[str, Any], wired: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """The questions about what a person likes that the manager can ask now (``gifts.topics``)."""
+    from lantern_core.world.bridge import (
+        cards,
+    )  # not at the top: cards reads this module's notebook
+
+    section = world_state["player"]
+    props = notebook.view(world_state["social"]) if wired else None
+    met = cards.known(world_state, props)
+    return gifts.topics(world, section, section["talk"]["npc"], met)
 
 
 def frame(world: BridgeWorld, state: dict[str, Any], out: dict[str, Any]) -> None:
@@ -832,7 +874,9 @@ def frame(world: BridgeWorld, state: dict[str, Any], out: dict[str, Any]) -> Non
         "costs": pace.table(),
         "look": looks,
         "offers": offers.build(world, world_state, here),
-        "topics": offers.topics(world, wired) if talk else [],
+        "topics": offers.topics(world, wired, tastes_to_ask(world, world_state, wired))
+        if talk
+        else [],
     }
     out["notebook"] = wired
     out["judgments"] = judge.wire_judgments(section)
@@ -843,9 +887,10 @@ def frame(world: BridgeWorld, state: dict[str, Any], out: dict[str, Any]) -> Non
     out["hud"]["reputation"] = repute.stars(section)
     out["hud"]["resources"] = pledges.left(section)
     out["hud"]["pledges"] = pledges.wire(world, section)
+    out["hud"]["gift"] = gifts.hud(section, here.day)
     line = section["line"]
     if line and line[1] > now:
-        text = words(world_state, line)
+        text = words(world_state, line, today=here.day)
         out["bubbles"] = [b for b in out["bubbles"] if b["npc"] != line[0]]
         out["bubbles"].append({"npc": line[0], "until": line[1], "text": text})
     if talk:

@@ -16,7 +16,7 @@ const AT_SEVEN = { time: { day: 3, hour: 7, minute: 0, phase: "day" } };
 const OPEN = fake.tasksWhere({ t_bamboo_first: "open" });
 
 const TALK = [
-  { kind: "festival_down", text: n("街上盼灯会的人比昨天少了，茶馆里提起灯会的也不多。", "Fewer people on the street look forward to the festival than yesterday, and the teahouse hardly mentions it.") },
+  { kind: "festival_down", text: n("街上盼灯会的人比昨天少了。茶馆里也没几个人提灯会。", "Fewer people on the street look forward to the festival than yesterday. The teahouse hardly mentions it.") },
   { kind: "walk_look", text: n("昨天有人特地去桥边看了看。", "Some people made a point of going down to look at the bridge yesterday.") },
 ] as const;
 

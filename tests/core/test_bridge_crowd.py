@@ -430,6 +430,45 @@ def test_hearing_is_deterministic_and_the_crowd_stays_canonical():
     assert outcomes[0] == outcomes[1]
 
 
+def test_hearing_takes_no_number_from_the_crowds_stream():
+    game, section, _ = staged()
+    stream = dict(section["rng"])
+    kept = crowd.hear(sim_of(game), "p_market", "prop-7", "li_da")
+    assert 15 < kept < 35  # fifty listened and about half kept it, so numbers were drawn
+    assert section["rng"] == stream
+
+
+def hearing(*, seed=1, tick=40, place="p_market", prop="prop-7", speaker="li_da", stream=None):
+    """Who of the townsfolk at ``place`` kept what ``speaker`` said there, in a game staged at
+    ``tick``. ``stream`` sets the state of the crowd's stream first."""
+    game, section, lay = staged(seed, tick)
+    if stream is not None:
+        section["rng"] = stream
+    crowd.hear(sim_of(game), place, prop, speaker)
+    district = lay.index[place]
+    return [
+        bool(h) for h, at in zip(section["heard"], section["at"], strict=True) if at == district
+    ]
+
+
+def test_who_keeps_what_is_heard_follows_the_seed_the_tick_the_place_the_speaker_and_the_saying():
+    kept = hearing()
+    assert 15 < sum(kept) < 35 and len(kept) == 50
+    assert hearing() == kept  # the same saying in the same game: the same listeners
+    for other in (
+        {"seed": 2},
+        {"tick": 41},
+        {"place": "p_riverbank"},
+        {"speaker": "zhou_niangzi"},
+        {"prop": "prop-8"},
+    ):
+        assert hearing(**other) != kept, other
+
+
+def test_who_keeps_what_is_heard_does_not_follow_the_state_of_the_crowds_stream():
+    assert hearing(stream=Pcg32(5, 6).to_state()) == hearing()
+
+
 # ------------------------------------------------------------------------------ passing it on
 
 
@@ -495,6 +534,39 @@ def test_a_townsperson_with_nothing_to_tell_or_nobody_to_tell_it_to_passes_nothi
     everyone_holds(section, empty, ["prop-9"])  # something to tell, in a place where no one is
     run_to(game, game.tick + 20)
     assert section["outbox"] == [] and all(h == ["prop-9"] for h in section["heard"])
+
+
+def passed_on(shift=0, *, stream=None, held=("prop-9",)):
+    """One tick of the crowd in a game of seed 1 at a moment of the morning when a named person
+    stands at a place and everyone in the town is there holding ``held``, with the tick ``shift``
+    ticks later than the game's. Returns the townsfolk who told what they held, the outbox and the
+    crowd's stream after the tick."""
+    game = bridge(1, **CLEAR)
+    run_to(game, clock.hour_start(10) - 5)
+    section = crowd_of(game)
+    district, _ = a_named_person_at_a_place(game)
+    everyone_holds(section, district, list(held))
+    section["slot"] = key_at(game.tick)
+    if stream is not None:
+        section["rng"] = stream
+    ctx = Ctx(game._kernel)
+    ctx.tick += shift
+    crowd.tick(Sim(world_of(game), ctx))
+    told = [k for k, kept in enumerate(section["heard"]) if held and not kept]
+    return told, section["outbox"], section["rng"]
+
+
+def test_passing_street_talk_on_takes_no_number_from_the_crowds_stream():
+    told, outbox, stream = passed_on()
+    assert len(told) == len(outbox) == crowd.PASSES_PER_TICK  # two were told, so numbers were drawn
+    assert passed_on(held=())[1:] == ([], stream)  # with nothing to tell, the stream is the same
+
+
+def test_who_tells_what_to_whom_follows_the_seed_and_the_tick_and_not_the_crowds_stream():
+    first = passed_on()
+    assert passed_on()[:2] == first[:2]  # the same moment of the same game: the same tellers
+    assert passed_on(stream=Pcg32(5, 6).to_state())[:2] == first[:2]
+    assert passed_on(1)[0] != first[0]  # the next tick, other tellers
 
 
 def test_at_night_the_street_is_quiet():

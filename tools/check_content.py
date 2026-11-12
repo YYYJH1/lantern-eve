@@ -10,10 +10,10 @@ town and cast of a scenario, content/maps/*.yaml and content/cast/*.yaml (see ``
 A person of entities.yaml may have a ``bio``, what the town says of them in both languages, and
 every person of a cast needs one: it goes into the compiled cast and not into entities.json.
 The lines the townsfolk say are content/tables/sentences.yaml (see ``sentence_content``), and
-the way each of them says the fixed words of the town is content/lines/<person>.yaml (see
-``voice_content``). The words that a model's reply is held to are content/tables/speech.yaml (see
-``speech_content``), and the prompts that ask a model for them are content/prompts/reply.yaml (see
-``prompt_content``).
+the way each of them says the fixed words of the town, and what each calls the others, is
+content/lines/<person>.yaml (see ``voice_content``). The words that a model's reply is held to are
+content/tables/speech.yaml (see ``speech_content``), and the prompts that ask a model for them are
+content/prompts/reply.yaml (see ``prompt_content``).
 Outputs are content/compiled/tables.json, entities.json, sentences.json, speech.json,
 voices.json, prompts.json and one <script>.json per script, and map_<id>.json and cast_<id>.json
 for each map and cast, written with ``lantern_core.canon.dumps`` (sorted keys, compact, UTF-8,
@@ -85,6 +85,7 @@ ENTITY_TYPES = ("person", "family", "thing", "place")
 BIO_LIMIT = {"zh": 70, "en": 320}  # characters of what the town says of a person
 REQUIRED_MOTIVES = ("accident", "on_purpose")  # the motives the operators know by name
 PLEDGE_CARDS = 20  # the promises of the manager that have a task each (``pledges.CARDS``)
+MAX_GIFTS = 8  # the small things the market gives away in a day
 
 
 # --------------------------------------------------------------------------------------
@@ -592,10 +593,21 @@ class PaperTalk(Strict):
     walk_hand: Words
 
 
+class PaperProgress(Strict):
+    """How far the work at the bridge has got, in words, by the share of the hours done."""
+
+    start: Words  # under a third
+    under_half: Words
+    half: Words
+    over_half: Words
+
+
 class PaperRules(Strict):
     """The words and the thresholds of the paper of the morning and the summary of the night."""
 
     when: PaperWhen
+    manager: PaperWhen  # the manager as the paper of the morning and the summary of the night say
+    progress: PaperProgress
     street: PaperStreet
     news: PaperNews
     talk: PaperTalk
@@ -642,6 +654,17 @@ class Statement(Strict):
     parts: list[StatementPart] = Field(min_length=3, max_length=3)
 
 
+class Gift(Strict):
+    """A small thing the market gives away each day, which the manager can give a person. ``gain``
+    is the trust a person who likes it takes in (one who is neither way takes in half, one who
+    dislikes it none, see ``world/bridge/gifts.py``)."""
+
+    id: str
+    zh: str
+    en: str
+    gain: int = Field(ge=1, le=30)
+
+
 class Script(Strict):
     id: str
     label: str
@@ -673,6 +696,7 @@ class Script(Strict):
     hubs: list[str] = Field(default_factory=list)  # whom a person who knows nothing points to
     statement: Statement | None = None  # the statement card
     paper: PaperRules | None = None  # the morning gazette and the night summary
+    gifts: list[Gift] = Field(default_factory=list)  # the small things of the day
     # the days between which every story can first be told apart, as the evidence opens (`since`
     # of the items): [earliest, latest]. A script that says nothing is not held to it. It is a
     # check of the build and is not compiled.
@@ -689,6 +713,8 @@ class Script(Strict):
         for key in ("statement", "paper"):  # the other scripts compile as they did
             if data.get(key) is None:
                 data.pop(key, None)
+        if not data.get("gifts"):
+            data.pop("gifts", None)
         return data
 
 
@@ -769,7 +795,7 @@ AGENDA_FACTS = (
     "bamboo_site", "bamboo_need", "bamboo_lack", "bamboo_open", "bamboo_next",
     "timber_site", "timber_need", "timber_lack", "timber_open", "timber_next",
     "helpers", "crew", "li_helpers", "zhou_helpers", "needy", "hours", "hours_need", "work_from",
-    "work_to", "deadline", "helper", "hours_left", "morning",
+    "work_to", "deadline", "helper", "hours_left", "morning", "work_mornings",
     *(f"pledge{n}_{part}" for n in range(1, PLEDGE_CARDS + 1) for part in ("to", "what", "due")),
     "grudge",
 )  # fmt: skip
@@ -797,20 +823,20 @@ COMMITMENT_WORDS: dict[str, set[str]] = {
     "recap.delivery": {"who", "amount", "item", "place"},
     "recap.withdrawn": {"who", "what"},
     "recap.withdrawn_plain": {"who"},
-    "recap.clarified": {"names"},
+    "recap.clarified": {"names", "manager"},
     "recap.promise": {"who", "amount", "item"},
 }
 # The placeholders each template of ``paper`` may use (``world/bridge/gazette.py`` fills them in
 # both languages). Every line of ``talk`` takes none.
 PAPER_WORDS: dict[str, set[str]] = {
-    "news.statement": {"place", "named", "accepted"},
-    "news.statement_refused": {"place", "named"},
-    "news.evidence": {"place", "named", "accepted"},
-    "news.evidence_refused": {"place", "named"},
-    "news.stopped": {"who"},
+    "news.statement": {"place", "named", "accepted", "manager"},
+    "news.statement_refused": {"place", "named", "manager"},
+    "news.evidence": {"place", "named", "accepted", "manager"},
+    "news.evidence_refused": {"place", "named", "manager"},
+    "news.stopped": {"who", "other"},
     "news.helpers": {"n"},
     "news.work_stopped": {"why"},
-    "news.work": {"hours", "left"},
+    "news.work": {"hours", "left", "progress"},
     "news.rain_heavy": {"when"},
     "news.rain_light": {"when"},
     "news.quiet": {"when"},
@@ -1219,6 +1245,7 @@ class ScriptChecker:
             self.check_roles,
             self.check_commitments,
             self.check_paper,
+            self.check_gifts,
             self.check_information,
             self.check_cast_covers_refs,
         ]
@@ -2719,7 +2746,13 @@ class ScriptChecker:
             self.err(f"paper street: cool ({street.cool}) must be below warm ({street.warm})")
         if street.split <= street.side:
             self.err(f"paper street: split ({street.split}) must be above side ({street.side})")
-        groups = {"when": rules.when, "news": rules.news, "talk": rules.talk}
+        groups = {
+            "when": rules.when,
+            "manager": rules.manager,
+            "progress": rules.progress,
+            "news": rules.news,
+            "talk": rules.talk,
+        }
         for group, words_of in groups.items():
             for name in type(words_of).model_fields:
                 path = f"{group}.{name}"
@@ -2739,6 +2772,30 @@ class ScriptChecker:
                             f"paper {path} {lang}: unknown placeholder "
                             f"{sorted(used - allowed)}, it takes {sorted(allowed)}"
                         )
+
+    def check_gifts(self) -> None:
+        """The small things of the day: distinct lower-case ids, a name in each language, and no
+        pronoun, semicolon or dash in a name."""
+        seen: set[str] = set()
+        for gift in self.s.gifts:
+            where = f"gifts '{gift.id}'"
+            if bad_id(gift.id):
+                self.err(f"{where}: the id must be lower-case snake_case")
+            if gift.id in seen:
+                self.err(f"{where}: listed twice")
+            seen.add(gift.id)
+            for lang in ("zh", "en"):
+                text = getattr(gift, lang)
+                if not text.strip() or text != text.strip() or "\n" in text:
+                    self.err(f"{where} ({lang}): a name on one line, without blank space")
+                if any(mark in text for mark in voice_content.BANNED):
+                    self.err(f"{where} ({lang}): no semicolon or dash")
+            if not any("\u4e00" <= ch <= "\u9fff" for ch in gift.zh) or any(
+                "\u4e00" <= ch <= "\u9fff" for ch in gift.en
+            ):
+                self.err(f"{where}: the Chinese is Chinese text and the English is English text")
+        if len(self.s.gifts) > MAX_GIFTS:
+            self.err(f"gifts: at most {MAX_GIFTS} small things a day")
 
     def check_information(self) -> None:
         """The relations of the tutorial name props of the script, and the hubs are people."""
@@ -3004,7 +3061,7 @@ def validate(src: Sources) -> Report:
     )
     said, said_modules, said_lines = sentence_content.build(src.sentences, tables, ents, rep.errors)
     voiced, voiced_modules, voiced_lines = voice_content.build(
-        src.voices, src.casts, src.phrases, src.sentences, rep.errors
+        src.voices, src.casts, src.phrases, src.sentences, rep.errors, src.speech
     )
     worded, worded_modules, worded_lines = speech_content.build(
         src.speech, tables, ents, voice_content.cast_people(src.casts), rep.errors

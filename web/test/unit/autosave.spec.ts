@@ -98,7 +98,7 @@ test.describe("which saves it keeps, and which one Continue loads", () => {
     expect(autosaveName({ kind: "morning", day: 3, hour: 7, minute: 0 })).toBe("Autosave, Day 3 07:00");
     expect(autosaveName({ kind: "ending", day: 5, hour: 21, minute: 0 })).toBe("Autosave, Festival night");
     setLang("zh");
-    expect(autosaveName({ kind: "morning", day: 3, hour: 7, minute: 0 })).toBe("自动存档，第三日 07:00");
+    expect(autosaveName({ kind: "morning", day: 3, hour: 7, minute: 0 })).toBe("自动存档，第三天 07:00");
     expect(autosaveName({ kind: "ending", day: 5, hour: 21, minute: 0 })).toBe("自动存档，灯会之夜");
     setLang("en");
   });

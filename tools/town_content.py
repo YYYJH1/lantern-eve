@@ -24,6 +24,7 @@ script are all in the town.
 from __future__ import annotations
 
 import json
+import re
 from collections import deque
 from dataclasses import dataclass
 from typing import Any
@@ -56,6 +57,18 @@ ROLE_TAGS = ("hub", "bridge", "gatekeeper", "witness")
 DAWN_HOUR = 6  # the day of a routine starts here
 OPS = ("level", "sharpen", "assimilate", "fill")
 ID_CHARS = set("abcdefghijklmnopqrstuvwxyz0123456789_")
+# the marks no sentence of the game uses, and the pronouns no sentence says of a person
+BANNED = ("；", ";", "—", "–", "―", "－", "--", " - ")
+PRONOUNS = {"zh": re.compile("[他她]"), "en": re.compile(r"\b(?:he|she|his|her|hers|him)\b", re.I)}
+INTRO_LIMIT = {"zh": 60, "en": 200}  # characters of the one line the town says of a person
+# What a person can ask in return for a favour: the promises of ``world/bridge/pledges.py`` (a test
+# holds these equal to the core's), the rows of stalls, the roles, the wages the offers make and
+# the places in the programme.
+ASK_KINDS = ("stall", "role", "wage", "slot")
+ASK_STALLS = ("front", "back")
+ASK_ROLES = ("t_honor_light", "lead_lanterns", "stage_words")
+ASK_WAGES = (10, 20)
+ASK_SLOTS = 5
 
 
 class Strict(BaseModel):
@@ -155,6 +168,17 @@ class ActivityIn(Named):
     system: bool = False
 
 
+class AskIn(Strict):
+    """The one return a person asks of the manager when they are asked for a favour: a promise the
+    manager can make (``pledges``). A stall has its row (``front`` or ``back``), a role its id, a
+    wage its coins, and a place in the programme may name its number or leave it to the first
+    free one."""
+
+    what: str
+    item: str | None = None
+    amount: int | None = None
+
+
 class PersonIn(Strict):
     id: str
     zh: str
@@ -168,6 +192,12 @@ class PersonIn(Strict):
     work: str
     traits: Traits
     ops: Ops
+    # what the town says in one line of who the person is (public, the same in every game), the
+    # small things they like and dislike, and the one return they ask for a favour
+    intro: Label
+    likes: list[str]
+    dislikes: list[str]
+    ask: AskIn
     holdings: list[Holding]
     routine: list[RoutineEntry]
 
@@ -492,6 +522,7 @@ def check_cast(
     ents: Any,
     scripts: dict[str, list[str]],
     errors: list[str],
+    gifts: tuple[str, ...] = (),
 ) -> dict[str, Any] | None:
     start = len(errors)
     where = f"cast/{name}"
@@ -518,7 +549,7 @@ def check_cast(
     if len(set(ids)) != len(ids):
         errors.append(f"{where}: a person is listed twice")
     for p in cf.people:
-        _check_person(where, p, town, ents, items, acts, errors)
+        _check_person(where, p, town, ents, items, acts, errors, gifts)
     if cf.script in scripts:
         listed = set(ids)
         for ent in scripts[cf.script]:
@@ -542,6 +573,7 @@ def _check_person(
     items: set[str],
     acts: dict[str, ActivityIn],
     errors: list[str],
+    gifts: tuple[str, ...] = (),
 ) -> None:
     at = f"{where}: {p.id}"
     if bad_id(p.id):
@@ -581,6 +613,68 @@ def _check_person(
         if place is None or place.door is None:
             errors.append(f"{at}: keeps {h.item} at '{place_id}', which is not a place")
     _check_routine(at, p, town, acts, errors)
+    _check_intro(at, p, errors)
+    _check_tastes(at, p, gifts, errors)
+    _check_ask(at, p.ask, errors)
+
+
+def _check_intro(at: str, p: PersonIn, errors: list[str]) -> None:
+    """The line the town says of a person: text of its own language, on one line, short, with no
+    semicolon or dash, and no pronoun (the cast does not fix the sex of everyone)."""
+    for lang in ("zh", "en"):
+        text = getattr(p.intro, lang)
+        if not text.strip():
+            errors.append(f"{at}: intro ({lang}) is empty")
+            continue
+        if text != text.strip() or "\n" in text:
+            errors.append(f"{at}: intro ({lang}) is one line, without blank space at the ends")
+        if len(text) > INTRO_LIMIT[lang]:
+            errors.append(
+                f"{at}: intro ({lang}) has {len(text)} characters, at most {INTRO_LIMIT[lang]}"
+            )
+        if any(mark in text for mark in BANNED):
+            errors.append(f"{at}: intro ({lang}) has a semicolon or a dash, write another sentence")
+        if PRONOUNS[lang].search(text):
+            errors.append(f"{at}: intro ({lang}) says he or she of a person")
+    if not any("\u4e00" <= ch <= "\u9fff" for ch in p.intro.zh):
+        errors.append(f"{at}: intro (zh) must be Chinese text")
+    if any("\u4e00" <= ch <= "\u9fff" for ch in p.intro.en):
+        errors.append(f"{at}: intro (en) must be English text")
+
+
+def _check_tastes(at: str, p: PersonIn, gifts: tuple[str, ...], errors: list[str]) -> None:
+    for name, ids in (("likes", p.likes), ("dislikes", p.dislikes)):
+        if len(set(ids)) != len(ids):
+            errors.append(f"{at}: {name} lists a thing twice")
+        for item in ids:
+            if item not in gifts:
+                errors.append(
+                    f"{at}: {name} lists '{item}', which is not a small thing of the script"
+                )
+    if set(p.likes) & set(p.dislikes):
+        errors.append(f"{at}: likes and dislikes share a thing")
+    if not p.likes:
+        errors.append(f"{at}: likes at least one small thing")
+
+
+def _check_ask(at: str, ask: AskIn, errors: list[str]) -> None:
+    """The return a person asks has to be something the manager can promise."""
+    what = f"{at}: ask {ask.what}"
+    if ask.what not in ASK_KINDS:
+        errors.append(f"{at}: ask must be one of {list(ASK_KINDS)}, got '{ask.what}'")
+    elif ask.what == "stall":
+        if ask.item not in ASK_STALLS or ask.amount is not None:
+            errors.append(f"{what}: needs item front or back and no amount")
+    elif ask.what == "role":
+        if ask.item not in ASK_ROLES or ask.amount is not None:
+            errors.append(f"{what}: needs item {list(ASK_ROLES)} and no amount")
+    elif ask.what == "wage":
+        if ask.amount not in ASK_WAGES or ask.item is not None:
+            errors.append(f"{what}: needs an amount of {list(ASK_WAGES)} and no item")
+    elif ask.amount is not None or (
+        ask.item is not None and ask.item not in tuple(str(n) for n in range(1, ASK_SLOTS + 1))
+    ):
+        errors.append(f"{what}: names no amount, and a place 1 to {ASK_SLOTS} or none")
 
 
 def _check_routine(
@@ -615,6 +709,15 @@ def _check_routine(
         errors.append(f"{at}: the routine of a day person ends with sleep")
 
 
+def _ask_fields(ask: AskIn) -> dict[str, Any]:
+    """The fields of the return a person asks that are set, in the compiled cast."""
+    return {
+        key: value
+        for key, value in (("item", ask.item), ("amount", ask.amount))
+        if value is not None
+    }
+
+
 def compile_cast(cf: CastFile, ents: Any) -> dict[str, Any]:
     families = sorted({p.family for p in cf.people if p.family is not None})
     people = []
@@ -626,6 +729,10 @@ def compile_cast(cf: CastFile, ents: Any) -> dict[str, Any]:
                 "en": p.en,
                 "role": {"zh": p.role.zh, "en": p.role.en},
                 "bio": dict(ents.bio[p.id]),
+                "intro": {"zh": p.intro.zh, "en": p.intro.en},
+                "likes": list(p.likes),
+                "dislikes": list(p.dislikes),
+                "ask": {"what": p.ask.what, **_ask_fields(p.ask)},
                 "token": {"zh": p.token.zh, "en": p.token.en},
                 "family": p.family,
                 "tags": sorted(p.tags),
@@ -739,7 +846,9 @@ def build(
     for name, raw in sorted(casts.items()):
         scenario = raw.get("scenario") if isinstance(raw, dict) else None
         map_id = SCENARIOS.get(scenario, (None,))[0]
-        doc = check_cast(name, raw, towns.get(map_id), ents, scripts, errors)
+        script_id = raw.get("script") if isinstance(raw, dict) else None
+        gifts = tuple(g["id"] for g in docs.get(script_id, {}).get("gifts", []))
+        doc = check_cast(name, raw, towns.get(map_id), ents, scripts, errors, gifts)
         if doc is not None:
             cast_docs[name] = doc
     for name, town in towns.items():

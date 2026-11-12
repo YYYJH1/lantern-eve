@@ -289,8 +289,27 @@ def lacking(world: BridgeWorld, g: dict[str, Any]) -> str | dict[str, str] | Non
     return HANDS if len(call["joined"]) < CREW else BOTH_FAMILIES
 
 
+def shortfall(world: BridgeWorld, g: dict[str, Any]) -> tuple[int, list[str]]:
+    """How many helpers the work still lacks for the next morning, and the families with nobody in
+    the crew yet. Both are nothing once the crew is ready, and once the bridge is mended or the
+    detour is done.
+
+    The crew is ``CREW`` helpers with one of each family at least (``goals_call.crew_ready``), so
+    the helpers still lacking are the larger of the places of the crew not filled and the families
+    that have nobody: five helpers of one family lack one, from the other."""
+    if passage(g["flags"]) != "none" or "g_labor" in g["done"]:
+        return 0, []
+    call = g["call"]
+    if goals_call.crew_ready(world, call):
+        return 0, []
+    count, per_family = goals_call.crew(world, call)
+    missing = [family for family in goals_call.lay(world).families if per_family[family] == 0]
+    return max(CREW - count, len(missing)), missing
+
+
 def bridge_hud(world: BridgeWorld, g: dict[str, Any]) -> dict[str, Any]:
     """The ``bridge`` entry of the hud."""
+    short, missing = shortfall(world, g)
     out: dict[str, Any] = {
         "done": min(len(g["call"]["joined"]), CREW),
         "need": CREW,
@@ -298,9 +317,11 @@ def bridge_hud(world: BridgeWorld, g: dict[str, Any]) -> dict[str, Any]:
         "hours": g["work"]["ticks"] // clock.DAY_TICKS_PER_HOUR,
         "hours_need": BRIDGE_HOURS,
         "state": bridge_state(g),
+        "short": short,
+        "families_missing": missing,
     }
     if passage(g["flags"]) == "none":
-        missing = lacking(world, g)
-        if missing is not None:
-            out["lacking"] = missing
+        lack = lacking(world, g)
+        if lack is not None:
+            out["lacking"] = lack
     return out

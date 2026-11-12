@@ -1,6 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
-import { t } from "../../i18n/index.ts";
+import { getLang, t } from "../../i18n/index.ts";
 import type { HostClient, PageState } from "../client.ts";
+import { tickText } from "./format.ts";
 import { PauseIcon, PlayIcon, StartIcon } from "./icons.tsx";
 
 /** The speeds the bar offers, times the pace of the recorded game. */
@@ -21,6 +22,7 @@ export function ReplayBar({ client, s }: { client: HostClient; s: PageState }) {
   const tick = Math.min(Math.max(1, target ?? s.simTick), Math.max(1, end));
   const playing = status?.playing === true;
   const label = playing ? t("replay.pause") : status?.ended === true ? t("replay.again") : t("replay.play");
+  const where = t("replay.tick", { when: tickText(getLang(), tick), end: tickText(getLang(), end) });
   return (
     <section class="replay-bar" data-testid="replay-bar" data-phase={status?.phase ?? "idle"} data-playing={playing} data-busy={busy} aria-label={t("gallery.title")}>
       <div class="replay-buttons">
@@ -42,7 +44,7 @@ export function ReplayBar({ client, s }: { client: HostClient; s: PageState }) {
         value={tick}
         disabled={!ready}
         aria-label={t("replay.seek")}
-        aria-valuetext={t("replay.tick", { tick, end })}
+        aria-valuetext={where}
         onInput={(event) => setTarget(Number((event.target as HTMLInputElement).value))}
         onChange={(event) => {
           const value = Number((event.target as HTMLInputElement).value);
@@ -52,7 +54,7 @@ export function ReplayBar({ client, s }: { client: HostClient; s: PageState }) {
       />
       <div class="replay-readout" aria-live="off">
         <span data-testid="replay-tick" data-tick={tick} data-end={end}>
-          {t("replay.tick", { tick, end })}
+          {where}
         </span>
         {busy ? (
           <span class="replay-busy" data-testid="replay-busy">

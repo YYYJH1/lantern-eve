@@ -1,6 +1,7 @@
 import { expect, test } from "../support/fixtures.ts";
 import * as fake from "../support/slice.ts";
 import { arrive, atTheTeahouse, canvasData, clickCell, clickMap, hold, mapDrawn, notes, riverCell, run } from "../support/play.ts";
+import { openTopic } from "../support/real.ts";
 
 // This spec looks at the map, so its pages draw it.
 test.use({ map: true });
@@ -85,13 +86,13 @@ test.describe("the player on the map", () => {
     const river = await riverCell(page);
     await clickCell(page, river.x, river.y);
     await expect(notes(page)).toHaveCount(1);
-    await expect(notes(page)).toHaveAttribute("data-reason", "blocked");
-    await expect(notes(page)).toHaveAttribute("data-kind", "refused");
-    await expect(notes(page)).toHaveText("You cannot walk onto that spot.");
+    // The note goes by itself some seconds after it comes, which a slow machine can take between two calls of a test: its words are read in both languages in one call.
+    expect(await lantern.textsInBothLanguages("game-note", ["data-reason", "data-kind"])).toMatchObject({
+      en: "You cannot walk onto that spot.",
+      zh: "走不到那里去。",
+      attributes: { "data-reason": "blocked", "data-kind": "refused" },
+    });
     expect((await canvasData(page)).destination).toBe("");
-    await lantern.setLang("zh");
-    await expect(notes(page)).toHaveText("走不到那里去。");
-    await lantern.setLang("en");
     // Outside the map is another reason, with a text of its own, and the player stays where they were.
     const stays = (await canvasData(page)).player;
     await page.evaluate(() => window.__lantern.play.goTo({ x: 9999, y: 9999, place: null }));
@@ -142,14 +143,15 @@ test.describe("a talk", () => {
     await expect(page.getByTestId("card-talk")).toHaveText("Talking now");
     await expect(page.getByTestId("card-talk")).toBeDisabled();
     // The madam greets the manager as the talk opens, and her greeting is the line of the bar until she answers something (the core chose it by the state of the game: a first meeting).
-    await expect(page.getByTestId("dialogue-line")).toHaveText("Teahouse Keeper: “Oh my! You're the new Manager! Sit, sit, have some tea!”");
+    await expect(page.getByTestId("dialogue-line")).toHaveText("Teahouse Keeper: “You'll be the new Manager? I keep this teahouse. Sit down and I'll pour you a bowl of tea.”");
     await expect(page.getByTestId("talk-area")).toBeVisible();
-    await expect(page.getByTestId("topic-chips")).toBeVisible();
-    await expect(page.getByTestId("verb-ask")).toHaveCount(0);
+    // The questions are a list that the act opens, and nothing is listed until it is pressed.
+    await expect(page.getByTestId("topic-chips")).toHaveCount(0);
+    await expect(page.getByTestId("verb-ask")).toBeEnabled();
     await expect(page.getByTestId("verb-leave")).toBeEnabled();
     // A verb that the town offers for a choice is there when the frame lists it, and not otherwise. Speaking in public is not an act of a talk.
     const listed = await page.evaluate(() => (window.__lantern.client.state.frame?.hud as { verbs: string[] }).verbs);
-    for (const verb of ["tell", "entrust", "promise"]) {
+    for (const verb of ["tell", "entrust"]) {
       if (listed.includes(verb)) await expect(page.getByTestId(`verb-${verb}`)).toBeEnabled();
       else await expect(page.getByTestId(`verb-${verb}`)).toHaveCount(0);
     }
@@ -157,7 +159,7 @@ test.describe("a talk", () => {
 
     // So far the test's own pause held the world. Let go of it, and the talk holds the world by itself: the bar says that the time is held and not that the player paused, and the button still offers a pause.
     await run(page);
-    await expect(page.getByTestId("status")).toHaveText("time held");
+    await expect(page.getByTestId("status")).toHaveText("time stopped");
     await expect(page.getByTestId("btn-pause")).toHaveText("Pause");
     expect(await page.evaluate(() => window.__lantern.client.state.stats?.reasons)).toEqual([]);
     expect(await page.evaluate(() => window.__lantern.client.state.paused)).toBe(true);
@@ -171,38 +173,40 @@ test.describe("a talk", () => {
     await expect(page.getByTestId("status")).toHaveText("paused");
     await expect(page.getByTestId("btn-pause")).toHaveText("Resume");
     await page.getByTestId("btn-pause").click();
-    await expect(page.getByTestId("status")).toHaveText("time held");
+    await expect(page.getByTestId("status")).toHaveText("time stopped");
     await expect(page.getByTestId("btn-pause")).toHaveText("Pause");
 
     // The notebook holds the world on top of the core's hold. That is the page's pause and not the player's: the bar still says that the time is held.
     await page.getByTestId("btn-notebook").click();
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-open", "true");
     await expect.poll(() => page.evaluate(() => window.__lantern.client.state.stats?.reasons)).toEqual(["page"]);
-    await expect(page.getByTestId("status")).toHaveText("time held");
+    await expect(page.getByTestId("status")).toHaveText("time stopped");
     await expect(page.getByTestId("btn-pause")).toHaveText("Pause");
     // The player's pause on top of both is a pause, and its resume goes back to the hold of the page and the core.
     await page.getByTestId("btn-pause").click();
     await expect(page.getByTestId("status")).toHaveText("paused");
     await expect(page.getByTestId("btn-pause")).toHaveText("Resume");
     await page.getByTestId("btn-pause").click();
-    await expect(page.getByTestId("status")).toHaveText("time held");
+    await expect(page.getByTestId("status")).toHaveText("time stopped");
     await page.getByTestId("notebook-close").click();
     await expect.poll(() => page.evaluate(() => window.__lantern.client.state.stats?.reasons)).toEqual([]);
-    await expect(page.getByTestId("status")).toHaveText("time held");
+    await expect(page.getByTestId("status")).toHaveText("time stopped");
     await expect(page.getByTestId("btn-pause")).toHaveText("Pause");
 
     // A walk is refused in a talk, with the reason of the core. (The strip of the talk lies over the left of the map, where the cell is, so the page is asked for the walk as a click on the map would ask.)
     await page.evaluate(() => window.__lantern.play.goTo({ x: 20, y: 10, place: null }));
-    await expect(notes(page).last()).toHaveText("You are in the middle of a talk. Leave it first.");
+    await expect(notes(page).last()).toHaveText("You are still talking with someone. Leave first.");
     // The partner stays picked while the talk lasts.
     await expect(page.getByTestId("person-name")).toHaveText("Teahouse Keeper");
 
-    // Ask about a thing of the story with a tag. The line over the tags says what a question costs, and the world runs that long.
+    // Ask about a thing of the story with a tag, from the list that the act opens: the three that matter most, and the others behind a word. No
+    // minutes are written on it, and the world runs as long as the question takes.
+    await page.getByTestId("verb-ask").click();
     const chips = page.getByTestId("topic-chips");
-    await expect(page.getByTestId("chips-note")).toContainText("Each question takes 10 min.");
+    await expect(chips.getByTestId("ask-top").getByTestId("topic-chip")).toHaveCount(3);
+    expect(await chips.innerText()).not.toMatch(/\d+\s*min/);
+    await page.getByTestId("ask-more").click();
     const asked = minutesOf(await page.getByTestId("hud-clock").textContent());
-    await expect(chips.getByText("Things", { exact: true })).toBeVisible();
-    await expect(chips.getByText("Places", { exact: true })).toBeVisible();
     await expect(chips.getByText("People", { exact: true })).toBeVisible();
     await expect(chips.getByTestId("topic-chip").filter({ hasText: "Shopkeeper Zhou" })).toHaveCount(1);
     // The one she is talking to is not among the tags.
@@ -215,7 +219,7 @@ test.describe("a talk", () => {
     await expect.poll(async () => minutesOf(await page.getByTestId("hud-clock").textContent())).toBe(asked + 10);
     await expect.poll(() => page.evaluate(() => window.__lantern.client.state.paused)).toBe(true);
     await expect(page.getByTestId("talk-badge")).toBeVisible();
-    await expect(page.getByTestId("status")).toHaveText("time held");
+    await expect(page.getByTestId("status")).toHaveText("time stopped");
     await expect(page.getByTestId("btn-pause")).toHaveText("Pause");
     // Her answer is on the map as a bubble and in the bar, twice: as the line on top and as the last line of the talk.
     const answer = (await page.getByTestId("talk-line").last().textContent()) ?? "";
@@ -230,7 +234,7 @@ test.describe("a talk", () => {
     await expect(note).toHaveAttribute("data-fresh", "true");
     await page.getByTestId("btn-notebook").click();
     await expect(note).toBeVisible();
-    await expect(note.getByTestId("source-badge")).toHaveText("Heard from Teahouse Keeper, 1st hand");
+    await expect(note.getByTestId("source-badge")).toHaveText("Teahouse Keeper says they saw it");
     // Nobody has seen it with their own eyes, and the notebook has put no mark on it: it marks what the player has judged, and nothing else.
     expect((await note.getAttribute("data-marks")) ?? "").toBe("");
     await expect(note.getByTestId("note-ask-source")).toBeVisible();
@@ -246,16 +250,19 @@ test.describe("a talk", () => {
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-open", "false");
 
-    // And from the picker of the bar: the entries heard from someone.
-    await page.getByTestId("verb-askSource").click();
-    await expect(page.getByTestId("picker-askSource").getByTestId("picker-option")).toHaveCount(1);
-    await expect(page.getByTestId("picker-askSource").getByTestId("picker-option").first()).toContainText("Heard from Teahouse Keeper, 1st hand");
-    await page.getByTestId("picker-askSource").getByTestId("picker-option").first().click();
+    // Asking the same again, from the notebook, writes no second entry. The minutes of the first question are paid with the notebook shut (it holds
+    // the world), and the acts are there again once they are.
+    await expect(page.getByTestId("verb-tell")).toBeEnabled();
+    await page.getByTestId("btn-notebook").click();
+    await note.getByTestId("note-ask-source").click();
     await expect(page.getByTestId("talk-line")).toHaveCount(6);
-    // Asking the same again writes no second entry.
     await expect(page.getByTestId("notebook-count")).toHaveText("1");
+    await lantern.settled();
+    await page.keyboard.press("Escape");
+    await expect(page.getByTestId("verb-tell")).toBeEnabled();
 
     // A second entry, about something she only heard of. Asking where it came from reaches the end of what she knows.
+    expect(await openTopic(page, "t_rail")).toBe(true);
     await page.locator('[data-testid="topic-chip"][data-id="t_rail"]').click();
     await expect(page.getByTestId("notebook-count")).toHaveText("2");
     await page.getByTestId("btn-notebook").click();
@@ -270,16 +277,15 @@ test.describe("a talk", () => {
 
     // The words of the talk follow the language, like everything else.
     await lantern.setLang("zh");
-    await expect(page.getByTestId("talk-with")).toHaveText("正与茶馆老板娘交谈");
-    await expect(page.getByTestId("talk-still")).toHaveText("谈话时世界停着");
+    await expect(page.getByTestId("talk-with")).toHaveText("在和茶馆老板娘说话");
+    await expect(page.getByTestId("talk-still")).toHaveText("说话时，时间停着");
     await expect(page.getByTestId("talk-leaves")).toHaveText("12:05 要走");
-    await expect(page.getByTestId("talk-line").first()).toHaveText("你问：老何的船");
+    await expect(page.getByTestId("talk-line").first()).toHaveText("你问起渡船");
     await expect(page.getByTestId("verb-leave")).toHaveText("告辞");
-    await expect(page.getByTestId("verb-promise")).toHaveText("许二十分钟");
-    await expect(page.getByTestId("chips-note")).toContainText("每问一次花十分钟");
-    await expect(page.getByTestId("card-talk")).toHaveText("正在交谈");
-    await expect(page.getByTestId("topic-chips")).toHaveAttribute("aria-label", "问什么");
-    await expect(page.getByTestId("topic-chips").getByText("物件", { exact: true })).toBeVisible();
+    await expect(page.getByTestId("verb-ask")).toHaveText("打听");
+    await expect(page.getByTestId("card-talk")).toHaveText("正在说话");
+    await page.getByTestId("verb-ask").click();
+    await expect(page.getByTestId("topic-chips")).toHaveAttribute("aria-label", "打听什么");
     await lantern.setLang("en");
 
     // Leaving lets the world run at its pace, takes the calm away, and the verbs of the talk go dark.
@@ -348,12 +354,13 @@ test.describe("listening, looking and calling for helpers", () => {
     await expect(page.getByTestId("notebook-count")).toHaveText("0");
     await page.getByTestId("verb-listen").click();
     await expect(notes(page).first()).toContainText("You overheard");
-    await expect(notes(page).first()).toContainText("It is in your notebook.");
+    await expect(notes(page).first()).toContainText("and noted it down.");
     await expect(page.getByTestId("notebook-count")).toHaveText("1");
     await expect(page.getByTestId("notebook-count")).toHaveClass(/is-fresh/);
     await page.getByTestId("btn-notebook").click();
     await expect(page.getByTestId("note").first()).toHaveAttribute("data-fresh", "true");
-    await expect(page.getByTestId("note").first().getByTestId("source-badge")).toContainText("Heard from");
+    await expect(page.getByTestId("note").first().getByTestId("source-badge")).toHaveAttribute("data-source", "heard");
+    await expect(page.getByTestId("note").first().getByTestId("source-badge")).toHaveText(/ (says they heard it from .+|says they saw it|cannot say who told them)$/);
     // What was heard is not offered again, and asking for it is refused with a reason.
     await page.evaluate(() => window.__lantern.play.listen());
     await expect(notes(page).last()).toHaveText(/Nobody nearby is saying anything new\.|You overheard/);
@@ -369,11 +376,8 @@ test.describe("listening, looking and calling for helpers", () => {
     await page.getByTestId("verb-look").click();
     await expect(page.getByTestId("picker-look").getByTestId("picker-option")).toHaveText(["Stone Bridge Railing"]);
     await page.getByTestId("picker-look").getByTestId("picker-option").first().click();
-    await expect(notes(page).last()).toHaveText("It is not open to you at this hour.");
     await expect(notes(page).last()).toHaveAttribute("data-reason", "closed");
-    await lantern.setLang("zh");
-    await expect(notes(page).last()).toHaveText("这个时辰看不了。");
-    await lantern.setLang("en");
+    expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ en: "It is not open to you at this hour.", zh: "这个时辰看不了。" });
 
     // 09:20.
     await lantern.open("scenario=bridge&seed=7&pace=40&until=400", { menu: false });
@@ -382,9 +386,9 @@ test.describe("listening, looking and calling for helpers", () => {
     await page.getByTestId("picker-look").getByTestId("picker-option").first().click();
     await expect(notes(page).last()).toHaveText("Looking at Stone Bridge Railing…");
     // The player is busy for the while it takes, and the core does not offer the act meanwhile.
-    await expect(page.getByTestId("verb-look")).toHaveCount(0);
+    await expect(page.getByTestId("verb-look")).toHaveAttribute("data-off", "busy");
     await run(page);
-    await expect(notes(page).filter({ hasText: /You wrote|You found nothing/ })).toHaveCount(1, { timeout: 30_000 });
+    await expect(notes(page).filter({ hasText: /You noted down|You found nothing/ })).toHaveCount(1, { timeout: 30_000 });
     // What the core says it wrote is what the notebook holds.
     const written = await page.evaluate(() => {
       const found = window.__lantern.client.state.events.filter((e) => e.kind === "inspected");
@@ -394,16 +398,17 @@ test.describe("listening, looking and calling for helpers", () => {
     expect(written.entries).toBeGreaterThanOrEqual(0);
     await expect(page.getByTestId("notebook-count")).toHaveText(String(written.entries));
     if (written.entries > 0) {
-      await expect(notes(page).last()).toHaveText(`You wrote ${written.entries} new things in your notebook.`);
+      await expect(notes(page).last()).toHaveText(`You noted down ${written.entries} new things.`);
       await page.getByTestId("btn-notebook").click();
-      await expect(page.getByTestId("note").first().getByTestId("source-badge")).toHaveText("Seen myself");
+      await expect(page.getByTestId("note").first().getByTestId("source-badge")).toHaveText("You saw it");
       await lantern.settled();
       await page.keyboard.press("Escape");
     }
 
-    // Once looked at, it is not offered again.
+    // Once looked at, it is not offered again: the act stays, grey, and the core says nothing is left within reach.
     await hold(page);
-    await expect(page.getByTestId("verb-look")).toHaveCount(0);
+    await expect(page.getByTestId("verb-look")).toHaveAttribute("aria-disabled", "true");
+    await expect(page.getByTestId("verb-look")).toHaveAttribute("data-off", "far");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -423,9 +428,9 @@ test.describe("listening, looking and calling for helpers", () => {
     await expect(page.getByTestId("hud-festival").getByTestId("stat-bridge")).toHaveCount(0);
     await expect(page.getByTestId("hud-festival").locator("progress")).toHaveCount(0);
     await page.getByTestId("verb-rally").click();
-    await expect(notes(page).first()).toHaveText("You called for helpers.");
-    // It can be done once.
-    await expect(page.getByTestId("verb-rally")).toHaveCount(0);
+    await expect(notes(page).first()).toHaveText("You called on the town to come and help.");
+    // It can be done once: the act stays, grey, and says it is done.
+    await expect(page.getByTestId("verb-rally")).toHaveAttribute("data-off", "done");
     await page.evaluate(() => window.__lantern.play.rally());
     await expect(notes(page).last()).toHaveText("You have already called for helpers.");
 
@@ -466,7 +471,9 @@ test.describe("listening, looking and calling for helpers", () => {
     await lantern.open(TOWN, { menu: false });
     await lantern.waitForTick(60);
     // Nothing is listed, so there is no act to press, in a talk or out of one.
-    for (const verb of ["tell", "entrust", "promise", "speak"]) await expect(page.getByTestId(`verb-${verb}`)).toHaveCount(0);
+    for (const verb of ["tell", "entrust", "context"]) await expect(page.getByTestId(`verb-${verb}`)).toHaveCount(0);
+    // Speaking up is an act around the manager: it is there, grey, and says why it cannot be done.
+    await expect(page.getByTestId("verb-speak")).toHaveAttribute("aria-disabled", "true");
     // What the page sends is recorded here and not passed on, so that the test is about the page and not about what the core makes of the choices.
     await page.evaluate(() => {
       const sent: Array<Record<string, unknown>> = [];
@@ -477,23 +484,26 @@ test.describe("listening, looking and calling for helpers", () => {
       };
     });
     const player = () => page.evaluate(() => window.__lantern.client.state.frame?.player as Record<string, unknown>);
-    // In a talk the frame offers them, with choices of its own for one of them.
-    await fake.feedFrame(page, {
-      hud: { verbs: ["leave", "tell", "entrust", "promise"] },
-      player: {
-        ...(await player()),
-        talk: { npc: "cha_laoban", leaves_at: { hour: 12, minute: 5 } },
-        offers: { promise: [{ id: "stall", zh: "一个摊位", en: "A market stall", body: { thing: "stall" } }, { id: "role", zh: "点主灯", en: "Lighting the main lantern" }] },
-      },
-    });
-    for (const verb of ["tell", "entrust", "promise"]) await expect(page.getByTestId(`verb-${verb}`)).toBeEnabled();
+    // In a talk the frame offers them, with choices of its own for what can be promised: the one the person wants, and the other.
+    const talk = {
+      npc: "cha_laoban",
+      leaves_at: { hour: 12, minute: 5 },
+      ask_for: null,
+      asks_more: [],
+      wants: null,
+      keep: null,
+      give: { preferred: { id: "stall", label: { zh: "一个摊位", en: "A market stall" }, body: { thing: "stall" } }, more: [{ id: "role", label: { zh: "点主灯", en: "Lighting the main lantern" } }], ways: [] },
+      queue: [{ kind: "give" }],
+    };
+    await fake.feedFrame(page, { hud: { verbs: ["leave", "tell", "entrust", "promise"] }, player: { ...(await player()), talk } });
+    for (const verb of ["tell", "entrust", "context"]) await expect(page.getByTestId(`verb-${verb}`)).toBeEnabled();
     // Speaking in public is not an act of a talk.
     await expect(page.getByTestId("verb-speak")).toHaveCount(0);
     const sent = () => page.evaluate(() => (window as unknown as { __sent: Array<Record<string, unknown>> }).__sent);
 
     // A promise is not sent when the choice is made: the player sees its preview, and sends it by confirming.
-    await page.getByTestId("verb-promise").click();
-    await expect(page.getByTestId("picker-promise")).toHaveAttribute("aria-label", "Promise…");
+    await page.getByTestId("verb-context").click();
+    await expect(page.getByTestId("picker-promise")).toHaveAttribute("aria-label", "Promise Teahouse Keeper something");
     await expect(page.getByTestId("picker-promise").getByTestId("picker-option")).toHaveText(["A market stall", "Lighting the main lantern"]);
     await page.getByTestId("picker-option").first().click();
     await expect(page.getByTestId("picker-promise")).toHaveCount(0);
@@ -502,53 +512,49 @@ test.describe("listening, looking and calling for helpers", () => {
     await page.getByTestId("request-confirm").click();
     // A choice that comes with the fields of its action sends them; one that does not sends its id. The version of the preview goes with it.
     expect((await sent())[0]).toMatchObject({ thing: "stall", type: "promise", version: expect.any(Number) });
-    await page.getByTestId("verb-promise").click();
+    await page.getByTestId("verb-context").click();
     await page.getByTestId("picker-option").last().click();
     await expect(page.getByTestId("request-card")).toHaveAttribute("data-phase", "preview");
     await page.getByTestId("request-confirm").click();
     expect((await sent())[1]).toMatchObject({ choice: "role", type: "promise", version: expect.any(Number) });
 
-    // With nothing written and nothing offered, there is nothing to tell. The list says so, and Escape closes it.
+    // With nothing written there is nothing to tell. The list says so, and Escape closes it.
     await page.getByTestId("verb-tell").click();
-    await expect(page.getByTestId("picker-tell").getByTestId("picker-empty")).toHaveText("There is nothing to choose from yet.");
+    await expect(page.getByTestId("picker-tell").getByTestId("picker-empty")).toHaveText("You have noted nothing to tell yet.");
     await lantern.settled();
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("picker-tell")).toHaveCount(0);
-    // With an entry in the notebook, telling it as it stands is a choice. The ways the town offers are in the submenu, each with its risk.
+    // With a line the manager saw in the notebook, telling it as it is is the one way, and goes at once.
     const withEntry = {
-      notebook: [{ id: "n7", text: { zh: "老何在桥下。", en: "Old He was under the bridge." }, source: { kind: "seen" }, marks: [], chain: [] }],
+      notebook: [{ id: "n7", text: { zh: "老何在桥下。", en: "Boatman He was under the bridge." }, source: { kind: "seen" }, marks: [], chain: [] }],
       player: {
         ...(await player()),
         offers: {
           ...((await player()) as { offers: object }).offers,
-          tell: [{ id: "n7:sharpen", label: { zh: "添油加醋：老何在桥下。", en: "Heavier: Old He was under the bridge." }, body: { entry: "n7", how: "sharpen" } }],
-          speak: [{ id: "meal", label: { zh: "摆一桌和解饭", en: "Lay a table for peace" }, body: { kind: "meal" } }],
+          tell: [{ id: "n7:faithful", label: { zh: "照实说：老何在桥下。", en: "As it is: Boatman He was under the bridge." }, body: { entry: "n7", how: "faithful" } }],
+          speak: [{ id: "meal", label: { zh: "摆一桌和解酒", en: "Lay a table for the two families" }, body: { kind: "meal" } }],
         },
       },
     };
     await fake.feedFrame(page, withEntry);
     await page.getByTestId("verb-tell").click();
-    await expect(page.getByTestId("picker-tell").getByTestId("picker-option")).toHaveText(["Old He was under the bridge.Seen myself"]);
+    await expect(page.getByTestId("picker-tell").getByTestId("picker-option")).toHaveText(["Boatman He was under the bridge.You saw it"]);
     await page.getByTestId("picker-tell").getByTestId("picker-option").last().click();
-    expect((await sent())[2]).toEqual({ entry: "n7", type: "tell" });
-    await page.getByTestId("verb-tellOther").click();
-    await expect(page.getByTestId("picker-tellOther").getByTestId("picker-option")).toHaveText(["Heavier: Old He was under the bridge."]);
-    await page.getByTestId("picker-tellOther").getByTestId("picker-option").first().click();
-    expect((await sent())[3]).toEqual({ entry: "n7", how: "sharpen", type: "tell" });
+    expect((await sent())[2]).toEqual({ entry: "n7", how: "faithful", type: "tell" });
 
     // Out of the talk, speaking in public has what the town offers and no entries of the notebook.
     await fake.feedFrame(page, { hud: { verbs: ["move", "speak"] }, player: { ...(await player()), talk: null } }, [{ kind: "talk_end", tick: 9, npc: "cha_laoban", reason: "left" }]);
     await expect(page.getByTestId("talk-area")).toHaveCount(0);
     await page.getByTestId("verb-speak").click();
-    await expect(page.getByTestId("picker-speak").getByTestId("picker-option")).toHaveText(["Lay a table for peace"]);
+    await expect(page.getByTestId("picker-speak").getByTestId("picker-option")).toHaveText(["Lay a table for the two families"]);
     await page.getByTestId("picker-option").click();
-    expect((await sent())[4]).toEqual({ kind: "meal", type: "speak" });
+    expect((await sent())[3]).toEqual({ kind: "meal", type: "speak" });
 
     await lantern.setLang("zh");
     await expect(page.getByTestId("verb-speak")).toContainText("当众说");
-    await fake.feedFrame(page, { hud: { verbs: ["leave", "entrust", "promise"] }, player: { ...(await player()), talk: { npc: "cha_laoban", leaves_at: { hour: 12, minute: 5 } } } });
-    await expect(page.getByTestId("verb-entrust")).toHaveText("求");
-    await page.getByTestId("verb-promise").click();
+    await fake.feedFrame(page, { hud: { verbs: ["leave", "entrust", "promise"] }, player: { ...(await player()), talk } });
+    await expect(page.getByTestId("verb-entrust")).toHaveText("请帮忙");
+    await page.getByTestId("verb-context").click();
     await expect(page.getByTestId("picker-promise").getByTestId("picker-option")).toHaveText(["一个摊位", "点主灯"]);
     expect(lantern.pageErrors).toEqual([]);
   });
@@ -819,10 +825,10 @@ test.describe("the ending", () => {
     await expect(tree.locator('[data-testid="tree-node"][data-person="player"] text').first()).toHaveText(names.player?.zh ?? "");
     await expect(tree.getByTestId("tree-quote")).toHaveText([`「${word("p2", "zh")}」`, `「${word("p3", "zh")}」`]);
     await expect(page.getByTestId("told-line")).toHaveText([
-      `对${names.cha_laoban?.zh}说：「${word("p3", "zh")}」（照实说）`,
-      `对${names.zhou_niangzi?.zh}说：「${word("fab", "zh")}」（编的，被拆穿）`,
+      `对${names.cha_laoban?.zh}说「${word("p3", "zh")}」，照实说的`,
+      `对${names.zhou_niangzi?.zh}说「${word("fab", "zh")}」，是编的，被拆穿了`,
     ]);
-    await expect(page.getByTestId("said-line")).toHaveText([`${names.zhou_niangzi?.zh}对${names.cha_laoban?.zh}说：${word("p3", "zh")}`]);
+    await expect(page.getByTestId("said-line")).toHaveText([`${names.zhou_niangzi?.zh}对${names.cha_laoban?.zh}说「${word("p3", "zh")}」`]);
     expect(lantern.pageErrors).toEqual([]);
     // The words in the tree are lines of a picture and classes, and the policy refuses nothing.
     expect(lantern.consoleLines.filter((l) => /Refused to|Content Security Policy/i.test(l))).toEqual([]);
@@ -952,11 +958,11 @@ test.describe("the ending", () => {
     await expect(page.getByTestId("reveal-chain").getByRole("heading")).toHaveText("从甲到乙");
     await expect(page.getByTestId("tree-node")).toHaveCount(3);
     await expect(page.getByTestId("tree-flag")).toHaveCount(1);
-    await expect(page.getByTestId("tree-change")).toHaveText(/ to .*: made it heavier/);
+    await expect(page.getByTestId("tree-change")).toHaveText(/ to .*: made it sound worse/);
     // How far the manager's words went, and what was said of them.
     await expect(page.getByTestId("spoke-tellings")).toHaveText("3, 1 of them untrue");
     await expect(page.getByTestId("spoke-reached")).toHaveText("2");
-    await expect(page.getByTestId("spoke-furthest")).toHaveText("2nd hand");
+    await expect(page.getByTestId("spoke-furthest")).toHaveText("the 2nd person down the line");
     await expect(page.getByTestId("said-line")).toHaveText([`${names.li_da?.en} to ${names.li_xiaomei?.en}: The manager sides with the Li family.`]);
     await expect(page.getByTestId("reveal-believers").locator('[data-side="false"]')).toContainText(names.li_er?.en ?? "");
     await expect(page.getByTestId("reveal-believers").locator('[data-side="none"] li')).toHaveText([names.old_he?.en ?? ""]);
@@ -965,9 +971,9 @@ test.describe("the ending", () => {
     await expect(page.getByTestId("ending-title")).toHaveText("勉强");
     await expect(page.getByTestId("ending-tag")).toHaveText(["谎话成了传说"]);
     await expect(page.getByTestId("reveal-truth")).toContainText("真是秋汛冲的");
-    await expect(page.getByTestId("tree-change")).toHaveText(/说给.*：说得更重了/);
-    await expect(page.getByTestId("spoke-furthest")).toHaveText("第二手");
-    await expect(page.getByTestId("said-line")).toHaveText([`${names.li_da?.zh}对${names.li_xiaomei?.zh}说：总管偏袒李家。`]);
+    await expect(page.getByTestId("tree-change")).toHaveText(/说给.*时，说得更重了/);
+    await expect(page.getByTestId("spoke-furthest")).toHaveText("第二个人");
+    await expect(page.getByTestId("said-line")).toHaveText([`${names.li_da?.zh}对${names.li_xiaomei?.zh}说「总管偏袒李家。」`]);
     await lantern.setLang("en");
 
     // A game that was over before the page came to it: the numbers are in the frame, and nothing else.

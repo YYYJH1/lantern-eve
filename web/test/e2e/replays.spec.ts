@@ -99,13 +99,17 @@ test.describe("the gallery of recordings", () => {
     const rows = page.getByTestId("gallery-entry");
     await expect(rows).toHaveCount(2);
     await expect(rows.first()).toHaveAttribute("data-id", "save-2");
-    await expect(rows.first().getByTestId("gallery-name")).toHaveText("tick 900");
+    await expect(rows.first().getByTestId("gallery-name")).toHaveText("Day 1 13:30");
     await expect(rows.nth(1).getByTestId("gallery-name")).toHaveText("first game");
-    await expect(rows.nth(1).getByTestId("gallery-meta")).toContainText("900 ticks");
+    await expect(rows.nth(1).getByTestId("gallery-meta")).toContainText("recorded up to Day 1 13:30");
     await expect(rows.nth(1)).toHaveAttribute("data-source", "browser");
     // Escape closes it too.
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("gallery")).toHaveCount(0);
+    // A save with no name is called over the recording as the list calls it: by the day and the hour it was saved at.
+    await openGallery(page);
+    await entry(page, "save-2").getByTestId("gallery-watch").click();
+    await expect(page.getByTestId("replay-layer").getByTestId("brand-sub")).toHaveText("Replay: Day 1 13:30");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -124,7 +128,7 @@ test.describe("the gallery of recordings", () => {
     await expect(layer).toBeVisible();
     await replayReady(page);
     await expect(layer.getByTestId("replay-badge")).toHaveText("Replay");
-    await expect(layer.getByTestId("brand-sub")).toHaveText("Replay: #1");
+    await expect(layer.getByTestId("brand-sub")).toHaveText("Replay: first game");
     await expect(layer.getByTestId("status")).toHaveText("playing");
     // The recording has the town drawn in a map of its own, and no menu and no verbs: it is read only.
     await expect(layer.getByTestId("map")).toBeVisible();
@@ -134,7 +138,7 @@ test.describe("the gallery of recordings", () => {
     const bar = layer.getByTestId("replay-bar");
     await expect(bar).toHaveAttribute("data-phase", "ready");
     await expect(layer.getByTestId("replay-seek")).toHaveAttribute("max", "900");
-    await expect(layer.getByTestId("replay-tick")).toContainText("of 900");
+    await expect(layer.getByTestId("replay-tick")).toContainText("up to Day 1 13:30");
 
     // The game under it is held for as long as it is open.
     const held = await liveTick(page);
@@ -153,7 +157,7 @@ test.describe("the gallery of recordings", () => {
     // A jump goes to the tick it is told to, and the world there is the one the recording holds.
     await layer.getByTestId("replay-seek").fill("700");
     await expect.poll(() => replayTick(page)).toBe(700);
-    await expect(layer.getByTestId("replay-tick")).toHaveText("tick 700 of 900");
+    await expect(layer.getByTestId("replay-tick")).toHaveText("Day 1 11:50, up to Day 1 13:30");
     await expect.poll(() => page.evaluate(() => location.hash)).toBe("#replay=save-1&tick=700");
     expect((await replayStatus(page))?.error).toBeNull();
     // Jumping back goes by the snapshots taken on the way there, and ends in the same place whichever way it goes.
@@ -178,6 +182,57 @@ test.describe("the gallery of recordings", () => {
   });
 });
 
+test.describe("the sound of a recording", () => {
+  const sound = (page: Page) => page.evaluate(() => window.__lantern.sound?.snapshot() ?? null);
+
+  test("is begun by the press that opens the recording from the opening page, is the recording's and not the game behind the page, and is put away with it", async ({ lantern }) => {
+    test.setTimeout(240_000);
+    const page = lantern.page;
+    await saveAGame(lantern, "first game");
+    // The opening page, as a player's page begins: the game behind it is held at six in the morning, and the sound has not begun.
+    await page.goto(`${lantern.servers.app.origin}/?pace=1`);
+    await lantern.waitReady();
+    await expect(page.getByTestId("opening-gallery")).toBeVisible();
+    expect((await sound(page))?.begun).toBe(false);
+    expect((await sound(page))?.engine.started).toBe(false);
+    await page.getByTestId("opening-gallery").click();
+    await expect(page.getByTestId("gallery")).toBeVisible();
+    expect((await sound(page))?.begun).toBe(false);
+    // The press that opens the recording is the press that begins its sound.
+    await entry(page, "save-1").getByTestId("gallery-watch").click();
+    await expect.poll(async () => (await sound(page))?.begun).toBe(true);
+    await replayReady(page);
+    expect((await sound(page))?.engine.started).toBe(true);
+    // What is planned is the recording's town: its hour is not the six o'clock of the game behind the page.
+    await expect.poll(async () => (await sound(page))?.input?.hour ?? 0, { timeout: 30_000 }).toBeGreaterThan(7);
+    const layer = page.getByTestId("replay-layer");
+    await expect(layer.getByTestId("status")).toHaveText("playing");
+    // Shut again, the viewer is back in the gallery over the opening page, where nothing is heard.
+    await layer.getByTestId("replay-close").click();
+    await expect(page.getByTestId("replay-layer")).toHaveCount(0);
+    await expect(page.getByTestId("gallery")).toBeVisible();
+    await expect.poll(async () => (await sound(page))?.begun).toBe(false);
+    expect(lantern.pageErrors).toEqual([]);
+  });
+
+  test("is the recording's for a page that was opened on a link to it, which no press opened, once it plays", async ({ lantern }) => {
+    test.setTimeout(240_000);
+    const page = lantern.page;
+    await saveAGame(lantern, "first game");
+    await page.goto(`${lantern.servers.app.origin}/?scenario=bridge&seed=9&pace=1&map=on#replay=save-1&tick=300`);
+    await expect(page.getByTestId("replay-layer")).toBeVisible();
+    await replayReady(page);
+    const layer = page.getByTestId("replay-layer");
+    // The recording is held where the link put it, and a world that is held has no ambience to plan; the sound is begun and waits for the first press.
+    await expect.poll(async () => (await sound(page))?.begun).toBe(true);
+    expect((await sound(page))?.input).toBeNull();
+    await layer.getByTestId("replay-play").click();
+    await expect(layer.getByTestId("status")).toHaveText("playing");
+    await expect.poll(async () => (await sound(page))?.input?.hour ?? 0, { timeout: 30_000 }).toBeGreaterThanOrEqual(8);
+    expect(lantern.pageErrors).toEqual([]);
+  });
+});
+
 test.describe("a link to a recording", () => {
   test("opens it at the tick it names, held, and starts no game under it until it is let go of", async ({ lantern }) => {
     test.setTimeout(240_000);
@@ -189,7 +244,7 @@ test.describe("a link to a recording", () => {
     await expect(page.getByTestId("replay-layer")).toBeVisible();
     await replayReady(page);
     const layer = page.getByTestId("replay-layer");
-    await expect(layer.getByTestId("replay-tick")).toHaveText("tick 300 of 900");
+    await expect(layer.getByTestId("replay-tick")).toHaveText("Day 1 08:30, up to Day 1 13:30");
     await expect(layer.getByTestId("status")).toHaveText("paused");
     expect((await replayStatus(page))?.tick).toBe(300);
     expect(await page.evaluate(() => location.hash)).toBe("#replay=save-1&tick=300");

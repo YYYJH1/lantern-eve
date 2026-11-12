@@ -41,6 +41,7 @@ from lantern_core.world.bridge import (
     weather,
 )
 from lantern_core.world.bridge.data import SCRIPT
+from lantern_core.world.bridge.sentences import SENTENCES
 from lantern_core.world.bridge.world import FRAME_KEYS
 
 INPUTS = goals_rules.rules().inputs
@@ -502,9 +503,11 @@ def test_the_truth_is_said_from_the_true_props_of_the_variant_and_not_written_fo
         entity for prop in true for _, entity in prop.args if entity in lo.names
     }
     assert names
+    forms = SENTENCES["forms"]  # a place or a thing with a form of its own is said by it
     for entity in names:
-        assert lo.names[entity]["zh"] in label["zh"]
-        assert lo.names[entity]["en"].removeprefix("the ").lower() in label["en"].lower()
+        name = forms.get(entity, lo.names[entity])
+        assert name["zh"] in label["zh"]
+        assert name["en"].removeprefix("the ").lower() in label["en"].lower()
     # a label that is not the script's own words, which say less than the props do
     assert label["zh"] != lo.variants[variant].label
 
@@ -588,6 +591,7 @@ EVENT_KEYS = {
     "passage",
     "promised",
     "turnout",
+    "festival",
     "reveal",
     "epilogue",
 }
@@ -603,8 +607,8 @@ def test_the_event_keeps_its_keys_and_the_frame_of_that_call_carries_the_same_ob
     done = h.goals["ending"]
     assert event["reveal"] == done["reveal"] and event["inputs"] == done["inputs"]
     assert event["label"] == {
-        "zh": "散场：两家分开办灯",
-        "en": "Scattered: two families light their lamps apart",
+        "zh": "两家各点各的灯",
+        "en": "Each family lights its own lamps",
     }
 
 
@@ -821,11 +825,11 @@ def test_the_frame_carries_the_lanterns_and_the_hud_numbers_as_plain_ints_and_st
         assert type(hud["promised"]) is int and type(hud["turnout"]) is int
         assert hud["ending"] == ""
         bridge = hud["bridge"]
-        assert set(bridge) >= {"done", "need", "percent", "hours", "hours_need", "state"}
-        assert set(bridge) <= {"done", "need", "percent", "hours", "hours_need", "state", "lacking"}
-        assert all(
-            type(bridge[k]) is int for k in ("done", "need", "percent", "hours", "hours_need")
-        )
+        counts = ("done", "need", "percent", "hours", "hours_need", "short")
+        assert set(bridge) >= {*counts, "state", "families_missing"}
+        assert set(bridge) <= {*counts, "state", "families_missing", "lacking"}
+        assert all(type(bridge[k]) is int for k in counts)
+        assert type(bridge["families_missing"]) is list
         assert bridge["state"] in ("broken", "repairing", "mended", "detour")
         assert len(frame["lanterns"]) == hud["promised"] == 3
         for lantern in frame["lanterns"]:

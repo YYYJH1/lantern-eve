@@ -1,6 +1,6 @@
 /**
  * What the viewer chose about the help the page gives: whether the tutorial of the first day is shown, whether the
- * hints of the world are, whether the summary of the night is, and how much the task card does for the player. All are
+ * hints of the world are, whether the summary of the night is, and how much the task card does for the player, and which acts have been taught. All are
  * kept in `localStorage` where the browser allows it (see storage.ts).
  */
 import { readPref, writePref } from "./storage.ts";
@@ -33,6 +33,16 @@ export function readNightOn(): boolean {
 
 export function writeNightOn(on: boolean): void {
   writePref("night", on ? "on" : "off");
+}
+
+/** The acts the player has been taught or has used, kept per browser (`teach.ts`). */
+export function readTaught(): Set<string> {
+  const stored = readPref("taught");
+  return new Set(stored === null ? [] : stored.split(",").filter((act) => act !== ""));
+}
+
+export function writeTaught(acts: ReadonlySet<string>): void {
+  writePref("taught", [...acts].sort().join(","));
 }
 
 /**

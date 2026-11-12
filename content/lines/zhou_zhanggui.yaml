@@ -1,155 +1,177 @@
-# Shopkeeper Zhou, head of the Zhou shop and keeper of the timber. A tradesman's tongue: he
-# weighs every word like goods, gives nothing away for free, and trusts nobody he has not dealt with.
+# Shopkeeper Zhou, head of the Zhou shop and keeper of the timber. A tradesman: he asks first what a
+# thing is worth to the Zhou house, is polite to strangers and gives nothing away, and goes cold
+# rather than loud when he is crossed.
 person: zhou_zhanggui
 voice:
-  zh: 周家掌柜，管木料。生意人的口气，句句像在掂量货色，不白送人情，对没打过交道的人存着戒心。
-  en: Head of the Zhou shop. A tradesman's tongue, weighs every word like goods, gives nothing away, wary of anyone he has not dealt with.
+  zh: "周家的掌柜，做了半辈子木料生意。话里带着算盘，先问这事对周家有什么好处，再说别的。对生人客客气气，可就是不松口。在乎木料的价钱、周家的名声，也怕大郎惹事。不想说就打个哈哈：「这个嘛，生意上的事不好讲。」急了不嚷，脸一冷：「周家的东西，不是白拿的。」"
+  en: "Head of the Zhou shop, half a lifetime in the timber trade. There is an abacus in everything he says: first what a thing is worth to the Zhou house, then the rest. Polite to strangers, and never gives ground. He minds the price of timber, the Zhou name, and his son Dalang getting into trouble. When he would rather not answer he laughs it off as business. Crossed, he does not shout but goes cold: what is the Zhou family's is not had for nothing."
+call:
+  fam_zhou: {zh: 我们家, en: our family}
+  li_er: {zh: 李家老二, en: Li Er}
+  li_laotai: {zh: 李家老太太, en: Granny Li}
+  old_he: {zh: 老何, en: Boatman He}
+  zhou_dalang: {zh: 大郎, en: Dalang}
+  zhou_erlang: {zh: 二郎, en: Erlang}
+  zhou_huoji: {zh: 伙计, en: my clerk}
+  zhou_niangzi: {zh: 我家那口子, en: my wife}
 lines:
   asleep:
-    - {zh: "呼……木料……一根都不能少……（睡熟了）", en: "Zzz... the timber... not one piece short... (fast asleep)"}
-    - {zh: "唔……算盘……再拨一遍……（睡熟了）", en: "Mm... the abacus... once more... (fast asleep)"}
+    - {zh: "呼……二十四根……一根都不能少……（睡熟了）", en: "Zzz... twenty-four... not one short... (fast asleep)"}
+    - {zh: "唔……这笔账……再拨一遍……（睡熟了）", en: "Mm... this account... once more on the abacus... (fast asleep)"}
   busy:
-    - {zh: "掌柜的我正忙着。有事改天说。", en: "The shop keeps me busy. Another day, if you please."}
-    - {zh: "这会儿铺子里走不开。回头再谈。", en: "I can't leave the shop just now. We'll talk later."}
+    - {zh: "铺子里正忙，有事改天说。", en: "The shop keeps me busy. Another day."}
+    - {zh: "手上这笔账还没算完，你晚些来。", en: "I'm in the middle of the accounts. Come later."}
   timeout:
-    - {zh: "铺子不能没人。我得回去了。", en: "The shop can't be left unattended. I have to go back."}
-    - {zh: "时候不早了。生意要紧。", en: "It's getting late. Business comes first."}
+    - {zh: "铺子不能没人，我得回去了。", en: "The shop can't be left empty. I have to go back."}
+    - {zh: "时候不早了，生意要紧。", en: "It's getting late, and business comes first."}
   unknown:
-    - {zh: "那不是我的行当。我不清楚。", en: "That isn't my trade. I wouldn't know."}
+    - {zh: "这不是我的行当，我不清楚。", en: "That isn't my trade. I wouldn't know."}
     - {zh: "这事铺子里没人提过。", en: "Nobody at the shop has mentioned it."}
   evade:
+    - {zh: "这个嘛，生意上的事不好讲。", en: "Well now, business matters aren't for telling."}
     - {zh: "这事不好明说。", en: "It isn't something to say outright."}
-    - {zh: "生意人懂得闭嘴。恕不奉告。", en: "A shopkeeper learns to keep quiet. I'd rather not say."}
   not_said:
-    - {zh: "我没说过这话。你可别编派我。", en: "I never said that. Don't put words in my mouth."}
-    - {zh: "掌柜的我从没讲过这话。", en: "I have never said any such thing."}
+    - {zh: "我没说过这话，你可别乱安在我头上。", en: "I never said that. Don't put words in my mouth."}
+    - {zh: "这话我从没讲过。", en: "I have never said any such thing."}
   not_so:
-    - {zh: "不然。事情不是这样。", en: "Not so. That isn't how it was."}
+    - {zh: "不对，不是这么回事。", en: "Not so. That isn't the way of it."}
     - {zh: "你这话不对。", en: "That isn't right."}
   keeper_no:
-    - {zh: "咱们交情还浅。今天免了吧。", en: "We hardly know each other yet. Not today, then."}
-    - {zh: "生面孔的买卖，我不接。", en: "I don't do business with strangers."}
+    - {zh: "咱们交情还浅，今天就免了吧。", en: "We hardly know each other yet. Not today, then."}
+    - {zh: "没打过交道的人，我不让看。", en: "I don't let people I've never dealt with look."}
   took_in:
-    - {zh: "哦，我心里有数了。", en: "I see. I'll bear it in mind."}
-    - {zh: "记下了。这话有用。", en: "Noted. That's useful."}
+    - {zh: "哦，是这么回事。", en: "Ah. So that's the way of it."}
+    - {zh: "记下了，这话有用。", en: "Noted. That's useful."}
   knew:
     - {zh: "这事我早有耳闻。", en: "I'd had word of that already."}
-    - {zh: "你说的我都知道。", en: "I know all that."}
+    - {zh: "你说的这些，我都知道。", en: "I know all that."}
   doubted:
     - {zh: "这和我听来的不一样。", en: "That doesn't match what I was told."}
-    - {zh: "有出入。我听的另有说法。", en: "That doesn't tally. What I heard is different."}
+    - {zh: "对不上，我听到的是另一个说法。", en: "That doesn't tally. What I heard is different."}
   caught:
-    - {zh: "你竟敢蒙我！往后你的话，一个字我也不信！", en: "You dare cheat me! I won't believe a word of yours from now on!"}
-    - {zh: "好啊，原来是个骗子！别指望我再信你！", en: "So you're a cheat! Don't expect my trust again!"}
+    - {zh: "你竟敢蒙我。往后你的话，一个字我也不信。", en: "You took me for a fool. From now on I won't believe a word of yours."}
+    - {zh: "做生意最忌骗人。这笔账，我记下了。", en: "Lying is the worst thing in trade. I've put this one in the books."}
   deal:
     - {zh: "好，这笔买卖成交。", en: "Good. The deal is struck."}
     - {zh: "行，说定了。", en: "Fine. Agreed."}
   empty:
-    - {zh: "口说无凭。我不信。", en: "Words prove nothing. I don't believe it."}
-    - {zh: "没有实在的东西。空话我不收。", en: "Nothing solid behind it. I don't take empty words."}
+    - {zh: "口说无凭，我不信。", en: "Words prove nothing. I don't believe it."}
+    - {zh: "没有实在的东西，空话我不收。", en: "Nothing solid behind it. I don't take empty words."}
   kept_thanks:
-    - {zh: "总管讲信用。这笔人情我记下了。", en: "The Manager is as good as their word. I'll note the favour."}
-    - {zh: "你说到做到。以后好打交道。", en: "You do what you say. You'll be easy to deal with."}
+    - {zh: "总管讲信用，往后好打交道。", en: "You keep your word, Manager. We'll do business well."}
+    - {zh: "你说到做到，这份情我记下了。", en: "You did what you said. I'll remember that kindness."}
   will_do:
     - {zh: "好说，这事我来办。", en: "Fair enough. I'll see to it."}
-    - {zh: "行。包在掌柜的我身上。", en: "Right. Count on me."}
+    - {zh: "行，这事算在我头上。", en: "Right. Count on me."}
   cannot:
-    - {zh: "这事不归我管。帮不上。", en: "That's not in my line. I can't help."}
-    - {zh: "办不到。我接不了这桩事。", en: "Can't be done. I can't take it on."}
+    - {zh: "这事不归我管，帮不上。", en: "That's not in my line. I can't help."}
+    - {zh: "办不到，这桩事我接不了。", en: "Can't be done. I can't take it on."}
   turned_down:
-    - {zh: "抱歉，这件事我不能答应。", en: "Apologies, I can't agree to this."}
-    - {zh: "恕难从命。", en: "I must decline."}
+    - {zh: "这个价，我不能答应。", en: "Not at this price. I can't agree."}
+    - {zh: "这事我办不了，你另请高明吧。", en: "I can't do this. You'd better find someone else."}
   said_already:
     - {zh: "我已经讲得很明白了。", en: "I've made myself quite clear."}
-    - {zh: "说过了。不必再问。", en: "Already said. No need to ask again."}
+    - {zh: "说过了，不必再问。", en: "Already said. No need to ask again."}
   closed:
-    - {zh: "现在不方便。换个时辰来。", en: "Not convenient now. Come at another hour."}
-    - {zh: "铺子这会儿不接待。晚些再来。", en: "The shop isn't receiving now. Come later."}
+    - {zh: "现在不方便，换个时辰来。", en: "Not convenient now. Come at another hour."}
+    - {zh: "铺子这会儿不接待，晚些再来。", en: "The shop isn't receiving now. Come later."}
   needs_nod:
-    - {zh: "这事得先同内人商量。", en: "I'd have to talk it over with my wife first."}
-    - {zh: "家里人要是不点头，我不敢拍板。", en: "If the family doesn't agree, I can't settle it."}
+    - {zh: "这事得先跟我家那口子商量。", en: "I'd have to talk it over with my wife first."}
+    - {zh: "家里人不点头，我不拍板。", en: "If the family doesn't agree, I won't settle it."}
   nothing_to_say:
-    - {zh: "这件事我无可奉告。", en: "I have no comment on that."}
-    - {zh: "没什么可讲的。", en: "Nothing worth saying."}
+    - {zh: "这件事没什么好说的。", en: "There's nothing to say on that."}
+    - {zh: "这事我说不上什么。", en: "I can't tell you anything about that."}
   testified:
     - {zh: "我讲的句句是亲眼看见的。", en: "Every word of mine, I saw with my own eyes."}
     - {zh: "没见到的，我不会说。", en: "What I did not see, I will not claim."}
   too_late:
-    - {zh: "天色已晚。明日再谈。", en: "It's late. We'll talk tomorrow."}
-    - {zh: "打烊了。明早再来。", en: "We're closing. Come in the morning."}
+    - {zh: "天晚了，明天再谈。", en: "It's late. We'll talk tomorrow."}
+    - {zh: "打烊了，明早再来。", en: "We're closing. Come in the morning."}
   will_ask:
     - {zh: "行，我替你问一声。", en: "Fine, I'll ask them for you."}
-    - {zh: "好，我去和对方说说。", en: "All right, I'll speak to them."}
+    - {zh: "好，我去跟那边说说。", en: "All right, I'll speak to them."}
   will_call:
-    - {zh: "好，我去请各位到祠堂议事。", en: "Very well. I'll invite everyone to the hall to discuss it."}
-    - {zh: "我去招呼大家。祠堂见。", en: "I'll go round up everyone. See you at the hall."}
+    - {zh: "好，我去请各位到祠堂议事。", en: "Very well. I'll ask everyone to the hall to talk it over."}
+    - {zh: "我去招呼大家，祠堂见。", en: "I'll round everyone up. See you at the hall."}
   hard_hc_li_bamboo:
-    - {zh: "谣言不当众说清楚，这事免谈。", en: "Until the slander is cleared in public, this is not up for discussion."}
-    - {zh: "先把谣言当众说清楚。再谈别的。", en: "Clear the slander in public first. Then we can talk."}
+    - {zh: "那些闲话不当众说清，这事免谈。", en: "Until that talk is cleared up in public, this is not up for discussion."}
+    - {zh: "先当众把话说清楚，再谈别的。", en: "Clear it up in public first. Then we can talk."}
   hard_hc_li_bamboo_rumour:
-    - {zh: "谣言满街，总管却不作声。这笔买卖，我不接。", en: "The street is full of the slander, and the Manager keeps quiet. I'm not taking this deal."}
-    - {zh: "谣言不清，总管又不开口。这货我不出手。", en: "The slander is not cleared and the Manager will not speak. I won't part with the goods."}
+    - {zh: "闲话满街都是，总管却不作声。这笔买卖，我不接。", en: "The street is full of talk and you keep quiet, Manager. I'm not taking this deal."}
+    - {zh: "闲话没澄清，总管又不开口。这货我不出手。", en: "The talk isn't cleared up and you won't speak, Manager. I won't part with the goods."}
   hard_other:
     - {zh: "没得商量。", en: "Not negotiable."}
-    - {zh: "这条件我不接。", en: "I don't accept those terms."}
+    - {zh: "周家的东西，不是白拿的。", en: "What's the Zhou family's isn't had for nothing."}
   elder_yes:
-    - {zh: "道理我听明白了。就依此办。", en: "I follow the reasoning. Let it be done accordingly."}
-    - {zh: "说得在理。我没有异议。", en: "Well argued. I have no objection."}
+    - {zh: "道理我听明白了，就照这个办。", en: "I follow the reasoning. Let it be done that way."}
+    - {zh: "说得在理，我没有异议。", en: "Well argued. I have no objection."}
   elder_no:
     - {zh: "凭这些还说不通。", en: "That doesn't add up yet."}
-    - {zh: "证据不足。我不能点头。", en: "The proof falls short. I can't nod."}
+    - {zh: "凭这几句话，我不能点头。", en: "On a few words like these, I can't agree."}
   objection_withdrawn:
-    - {zh: "话说明白了，我这边放行。", en: "It's been made plain, so I let it through on my side."}
-    - {zh: "理摆正了，我不再卡着。", en: "The matter is square now, and I won't hold it up any more."}
+    - {zh: "话说明白了，我这边不卡着了。", en: "It's been made plain. I won't hold it up on my side."}
+    - {zh: "理摆正了，我不再拦。", en: "The matter is square now. I won't stand in the way."}
   witness_in_public:
-    - {zh: "我只认看见的货。没见的，我不开口。", en: "I only vouch for the goods I saw. For what I didn't, I say nothing."}
-    - {zh: "看见的，如数奉上。没看见的，一个字没有。", en: "What I saw I hand over in full. What I didn't see, not a word."}
+    - {zh: "我只认看见的，没见的我不开口。", en: "I only vouch for what I saw. For the rest I say nothing."}
+    - {zh: "看见的如数说出来，没看见的一个字没有。", en: "What I saw I hand over in full. What I didn't see, not a word."}
   batch_promised:
-    - {zh: "成交。明早交货到桥边。", en: "Deal. Goods delivered to the bridge tomorrow morning."}
-    - {zh: "明早到货，数目不差。", en: "Goods in tomorrow morning, the count right."}
+    - {zh: "成交，明早木料送到桥边。", en: "Deal. The timber will be at the bridge tomorrow morning."}
+    - {zh: "明早到货，数目不差。", en: "The goods come in the morning, and the count will be right."}
   bamboo_arrived:
-    - {zh: "货到桥边。点清了。", en: "Goods at the bridge. Counted."}
-    - {zh: "竹料到位，这笔账算清了。", en: "The bamboo is in place, so this account is settled."}
+    - {zh: "李家的竹料到了，我这边木料也不会少。", en: "The Li bamboo is here. My timber won't fall short either."}
+    - {zh: "竹料到了，点过了。", en: "The bamboo is in, and counted."}
   promise_open:
-    - {zh: "这笔我应下了。{amount}根{item}，{when}交货到桥边。", en: "That deal is made: {amount} poles of {item}, delivered to the bridge {when}."}
-    - {zh: "货已经许出去了。{when}到桥边，数目{amount}根{item}。", en: "The goods are already promised. They reach the bridge {when}, {amount} poles of {item}."}
+    - {zh: "这笔我应下了。{amount}根{item}，{when}交到桥边。", en: "That deal is made. It's {amount} poles of {item}, delivered to the bridge {when}."}
+    - {zh: "货已经许出去了，{when}送{amount}根{item}到桥边。", en: "The goods are promised already. They'll reach the bridge {when}, {amount} poles of {item}."}
   goods_enough:
-    - {zh: "桥边的{item}够量了。再送也不算数。", en: "The {item} at the bridge is the full measure. More would not count."}
-    - {zh: "{item}的数目够了。这笔账不用再添。", en: "The count of {item} is met, so the account needs nothing added."}
+    - {zh: "桥边的{item}够数了，再送也是白搭。", en: "The {item} at the bridge is the full count. More would be wasted."}
+    - {zh: "{item}的数够了，不用再添。", en: "There's enough {item}. No need for more."}
   point_heard:
-    - {zh: "这事我不清楚，白送的话不说。听{name}提过，你自己去问。", en: "I don't know, and I don't give words away. I heard {name} mention it, so ask for yourself."}
-    - {zh: "铺子里没人说起过。听说{name}手里有点货色，你去看看。", en: "Nobody at the shop mentioned it. I hear {name} may have something on that, so go and look."}
+    - {zh: "这事我不清楚。听{name}提过，你自己去问。", en: "I don't know. I heard {name} mention it, so ask for yourself."}
+    - {zh: "铺子里没人说起过。听说{name}知道点什么，你去打听打听。", en: "Nobody at the shop mentioned it. I hear {name} may know something, so go and find out."}
   point_hub:
-    - {zh: "这行当我不熟。要问镇上的消息，找{name}。那边货最全。", en: "Not my trade. For town news, try {name}, where the stock is fullest."}
-    - {zh: "我不白送消息。你去问{name}，那儿人多嘴杂。", en: "I don't hand out news for free. Go to {name}, where many mouths are talking."}
+    - {zh: "这行当我不熟，镇上的消息找{name}。", en: "Not my trade. For town news, see {name}."}
+    - {zh: "我不白送消息。你去问{name}，茶馆里人多嘴杂。", en: "I don't hand out news for free. Ask {name}. Plenty of mouths talk in that teahouse."}
+  gift_like:
+    - {zh: "{item}？好东西，我收下了。", en: "Some {item}? Good stuff. I'll take them."}
+    - {zh: "{item}，你倒挑得准。多谢。", en: "Well, {item}. You chose well. Thank you."}
+  gift_neutral:
+    - {zh: "{item}也成，总有用得上的时候。", en: "The {item} will do. It'll come in useful some day."}
+    - {zh: "{item}啊，那就谢了。", en: "Some {item}, then. Thank you."}
+  gift_dislike:
+    - {zh: "{item}我不碰。不过这份心意，我记着。", en: "I don't touch {item}. But I'll remember the thought."}
+    - {zh: "{item}就免了吧。还是谢谢你。", en: "No {item} for me. Thank you all the same."}
 frames:
   seen:
-    - {zh: "我亲眼所见：{line}。", en: "I saw it myself, and I'll put it plainly: {line}."}
-    - {zh: "我就在现场。{line}。", en: "I was on the spot: {line}."}
+    - {zh: "{line}。我亲眼见的，不掺水分。", en: "{line}. I saw it myself, nothing added."}
+    - {zh: "我亲眼瞧见，{line}。", en: "I saw plainly that {line}."}
   heard:
-    - {zh: "据{teller}讲，{line}。", en: "According to {teller}, {line}."}
-    - {zh: "{teller}跟我提过：{line}。", en: "{teller} mentioned to me that {line}."}
+    - {zh: "{teller}跟我讲的，说是{line}。", en: "According to {teller}, {line}."}
+    - {zh: "这是{teller}跟我提的，说{line}。", en: "{teller} mentioned to me that {line}."}
   unknown:
-    - {zh: "市面上都说：{line}。", en: "The word in the market is that {line}."}
-    - {zh: "道听途说：{line}。", en: "Hearsay, nothing more: {line}."}
+    - {zh: "市面上都在说，{line}。", en: "The word in the market is that {line}."}
+    - {zh: "听来的，{line}。从谁那儿来的，说不清。", en: "It's hearsay that {line}. Where it came from, I couldn't say."}
   own:
-    - {zh: "依我估量：{line}。", en: "To my reckoning, {line}."}
-    - {zh: "掌柜的我看啊：{line}。", en: "From where I sit, {line}."}
+    - {zh: "照我估量，{line}。", en: "As I reckon it, {line}."}
+    - {zh: "依我这生意人的眼光，{line}。", en: "From where I sit, {line}."}
   guess_own:
-    - {zh: "不敢断言。{hedge}{line}。", en: "I won't state it as fact. {hedge} {line}."}
-    - {zh: "没有凭据。{hedge}{line}。", en: "I have nothing to prove it. {hedge} {line}."}
+    - {zh: "不敢说是真的，{hedge}{line}。", en: "I won't state it as fact, but {hedge} {line}."}
+    - {zh: "没有凭据，{hedge}{line}。", en: "I have nothing to prove it, but {hedge} {line}."}
   guess_heard:
-    - {zh: "{teller}说过一些。{hedge}{line}。", en: "{teller} told me a little. {hedge} {line}."}
+    - {zh: "{teller}说过一些，{hedge}{line}。", en: "{teller} told me a little, and {hedge} {line}."}
     - {zh: "照{teller}的说法，{hedge}{line}。", en: "Going by what {teller} says, {hedge} {line}."}
   guess_unknown:
-    - {zh: "来源不明。{hedge}{line}。", en: "The source is unknown. {hedge} {line}."}
-    - {zh: "不知是哪位传的。{hedge}{line}。", en: "I couldn't tell you who passed it on. {hedge} {line}."}
+    - {zh: "不知道是谁传的，{hedge}{line}。", en: "I couldn't tell you who passed it on, but {hedge} {line}."}
+    - {zh: "来路不明的话，{hedge}{line}。", en: "That talk has no known source, but {hedge} {line}."}
   rival:
-    - {zh: "不过{teller}那边的货色不同：{line}。", en: "But the goods from {teller} are different: {line}."}
-    - {zh: "但{teller}另有一说，我也掂量着：{line}。", en: "But {teller} gave another account, and I am weighing it: {line}."}
+    - {zh: "不过{teller}那边的说法不一样，说是{line}。", en: "But what {teller} says is different, that {line}."}
+    - {zh: "{teller}另有一个说法，说{line}。我还在掂量。", en: "{teller} has another account, that {line}. I'm still weighing it."}
+  known:
+    - {zh: "{line}。这是明面上的事。", en: "{line}. That's out in the open."}
+    - {zh: "{line}，镇上做买卖的都清楚。", en: "{line}. Every trader in town knows."}
 hedges:
   - {zh: 十有八九, en: I'd bet}
-  - {zh: 我估计, en: I judge}
+  - {zh: 我估计, en: I'd reckon}
 # What he says by the state of the game (world/bridge/roles.py): a greeting as a talk opens, a last
 # word as the manager leaves, and the epilogue of the ending page. The first entry whose conditions
 # all hold is the one. He keeps accounts of everything, so his greeting turns on what stands in the
@@ -158,23 +180,23 @@ greet:
   - id: new
     when: [{kind: acquainted, is: new}]
     lines:
-      - {zh: "你就是新来的总管？铺子里的事，先从账上说起。", en: "You're the new Manager? In this shop, business starts with the books."}
+      - {zh: "你就是新来的总管？我是周家铺子的掌柜，修桥的木料在我库里。", en: "You're the new Manager? I run the Zhou shop, and the timber for the bridge is in my store."}
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
-      - {zh: "你欠铺子一笔账，还没清。", en: "You owe the shop an account, and it is not settled."}
+      - {zh: "你答应的事没办，铺子还记着呢。", en: "You didn't do what you promised. The shop hasn't forgotten."}
   - id: festival
     when: [{kind: after, day: 5, hour: 15}]
     lines:
-      - {zh: "今晚游灯，铺子关了半天门。生意先放放。", en: "The shop shut half the day for tonight's parade. Trade can wait."}
+      - {zh: "今晚游灯，铺子关了半天门。生意先放一放。", en: "The shop shut half the day for the lanterns tonight. Trade can wait."}
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
-      - {zh: "李家人和我同了席。这笔账，算和了。", en: "The Li people sat at one table with me. That account is squared."}
+      - {zh: "李家人跟我同桌吃了饭。这顿饭吃得值。", en: "The Lis ate at my table. That meal was worth it."}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "桥的事摆到了明面上。账目清楚，我也痛快。", en: "The bridge business is laid on the counter. The accounts are clear, and I'm glad of it."}
+      - {zh: "桥的事摆到了明面上。账目清楚，我也痛快。", en: "The bridge business is out on the counter. The accounts are clear, and I'm glad of it."}
   - id: timber
     when: [{kind: commitment, by: zhou_zhanggui, item: timber, state: delivered}]
     lines:
@@ -182,20 +204,20 @@ greet:
   - id: kept
     when: [{kind: promised, state: kept}]
     lines:
-      - {zh: "你守约，是桩好买卖。往后好谈。", en: "You keep your terms. That makes good business, and the next talk will be easy."}
+      - {zh: "你守约，这是桩好买卖。往后好谈。", en: "You keep your terms. That makes good business, and the next talk will be easy."}
   - id: stopped
     when: [{kind: stopped}]
     lines:
-      - {zh: "李家的不是，我当众不再提了。对生意没好处。", en: "I won't speak ill of the Li house in public again. It does the trade no good."}
+      - {zh: "李家的不是，我不再当众提了。对生意没好处。", en: "I won't speak ill of the Li house in public again. It does the trade no good."}
   - id: again
     when: [{kind: acquainted, is: today}]
     lines:
-      - {zh: "又来？有话快说，铺子里等着。", en: "Again? Say it quick, the shop is waiting."}
+      - {zh: "又来？有话快说，铺子里等着呢。", en: "Again? Say it quick, the shop is waiting."}
       - {zh: "说吧，价钱好商量。", en: "Go on. The price can be talked over."}
   - id: plain
     lines:
       - {zh: "木料是买卖，人情是人情。想要什么，先摆出来。", en: "Timber is trade and favours are favours. Lay out what you want first."}
-      - {zh: "有话直说，我不爱绕弯子。", en: "Say it plainly. I have no taste for detours."}
+      - {zh: "有话直说，我不爱绕弯子。", en: "Say it plainly. I have no taste for going round the houses."}
 chat:
   - id: broken
     when: [{kind: promised, state: broken}]
@@ -208,33 +230,33 @@ chat:
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
-      - {zh: "两家的账，翻过去了。", en: "The account between the houses is turned over."}
+      - {zh: "两家的旧账，翻过去了。", en: "The old account between the houses is closed."}
   - id: timber
     when: [{kind: commitment, by: zhou_zhanggui, item: timber, state: delivered}]
     lines:
-      - {zh: "木头已经送到，余下的看你。", en: "The timber is delivered. The rest is up to you."}
+      - {zh: "木头已经送到，剩下的看你了。", en: "The timber is delivered. The rest is up to you."}
   - id: plain
     lines:
-      - {zh: "还有话，改日算账时再说。", en: "If there is more, we'll go over it when we settle."}
+      - {zh: "还有话，改天铺子清闲了再说。", en: "Anything more can wait till the shop is quiet."}
       - {zh: "好走。铺子要开门了。", en: "Mind the step. The shop must open."}
 epilogue:
   - id: word_broken
     when: [{kind: promised, state: broken}]
-    text: {zh: "周掌柜在账上添了一笔，写的是总管那句没兑现的话。", en: "Shopkeeper Zhou made one more entry in the ledger, about the promise that was not kept."}
+    text: {zh: "周掌柜在账上添了一笔，记的是总管答应了却没办的那件事。", en: "Shopkeeper Zhou made one more entry in the ledger, for what the Manager had promised and not done."}
   - id: full_kept
     when: [{kind: flag, flag: bridge_fixed}, {kind: flag, flag: truth_told}, {kind: flag, flag: reconciled}, {kind: promised, state: kept}]
-    text: {zh: "周掌柜在桥头同李老太拱了拱手。总管应的事办了，铺子把这笔账记在了好的一边。", en: "Shopkeeper Zhou bowed to Granny Li at the bridgehead. The Manager's promise was kept, and the shop entered it on the good side of the ledger."}
+    text: {zh: "周掌柜在桥头跟李老太拱了拱手。总管答应的事都办到了，周掌柜记下了这份情。", en: "Shopkeeper Zhou bowed to Granny Li at the bridgehead. The Manager kept every promise, and the shopkeeper will not forget it."}
   - id: full
     when: [{kind: flag, flag: bridge_fixed}, {kind: flag, flag: truth_told}, {kind: flag, flag: reconciled}]
-    text: {zh: "周掌柜在桥头同李老太拱了拱手，铺子的灯也挂到了桥边。", en: "Shopkeeper Zhou bowed to Granny Li at the bridgehead, and a lamp from the shop hung at the bridge too."}
+    text: {zh: "周掌柜在桥头跟李老太拱了拱手，铺子的灯也挂到了桥边。", en: "Shopkeeper Zhou bowed to Granny Li at the bridgehead, and a lantern from the shop hung at the bridge too."}
   - id: bridge_peace
     when: [{kind: flag, flag: bridge_fixed}, {kind: flag, flag: reconciled}]
-    text: {zh: "周掌柜过了桥，同李家人说了几句买卖上的闲话。", en: "Shopkeeper Zhou crossed the bridge and passed a few words of shop talk with the Li family."}
+    text: {zh: "周掌柜过了桥，跟李家人聊了几句买卖上的闲话。", en: "Shopkeeper Zhou crossed the bridge and passed a few words of shop talk with the Li family."}
   - id: bridge
     when: [{kind: flag, flag: bridge_fixed}]
-    text: {zh: "周掌柜在桥那头看灯过桥，没有同李家人搭话。", en: "Shopkeeper Zhou watched the lanterns cross from the far bank and did not speak to the Li family."}
+    text: {zh: "周掌柜在桥那头看灯过桥，没跟李家人搭话。", en: "Shopkeeper Zhou watched the lanterns cross from the far bank and did not speak to the Li family."}
   - id: detour
     when: [{kind: flag, flag: detour_done}]
-    text: {zh: "周掌柜走过夹道，边走边盘算那批没用上的木料。", en: "Shopkeeper Zhou walked the lane, reckoning up the timber that was never used."}
+    text: {zh: "周掌柜走过夹道，一边走一边盘算那批没用上的木料。", en: "Shopkeeper Zhou walked the lane, reckoning up the timber that was never used."}
   - id: apart
-    text: {zh: "周掌柜关了铺门，把周家的灯挂在了自家屋檐下。", en: "Shopkeeper Zhou shut the shop and hung the Zhou lamps under the eaves at home."}
+    text: {zh: "周掌柜关了铺门，把周家的灯挂在了自家屋檐下。", en: "Shopkeeper Zhou shut the shop and hung the Zhou family's lanterns under the eaves at home."}

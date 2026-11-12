@@ -186,7 +186,8 @@ def test_the_state_does_not_count_a_signal():
     outs = Bot().play(game, 2 * CYCLE)
     kinds = [event["kind"] for out in outs for event in out["events"]]
     assert kinds.count("replied") > 5
-    assert game._kernel.state["version"] == len(kinds) - kinds.count("replied")
+    signals = kinds.count("replied") + kinds.count("hearts")  # the hearts are a signal too
+    assert game._kernel.state["version"] == len(kinds) - signals
 
 
 def test_a_game_without_the_signal_is_the_same_game(monkeypatch):

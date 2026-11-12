@@ -14,8 +14,9 @@ no fact to state), the contract of the JSON they answer with, and the checks it 
 The second (``user``) is the moment: the time and place, what has reached them lately, the facts
 they may say each with the act that says it (``recall``), what the manager did, the manager's
 words and the reply the rules would give. The prompt holds what the speaker holds and nothing of
-anyone else's: their beliefs, their trust in the manager, their own note on how they speak and
-their own bio.
+anyone else's: their beliefs, their trust in the manager, their own note on how they speak (with
+the names they use for other people, if they have names of their own: ``calls_note``) and their
+own bio.
 
 The manager's words are data. They go in whole inside a JSON string, so that a quotation mark in
 them cannot close it, with blank space made plain, control characters made spaces and the length
@@ -34,7 +35,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from lantern_core.cognition.lexicon import CLASSES
-from lantern_core.world.bridge import clock, npcs, numerals, recall, repute
+from lantern_core.world.bridge import clock, npcs, numerals, recall, repute, voices
 from lantern_core.world.bridge.lore import lore
 from lantern_core.world.bridge.prompt_data import PROMPTS
 from lantern_core.world.bridge.speech_data import SPEECH
@@ -52,6 +53,12 @@ INVISIBLE = frozenset(
 PLACE = re.compile(r"\{\{(\w+)\}\}")
 LANGS = ("zh", "en")
 VERBS = ("ask", "ask_source", "tell", "entrust", "promise")
+ASK_VERBS = ("ask", "ask_source")
+ASK_ACTS = 2  # the most acts a model may put in an answer to a question
+ASK_NOTE = (
+    f'This is a question. Put at most {ASK_ACTS} acts in "acts": first the newest thing you '
+    "heard about what was asked, then the most important, and nothing that was not asked."
+)
 OUTCOMES = tuple(PROMPTS["outcomes"])
 HOWS = tuple(PROMPTS["hows"])
 STANDING_LINES = ((15, "stranger"), (35, "acquainted"), (60, "friendly"))  # below, else "close"
@@ -59,6 +66,10 @@ SOMETHING = {"zh": "某事", "en": "something"}
 IT = {"zh": "此事", "en": "it"}
 NOTHING_HELD = {"zh": "总管手里没有的东西", "en": "something they do not hold"}
 NO_LATELY = "Nothing new has reached you since the morning."
+CALLS_NOTE = (
+    "The names you use for other people when you speak. Use them in your line. Anyone who is not "
+    "listed goes by the name the town gives them:"
+)
 NO_FACTS = "(none: you hold nothing you may say about this)"
 
 
@@ -149,6 +160,21 @@ def person_values(world: Any, person: str) -> dict[str, str]:
         "bio_zh": row["bio"]["zh"],
         "temper": temper(person),
     }
+
+
+def calls_note(person: str) -> str:
+    """The names ``person`` uses for other people, as lines that follow the note on how they speak,
+    or nothing for a person with no names of their own. Each line gives the person as the town
+    names them, then the two words the speaker says, and the lines are in the order of the cast."""
+    table = voices.calls(person)
+    if not table:
+        return ""
+    names, order = lore().names, lore().index
+    rows = []
+    for other in sorted(table, key=lambda other: (order.get(other, len(order)), other)):
+        said = table[other]
+        rows.append(f'- {both(names[other])}: "{said["en"]}" in English, "{said["zh"]}" in Chinese')
+    return "\n".join(["", CALLS_NOTE, *rows])
 
 
 def named(world: Any, ident: str) -> dict[str, str]:
@@ -264,10 +290,12 @@ def reply_messages(
     section = world_state["player"]
     now = clock.at(tick)
     trust = repute.trust(section, world.cast.index[person])
+    values = person_values(world, person)
+    values["voice_zh"] += calls_note(person)  # how they speak ends with the names they use
     system = fill(
         templates["reply_system"],
         {
-            **person_values(world, person),
+            **values,
             "moods": ", ".join(sorted(SPEECH["moods"])),
             "addresses": ", ".join(sorted(SPEECH["addresses"])),
             "closed_lists": closed_lists(),
@@ -281,6 +309,8 @@ def reply_messages(
             "outcome": PROMPTS["outcomes"][turn.outcome],
         },
     )
+    if turn.verb in ASK_VERBS:
+        situation += "\n" + ASK_NOTE
     words = (
         fill(templates["words_quoted"], {"words": quote(turn.words)})
         if tidy(turn.words)

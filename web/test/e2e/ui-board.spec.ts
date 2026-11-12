@@ -7,7 +7,7 @@ import * as fake from "../support/slice.ts";
 // the next work time, why the last one did nothing, the deadline, what was promised), the truth (what it takes and how the last statement stood
 // against it) and the peace (the grudge as a stick of incense, the acts, the witness), in both languages and themes. The map is not drawn here.
 
-const DEADLINE = { en: "Day 4 18:00", zh: "第四日 18:00" } as const;
+const DEADLINE = { en: "Day 4 18:00", zh: "第四天 18:00" } as const;
 
 type PageName = "bridge" | "truth" | "peace";
 const tab = (page: Page, name: PageName) => page.getByTestId(name === "bridge" ? "board-toggle" : `board-tab-${name}`);
@@ -43,7 +43,7 @@ test.describe("the ledger on the second day, with the first batch of bamboo in",
     await expect(page.getByTestId("board-site")).toHaveAttribute("data-bamboo", "4");
     await expect(page.getByTestId("board-site")).toHaveAttribute("data-timber", "0");
     // One helper, of the Li family, so both families are not there yet, and the page says so.
-    await expect(page.getByTestId("board-helper")).toHaveText(["Li Family 1"]);
+    await expect(page.getByTestId("board-helper")).toHaveText(["Li family 1"]);
     await expect(page.getByTestId("board-helpers").locator(".helper-total")).toHaveText("Have 1");
     await expect(page.getByTestId("board-helpers").locator(".helper-total")).toHaveAttribute("data-need", "5");
     await expect(page.getByTestId("board-both")).toHaveText("At least one helper from each family");
@@ -57,7 +57,7 @@ test.describe("the ledger on the second day, with the first batch of bamboo in",
     await turnTo(page, "truth");
     await expect(page.getByTestId("truth-state")).toHaveText("Not yet set straight in public");
     await expect(page.getByTestId("truth-state")).toHaveAttribute("data-state", "open");
-    await expect(page.getByTestId("truth-need")).toHaveText(["at least five named people there", "at least six in ten of them accept", "the elder accepts"]);
+    await expect(page.getByTestId("truth-need")).toHaveText(["at least five familiar faces there", "at least six in ten of them believe it", "the elder believes it"]);
     await expect(page.getByTestId("truth-need").first()).toHaveAttribute("data-met", "");
     await expect(page.getByTestId("truth-last")).toHaveCount(0);
     // The peace is open, with the grudge as a stick of incense, three acts and no witness.
@@ -66,7 +66,7 @@ test.describe("the ledger on the second day, with the first batch of bamboo in",
     await expect(page.getByTestId("peace-grudge")).toHaveText("Grudge 70");
     await expect(page.getByTestId("peace-act")).toHaveCount(3);
     await expect(page.getByTestId("peace-act").first()).toHaveAttribute("data-done", "false");
-    await expect(page.getByTestId("peace-witness")).toHaveText("No public witness yet");
+    await expect(page.getByTestId("peace-witness")).toHaveText("Nobody has seen the families make peace yet");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -81,16 +81,16 @@ test.describe("the ledger on the second day, with the first batch of bamboo in",
       await expect(material(page, "bamboo")).toHaveText(/竹料\s*答应四根\s*送到四根/);
       await expect(page.getByTestId("board-helper")).toHaveText(["李家一人"]);
       await expect(page.getByTestId("board-helpers").locator(".helper-total")).toHaveText("有一人");
-      await expect(page.getByTestId("board-both")).toHaveText("两家各至少要一人");
+      await expect(page.getByTestId("board-both")).toHaveText("两家各至少要出一个人");
       await expect(page.getByTestId("board-hours")).toContainText("要十个钟头");
-      await expect(page.getByTestId("board-window")).toContainText("第三日 辰时 08:00 到 12:00，石桥");
+      await expect(page.getByTestId("board-window")).toContainText("第三天 辰时 08:00 到 12:00，石桥");
       await expect(page.getByTestId("board-deadline")).toContainText(DEADLINE.zh);
       await turnTo(page, "truth");
       await expect(page.getByTestId("truth-state")).toHaveText("还没当众说清");
-      await expect(page.getByTestId("truth-need")).toHaveText(["至少五个有名有姓的人在场", "在场的人里六成以上接受", "族长也接受"]);
+      await expect(page.getByTestId("truth-need")).toHaveText(["至少五个熟面孔在场", "在场的人有六成以上信", "族长也信"]);
       await turnTo(page, "peace");
       await expect(page.getByTestId("peace-grudge")).toHaveText("积怨 70");
-      await expect(page.getByTestId("peace-witness")).toHaveText("还缺公开见证");
+      await expect(page.getByTestId("peace-witness")).toHaveText("还没人亲眼看见两家和好");
       for (const selector of ['[data-testid="peace-witness"]', '[data-testid="peace-grudge"]']) {
         expect(await fake.contrast(page, selector), `${theme} ${selector}`).toBeGreaterThan(4.5);
       }
@@ -109,7 +109,7 @@ test.describe("the ledger on the fourth day, with the work under way and a state
     await expect(material(page, "timber")).toHaveAttribute("data-promised", "8");
     await expect(material(page, "timber")).toHaveAttribute("data-delivered", "8");
     // Both families have helpers, so the warning is gone.
-    await expect(page.getByTestId("board-helper")).toHaveText(["Li Family 3", "Zhou Family 2"]);
+    await expect(page.getByTestId("board-helper")).toHaveText(["Li family 3", "Zhou family 2"]);
     await expect(page.getByTestId("board-helpers").locator(".helper-total")).toHaveText("Have 5");
     await expect(page.getByTestId("board-both")).toHaveCount(0);
     // Four of the ten hours are done, and they are counted in tally strokes with the number beside them.
@@ -123,15 +123,15 @@ test.describe("the ledger on the fourth day, with the work under way and a state
     await turnTo(page, "truth");
     await expect(page.getByTestId("truth-state")).toHaveAttribute("data-state", "open");
     for (const [i, met] of ["false", "false", "false"].entries()) await expect(page.getByTestId("truth-need").nth(i)).toHaveAttribute("data-met", met);
-    await expect(page.getByTestId("truth-last")).toContainText("Day 3 18:00, Teahouse: 4 there, 2 accepted (50%), the elder was not there");
+    await expect(page.getByTestId("truth-last")).toContainText("Day 3 18:00, Teahouse: 4 there, 2 believed it (50%), the elder was not there");
     await expect(page.getByTestId("truth-last")).toHaveAttribute("data-elder", "absent");
-    await expect(page.getByTestId("truth-missed")).toHaveText("It fell short: Fewer than five named people were there, and the elder did not come");
+    await expect(page.getByTestId("truth-missed")).toHaveText("Fell short: Fewer than five familiar faces were there, and the elder was not there");
     // Two of the three acts of the peace are done, and nobody has seen it.
     await turnTo(page, "peace");
     await expect(page.getByTestId("peace-act").nth(0)).toHaveAttribute("data-done", "true");
     await expect(page.getByTestId("peace-act").nth(1)).toHaveAttribute("data-done", "true");
     await expect(page.getByTestId("peace-act").nth(2)).toHaveAttribute("data-done", "false");
-    await expect(page.getByTestId("peace-witness")).toHaveText("No public witness yet");
+    await expect(page.getByTestId("peace-witness")).toHaveText("Nobody has seen the families make peace yet");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -146,8 +146,8 @@ test.describe("the ledger on the fourth day, with the work under way and a state
       await expect(page.getByTestId("board-helper")).toHaveText(["李家三人", "周家两人"]);
       await expect(page.getByTestId("board-stop")).toContainText("昨天下大雨，没有人上工");
       await turnTo(page, "truth");
-      await expect(page.getByTestId("truth-last")).toContainText("第三日 18:00，茶馆：到场四人，接受两人（50%），族长没到场");
-      await expect(page.getByTestId("truth-missed")).toHaveText("没达到：在场有名有姓的人不足五个，族长也没来");
+      await expect(page.getByTestId("truth-last")).toContainText("第三天 18:00在茶馆，到场四人，两人信了，占50%，族长没到场");
+      await expect(page.getByTestId("truth-missed")).toHaveText("没成，因为在场的熟面孔不到五个，族长也不在场");
       for (const selector of ['[data-testid="truth-last"] p:nth-child(1)', '[data-testid="truth-missed"]', '[data-testid="truth-need"]']) {
         expect(await fake.contrast(page, selector), `${theme} ${selector}`).toBeGreaterThan(4.5);
       }
@@ -186,7 +186,7 @@ test.describe("the ledger on the fifth day, with everything done", () => {
       await expect(page.getByTestId("truth-state")).toHaveText("已当众说清");
       expect(await fake.contrast(page, '[data-testid="truth-state"]'), `${theme} truth-state`).toBeGreaterThan(4.5);
       await turnTo(page, "peace");
-      await expect(page.getByTestId("peace-state")).toHaveText("两家已和解");
+      await expect(page.getByTestId("peace-state")).toHaveText("两家已经和好");
       expect(await fake.contrast(page, '[data-testid="peace-state"]'), `${theme} peace-state`).toBeGreaterThan(4.5);
     }
     // On a bookmark the seal sits on the cloth under the title slip, clear of it (ui-marks.spec.ts measures the whole bookmark).
@@ -240,17 +240,17 @@ test.describe("the ledger where the frame has less", () => {
     await expect(first).toHaveAttribute("data-support", "1");
     await expect(first).toHaveAttribute("data-against", "0");
     await expect(first).toHaveAttribute("data-gap", "true");
-    await expect(first).toContainText("Cause");
+    await expect(first).toContainText("How it broke");
     await expect(first.locator(".tally")).toHaveAttribute("data-n", "1");
-    await expect(page.getByTestId("statement-column").nth(2)).toContainText("How the rumour began");
+    await expect(page.getByTestId("statement-column").nth(2)).toContainText("Why people got it wrong");
     // the marks have a line that says what they are, at the foot of the page
-    await expect(page.locator(".ledger-legend")).toHaveText("Tally strokes count the notes that support a part, and a struck stroke with a figure counts the notes that go against it");
+    await expect(page.locator(".ledger-legend")).toHaveText("Each stroke of the tally is a note that fits. The figure after the struck stroke is how many notes go against it.");
     // under the columns, whether the matter is set straight in public and what that takes
     await expect(page.getByTestId("truth-state")).toHaveAttribute("data-state", "open");
     await expect(page.getByTestId("truth-need")).toHaveCount(3);
     await lantern.setLang("zh");
-    await expect(page.getByTestId("statement-column").first()).toContainText("成因");
-    await expect(page.locator(".ledger-legend")).toHaveText("正字记支持的见闻，划掉的一笔记矛盾的见闻");
+    await expect(page.getByTestId("statement-column").first()).toContainText("怎么坏的");
+    await expect(page.locator(".ledger-legend")).toHaveText("正字每一笔是见闻簿里一条对得上的。划掉的那一笔后面写着几，就有几条对不上。");
   });
 
   test("says the pile against what the bridge takes where the board gives it", async ({ lantern }) => {

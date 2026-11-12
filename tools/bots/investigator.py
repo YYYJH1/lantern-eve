@@ -29,8 +29,8 @@ from bots.base import (
     Steps,
 )
 
-RUMOUR = "Li Er damaged"  # how the versions of the rumour begin, in the words of the frame
-SIGHT = "Li Er was at the Stone Bridge"  # and what the clerk saw himself
+RUMOUR = "Li Er broke"  # how the versions of the rumour begin, in the words of the frame
+SIGHT = "Li Er was at the bridge"  # and what the clerk saw himself
 
 
 class Investigator(Bot):

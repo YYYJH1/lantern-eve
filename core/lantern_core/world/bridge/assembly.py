@@ -518,7 +518,7 @@ def _speech(sim: Sim, body: dict[str, Any], place: str, here: list[str]) -> None
     strength = 100 if whole else 40 if _bearing(variant, ids) else 0
     yes = [p for p in here if accepts(world_state, p, variant, strength, gone)]
     for person in yes:
-        repute.nudge(section, lo.index[person], ACCEPT_TRUST)
+        repute.nudge(section, lo.index[person], ACCEPT_TRUST, "spoke")
     percent = 100 * len(yes) // len(here)
     elder = 0 if ELDER not in here else 2 if ELDER in yes else 1
     if len(here) >= MIN_NAMED and percent >= ACCEPT_PERCENT:
@@ -581,10 +581,10 @@ def _statement(sim: Sim, body: dict[str, Any], place: str, here: list[str]) -> N
         if clarify.CLAIM in {p.id for p in stated}:
             clarify.hold_claim(sim, person)
             notebook.add_seen(section, clarify.CLAIM, tick)
-        repute.nudge(section, lo.index[person], ACCEPT_TRUST)
+        repute.nudge(section, lo.index[person], ACCEPT_TRUST, "spoke")
     if wrong:
         for person in here:
-            repute.nudge(section, lo.index[person], -statement.STATEMENT_COST)
+            repute.nudge(section, lo.index[person], -statement.STATEMENT_COST, "statement")
     percent = 100 * len(yes) // len(here)
     elder = 0 if ELDER not in here else 2 if ELDER in yes else 1
     goals.set_metric(sim, "audience_named", len(here))
@@ -689,7 +689,7 @@ def _meal(sim: Sim, body: dict[str, Any], place: str, here: list[str]) -> None:
     for head in HEADS:
         peace.lower_grudge(world_state, head, drop)
     for person in here:
-        repute.nudge(section, lo.index[person], MEAL_TRUST)
+        repute.nudge(section, lo.index[person], MEAL_TRUST, "meal")
     goals.set_reconciled(sim)
     sim.emit("feast", venue=place, named=len(here))
     converse.ack(sim, body)

@@ -35,11 +35,12 @@ A request to testify is previewed from what the script gives the person to tell,
 is real in this game: whether they saw anything is for them to say, and the preview does not say.
 
 The request for the goods (``entrust`` of the kind ``material``) says what a yes would bring and by
-when, at the end of ``asks``, in a game that has the goods promised for a time: ``(if Li Da agrees:
-4 poles, by 7 tomorrow morning)``, from the rules of the commitments (``commitments.terms``). A
-person who has promised already would promise nothing: the blocker says what they promised, with
-the amount, what it is and by when (``Li Da has promised already: 4 poles of bamboo, by 7 tomorrow
-morning``), and when the bridge has all it needs of the item it says so (``commitments.standing``).
+when, as a sentence at the end of ``asks``, in a game that has the goods promised for a time (``If
+Li Da agrees, 4 poles come by 7 tomorrow morning.``), from the rules of the commitments
+(``commitments.terms``). A person who has promised already would promise nothing: the blocker says
+what they promised, with the amount, what it is and by when (``Li Da has promised already: 4 poles
+of bamboo, by 7 tomorrow morning``), and when the bridge has all it needs of the item it says so
+(``commitments.standing``).
 Those are the two things the person says to the request, which is rejected as ``said_already`` all
 the same. For Li Da the blockers are all that stands in the way of his yes, in the order of
 ``objection.GAPS``: his mother's objection, his not knowing of the clarification, his distrust.
@@ -71,12 +72,14 @@ from lantern_core.cognition.lines import capitalise
 from lantern_core.inputs import InputError, int_field
 from lantern_core.world.bridge import (
     agenda,
+    agenda_facts,
     answers,
     clock,
     commitments,
     converse,
     entrust,
     evidence,
+    gifts,
     goals_work,
     notebook,
     numerals,
@@ -162,6 +165,12 @@ def _then(first: Words, second: Words) -> Words:
     return _w(first["zh"] + second["zh"], first["en"] + second["en"])
 
 
+def _quoted(first: Words, second: Words, close: str) -> Words:
+    """``second`` after ``first``, and in Chinese closed by ``close``: the words quoted, without a
+    full stop of their own, as in 对李大说「李二昨晚在桥边」 (the English keeps the colon)."""
+    return _w(first["zh"] + second["zh"].rstrip("。") + close, first["en"] + second["en"])
+
+
 def _reason(sign: int, zh: str, en: str, person: str) -> dict[str, Any]:
     return {"sign": sign, "text": _sentence(zh, en, person)}
 
@@ -169,7 +178,7 @@ def _reason(sign: int, zh: str, en: str, person: str) -> dict[str, Any]:
 def _by(today: int, day: int, hour: int) -> Words:
     """ "By" a day and an hour, said from ``today``: by 13:00 today, by 7 tomorrow morning. In
     Chinese the hour is a clock time as in the words of a promise (``commitments.when_words``):
-    今天13:00前, 明早07:00前, 第四日07:00前. Beyond tomorrow the words are those of the promise in
+    今天13:00前, 明早07:00前, 第四天07:00前. Beyond tomorrow the words are those of the promise in
     both languages."""
     at = f"{hour:02d}:00"
     if day == today:
@@ -183,10 +192,11 @@ def _by(today: int, day: int, hour: int) -> Words:
 
 def _arrival(view: View, person: str) -> Words | None:
     """What a yes would bring and by when, in a game that has the goods promised for a time (see
-    ``commitments``): ``(if Li Da agrees: 4 poles, by 7 tomorrow morning)``. None where the person
-    would promise nothing (they have a promise open, or the bridge lacks none of it). The promise is
-    made when the act is over, so the time is counted from the clock as it will stand once the world
-    has paid for the minutes of the request, as the real promise counts it."""
+    ``commitments``), as a sentence after the request: ``If Li Da agrees, 4 poles come by 7
+    tomorrow morning.`` None where the person would promise nothing (they have a promise open, or
+    the bridge lacks none of it). The promise is made when the act is over, so the time is counted
+    from the clock as it will stand once the world has paid for the minutes of the request, as the
+    real promise counts it."""
     over = clock.after(view.state, view.ctx.tick, pace.minutes("entrust") * 60)
     found = commitments.terms(view.state, over, person)
     if found is None:
@@ -197,8 +207,8 @@ def _arrival(view: View, person: str) -> Words | None:
         found["amount"],
     )
     return _w(
-        f"（{name['zh']}应下的话：先送{numerals.zh_count(amount)}根，{when['zh']}）",
-        f" (if {name['en']} agrees: {amount} poles, {when['en']})",
+        f"。要是答应，{when['zh']}先送{numerals.zh_count(amount)}根。",
+        f". If {name['en']} agrees, {amount} poles come {when['en']}.",
     )
 
 
@@ -213,7 +223,7 @@ def _standing_blocker(view: View, person: str) -> Words:
         item = commitments.item_words(row["item"])
         when = _by(view.now.day, row["due"]["day"], row["due"]["hour"])
         return _sentence(
-            f"{{n}}已经答应了：{numerals.zh_count(row['amount'])}根{item['zh']}，{when['zh']}",
+            f"{{n}}已经答应了，{when['zh']}送{numerals.zh_count(row['amount'])}根{item['zh']}",
             f"{{n}} has promised already: {row['amount']} poles of {item['en']}, {when['en']}",
             person,
         )
@@ -223,27 +233,28 @@ def _standing_blocker(view: View, person: str) -> Words:
 
 # what stands in the way, by the code of the reason it is turned down for
 BLOCKS: dict[str, tuple[str, str]] = {
-    "not_talking": ("你们还没有开始谈话", "you are not talking to {n} yet"),
+    "not_talking": ("你们还没说上话", "you are not talking to {n} yet"),
     "closed_way": ("{n}还不肯松口", "{n} will not give way yet"),
     "needs_nod": (
-        "{n}要等他母亲不再阻拦才肯动手",
-        "{n} will not move until his mother no longer stands in the way",
+        "{n}要等李老太松口才肯答应。先把李二的事当众说清",
+        "{n} will not move until Granny Li no longer stands in the way. "
+        "First set the talk about Li Er straight in public",
     ),
     "unaware": (
-        "{n}还没听说那话已经当众说清了，得有人告诉他",
-        "{n} has not heard that it was cleared up in public, and has to be told",
+        "{n}还没听说那话已经当众说清了。去告诉{n}一声",
+        "{n} has not heard that it was cleared up in public. Go and tell {n}",
     ),
-    "distrust": ("{n}还不够信任你，现在开口还早", "{n} does not trust you enough to be asked yet"),
+    "distrust": ("{n}还不大信你，这会儿开口太早", "{n} does not trust you enough to be asked yet"),
     "cannot": ("{n}帮不上这个忙", "{n} cannot help with that"),
     "nothing_to_say": ("{n}没什么可说的", "{n} has nothing to say about that"),
     "said_already": ("这件事{n}已经答复过了", "{n} has answered this already"),
     "too_late": ("天色已晚，今天来不及了", "it is too late today"),
     "closed": ("这个时辰不方便", "this is not a good hour"),
-    "refused": ("{n}还不够信任你", "{n} does not trust you enough yet"),
-    "needs": ("要先拿到别的证据", "something else has to be in hand first"),
+    "refused": ("{n}还不大信你", "{n} does not trust you enough yet"),
+    "needs": ("得先拿到别的凭据", "something else has to be in hand first"),
     "no_entry": ("见闻簿里没有这一条", "your notebook has no such entry"),
     "no_request": ("这件事办不了", "that cannot be asked"),
-    "unknown_topic": ("不知道怎么问这个", "there is no asking about that"),
+    "unknown_topic": ("这个没法问", "there is no asking about that"),
     "no_sharpen": ("这句话已经没法说得更重了", "there is no heavier way to say that"),
     "bad_claim": ("这句话编不出来", "that cannot be made up"),
     "empty": ("这个你手里没有，许下也是空话", "you hold nothing like that to promise"),
@@ -296,11 +307,15 @@ def _topic_text(world_state: Mapping[str, Any], topic: str) -> Words:
     return dict(lore().names.get(topic) or {"zh": topic, "en": topic})
 
 
-def _tasks_blocked_for(world_state: Mapping[str, Any], person: str) -> list[Words]:
+def _tasks_blocked_for(
+    world: BridgeWorld, world_state: Mapping[str, Any], person: str
+) -> list[Words]:
     """What the manager's own tasks say blocks them: the blocker of each task that is blocked and
-    names the person in one of its actions, or in one of the actions its blocker offers."""
+    names the person in one of its actions, or in one of the actions its blocker offers, and after
+    it the step that the task gives for getting past it, in the task's own words."""
     section = world_state[agenda.SECTION]
     rows = section["tasks"] if section else {}
+    facts: agenda_facts.Facts | None = None
     found: list[Words] = []
     for task_id in agenda.book().order:
         row = rows.get(task_id)
@@ -309,9 +324,14 @@ def _tasks_blocked_for(world_state: Mapping[str, Any], person: str) -> list[Word
         task = agenda.book().by_id[task_id]
         rule = task["blocked"][row["rule"]]
         if any(option["npc"] == person for option in [*task["action"], *rule["action"]]):
-            blocker = _w(rule["blocker"]["zh"], rule["blocker"]["en"])
-            if blocker not in found:
-                found.append(blocker)
+            said = _w(rule["blocker"]["zh"], rule["blocker"]["en"])
+            step = agenda.pick(agenda.options_of(task, row["rule"], "next"), row["next"])
+            if step is not None:
+                facts = facts or agenda_facts.Facts(world, dict(world_state))
+                to_do = agenda.told(step, facts)
+                said = _w(f"{said['zh']}。{to_do['zh']}", f"{said['en']}. {to_do['en']}")
+            if said not in found:
+                found.append(said)
     return found
 
 
@@ -348,14 +368,28 @@ def _ask(state: Mapping[str, Any], body: dict[str, Any], person: str) -> dict[st
     topic = body["topic"]
     entry = notebook.find(ws["player"], topic)
     blockers: list[Words] = []
+    taste = gifts.is_taste(topic) and entry is None
     if entry is not None:
         topic = entry["prop"]
+    elif taste:
+        if gifts.target_of(topic) not in lore().index or gifts.target_of(topic) == person:
+            blockers.append(_blocker("unknown_topic", person))
     elif not answers.topic_known(topic, notebook.view(ws["social"])):
         blockers.append(_blocker("unknown_topic", person))
-    text = _w("这件事", "that") if blockers else _topic_text(ws, topic)
+    quoted = False  # a note is a sentence, and is quoted: 向李大打听「李二昨晚在桥边」
+    if blockers:
+        text = _w("这件事", "that")
+    elif taste:
+        text = gifts.label(gifts.target_of(topic))
+    else:
+        text = _topic_text(ws, topic)
+        quoted = topic in notebook.view(ws["social"])
     if not _talking_to(ws, person):
         blockers.append(_blocker("not_talking", person))
-    asks = _then(_sentence("向{n}打听：", "ask {n} about: ", person), text)
+    if quoted:
+        asks = _quoted(_sentence("向{n}打听「", "ask {n} about: ", person), text, "」")
+    else:  # a person, a thing or a place, or what someone likes: 向李大打听李二
+        asks = _then(_sentence("向{n}打听", "ask {n} about: ", person), text)
     return _out(state, "ask", asks, blockers=blockers)
 
 
@@ -370,17 +404,17 @@ def _ask_source(state: Mapping[str, Any], body: dict[str, Any], person: str) -> 
         text = notebook.sentence(notebook.view(ws["social"])[entry["prop"]])
     if not _talking_to(ws, person):
         blockers.append(_blocker("not_talking", person))
-    asks = _then(_sentence("问{n}：这话是听谁说的？", "ask {n} who told them: ", person), text)
+    asks = _quoted(_sentence("问{n}「", "ask {n} who told them: ", person), text, "」是听谁说的")
     return _out(state, "ask_source", asks, blockers=blockers)
 
 
 # the risks and the gains of the ways of telling, which the rules fix and anyone can know
 TELLING: dict[str, tuple[tuple[int, str, str], ...]] = {
     "as_seen": (
-        (1, "亲眼所见的话，听的人更信", "what was seen first-hand is believed more"),
+        (1, "说是亲眼看见的，听的人更信", "said as something you saw, it is believed more"),
         (
             -1,
-            "没亲眼见过却说成亲眼所见，是撒谎；有人拿得出反证，就会被拆穿",
+            "没亲眼看见却说成亲眼看见，是撒谎。有人知道实情，你就会被拆穿",
             "saying you saw what you only heard is a lie, and anyone holding proof against it "
             "catches you",
         ),
@@ -398,7 +432,7 @@ TELLING: dict[str, tuple[tuple[int, str, str], ...]] = {
     "fabricate": (
         (
             -1,
-            "凭空编的话是撒谎，被拆穿会大大失去信任",
+            "凭空编的话是撒谎。被拆穿了，知道的人就不那么信你了",
             "a made-up tale is a lie, and being caught costs much trust",
         ),
     ),
@@ -431,15 +465,15 @@ def _tell(state: Mapping[str, Any], body: dict[str, Any], person: str) -> dict[s
         reasons.append(
             _reason(
                 -1,
-                "说的是{n}家里人的不是，{n}会不高兴",
-                "you speak ill of {n}'s own, and that will not go down well",
+                "这话说的是{n}家的不是，{n}听了会不高兴",
+                "you speak ill of {n} or {n}'s own, and that will not go down well",
                 person,
             )
         )
     if not _talking_to(ws, person):
         blockers.append(_blocker("not_talking", person))
     said = _w("这件事", "that") if prop is None else notebook.sentence(prop)
-    asks = _then(_sentence("对{n}说：", "tell {n}: ", person), said)
+    asks = _quoted(_sentence("对{n}说「", "tell {n}: ", person), said, "」")
     return _out(state, "tell", asks, blockers=blockers, reasons=reasons)
 
 
@@ -462,29 +496,30 @@ def _score_reasons(person: str, weighed: persuade.Weighed) -> list[dict[str, Any
     parts = dict(weighed.parts)
     reasons: list[dict[str, Any]] = []
     if parts["trust"] >= KNOWN_TRUST:
-        reasons.append(_reason(1, "{n}对你已有几分信任", "{n} already trusts you somewhat", person))
+        reasons.append(_reason(1, "{n}已经有几分信你", "{n} already trusts you somewhat", person))
     else:
-        reasons.append(_reason(-1, "{n}对你还不太熟", "{n} hardly knows you yet", person))
+        reasons.append(_reason(-1, "{n}跟你还不熟", "{n} hardly knows you yet", person))
     if parts["favour"] > 0:
         reasons.append(_reason(1, "{n}欠你人情", "{n} owes you a favour", person))
     elif parts["favour"] < 0:
         reasons.append(_reason(-1, "你欠{n}人情", "you owe {n} a favour", person))
     if parts["hand"] > 0:
         reasons.append(
-            _reason(
-                1, "你许给{n}的事，对方记在心里", "what you promised {n} weighs with them", person
-            )
+            _reason(1, "你许的东西，{n}记在心上", "what you promised {n} weighs with them", person)
         )
     if parts["crowd"] > 0:
         reasons.append(
             _reason(
-                1, "{n}的熟人里已经有人加入", "some people {n} knows have joined already", person
+                1,
+                "{n}认识的人里，已经有人来帮工了",
+                "some people {n} knows have joined already",
+                person,
             )
         )
     if parts["personality"] <= -4:
         reasons.append(
             _reason(
-                -1, "{n}生性谨慎，不容易被说动", "{n} is a careful sort, not easily moved", person
+                -1, "{n}做事小心，不容易被说动", "{n} is a careful sort, not easily moved", person
             )
         )
     elif parts["personality"] >= 4:
@@ -541,9 +576,11 @@ def _entrust(
         detail = entrust.BAMBOO
     elif kind == "persuade":
         detail = body["target"]
-    name = _name(person)
-    what = request_text(world, kind, detail)
-    asks = _w(f"请{name['zh']}{what['zh']}", f"Ask {name['en']} {what['en']}")
+    try:  # the words of the button of the talk, so that the card says what the button said
+        asks = offers.request_label(person, body)
+    except KeyError:  # a request that nobody could grant has no label
+        name, what = _name(person), request_text(world, kind, detail)
+        asks = _w(f"请{name['zh']}{what['zh']}", f"Ask {name['en']} {what['en']}")
     blockers: list[Words] = []
     if not _talking_to(ws, person):
         blockers.append(_blocker("not_talking", person))
@@ -566,7 +603,7 @@ def _entrust(
         for row in section["pending"]
     )
     reasons = _score_reasons(person, weighed)
-    known = _tasks_blocked_for(ws, person)  # what the manager already knows is in the way
+    known = _tasks_blocked_for(world, ws, person)  # what the manager already knows is in the way
     if waiting or section["asked"].get(f"{person}|{kind}|{detail}") == sign:
         blockers += [*known, _blocker("said_already", person)]
         return _out(state, "entrust", asks, gives, blockers, None, reasons)
@@ -627,11 +664,14 @@ def _promise(
         blockers.append(_blocker("bad_due", person))
     else:
         reasons.append(
-            _reason(1, "许下的事，{n}会更信你一些", "a promise made earns {n}'s trust", person)
+            _reason(1, "许了，{n}会多信你一些", "a promise made earns {n}'s trust", person)
         )
         reasons.append(
             _reason(
-                -1, "过了期限没兑现，{n}更不信你", "a promise left unkept costs {n}'s trust", person
+                -1,
+                "到期不兑现，{n}就不那么信你了",
+                "a promise left unkept costs {n}'s trust",
+                person,
             )
         )
     return _out(state, "promise", text, text, blockers, None, reasons)

@@ -3,6 +3,7 @@ import { getLang, type Lang, type MessageKey, t } from "../../i18n/index.ts";
 import type { ThemeChoice } from "../prefs.ts";
 import { type Gallery, type GalleryEntry, listGallery, sizeText } from "../replays.ts";
 import { CloseIcon, ReplayIcon } from "./icons.tsx";
+import { tickText } from "./format.ts";
 import { LanguageSwitch, ThemeSwitch } from "./topbar.tsx";
 
 function whenText(iso: string, lang: Lang): string {
@@ -12,9 +13,9 @@ function whenText(iso: string, lang: Lang): string {
 }
 
 function Entry({ entry, lang, opening, onWatch }: { entry: GalleryEntry; lang: Lang; opening: string | null; onWatch: (entry: GalleryEntry) => void }) {
-  const title = entry.source === "server" && entry.seed !== null ? t("gallery.seed", { seed: entry.seed }) : entry.title;
+  const title = entry.source === "server" && entry.seed !== null ? t("gallery.game") : entry.title === "" ? tickText(lang, entry.ticks) : entry.title;
   const meta = [
-    t("gallery.ticks", { n: entry.ticks }),
+    t("gallery.ticks", { end: tickText(lang, entry.ticks) }),
     entry.scenario,
     entry.bytes === null ? null : sizeText(entry.bytes),
     entry.coreVersion === null ? null : t("gallery.core", { version: entry.coreVersion }),

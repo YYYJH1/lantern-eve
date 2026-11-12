@@ -26,30 +26,30 @@
     <div class="node solid" id="client">
       <h3><span class="en">Web client</span><span class="zh">网页客户端</span></h3>
       <p><span class="en">One page for both hosts: a PixiJS map and a Preact interface, in Chinese and English, light and dark. It draws the frames it is sent and sends the player's actions back.</span>
-         <span class="zh">两种宿主共用同一个页面：PixiJS 地图和 Preact 界面，中英文，明暗主题。它画收到的帧，把玩家的动作发回去。</span></p>
+         <span class="zh">两种宿主共用一个页面。地图用 PixiJS 画，界面用 Preact 写，语言有中英两种，主题有深浅两套。页面画出收到的帧，把玩家的动作发回去。</span></p>
     </div>
 
     <div class="node" id="browser">
       <h3><span class="en">Browser host</span><span class="zh">浏览器宿主</span></h3>
       <p><span class="en">A module Web Worker runs the core in Pyodide and keeps saves in IndexedDB. Model calls go from the worker to the provider the player picks.</span>
-         <span class="zh">Web Worker 里用 Pyodide 运行核心，存档放在 IndexedDB。模型调用由 Worker 发往玩家选定的提供方。</span></p>
+         <span class="zh">核心跑在一个模块 Web Worker 里，用的是 Pyodide。存档放在 IndexedDB 里。模型调用从 worker 发往玩家选的提供方。</span></p>
     </div>
     <div class="node" id="server">
       <h3><span class="en">Server host</span><span class="zh">服务端宿主</span></h3>
       <p><span class="en"><span class="mono">lantern-eve play</span> runs the core under CPython and asyncio, one session per game, with frames over a WebSocket. Model calls go to the providers of a provider file, or to a mock.</span>
-         <span class="zh"><span class="mono">lantern-eve play</span> 在 CPython 和 asyncio 下运行核心，一局一个会话，帧经 WebSocket 推送。模型调用走提供方配置文件里的服务，或走模拟模型。</span></p>
+         <span class="zh"><span class="mono">lantern-eve play</span> 用 CPython 和 asyncio 跑核心，每局开一个会话，帧经 WebSocket 发给页面。模型调用发往提供方文件里的服务，或者交给 mock。</span></p>
     </div>
 
     <div class="node accent" id="core">
       <h3><span class="mono">lantern_core</span><span class="en">, one Python core</span><span class="zh">：同一份 Python 核心</span></h3>
       <p><span class="en">A pure state machine on the standard library alone. One call per tick: the inputs of that tick go in as JSON, and the frame, the events and the model requests come out as JSON. Nothing in it reads a clock, a file or the network, and its state hash is the same under CPython and under Pyodide.</span>
-         <span class="zh">只用标准库的纯状态机。每拍调用一次：该拍的输入以 JSON 传入，帧、事件和模型请求以 JSON 传出。核心里没有读时钟、读文件或联网的代码，状态哈希在 CPython 和 Pyodide 下一致。</span></p>
+         <span class="zh">核心是一台只用标准库的纯状态机。宿主每拍调用它一次，把这一拍的输入以 JSON 交进去，再以 JSON 拿回帧、事件和模型请求。核心不读时钟，不读文件，也不联网。它的状态哈希在 CPython 和 Pyodide 下完全一样。</span></p>
     </div>
 
     <div class="node" id="rec">
       <h3><span class="en">Recording</span><span class="zh">录像</span></h3>
       <p><span class="en">The seed and the config, every input the core applied with its tick, and the state hash every 100 ticks. Both hosts write the same format, and <span class="mono">lantern_core.replay</span> rebuilds either one under CPython as it stands.</span>
-         <span class="zh">种子和配置，核心实际执行的每条输入及其所在的拍，以及每 100 拍一次的状态哈希。两种宿主写的是同一种格式，<span class="mono">lantern_core.replay</span> 在 CPython 下原样重建其中任何一份。</span></p>
+         <span class="zh">每份录像存着种子和配置，还有核心用过的每条输入，每条都记着是第几拍用的。另外每 100 拍记一次状态哈希。两种宿主写同一种格式，哪一份都能由 <span class="mono">lantern_core.replay</span> 在 CPython 下原样重建。</span></p>
     </div>
   </div>
   <script>
@@ -62,8 +62,8 @@
         { from: ['client', 'bottom', 0.7569], to: ['server', 'top', 0.5], both: true, label: lab('WebSocket', 'WebSocket', right + 74, 126, 120) },
         { from: ['browser', 'bottom', 0.5], to: ['core', 'top', 0.2431], both: true, label: lab('Pyodide', 'Pyodide', left + 60, 300, 100) },
         { from: ['server', 'bottom', 0.5], to: ['core', 'top', 0.7569], both: true, label: lab('CPython', 'CPython', right + 60, 300, 100) },
-        { from: ['core', 'bottom', 0.2431], to: ['rec', 'top', 0.2431], label: lab('every applied input,<br>with its tick', '核心执行的每条输入，<br>连同所在的拍', left + 104, 460, 170) },
-        { from: ['rec', 'top', 0.7569], to: ['core', 'bottom', 0.7569], dash: true, accent: true, label: lab('replay: same inputs and ticks,<br>same hashes', '重放：同样的输入和拍，<br>哈希也一样', right + 112, 460, 205, true) },
+        { from: ['core', 'bottom', 0.2431], to: ['rec', 'top', 0.2431], label: lab('every applied input,<br>with its tick', '核心用过的每条输入，<br>记着是第几拍用的', left + 104, 460, 170) },
+        { from: ['rec', 'top', 0.7569], to: ['core', 'bottom', 0.7569], dash: true, accent: true, label: lab('replay: same inputs and ticks,<br>same hashes', '重放同样的输入和拍，<br>得到同样的哈希', right + 112, 460, 205, true) },
       ]);
     });
   </script>

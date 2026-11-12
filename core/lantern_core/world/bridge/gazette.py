@@ -95,6 +95,7 @@ from typing import TYPE_CHECKING, Any
 
 from lantern_core.world.bridge import (
     agenda,
+    agenda_facts,
     assembly,
     board,
     clock,
@@ -143,9 +144,13 @@ HEAVY, LIGHT = weather.HEAVY_RAIN, weather.LIGHT_RAIN
 
 @dataclass(frozen=True, slots=True)
 class Rules:
-    """The ``paper`` of the script: when it is, how the street is read, the words."""
+    """The ``paper`` of the script: when it is, how the street is read, the words. ``manager`` is
+    the manager as each card names them (the Manager in the paper of the morning, you in the summary
+    of the night) and ``progress`` how far the work at the bridge has got, in words."""
 
     when: dict[str, dict[str, str]]
+    manager: dict[str, dict[str, str]]
+    progress: dict[str, dict[str, str]]
     street: dict[str, int]
     news: dict[str, dict[str, str]]
     talk: dict[str, dict[str, str]]
@@ -156,7 +161,31 @@ def rules() -> Rules:
     raw = SCRIPT.get("paper")
     if not raw:
         raise KeyError("the script has no paper")
-    return Rules(raw["when"], raw["street"], raw["news"], raw["talk"])
+    return Rules(
+        raw["when"], raw["manager"], raw["progress"], raw["street"], raw["news"], raw["talk"]
+    )
+
+
+def progress_words(done: int, need: int) -> dict[str, str]:
+    """How far the work at the bridge has got, in words, by the share of the hours done: under a
+    third, under a half, a half, or more (integers only)."""
+    if done * 3 < need:
+        key = "start"
+    elif done * 2 < need:
+        key = "under_half"
+    elif done * 2 == need:
+        key = "half"
+    else:
+        key = "over_half"
+    return dict(rules().progress[key])
+
+
+def other_family(person: str) -> dict[str, str]:
+    """The name of the family that ``person`` is not of, of the two (the Li and the Zhou families),
+    as the words of the tasks say it: 李家 and "the Li family"."""
+    own = lore().family.get(person)
+    other = "fam_zhou" if own == "fam_li" else "fam_li"
+    return dict(agenda_facts.FAMILY_WORDS[other])
 
 
 @dataclass(frozen=True, slots=True)
@@ -267,6 +296,7 @@ def _public(
             place=commitments._place(world, last["venue"]),
             named=last["named"],
             accepted=last["accepted"],
+            manager=rules().manager[which],
         )
         found.append(Item(kind, words, order=last["tick"]))
     shown = assembly.last_showing(world_state)
@@ -277,6 +307,7 @@ def _public(
             place=commitments._place(world, shown["venue"]),
             named=shown["named"],
             accepted=shown["accepted"],
+            manager=rules().manager[which],
         )
         found.append(Item(kind, words, order=shown["tick"]))
     joined = [row for row in world_state["goals"]["call"]["joined"] if since < row[1] <= until]
@@ -289,7 +320,10 @@ def _public(
         found.append(Item("work_stopped", words, order=until))
     elif not mended and 0 < wired["hours"]["done"] < wired["hours"]["need"]:
         done, need = wired["hours"]["done"], wired["hours"]["need"]
-        found.append(Item("work", commitments.fill(said["work"], hours=done, left=need - done)))
+        words = commitments.fill(
+            said["work"], hours=done, left=need - done, progress=progress_words(done, need)
+        )
+        found.append(Item("work", words))
     found.extend(_accounts(world_state, until))
     day = clock.at(until).day - (1 if which == MORNING else 0)
     sky = weather.on_day(world_state, day)
@@ -299,10 +333,11 @@ def _public(
     return found
 
 
-def _journal(world: BridgeWorld, journal: list[list[Any]]) -> list[Item]:
-    """The lines of the recap that the journal can make (``commitments.found``), as items."""
+def _journal(world: BridgeWorld, journal: list[list[Any]], which: str) -> list[Item]:
+    """The lines of the recap that the journal can make (``commitments.found``), as items, with the
+    manager named as the card of ``which`` names them."""
     found = []
-    for kind, rows in commitments.found(world, journal).items():
+    for kind, rows in commitments.found(world, journal, manager=rules().manager[which]).items():
         for number, events, text in rows[:PER_KIND]:
             found.append(Item(kind, text, tuple(events), number))
     return found
@@ -317,11 +352,9 @@ def _deeds(world: BridgeWorld, journal: list[list[Any]]) -> list[Item]:
             continue
         if note.get("act") == "stop_blaming":
             who = commitments._person(world, note.get("npc"))
-            found.append(
-                Item(
-                    "stopped", commitments.fill(rules().news["stopped"], who=who), (number,), number
-                )
-            )
+            other = other_family(str(note.get("npc")))
+            words = commitments.fill(rules().news["stopped"], who=who, other=other)
+            found.append(Item("stopped", words, (number,), number))
         elif note.get("act") == "work_together":
             found.append(
                 Item("side_by_side", dict(rules().news["side_by_side"]), (number,), number)
@@ -342,7 +375,7 @@ def collect(
     ended at the hour of the recap and ``NIGHT`` for the one that ends at dusk. There is always one:
     when nothing happened, ``quiet``."""
     found = [
-        *_journal(world, journal),
+        *_journal(world, journal, which),
         *_deeds(world, journal),
         *_public(world, world_state, since, until, which),
     ]

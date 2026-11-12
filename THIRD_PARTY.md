@@ -2,7 +2,7 @@
 
 # Third-party components
 
-The game is under the MIT licence (`LICENSE`). The built site at https://yyyjh1.github.io/lantern-eve/ also carries the components below, each under its own licence. The site holds their licence texts in `licenses/` (the npm packages, Pyodide and Python) and beside each font (`OFL.txt`). The pictures of the town and the paper edges are drawn by this repository's own tools (`tools/sprite-kit`, `tools/ink_ui`).
+The game is under the MIT licence (`LICENSE`). The built site at https://yyyjh1.github.io/lantern-eve/ also carries the components below, each under its own licence. The site holds their licence texts in `licenses/` (the npm packages, Pyodide and Python) and beside each font (`OFL.txt`). The pictures of the town and the paper edges are drawn by this repository's own tools (`tools/sprite-kit`, `tools/ink_ui`), and the page makes its sounds itself with Web Audio, so the site carries no recording.
 
 ## Scripts of the page
 

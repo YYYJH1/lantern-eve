@@ -49,6 +49,12 @@ async function letGo(page: Page): Promise<void> {
   await page.waitForFunction(() => window.__lantern.client.state.paused === false, undefined, { timeout: 30_000 });
 }
 
+/** Holds the world with the pause button, and waits until the host says it is held. */
+async function hold(page: Page): Promise<void> {
+  await page.getByTestId("btn-pause").click();
+  await page.waitForFunction(() => window.__lantern.client.state.paused === true, undefined, { timeout: 30_000 });
+}
+
 /** Presses the incense and waits until the run is over, whatever ended it. */
 async function runOnce(page: Page, label: string): Promise<void> {
   await expect(page.getByTestId("btn-skip"), `${label}: the incense is lit`).toBeEnabled({ timeout: 30_000 });
@@ -72,7 +78,7 @@ test.describe("the button that skips to the next thing, on the real core", () =>
       // the table for the heads are offered for this evening, the first on which they can be had, and for no evening before it.
       expect(waiting.tasks.filter((t) => (t.state === "open" || t.state === "blocked") && t.action !== null)).toEqual([]);
       const bar = page.getByTestId("btn-skip");
-      await expect(bar).toHaveAttribute("aria-label", /^快进到第四日 1[5-7]:\d\d$/);
+      await expect(bar).toHaveAttribute("aria-label", /^快进到第四天 1[5-7]:\d\d$/);
       await snap(page, "afternoon-waits", "zh-light-1280x760");
 
       // The run: the page asks for the pace of a skip, and gives the player's back after it.
@@ -93,9 +99,14 @@ test.describe("the button that skips to the next thing, on the real core", () =>
       console.log(`skip: pace of the run: ${ran}`);
       await snap(page, "evening-comes", "zh-light-1280x760");
 
-      // The pace is the player's own again: the clock goes on at its pace, which is slower than the run's.
+      // The pace is the player's own again: the clock goes on at its pace, which is slower than the run's. The host owes the game time that it was asked for and could not run (at most two
+      // seconds of the player's pace, which is all its clock keeps), and works it off as fast as the machine goes when the pace comes back: a window that begins at the end of the run
+      // measures that and not the pace, and on two cores the machine goes no faster than it did in the run. The player's pause owes nothing, so the pace is read after the world has been
+      // held and let go.
+      await hold(page);
+      await letGo(page);
       const slow0 = await tickAt(page);
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(3000);
       const slow1 = await tickAt(page);
       const after = (slow1.tick - slow0.tick) / ((slow1.at - slow0.at) / 1000);
       test.info().annotations.push({ type: "pace after the run", description: `${after.toFixed(0)} ticks a second` });
@@ -111,7 +122,7 @@ test.describe("the button that skips to the next thing, on the real core", () =>
       await loadMoment(page, () => lantern.waitReady(), lantern.servers.app.origin, "third evening", recording);
       await asPlayer(page); // the help is on, and a card of it holds the world
       await letGo(page);
-      await expect(page.getByTestId("btn-skip")).toHaveAttribute("aria-label", /^快进到第四日 0[5-6]:\d\d$/);
+      await expect(page.getByTestId("btn-skip")).toHaveAttribute("aria-label", /^快进到第四天 0[5-6]:\d\d$/);
       await watchPace(page);
       // The first run passes the evening and ends at dusk, where the summary of the night comes up and holds the world.
       await runOnce(page, "to dusk");

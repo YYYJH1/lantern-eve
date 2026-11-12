@@ -360,11 +360,11 @@ def test_an_acceptor_drops_the_claim_trusts_more_and_takes_in_what_was_said_in_p
     shown = step(evening)["frame"]["notebook"][-1]
     assert shown["id"] == "n5" and shown["source"] == {"kind": "seen"}
     assert shown["text"]["en"] == (
-        "Zhou's Clerk only saw Li Er looking for the Lost Lantern at the Stone Bridge, "
-        "and this has been made clear in public."
+        "Zhou's Clerk only saw Li Er looking for the lost lantern at the bridge. That has been "
+        "made clear in public."
     )
     assert (
-        shown["text"]["zh"].startswith("周家伙计只看见李二") and "当众说清" in shown["text"]["zh"]
+        shown["text"]["zh"].startswith("周家伙计只看见李二") and "当众说清了" in shown["text"]["zh"]
     )
 
 

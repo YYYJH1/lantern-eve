@@ -90,7 +90,19 @@ def know(
 
 
 def trust(game: Game, who: str, value: int) -> None:
+    """Set how far a person trusts the manager, as a case is set up. The hearts follow at once,
+    so that the next look at them finds nothing moved by the set-up."""
     me(game)["trust"][CAST.index[who]] = value
+    settle_hearts(game)
+
+
+def settle_hearts(game: Game) -> None:
+    """Bring the hearts the page was last told up to the trust that was set by hand."""
+    from lantern_core.kernel import Ctx
+    from lantern_core.world.bridge import hearts
+    from lantern_core.world.bridge.sim import Sim
+
+    hearts.sync(Sim(game._kernel.world, Ctx(game._kernel)))
 
 
 def trust_of(game: Game, who: str) -> int:

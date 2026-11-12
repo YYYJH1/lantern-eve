@@ -52,6 +52,14 @@ and compare. What a person keeps in mind against what they hold, a rival account
 only as what they said of it to the player, in the same answer as their stand (``stance.rival``):
 a person who keeps one and did not say so has none on their card.
 
+The key ``people`` is made from the cast (the same for everyone), what the manager did with each
+person (the first talk, the promises, the favours, the gifts, what they learned of the person's
+tastes, where and when they met, what they asked in return) and the clock. It reads nothing of the
+variant that is true or of what a person believes: a test plays the same game under each story and
+holds the whole key equal. The line the town says of each person (``cast[].intro``) is in the scene
+and not in the rows, and the hearts are the trust and favours the manager earned, which they may
+see.
+
 The keys ``gazette`` and ``night`` are made from the tasks of the frame, the events the recap
 reads (the manager's own dealings), the flags and numbers of the festival, the weather of the days
 that are over, the clock, and what the named townsfolk said in public places (``gazette``: the
@@ -127,11 +135,11 @@ FRAME: tuple[Row, ...] = (
     ),
     row(
         "hud",
-        "keen spent held cap stage cloud local verbs reputation resources pledges"
-        " promised turnout bridge ending",
+        "keen spent held cap stage cloud local verbs verbs_off reputation resources pledges"
+        " gift promised turnout bridge ending",
         KNOWN,
-        "the side panel: the money of the game, what can be done, standing, promises, the festival",
-        "侧栏：游戏的花费、能做的事、人望、许诺、灯会的筹备",
+        "the side panel: money, what can be done and why not, standing, promises, the day's gifts",
+        "侧栏：游戏的花费、能做和不能做的事及原因、人望、许诺、今天的小东西、灯会的筹备",
     ),
     row(
         "player",
@@ -143,11 +151,19 @@ FRAME: tuple[Row, ...] = (
     ),
     row("player.thinking", "", PUBLIC, "whose words are being waited for", "正在等谁开口"),
     row(
-        "notebook[]",
-        "id text source marks chain",
+        "people[]",
+        "id known hearts likes_known gifts card met asked",
         KNOWN,
-        "what the manager was told or saw, and the hops of the trail they asked about",
-        "总管听来、看到的事，以及追问过的那几跳",
+        "who each person is, how close they stand, what the manager learned of them,"
+        " where they met",
+        "每个人是谁、有多亲近、总管打听到他们的什么，以及在哪里、什么时候见过",
+    ),
+    row(
+        "notebook[]",
+        "id text source at marks chain",
+        KNOWN,
+        "what the manager was told or saw and when, and the hops of the trail they asked about",
+        "总管听来、看到的事，什么时候、在哪里，以及追问过的那几跳",
     ),
     row(
         "judgments[]",
@@ -168,7 +184,7 @@ FRAME: tuple[Row, ...] = (
         "parts can_state why_not used_today last",
         KNOWN,
         "the statement card: options a note bears on, the manager's choices, the last statement",
-        "陈述卡：有见闻可依的说法、总管选了哪个，以及最近一次完整陈述",
+        "讲稿：有见闻可依的说法、总管选了哪个，以及最近一次完整陈述",
     ),
     row(
         "tasks[]",
@@ -241,6 +257,20 @@ FRAME: tuple[Row, ...] = (
         "how the three jobs stand: the helpers, the work, the last statement in public, the grudge",
         "三件事的进展：帮手、施工、最近一次当众陈述、积怨",
     ),
+    row(
+        "moments[]",
+        "kind tick place x y prop from round",
+        KNOWN,
+        "the moments of the festival so far, and for an echo who brought the words back",
+        "灯会里已出现的几个时刻；回声是说总管说过的话绕回来了，是谁带回来的",
+    ),
+    row(
+        "moment_hold",
+        "",
+        KNOWN,
+        "the moments the world is held for, until the page lets it go on",
+        "世界为哪几个时刻停着，等页面放行",
+    ),
 )
 
 EVENTS: tuple[Row, ...] = (
@@ -269,11 +299,25 @@ EVENTS: tuple[Row, ...] = (
         "总管和人打交道的事",
     ),
     row(
+        "hearts gifted",
+        "",
+        KNOWN,
+        "how close a person stands to the manager now, and how a small thing was taken",
+        "某人和总管的亲近程度变了；一件小东西送出去，对方怎么收",
+    ),
+    row(
         "rally joined promised agreed flag goal ending eased",
         "",
         KNOWN,
         "the state of the festival, and the deeds that ease the grudge",
         "灯会的筹备，以及让两家积怨降下来的事",
+    ),
+    row(
+        "moment",
+        "",
+        KNOWN,
+        "a moment of the festival that the page stops the world for",
+        "页面为之停下世界的灯会时刻",
     ),
     row("task_changed", "", KNOWN, "which task is followed, and why", "追踪的事项换了，以及为什么"),
     row(
@@ -328,6 +372,13 @@ SCENE: tuple[Row, ...] = (
         PUBLIC,
         "who each person is, as the page draws them: names, role, family, home and workplace",
         "每个人是谁，页面照这些来画：名字、身份、家族、住处和做工的地方",
+    ),
+    row(
+        "cast[].intro",
+        "",
+        PUBLIC,
+        "what the town says in a line of who the person is, static content, the same in every game",
+        "镇上人用一句话说这个人是谁，是静态内容，每一局都一样",
     ),
     row(
         "cast[].bio",

@@ -327,7 +327,7 @@ def take_in(sim: Sim, person: str, versions: list[str]) -> None:
         notes.forget_rivals(social, person, prop=prop_id)  # and the version they only kept in mind
     hold_claim(sim, person)
     if new:
-        repute.nudge(section, lore().index[person], ACCEPT_TRUST)
+        repute.nudge(section, lore().index[person], ACCEPT_TRUST, "cleared")
 
 
 # ---------------------------------------------------------------------------- the speech
@@ -349,7 +349,7 @@ def _overclaim(
         )
     ]
     for person in knowing:
-        repute.nudge(section, lo.index[person], -OVERCLAIM_DROP)
+        repute.nudge(section, lo.index[person], -OVERCLAIM_DROP, "overclaim")
     if knowing and not section["talk"]:
         converse.say(section, knowing[0], sim.ctx.tick + gossip.BUBBLE_TICKS, "text", "not_said")
     converse.ack(sim, body, reason)

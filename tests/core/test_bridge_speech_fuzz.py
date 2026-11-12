@@ -154,7 +154,7 @@ junk_act = st.fixed_dictionaries(
 )
 junk = st.lists(st.sampled_from(FRAGMENTS), min_size=1, max_size=8).map("".join)
 MOODS = ["plain", "wary", "sad", "curt", "warm", "eager"]
-ADDRESSES = ["none", "manager", "friend"]
+ADDRESSES = ["none", "manager"]
 mostly_right = st.fixed_dictionaries(
     {
         "acts": acts(),

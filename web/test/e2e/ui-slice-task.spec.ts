@@ -1,13 +1,13 @@
 import { expect, test } from "../support/fixtures.ts";
-import { mapDrawn, pickAtSpot } from "../support/play.ts";
+import { mapDrawn } from "../support/play.ts";
 import * as fake from "../support/slice.ts";
 
 // This spec looks at the page with the map on it.
 test.use({ map: true });
 
 const BLOCKER = {
-  en: "The town says Li Er broke the bridge, so Granny Li will not lend bamboo",
-  zh: "镇上说李二毁了桥，李老太不肯借竹料",
+  en: "The Li family will not give the bamboo",
+  zh: "李家不肯给竹料",
 };
 
 test.describe("the task card", () => {
@@ -16,8 +16,8 @@ test.describe("the task card", () => {
     await fake.openFirstDay(lantern);
     const card = page.getByTestId("task-card");
     const words = {
-      en: { title: "Now", text: "The Li family will not give bamboo", why: "They think the manager did nothing about the talk that Li Er broke the bridge", next: "Find out where that talk came from", when: "Li Family House, 08:00 to 17:00", button: "Talk to Granny Li", state: "blocked", job: "The bridge" },
-      zh: { title: "眼下", text: "李家不肯给竹料", why: "他们认为总管没有制止毁桥的说法", next: "问清这话的来源", when: "李家宅，辰时 08:00 到 17:00", button: "去找李老太谈", state: "受阻", job: "修桥" },
+      en: { title: "Now", text: "Get the first load of bamboo from the Li family", why: "The town is saying Li Er broke the bridge. Granny Li is angry that you, the manager, have said nothing.", next: "Find out who started that talk.", when: "Li Family House, 08:00 to 17:00", button: "Talk to Granny Li", state: "blocked", job: "The bridge" },
+      zh: { title: "眼下", text: "借到李家的第一批竹料", why: "镇上都在传李二毁了桥。李老太怪你这个总管一声不吭。", next: "问清这话是谁先说的。", when: "李家宅，辰时 08:00 到 17:00", button: "去找李老太说话", state: "卡住了", job: "修桥" },
     } as const;
     for (const theme of ["light", "dark"] as const) {
       await lantern.setTheme(theme);
@@ -31,7 +31,7 @@ test.describe("the task card", () => {
         await expect(card.locator(".slip-head").getByTestId("task-state")).toHaveText(w.state);
         await expect(card.getByTestId("task-why")).toHaveText(w.why);
         await expect(card.getByTestId("task-next")).toHaveText(w.next);
-        await expect(card.getByTestId("task-blocker")).toHaveText(`${lang === "zh" ? "拦着：" : "In the way: "}${BLOCKER[lang]}`);
+        await expect(card.getByTestId("task-blocker")).toHaveText(`${lang === "zh" ? "卡住了，" : "In the way: "}${BLOCKER[lang]}`);
         await expect(card.getByTestId("task-window")).toHaveText(w.when);
         await expect(card.getByTestId("task-do")).toHaveText(w.button);
         for (const selector of ['[data-testid="task-text"]', '[data-testid="task-why"]', '[data-testid="task-do"]', '[data-testid="task-blocker"]']) {
@@ -72,7 +72,7 @@ test.describe("the task card", () => {
     await fake.recordSent(page);
     const more = page.getByTestId("task-more");
     await expect(more).toBeVisible();
-    await expect(more.locator("summary")).toHaveText("Other things (3)");
+    await expect(more.locator("summary")).toHaveText("3 more");
     await expect(page.getByTestId("task-other").first()).toBeHidden();
     await more.locator("summary").click();
     await expect(page.getByTestId("task-other")).toHaveCount(3);
@@ -83,15 +83,16 @@ test.describe("the task card", () => {
     // The core follows it, says why in an event, and the page tells the player: the bar, the card and a note.
     await expect(page.getByTestId("task-changed")).toHaveCount(0);
     await fake.feedFrame(page, fake.tasks("t_source"), [{ kind: "task_changed", tick: 5, from: "t_bamboo_first", to: "t_source", cause: "done", reason: { zh: "李老太撤回了阻拦", en: "Granny Li dropped her objection" } }]);
+    // The note goes by itself some seconds after it comes, which a slow machine can take between two calls of a test: it is read first, in both languages, in one call.
+    await expect(page.getByTestId("game-note").last()).toBeVisible();
+    expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ en: "Granny Li dropped her objection", zh: "李老太撤回了阻拦" });
     await expect(page.getByTestId("task-text")).toHaveText("Why was Li Er by the bridge that night?");
     await expect(page.getByTestId("topbar-task-text")).toHaveText("Why was Li Er by the bridge that night?");
-    // The note and the line on the card say it in the words of the core, in the language of the page.
-    await expect(page.getByTestId("game-note").last()).toHaveText("Granny Li dropped her objection");
+    // The line on the card says it in the words of the core, in the language of the page.
     await expect(page.getByTestId("task-changed")).toHaveText("Granny Li dropped her objection");
-    await lantern.setLang("zh");
-    await expect(page.getByTestId("game-note").last()).toHaveText("李老太撤回了阻拦");
+    await lantern.switchLang("zh");
     await expect(page.getByTestId("task-changed")).toHaveText("李老太撤回了阻拦");
-    await expect(page.getByTestId("task-more").locator("summary")).toHaveText("还有别的事（3）");
+    await expect(page.getByTestId("task-more").locator("summary")).toHaveText("还有三件");
     // Without the verb, the list is for reading.
     await fake.feedFrame(page, { hud: { verbs: ["move"] } });
     await expect(page.getByTestId("task-track")).toHaveCount(0);
@@ -104,13 +105,13 @@ test.describe("the task card", () => {
     await lantern.waitForTick(300);
     await expect(page.getByTestId("task-card")).toBeVisible();
     // The core follows its first task from the start of the day.
-    await expect(page.getByTestId("task-text")).toHaveText("Get the first bamboo from the Li family");
+    await expect(page.getByTestId("task-text")).toHaveText("Get the first load of bamboo from the Li family");
     await expect(page.getByTestId("task-card")).toHaveAttribute("data-id", "t_bamboo_first");
     await fake.feedFrame(page, fake.tasks(null));
-    await expect(page.getByTestId("task-text")).toHaveText("Nothing is being followed. Pick one of the tasks below.");
-    await expect(page.getByTestId("task-more").locator("summary")).toHaveText("Other things (4)");
+    await expect(page.getByTestId("task-text")).toHaveText("Nothing chosen yet. Pick one of the tasks below.");
+    await expect(page.getByTestId("task-more").locator("summary")).toHaveText("4 more");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("task-text")).toHaveText("还没有追哪一件。从下面挑一件。");
+    await expect(page.getByTestId("task-text")).toHaveText("还没选要办的事，从下面挑一件。");
   });
 });
 
@@ -149,21 +150,24 @@ test.describe("what was promised to the player", () => {
     await expect(page.getByTestId("game-note").last()).toHaveText("3 poles of timber came to the Stone Bridge.");
     // A promise that was not kept says why, in the words of the core, and so does one that was taken back.
     await fake.feedFrame(page, fake.commitmentEnded("broken", "rain"), [{ kind: "commitment", tick: 402, id: "c_li_da_bamboo", by: "li_da", state: "broken", item: "bamboo", amount: 4, reason: "rain" }]);
+    // The note comes with the state of the card, from the same frame: once the card says so, the note is read, in both languages and in one call, for the reason given above.
     await expect(card.getByTestId("commitment-state")).toHaveText("not kept");
+    expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({
+      en: "Li Da did not keep a promise: Bring 4 poles of bamboo to the Stone Bridge. The heavy rain kept the goods off the road.",
+      zh: "李大失约了，没把四根竹料送到石桥。下大雨，货运不出来。",
+    });
     await expect(card).toHaveAttribute("data-state", "broken");
     await expect(card.getByTestId("commitment-reason")).toHaveText("The heavy rain kept the goods off the road");
-    await expect(page.getByTestId("game-note").last()).toHaveText("Li Da did not keep a promise: Bring 4 poles of bamboo to the Stone Bridge. The heavy rain kept the goods off the road.");
     for (const theme of ["light", "dark"] as const) {
-      await lantern.setTheme(theme);
+      await lantern.switchTheme(theme);
       expect(await fake.contrast(page, '[data-testid="commitment-reason"]'), `${theme} reason`).toBeGreaterThan(4.5);
     }
-    await lantern.setLang("zh");
+    await lantern.switchLang("zh");
     await expect(card.getByTestId("commitment-reason")).toHaveText("下大雨，货运不出来");
-    await expect(page.getByTestId("game-note").last()).toHaveText("李大失约了：把四根竹料送到石桥。下大雨，货运不出来。");
-    await lantern.setLang("en");
+    await lantern.switchLang("en");
     await fake.feedFrame(page, fake.commitmentEnded("withdrawn", "taken_back"));
     await expect(card.getByTestId("commitment-state")).toHaveText("taken back");
-    await expect(card.getByTestId("commitment-reason")).toHaveText("They took the promise back");
+    await expect(card.getByTestId("commitment-reason")).toHaveText("Word is they changed their mind");
     // A promise with no reason in the frame shows no line for it.
     await fake.feedFrame(page, fake.commitmentEnded("withdrawn", null));
     await expect(card.getByTestId("commitment-state")).toHaveText("taken back");
@@ -259,17 +263,19 @@ test.describe("the preparation board of the first day", () => {
     await expect(page.getByTestId("board-window")).toContainText("Day 2 06:00 to 07:00, Stone Bridge");
     // The pairs that were judged are on the page of the truth.
     await page.getByTestId("board-tab-truth").click();
-    await expect(page.getByTestId("statement-empty")).toHaveText("Judgements so far: 1.");
+    await expect(page.getByTestId("statement-empty")).toHaveText("Pairs compared so far: 1.");
   });
 });
 
-/** Picks a person by clicking their piece on the map. */
+/**
+ * Opens the card of a person as a pick of their piece on the map does: the page is asked to focus them. The spec is about what the card says, and the pick by a click is
+ * tested where the map is (ui-person-lean, ui-sprites): on a slow machine the figure is still on its way when the point is read, and the click lands on the ground.
+ */
 async function pickOnMap(lantern: { page: import("@playwright/test").Page }, id: string): Promise<void> {
   const page = lantern.page;
   await mapDrawn(page);
-  const spot = await page.evaluate((who) => window.__lantern.view.screenPositionOf(who), id);
-  if (spot === null) throw new Error(`there is no ${id} on the map`);
-  await pickAtSpot(page, spot, id);
+  expect(await page.evaluate((who) => window.__lantern.view.bodyPositionOf(who), id), `there is no ${id} on the map`).not.toBeNull();
+  await page.evaluate((who) => window.__lantern.play.onFocus?.(who), id);
   await expect(page.getByTestId("person-card")).toHaveAttribute("data-person", id);
 }
 
@@ -280,8 +286,8 @@ test.describe("the card of a person", () => {
     await pickOnMap(lantern, "li_laotai");
     const card = page.getByTestId("person-card");
     const words = {
-      en: { name: "Granny Li", find: "Li Family House, 08:00 to 17:00", wants: "Someone to set the talk that Li Er wrecked the bridge straight in public", favours: "None owed", stance: "Li Er broke the rail.", when: "They told you themselves, Day 1 08:00", button: "Walk up and talk", routine: [["Now", "Li Family House", "Resting"], ["12:00", "Teahouse", "Having tea"], ["Tomorrow 06:00", "Li Family House", "Resting"]] },
-      zh: { name: "李老太", find: "李家宅，辰时 08:00 到 17:00", wants: "有人出来把「李二毁桥」这话当众说清", favours: "互不相欠", stance: "李二弄坏了栏杆。", when: "亲口告诉你的，第一日 08:00", button: "走过去交谈", routine: [["此刻", "李家宅", "歇息"], ["12:00", "茶馆", "喝茶"], ["明日 06:00", "李家宅", "歇息"]] },
+      en: { name: "Granny Li", find: "Li Family House, 08:00 to 17:00", wants: "Someone to set the talk that Li Er wrecked the bridge straight in public", favours: "None owed", stance: "Li Er broke the bridge railing last night.", when: "They told you themselves, Day 1 08:00", button: "Walk up and talk", routine: [["Now", "Li Family House", "Resting"], ["12:00", "Teahouse", "Having tea"], ["Tomorrow 06:00", "Li Family House", "Resting"]] },
+      zh: { name: "李老太", find: "李家宅，辰时 08:00 到 17:00", wants: "有人出来把「李二毁桥」这话当众说清", favours: "互不相欠", stance: "李二昨晚把栏杆弄坏了。", when: "亲口告诉你的，第一天 08:00", button: "走过去说话", routine: [["现在", "李家宅", "歇着"], ["12:00", "茶馆", "喝茶"], ["明天 06:00", "李家宅", "歇着"]] },
     } as const;
     for (const theme of ["light", "dark"] as const) {
       await lantern.setTheme(theme);
@@ -326,7 +332,7 @@ test.describe("the card of a person", () => {
     await expect(card.getByTestId("person-name")).toHaveText("Li Da");
     await expect(promise).toHaveCount(1);
     await expect(promise.getByTestId("person-commitment-text")).toHaveText("Agreed to bring 4 poles of bamboo to the Stone Bridge by 7 tomorrow morning");
-    await expect(card.getByTestId("person-agreed").locator("dt")).toHaveText("Promises");
+    await expect(card.getByTestId("person-agreed").locator("dt")).toHaveText("Promised you");
     await expect(promise).toHaveAttribute("data-state", "promised");
     await expect(promise.getByTestId("commitment-state")).toHaveText("promised");
     await expect(promise.getByTestId("commitment-reason")).toHaveCount(0);
@@ -353,12 +359,12 @@ test.describe("the card of a person", () => {
       }
     }
     await fake.feedFrame(page, { ...fake.commitments("delivered"), cards: [{ id: "li_da", met: false, find: null, favours: -2, wants: [], stance: null, agreed: ["c_li_da_bamboo"] }] });
-    await expect(card.getByTestId("person-favours").locator("dd")).toHaveText("You owe them 2");
+    await expect(card.getByTestId("person-favours").locator("dd")).toHaveText("You owe Li Da 2");
     await lantern.setLang("zh");
-    await expect(card.getByTestId("person-favours").locator("dd")).toHaveText("你欠对方两份人情");
+    await expect(card.getByTestId("person-favours").locator("dd")).toHaveText("你欠李大两份人情");
     await expect(promise.getByTestId("person-commitment-text")).toHaveText("答应明早07:00前把四根竹料送到石桥");
     await expect(promise.getByTestId("commitment-state")).toHaveText("已送到");
-    await expect(card.getByTestId("person-agreed").locator("dt")).toHaveText("许诺");
+    await expect(card.getByTestId("person-agreed").locator("dt")).toHaveText("答应你的");
     await fake.feedFrame(page, fake.commitmentEnded("broken", "rain"));
     await expect(promise.getByTestId("commitment-reason")).toHaveText("下大雨，货运不出来");
     expect(lantern.pageErrors).toEqual([]);
@@ -389,12 +395,12 @@ test.describe("the card of a person", () => {
 
   test("has one button for asking a person, when two tasks end in asking them, and a button for each other thing to do", async ({ lantern }) => {
     const page = lantern.page;
-    // After Granny Li says no, the first bamboo is blocked and the talk that blames Li Er is open, and both say: ask Granny Li.
+    // After Granny Li says no, the first load of bamboo is blocked and the talk that blames Li Er is open, and both say: ask Granny Li.
     const ask = { verb: "ask", npc: "li_laotai" };
     const task = (id: string, text: string, action: Record<string, unknown>): Record<string, unknown> => ({ id, kind: "lead", job: "truth", text: { zh: text, en: text }, state: "open", action });
     await fake.openFirstDay(lantern, {
       tracked: "t_bamboo_first",
-      tasks: [task("t_bamboo_first", "Get the first bamboo", ask), task("t_who_said", "Who started the talk", ask), task("t_where", "Where was Li Er", { verb: "ask_source", npc: "li_laotai" })],
+      tasks: [task("t_bamboo_first", "Get the first load of bamboo from the Li family", ask), task("t_who_said", "Who started the talk", ask), task("t_where", "Where was Li Er", { verb: "ask_source", npc: "li_laotai" })],
     });
     await pickOnMap(lantern, "li_laotai");
     const card = page.getByTestId("person-card");

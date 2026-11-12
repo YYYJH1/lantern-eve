@@ -521,7 +521,7 @@ def test_a_witness_who_is_asked_tells_what_they_saw_and_the_notebook_keeps_it_as
     assert "e_he_lamp" in me(game)["evidence"]
     (entry,) = [e for e in out["frame"]["notebook"] if e["id"] == said["entries"][0]]
     assert entry["source"]["kind"] == "heard" and entry["source"]["who"]["id"] == "miaozhu"
-    assert entry["source"]["hand"] == 1
+    assert entry["source"]["how"] == "saw" and "hand" not in entry["source"]
     assert [name["id"] for name in entry["chain"]] == ["miaozhu"]  # who says they saw it themself
     assert entry["marks"] == []  # the notebook marks nothing the manager has not judged
     assert entry["text"]["en"] == "Boatman He was at home last night."

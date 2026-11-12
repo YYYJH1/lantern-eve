@@ -22,10 +22,10 @@ test.describe("the reader of the statement key", () => {
     expect(card.parts.map((p) => p.part)).toEqual(["cause", "course", "rumour"]);
     expect(card.parts.map((p) => p.options.length)).toEqual([4, 3, 3]);
     const cause = card.parts[0];
-    expect(cause?.title).toEqual({ zh: "成因", en: "Cause" });
+    expect(cause?.title).toEqual({ zh: "桥是怎么坏的", en: "How the bridge broke" });
     expect(cause?.chosen).toBe("c_boat");
     expect(cause?.gap).toBe(false);
-    expect(cause?.options[0]).toEqual({ id: "c_boat", text: { zh: "老何的船撞断的", en: "Old He's boat struck it" }, support: 2, against: 0, entries: ["n_scrape", "n_boat"] });
+    expect(cause?.options[0]).toEqual({ id: "c_boat", text: { zh: "船夫老何夜里撑船，船头撞断了栏杆", en: "Boatman He's boat struck the railing in the night" }, support: 2, against: 0, entries: ["n_scrape", "n_boat"] });
     expect(card.parts[1]?.chosen).toBeNull();
     expect(card.canState).toBe(false);
     expect(card.whyNot).toEqual(stmt.WHY_NOT);
@@ -138,15 +138,17 @@ test.describe("the words and the state of the card", () => {
     expect(parts[1]?.options).toHaveLength(3);
   });
 
-  test("names a part by the core's words, and by the page's own where the frame gives none, in both languages", () => {
-    const card = readStatement(frameWith({ parts: [stmt.partsOf()[0], { part: "course" }] }));
+  test("names a part by the question it answers, whatever the core calls it, in both languages", () => {
+    const card = readStatement(frameWith({ parts: [{ ...stmt.partsOf()[0], title: { zh: "成因", en: "Cause" } }, { part: "course" }] }));
     const [cause, course, rumour] = partsOf(card ?? { parts: [], canState: false, whyNot: null, usedToday: false, last: null });
     if (cause === undefined || course === undefined || rumour === undefined) throw new Error("no parts");
     setLang("en");
-    expect([partName(cause, "en"), partName(course, "en"), partName(rumour, "en")]).toEqual(["Cause", "Course", "How the rumour began"]);
-    expect(partName(cause, "zh")).toBe("成因");
+    // A title of the core's that is not the card's name ("Cause") is not used: the card has one name for each part.
+    expect(cause.title).not.toBeNull();
+    expect([partName(cause, "en"), partName(course, "en"), partName(rumour, "en")]).toEqual(["How the bridge broke", "What happened that night", "Why people got it wrong"]);
+    expect(partName(cause, "zh")).toBe("桥是怎么坏的");
     setLang("zh");
-    expect([partName(course, "zh"), partName(rumour, "zh")]).toEqual(["经过", "误会缘由"]);
+    expect([partName(course, "zh"), partName(rumour, "zh")]).toEqual(["那晚的经过", "大家为什么会误会"]);
     setLang("en");
   });
 
@@ -180,26 +182,26 @@ test.describe("the words and the state of the card", () => {
     // Today's is made and the core gives no reason: the page says so.
     const used = readStatement(frameWith(stmt.statementKey({ ...stmt.READY }, { why_not: null, used_today: true })));
     expect(stateButton(used, false, "en")).toEqual({ enabled: false, why: translate("en", "statement.used"), state: "used" });
-    expect(stateButton(used, false, "zh").why).toBe("今天的陈述已经做过了。");
+    expect(stateButton(used, false, "zh").why).toBe("今天已经照讲稿说过一回了。");
     // No reason of any kind, and no card at all.
     const bare = readStatement(frameWith({}));
-    expect(stateButton(bare, false, "en")).toEqual({ enabled: false, why: "A full statement cannot be made right now.", state: "unknown" });
-    expect(stateButton(null, false, "zh")).toEqual({ enabled: false, why: "眼下还不能完整陈述。", state: "unknown" });
+    expect(stateButton(bare, false, "en")).toEqual({ enabled: false, why: "You cannot make the statement now.", state: "unknown" });
+    expect(stateButton(null, false, "zh")).toEqual({ enabled: false, why: "这会儿还不能照讲稿说。", state: "unknown" });
   });
 
   test("says which parts did not hold, by name, in both languages", () => {
     const card = readStatement(frameWith(stmt.statementKey({}, { last: { ...stmt.LAST_WRONG, wrong: ["cause", "rumour"] } })));
     setLang("en");
-    expect(partNames(card, ["cause", "rumour"], "en")).toBe("Cause, How the rumour began");
-    expect(wrongLine(card, ["cause", "course"], "en")).toBe("Did not hold: Cause, Course");
+    expect(partNames(card, ["cause", "rumour"], "en")).toBe("How the bridge broke, Why people got it wrong");
+    expect(wrongLine(card, ["cause", "course"], "en")).toBe("Did not hold: How the bridge broke, What happened that night");
     setLang("zh");
-    expect(partNames(card, ["course", "rumour"], "zh")).toBe("经过、误会缘由");
-    expect(wrongLine(card, ["cause"], "zh")).toBe("站不住的栏目：成因");
+    expect(partNames(card, ["course", "rumour"], "zh")).toBe("那晚的经过、大家为什么会误会");
+    expect(wrongLine(card, ["cause"], "zh")).toBe("没站住的：桥是怎么坏的");
     expect(wrongLine(card, [], "zh")).toBeNull();
     // Without a card the page's own names are used.
-    expect(wrongLine(null, ["course"], "zh")).toBe("站不住的栏目：经过");
+    expect(wrongLine(null, ["course"], "zh")).toBe("没站住的：那晚的经过");
     setLang("en");
-    expect(wrongLine(null, ["rumour"], "en")).toBe("Did not hold: How the rumour began");
+    expect(wrongLine(null, ["rumour"], "en")).toBe("Did not hold: Why people got it wrong");
   });
 });
 
@@ -231,13 +233,13 @@ test.describe("the buttons of the tasks that fill in the card and make the state
 
   test("say what they do in both languages", () => {
     expect(label({ verb: "state" }, "en")).toBe("Fill in the statement card");
-    expect(label({ verb: "state" }, "zh")).toBe("填写陈述卡");
-    expect(label({ verb: "speak", kind: "statement" }, "en")).toBe("Make the statement in public");
-    expect(label({ verb: "speak", kind: "statement" }, "zh")).toBe("当众陈述");
-    // The other ways to speak keep their words, and so does judging the lines.
+    expect(label({ verb: "state" }, "zh")).toBe("去写讲稿");
+    expect(label({ verb: "speak", kind: "statement" }, "en")).toBe("Make the statement");
+    expect(label({ verb: "speak", kind: "statement" }, "zh")).toBe("照讲稿当众说");
+    // The other ways to speak, and judging the lines, have words of their own.
     expect(label({ verb: "speak", kind: "evidence" }, "en")).toBe("Set the record straight in public");
-    expect(label({ verb: "speak", kind: "clarify" }, "zh")).toBe("当众澄清");
-    expect(label({ verb: "judge" }, "en")).toBe("Judge the lines in the notebook");
+    expect(label({ verb: "speak", kind: "clarify" }, "zh")).toBe("当众把这话说清");
+    expect(label({ verb: "judge" }, "en")).toBe("Compare two lines in the notebook");
   });
 });
 

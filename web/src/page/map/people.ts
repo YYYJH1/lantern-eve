@@ -17,7 +17,7 @@ import type { Sheet } from "./atlas.ts";
 import { CELL, CELL_DEPTH, clamp, DEPTH_RATIO, LIVELY, type Motion, PULSE, STILL } from "./geometry.ts";
 import type { Dir, SpriteDef } from "./manifest.ts";
 import { OutlineFilter } from "./outline.ts";
-import { mix, PAL, pieceColour } from "./palette.ts";
+import { familyColour, mix, PAL, pieceColour } from "./palette.ts";
 import { alphaAtWorld, type FrameBox, type Pickable, SOLID } from "./pick.ts";
 import { deckLift } from "./projection.ts";
 import { type Box, type Hidable, type Tight, tightOf } from "./silhouette.ts";
@@ -157,6 +157,8 @@ export class People {
   private outline: OutlineFilter | null = null;
   private deck: Deck | null = null;
   private calm = false;
+  /** Whether the people are put away, as they are while the festival night plays (they are not drawn, and nobody is hidden behind a building). */
+  private away = false;
   private tint = 0xffffff;
   /** The figures as of the last tick, for the silhouettes. The list is kept and filled again at every tick. */
   private readonly drawn: Figure[] = [];
@@ -185,6 +187,12 @@ export class People {
   /** Whether the player asked for less motion: pieces then jump to their cells and stand in one pose. */
   setCalm(calm: boolean): void {
     this.calm = calm;
+  }
+
+  /** Puts the people away, or brings them back. A person put away is not drawn and is not behind anything. */
+  setAway(away: boolean): void {
+    this.away = away;
+    for (const piece of this.all()) piece.node.visible = !away;
   }
 
   clear(): void {
@@ -234,6 +242,7 @@ export class People {
           name: { zh: entry.id, en: entry.id },
           role: { zh: "", en: "" },
           bio: { zh: "", en: "" },
+          intro: { zh: "", en: "" },
           token: { zh: entry.id.slice(-1), en: entry.id.slice(-1) },
           family: null,
           home: null,
@@ -261,7 +270,7 @@ export class People {
     }
     const entry: FramePerson = { id: info.id, x: at.x, y: at.y, activity: at.activity, carrying: null, status: null };
     if (this.you === null) {
-      const person: Person = { id: info.id, name: info.name, role: info.role, bio: { zh: "", en: "" }, token: info.token, family: null, home: null, work: null };
+      const person: Person = { id: info.id, name: info.name, role: info.role, bio: { zh: "", en: "" }, intro: { zh: "", en: "" }, token: info.token, family: null, home: null, work: null };
       this.you = this.make(person, entry, true);
       this.host.addChild(this.you.node);
     }
@@ -279,6 +288,7 @@ export class People {
     const y = (entry.y + 0.5) * CELL_DEPTH;
     node.position.set(x, y);
     node.tint = this.tint;
+    node.visible = !this.away;
     // The halo of the person who is being talked to: a gold ring on the ground.
     const halo = new Graphics();
     halo.visible = false;
@@ -361,7 +371,14 @@ export class People {
     piece.radius = Math.max(8, Math.min(def.w, def.h) * 0.2);
     piece.figure = new FigureBody(piece.id, piece.you ? PAL.gold : pieceColour(piece.id, piece.person.family), body, { x: def.ax, y: def.ay });
     this.makeMarks(piece, -piece.top - 4);
-    piece.node.addChild(piece.halo, body, piece.marks);
+    // A person of one of the two families stands in a thin ring on the ground in the colour of the family.
+    const rim = piece.you ? null : familyColour(piece.person.family);
+    if (rim === null) {
+      piece.node.addChild(piece.halo, body, piece.marks);
+    } else {
+      const ring = new Graphics().ellipse(0, 0, CELL * 0.36, CELL * 0.36 * DEPTH_RATIO).stroke({ width: 2, color: rim, alpha: 0.95 });
+      piece.node.addChild(piece.halo, ring, body, piece.marks);
+    }
     this.drawPose(piece, 0);
   }
 
@@ -487,7 +504,7 @@ export class People {
         piece.scale = 1;
         piece.marks.scale.set(markScale);
         this.drawPose(piece, seconds);
-        this.follow(piece);
+        if (!this.away) this.follow(piece);
         const marked = piece.id === this.selected || piece.id === this.hover;
         this.outlineFigure(piece, marked);
       }
@@ -646,6 +663,16 @@ export class People {
     const piece = id === PLAYER_ID ? this.you : this.pieces.get(id);
     if (piece === undefined || piece === null) return null;
     return { x: piece.x, y: piece.y, radius: piece.radius * piece.scale, top: piece.top * piece.scale + piece.lift, mid: piece.mid * piece.scale + piece.lift };
+  }
+
+  /** The people of the cast (not the player) with where the top of their head is in the world, for the tags over their heads. */
+  heads(): Array<{ id: string; person: Person; x: number; y: number }> {
+    const out: Array<{ id: string; person: Person; x: number; y: number }> = [];
+    for (const piece of this.pieces.values()) {
+      const at = this.positionOf(piece.id);
+      if (at !== null) out.push({ id: piece.id, person: piece.person, x: at.x, y: at.y - at.top });
+    }
+    return out;
   }
 
   /** The cell the player's piece is heading for, or null before the first frame. */

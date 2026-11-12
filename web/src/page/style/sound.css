@@ -1,0 +1,26 @@
+/* The sound section of the menu: a switch, and a slider for each of the three volumes. The switch is the page's own setting row. */
+
+.sound-volume {
+  display: grid;
+  grid-template-columns: 5.5em minmax(0, 1fr) 2.2em;
+  gap: 10px;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.sound-volume-name {
+  font-weight: 500;
+}
+
+.sound-volume input[type="range"] {
+  min-width: 0;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+
+.sound-volume-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

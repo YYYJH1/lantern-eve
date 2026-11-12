@@ -13,13 +13,13 @@ const WORDS = {
   en: {
     storage: "The game could not be saved: the browser did not let it write. You can try again from Saves in the menu.",
     full: "The game could not be saved: the browser has no room left for it. Delete an old save under Saves in the menu, then try again.",
-    server: "The game could not be saved: this game is run by a server, which keeps no saves.",
+    server: "The game could not be saved. It runs on a server, and the server keeps no saves.",
     other: "The game could not be saved. You can try again from Saves in the menu.",
   },
   zh: {
-    storage: "没能存档：浏览器没有让游戏写入。可以在菜单的「存档」里再存一次。",
-    full: "没能存档：浏览器给这个页面留的地方满了。可以在菜单的「存档」里删掉旧存档，再存一次。",
-    server: "没能存档：这一局由服务器运行，服务器不保存存档。",
+    storage: "没能存档，浏览器不让游戏写入。可以到菜单的「存档」里再存一次。",
+    full: "没能存档，浏览器给这个页面留的地方满了。到菜单的「存档」里删掉旧的，再存一次。",
+    server: "没能存档。这一局在服务器上跑，服务器不存档。",
     other: "没能存档。可以在菜单的「存档」里再存一次。",
   },
 } as const;
@@ -128,13 +128,15 @@ for (const lang of ["en", "zh"] as const) {
       // It is the same button when the browser lets the game write: the words of a save that was made.
       await lantern.e2e("fail-saves", { how: null });
       await page.getByTestId("btn-save").click();
-      await expect(notice).toContainText(lang === "en" ? "saved #1" : "已存档 #1");
+      await expect(notice).toContainText(lang === "en" ? "saved, Day" : "已存档，第");
       expect(await page.evaluate(() => window.__lantern.client.state.saves.length)).toBe(1);
       expect(lantern.pageErrors).toEqual([]);
     });
 
     test("keeps the kind of the failure and makes its words when it is drawn: the language is switched right after it, and the words are the new language's", async ({ lantern }) => {
       const page = lantern.page;
+      // The notice of a save that was made goes after 3.5 seconds, which a slow machine can take between two calls: it goes after four times as long here.
+      await lantern.stretchTimer(3500);
       await lantern.open(fake.TOWN);
       await lantern.waitForTick(300);
       if (lang === "zh") await lantern.setLang("zh");
@@ -151,9 +153,9 @@ for (const lang of ["en", "zh"] as const) {
       // What the menu says of a save that was made follows the language too.
       await lantern.e2e("fail-saves", { how: null });
       await page.getByTestId("btn-save").click();
-      await expect(notice).toContainText(lang === "en" ? "saved #1" : "已存档 #1");
-      await lantern.setLang(other);
-      await expect(notice).toContainText(other === "en" ? "saved #1" : "已存档 #1");
+      await expect(notice).toContainText(lang === "en" ? "saved, Day" : "已存档，第");
+      await lantern.switchLang(other);
+      await expect(notice).toContainText(other === "en" ? "saved, Day" : "已存档，第");
       expect(lantern.pageErrors).toEqual([]);
     });
   });

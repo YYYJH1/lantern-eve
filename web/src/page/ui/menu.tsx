@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { type Lang, type MessageKey, t } from "../../i18n/index.ts";
-import type { ProviderId } from "../../shared/protocol.ts";
+import { getLang, type Lang, type MessageKey, t } from "../../i18n/index.ts";
+import type { ProviderId, SaveMeta } from "../../shared/protocol.ts";
 import { PROVIDER_IDS, PROVIDERS } from "../../shared/providers.ts";
+import { SoundSection } from "../audio/sound-menu.tsx";
 import { HostCallError, type HostClient, type PageState } from "../client.ts";
 import type { ViewFrame } from "../frame.ts";
 import { loadFailureOf } from "../load-failure.ts";
@@ -10,12 +11,20 @@ import type { ThemeChoice } from "../prefs.ts";
 import { failureOf, failureText, type SaveFailure } from "../save-notice.ts";
 import { forget, type Remembered, remember } from "../storage.ts";
 import { CallLog } from "./calls.tsx";
-import { GuidanceSwitch } from "./guide.tsx";
+import { GuidanceSwitch, HintList } from "./guide.tsx";
+import { tickText } from "./format.ts";
 import { CloseCorner } from "./ink.tsx";
 import { CostCard } from "./side.tsx";
 import { LanguageSwitch, type SpeedChoice, SpeedSwitch, ThemeSwitch } from "./topbar.tsx";
 
 const ms = (value: number | undefined): string => (value === undefined ? "-" : value.toFixed(2));
+
+/** What a save is called in the list: its name and the game time it was made at. A name that says the time already (an autosave's) is not followed by it. */
+function saveText(save: SaveMeta): string {
+  const when = tickText(getLang(), save.tick);
+  if (save.name === "") return when;
+  return save.name.includes(when) ? save.name : t("menu.saveOption", { name: save.name, when });
+}
 
 function describe(err: unknown): string {
   if (err instanceof HostCallError) return `${err.code}: ${err.message}`;
@@ -29,7 +38,7 @@ function describe(err: unknown): string {
 type Said =
   | { kind: "none" }
   | { kind: "text"; text: string }
-  | { kind: "message"; key: MessageKey; values?: Record<string, string | number> }
+  | { kind: "message"; key: MessageKey; values?: Record<string, string | number>; tick?: number }
   | { kind: "save-failed"; failure: SaveFailure }
   /** A save that another version of the game made: said in plain words, with the host's own words after them. */
   | { kind: "load-version"; text: string };
@@ -44,7 +53,8 @@ function saidWords(said: Said): { plain: string; detail: string } {
     case "text":
       return { plain: said.text, detail: "" };
     case "message":
-      return { plain: t(said.key, said.values), detail: "" };
+      // A tick is said as the day and the hour of the game, in the language of the page now.
+      return { plain: t(said.key, said.tick === undefined ? said.values : { ...said.values, when: tickText(getLang(), said.tick) }), detail: "" };
     case "save-failed":
       return { plain: failureText(said.failure), detail: "" };
     case "load-version":
@@ -183,7 +193,7 @@ function Controls({ client, play, s, open, onReplays }: { client: HostClient; pl
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 10_000);
-    return { kind: "message", key: "notice.exported", values: { n: replay.records.length, tick: replay.end_tick } };
+    return { kind: "message", key: "notice.exported", tick: replay.end_tick };
   };
 
   return (
@@ -225,7 +235,7 @@ function Controls({ client, play, s, open, onReplays }: { client: HostClient; pl
                 const meta = await play.saveByHand(name);
                 setName("");
                 setSelected(meta.id);
-                return { kind: "message", key: "notice.saved", values: { id: meta.id, tick: meta.tick } };
+                return { kind: "message", key: "notice.saved", tick: meta.tick };
               },
               (err) => ({ kind: "save-failed", failure: failureOf(err) }),
             )}
@@ -238,7 +248,7 @@ function Controls({ client, play, s, open, onReplays }: { client: HostClient; pl
             {s.saves.length === 0 ? <option value="">{t("menu.noSaves")}</option> : null}
             {s.saves.map((save) => (
               <option key={save.id} value={save.id}>
-                {t("menu.saveOption", { id: save.id, name: save.name, tick: save.tick, hash: save.hash.slice(0, 8) })}
+                {saveText(save)}
               </option>
             ))}
           </select>
@@ -251,7 +261,7 @@ function Controls({ client, play, s, open, onReplays }: { client: HostClient; pl
               async () => {
                 if (selected === "") return { kind: "none" };
                 const info = await client.load(selected);
-                return { kind: "message", key: info.match ? "notice.loadedMatch" : "notice.loadedDiffer", values: { id: info.id } };
+                return { kind: "message", key: info.match ? "notice.loadedMatch" : "notice.loadedDiffer", tick: info.tick };
               },
               // A save that another version of the game made is said in plain words, and the host's own words follow them.
               (err) => (loadFailureOf(err) === "version" ? { kind: "load-version", text: describe(err) } : hostSaid(err)),
@@ -291,10 +301,8 @@ function Controls({ client, play, s, open, onReplays }: { client: HostClient; pl
                 class={s.loaded.match ? "ok" : "bad"}
               >
                 {t("notice.loadedLine", {
-                  id: s.loaded.id,
-                  tick: s.loaded.tick,
+                  when: tickText(getLang(), s.loaded.tick),
                   state: t(s.loaded.match ? "notice.hashMatches" : "notice.hashDiffers"),
-                  n: s.loaded.hashesChecked,
                 })}
               </dd>
             </div>
@@ -432,7 +440,7 @@ function Look({ lang, theme, speed }: { lang: Lang; theme: ThemeChoice; speed: M
 }
 
 /** What helps the player: the hints of the world, how much the task card does, and the tutorial of the first day, which can be played again. */
-function Help({ play, client, s, onClose }: { play: Play; client: HostClient; s: PageState; onClose: () => void }) {
+function Help({ play, client, s, lang, onClose }: { play: Play; client: HostClient; s: PageState; lang: Lang; onClose: () => void }) {
   const guide = play.guide;
   if (!guide.active) return null;
   // The tutorial is of the first game of the slice, so it is offered where this page started that game.
@@ -454,6 +462,7 @@ function Help({ play, client, s, onClose }: { play: Play; client: HostClient; s:
           <span>{t("settings.night.help")}</span>
         </span>
       </label>
+      <HintList play={play} lang={lang} onShow={onClose} />
       <div class="setting-choice" data-testid="menu-guidance">
         <strong>{t("settings.guidance")}</strong>
         <GuidanceSwitch play={play} />
@@ -518,7 +527,8 @@ export function MenuDrawer({ client, play, s, lang, theme, frame, speed = null, 
         </header>
         <div class="menu-body">
           <Look lang={lang} theme={theme} speed={speed} />
-          <Help play={play} client={client} s={s} onClose={onClose} />
+          <SoundSection />
+          <Help play={play} client={client} s={s} lang={lang} onClose={onClose} />
           <Controls client={client} play={play} s={s} open={open} onReplays={onReplays} />
           <Provider client={client} initial={remembered} />
           <CostCard frame={frame} calls={s.calls} />

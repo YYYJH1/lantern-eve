@@ -1,0 +1,11 @@
+guide-tutorial.spec.ts
+lifecycle.spec.ts
+people-fake.spec.ts
+replays-server.spec.ts
+show-sound.spec.ts
+ui-board.spec.ts
+ui-fonts.spec.ts
+ui-help-pairing.spec.ts
+ui-slice-task.spec.ts
+ui-sprites.spec.ts
+ui-town.spec.ts

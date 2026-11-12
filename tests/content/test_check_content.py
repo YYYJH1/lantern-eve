@@ -976,7 +976,7 @@ def test_the_tasks_of_the_script_pass_are_counted_and_compile_to_lists_of_option
     promise = data["tasks"][5]
     assert promise["again"] is True and data["tasks"][0].get("again") is None
     assert promise["why"] == [
-        {"when": [], "zh": "李大答应了，按约好的时间送到桥边。", "en": promise["why"][0]["en"]}
+        {"when": [], "zh": "李大答应按约好的时间送到桥边。", "en": promise["why"][0]["en"]}
     ]
     assert promise["window"] is None  # its window is that of the promise (see agenda)
     assert promise["action"] == []  # nothing to do but be there when it comes: the window says when
@@ -1411,8 +1411,10 @@ def test_the_paper_of_the_script_compiles_and_a_script_without_one_compiles_as_i
     assert report.errors == []
     data = json.loads((ROOT / "content" / "compiled" / "broken_bridge.json").read_text("utf-8"))
     paper = data["paper"]
-    assert set(paper) == {"when", "street", "news", "talk"}
+    assert set(paper) == {"when", "manager", "progress", "street", "news", "talk"}
     assert set(paper["when"]) == {"morning", "night"}
+    assert set(paper["manager"]) == {"morning", "night"}  # the Manager in the paper, you at night
+    assert set(paper["progress"]) == {"start", "under_half", "half", "over_half"}
     assert set(paper["street"]) == {
         "warm", "cool", "swing", "camp", "side", "split", "lean_swing", "fresh",
     }  # fmt: skip

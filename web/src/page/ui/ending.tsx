@@ -1,8 +1,12 @@
-import { useMemo } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
 import { hasMessage, type Lang, type Localized, type MessageKey, pick, t } from "../../i18n/index.ts";
-import { buildForest, type EndingView, type Epilogue as EpilogueLine, type Layout, layoutForest, type MyTelling, nodeWords, type RevealChain, TREE, versionWords, wrapText } from "../ending.ts";
+import { riddleEndingKey } from "../eggs.ts";
+import { diffWords, previousTelling, type Run } from "../ending-diff.ts";
+import { buildForest, type EndingView, type Epilogue as EpilogueLine, type Layout, layoutForest, type MyTelling, nodeWords, type RevealChain, type Telling, TREE, versionWords, wrapText } from "../ending.ts";
+import type { MomentCard } from "../moments.ts";
 import type { Name, Scene } from "../scene.ts";
-import { ordinal } from "./format.ts";
+import { numberWord, ordinal } from "./format.ts";
+import { MomentsRow } from "./moments.tsx";
 import { count } from "./paper-text.ts";
 import { InkAct, Tick } from "./ink.tsx";
 
@@ -26,17 +30,28 @@ function nameFor(scene: Scene | null, id: string, lang: Lang): string {
   return scene?.player?.id === id ? pick(scene.player.name, lang) : id;
 }
 
+/** Where a line turns up or down: in the middle of the gap between the column of the one who told and the column of the one who was told. */
+const jointOf = (to: { x: number }): number => to.x - TREE.gap / 2;
+
+/**
+ * The line from a person to the one they told: out of the right side of the name along its row, up or down the gap between the two columns (which holds
+ * no words), and into the left side of the other name. Only the names stand on a row and the words hang under them inside their own column, so the line
+ * passes over no words.
+ */
 const edgePath = (from: { x: number; y: number; w: number }, to: { x: number; y: number }): string => {
   const x1 = from.x + from.w;
   const y1 = from.y + TREE.height / 2;
   const x2 = to.x;
   const y2 = to.y + TREE.height / 2;
-  const mid = (x1 + x2) / 2;
-  return `M${x1} ${y1} C${mid} ${y1} ${mid} ${y2} ${x2} ${y2}`;
+  if (y1 === y2) return `M${x1} ${y1} H${x2}`;
+  const joint = jointOf(to);
+  const bend = Math.min(8, Math.abs(y2 - y1) / 2);
+  const way = y2 > y1 ? 1 : -1;
+  return `M${x1} ${y1} H${joint - bend} Q${joint} ${y1} ${joint} ${y1 + way * bend} V${y2 - way * bend} Q${joint} ${y2} ${joint + bend} ${y2} H${x2}`;
 };
 
-/** One story as a tree: a person is a name in a frame, a line is one telling, and a numbered circle is where the story changed. */
-function ChainTree({ chain, layout, numbers, scene, lang }: { chain: RevealChain; layout: Layout; numbers: ReadonlyMap<string, number>; scene: Scene | null; lang: Lang }) {
+/** One story as a tree: a person is a name in a frame, a line is one telling, and a numbered circle is where the story changed. A line can be chosen, to see what it changed. */
+function ChainTree({ chain, layout, numbers, scene, lang, picked, onPick }: { chain: RevealChain; layout: Layout; numbers: ReadonlyMap<string, number>; scene: Scene | null; lang: Lang; picked: string | null; onPick(id: string): void }) {
   const trueVersions = new Set(chain.trueVersions);
   return (
     <div class="tree-wrap">
@@ -45,10 +60,32 @@ function ChainTree({ chain, layout, numbers, scene, lang }: { chain: RevealChain
           const changed = edge.telling.op !== "";
           const untrue = chain.trueVersions.length > 0 && !trueVersions.has(edge.telling.prop);
           const flag = numbers.get(edge.telling.id) ?? 0;
-          const x = (edge.from.x + edge.from.w + edge.to.x) / 2;
-          const y = (edge.from.y + edge.to.y) / 2 + TREE.height / 2;
+          // The number of a telling that changed the story sits where the line turns into the name of the one who was told.
+          const x = jointOf(edge.to);
+          const y = edge.to.y + TREE.height / 2;
           return (
-            <g key={edge.telling.id} data-testid="tree-edge" data-changed={changed} data-untrue={untrue} data-from={edge.telling.from} data-to={edge.telling.to}>
+            <g
+              key={edge.telling.id}
+              class={`tree-hop${picked === edge.telling.id ? " is-picked" : ""}`}
+              data-testid="tree-edge"
+              data-changed={changed}
+              data-untrue={untrue}
+              data-picked={picked === edge.telling.id}
+              data-id={edge.telling.id}
+              data-from={edge.telling.from}
+              data-to={edge.telling.to}
+              role="button"
+              tabindex={0}
+              aria-pressed={picked === edge.telling.id}
+              aria-label={t("ending.diff.pick", { from: nameFor(scene, edge.telling.from, lang), to: nameFor(scene, edge.telling.to, lang) })}
+              onClick={() => onPick(edge.telling.id)}
+              onKeyDown={(event: KeyboardEvent) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
+                event.preventDefault();
+                onPick(edge.telling.id);
+              }}
+            >
+              <path class="tree-edge-hit" d={edgePath(edge.from, edge.to)} fill="none" />
               <path class={`tree-edge${untrue ? " is-untrue" : ""}${changed ? " is-changed" : ""}`} d={edgePath(edge.from, edge.to)} fill="none" />
               {changed ? (
                 <g class="tree-flag" data-testid="tree-flag" transform={`translate(${x} ${y})`}>
@@ -92,7 +129,66 @@ function ChainTree({ chain, layout, numbers, scene, lang }: { chain: RevealChain
   );
 }
 
+/** The words of a version of a story in a language, as runs that say which of them changed. */
+function Runs({ runs, testid }: { runs: readonly Run[]; testid: string }) {
+  return (
+    <span class="tree-diff-text" data-testid={testid}>
+      {runs.map((run, i) => (run.changed ? <mark key={i} class="tree-diff-mark" data-testid="diff-mark">{run.text}</mark> : <span key={i}>{run.text}</span>))}
+    </span>
+  );
+}
+
+/** What the chosen telling changed: the telling before it and this one, with the words that are new in this one marked (characters in Chinese, words in English). */
+function TellingDiff({ chain, telling, nameOf, lang }: { chain: RevealChain; telling: Telling | null; nameOf(id: string): string; lang: Lang }) {
+  if (telling === null) {
+    return (
+      <p class="ending-small tree-diff-hint" data-testid="tree-diff-hint">
+        {t("ending.diff.hint")}
+      </p>
+    );
+  }
+  const earlier = previousTelling(chain.told, telling);
+  const after = versionWords(chain, telling.prop, lang);
+  const before = earlier === null ? "" : versionWords(chain, earlier.prop, lang);
+  const diff = earlier === null ? null : diffWords(before, after, lang);
+  return (
+    <div class="tree-diff" data-testid="tree-diff" data-telling={telling.id} data-same={diff?.same ?? false}>
+      <p class="tree-diff-head">{t("ending.diff.said", { from: nameOf(telling.from), to: nameOf(telling.to) })}</p>
+      {diff === null ? (
+        <>
+          <p class="tree-diff-note" data-testid="diff-first">
+            {t("ending.diff.first")}
+          </p>
+          <p class="tree-diff-row">
+            <span class="tree-diff-label">{t("ending.diff.after")}</span>
+            <span class="tree-diff-text" data-testid="diff-after">
+              {after}
+            </span>
+          </p>
+        </>
+      ) : (
+        <>
+          <p class="tree-diff-row">
+            <span class="tree-diff-label">{t("ending.diff.before")}</span>
+            <Runs runs={diff.before} testid="diff-before" />
+          </p>
+          <p class="tree-diff-row">
+            <span class="tree-diff-label">{t("ending.diff.after")}</span>
+            <Runs runs={diff.after} testid="diff-after" />
+          </p>
+          {diff.same ? (
+            <p class="tree-diff-note" data-testid="diff-same">
+              {t("ending.diff.same")}
+            </p>
+          ) : null}
+        </>
+      )}
+    </div>
+  );
+}
+
 function Chain({ chain, scene, lang }: { chain: RevealChain; scene: Scene | null; lang: Lang }) {
+  const [picked, setPicked] = useState<string | null>(null);
   const nameOf = (id: string): string => nameFor(scene, id, lang);
   const layout = useMemo(() => layoutForest(buildForest(chain.told), nameOf), [chain, scene, lang]);
   // The tellings that changed the story, as the tree shows them, in the order they were made.
@@ -110,7 +206,8 @@ function Chain({ chain, scene, lang }: { chain: RevealChain; scene: Scene | null
           <p class="ending-small">
             {t("ending.chain.reached", { n: count(lang, chain.reached.length) })} {t("ending.chain.legend")}
           </p>
-          <ChainTree chain={chain} layout={layout} numbers={numbers} scene={scene} lang={lang} />
+          <ChainTree chain={chain} layout={layout} numbers={numbers} scene={scene} lang={lang} picked={picked} onPick={(id) => setPicked((now) => (now === id ? null : id))} />
+          <TellingDiff chain={chain} telling={chain.told.find((telling) => telling.id === picked) ?? null} nameOf={nameOf} lang={lang} />
           {changes.length === 0 ? null : (
             <ol class="tree-changes" data-testid="tree-changes">
               {changes.map((telling, i) => {
@@ -189,10 +286,14 @@ export interface EndingPageProps {
   onBack(): void;
   /** What the first button says, where it is not "New game": a recording has no new game to start. */
   newLabel?: MessageKey;
+  /** The moments of the game at the foot of the page, one small picture for each. */
+  moments?: readonly MomentCard[];
+  /** How many riddles of the lantern at the workshop were guessed right, said in one small line, for a player who opened the lantern at least once. Null for one who did not. */
+  riddles?: number | null;
 }
 
 /** The ending page, over the map: how the night went, what really happened, and how the rumours travelled. */
-export function EndingPage({ ending, scene, lang, onNew, onBack, newLabel = "ending.new" }: EndingPageProps) {
+export function EndingPage({ ending, scene, lang, onNew, onBack, newLabel = "ending.new", moments = [], riddles = null }: EndingPageProps) {
   const reveal = ending.reveal;
   const title = said(ending.label, lang, `ending.id.${ending.id}`);
   const inputs = Object.entries(ending.inputs);
@@ -371,6 +472,12 @@ export function EndingPage({ ending, scene, lang, onNew, onBack, newLabel = "end
                 </section>
               )}
             </>
+          )}
+          <MomentsRow cards={moments} scene={scene} lang={lang} />
+          {riddles === null ? null : (
+            <p class="ending-small ending-wide ending-riddles" data-testid="ending-riddles" data-right={riddles}>
+              {t(riddleEndingKey(riddles), { n: lang === "zh" ? count("zh", riddles) : numberWord("en", riddles) })}
+            </p>
           )}
         </div>
 

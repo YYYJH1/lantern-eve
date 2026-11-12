@@ -41,6 +41,9 @@ name                value
 ``helper``          the person the card names to ask to join next (``agenda.helper``)
 ``hours_left``      the hours of work still to do: the hours the bridge takes less those done
 ``morning``         the hours the helpers give in one morning: one each, the helpers who have joined
+``work_mornings``   the mornings of work the bridge still takes at that pace, in words: 两个早上
+                    and "two more mornings" (the hours left over the hours of a morning, rounded
+                    up), so that a card says the work in mornings and the hours stay on the board
 ``pledgeN_to``      the person the manager's N-th promise was made to, as ``pledgeN_what`` says
                     what it was (a front-row stall at the festival, 10 coins in wages) and
                     ``pledgeN_due`` the day it is to be kept by, "day 4" (N from 1 to
@@ -87,10 +90,13 @@ NAMES = (
     "helper",
     "hours_left",
     "morning",
+    "work_mornings",
     *(f"pledge{n}_{part}" for n in range(1, pledges.CARDS + 1) for part in PLEDGE_PARTS),
     "grudge",
 )
 SCORES = ("grudge",)  # numbers on a scale, which every language writes in digits
+# the mornings of work in English words, from one (more than these are said in digits)
+ENGLISH_COUNTS = ("one", "two", "three", "four", "five", "six")
 SLOT = re.compile(r"\{(\w+)\}")
 PLEDGE_SLOT = re.compile(r"pledge(\d+)_(\w+)")
 FAMILIES = {"li_helpers": "fam_li", "zhou_helpers": "fam_zhou"}
@@ -207,9 +213,9 @@ def hour_words(hour: int) -> Words:
 
 
 def day_words(day: int) -> Words:
-    """A day of the game as a person says it, in each language: 第四日 and day 4."""
+    """A day of the game as a person says it, in each language: 第四天 and day 4."""
     numeral = commitments.NUMERALS[day] if 0 < day < len(commitments.NUMERALS) else str(day)
-    return {"zh": f"第{numeral}日", "en": f"day {day}"}
+    return {"zh": f"第{numeral}天", "en": f"day {day}"}
 
 
 def morning_hours(world: BridgeWorld, world_state: dict[str, Any]) -> int:
@@ -219,6 +225,19 @@ def morning_hours(world: BridgeWorld, world_state: dict[str, Any]) -> int:
     if call is None or not goals_call.crew_ready(world, call):
         return 0
     return goals_call.crew(world, call)[0]
+
+
+def work_mornings_words(hours_left: int, morning: int) -> Words:
+    """The mornings of work that ``hours_left`` hours take at ``morning`` hours a morning, rounded
+    up, in words: 两个早上 and "two more mornings". With no work in a morning (no crew yet) the
+    words do not count."""
+    if morning <= 0 or hours_left <= 0:
+        return {"zh": "几个早上", "en": "a few more mornings"}
+    mornings = -(-hours_left // morning)
+    if mornings == 1:
+        return {"zh": "一个早上", "en": "one more morning"}
+    english = ENGLISH_COUNTS[mornings - 1] if mornings <= len(ENGLISH_COUNTS) else str(mornings)
+    return {"zh": f"{zh_count(mornings)}个早上", "en": f"{english} more mornings"}
 
 
 # what the words say of a promise that is not there to be read (a name not yet in use)
@@ -275,6 +294,8 @@ class Facts:
             return max(0, goals_work.BRIDGE_HOURS - hours_done(state))
         if name == "morning":
             return morning_hours(self.world, state)
+        if name == "work_mornings":
+            return work_mornings_words(self["hours_left"], self["morning"])
         found = PLEDGE_SLOT.fullmatch(name)
         if found is not None and found.group(2) in PLEDGE_PARTS:
             return self._pledge(int(found.group(1)), found.group(2))
@@ -324,7 +345,9 @@ class Facts:
         from lantern_core.world.bridge.lore import lore
 
         who = agenda.helper(self.world, self.state)
-        return dict(lore().names[who]) if who is not None else {"zh": "对方", "en": "that person"}
+        if who is None:
+            return {"zh": "镇上的人", "en": "someone in town"}
+        return dict(lore().names[who])
 
     def _per_family(self) -> dict[str, int]:
         return crew_counts(self.world, self.state)[1]

@@ -6,13 +6,13 @@ The page sets its text in LXGW WenKai, a Kai face with Latin letters in the same
 
 | Face | File | Size | Characters |
 |---|---|---|---|
-| LXGW WenKai Regular | `lxgw-wenkai/LXGWWenKai-Regular.subset.woff2` | about 310 KB | about 1,500 |
-| LXGW WenKai Medium | `lxgw-wenkai/LXGWWenKai-Medium.subset.woff2` | about 310 KB | about 1,500 |
-| Ma Shan Zheng | `ma-shan-zheng/MaShanZheng-titles.subset.woff2` | about 80 KB | about 280 |
+| LXGW WenKai Regular | `lxgw-wenkai/LXGWWenKai-Regular.subset.woff2` | about 290 KB | about 1,400 |
+| LXGW WenKai Medium | `lxgw-wenkai/LXGWWenKai-Medium.subset.woff2` | about 290 KB | about 1,400 |
+| Ma Shan Zheng | `ma-shan-zheng/MaShanZheng-titles.subset.woff2` | about 80 KB | about 270 |
 
 `subsets.json` holds the exact size and character count of each cut.
 
-The two WenKai faces are for the body of the page: Regular for the text and Medium for what stands out. Ma Shan Zheng is for the titles only: the name of the game, the masthead of the Town Gazette, the names of the tasks on the slips (and what a slip says while there is no task), the names of the jobs on the ledger, the titles of the cards that say a job is done, and the seal of a surname at the corner of the talk. It has the characters of those words, the names of the people in them, the character of every seal and the printable ASCII.
+The two WenKai faces are for the body of the page: Regular for the text and Medium for what stands out. Ma Shan Zheng is for the titles only: the name of the game, the masthead of the Town Gazette, the names of the tasks on the slips (and what a slip says while there is no task), the names of the jobs on the ledger, the titles of the cards that say a job is done, and the seal of a surname at the corner of the talk and on the note of a person. It has the characters of those words, the names of the people in them, the character of every seal and the printable ASCII.
 
 ## The text of the game
 
@@ -52,7 +52,7 @@ The cut needs fontTools with the `woff` extra, which is in the dev group of `pyp
 @font-face { font-family: "Brush"; src: url("/fonts/ma-shan-zheng/MaShanZheng-titles.subset.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 ```
 
-The cut keeps the vertical forms of the glyphs (`vert`) for text set downwards, the contextual spacing of punctuation (`chws`) and the half width forms (`halt`, `vhal`). The licence of WenKai lets a subset keep the family name when it is made for the web only and is not offered as an installable font.
+The cut keeps the OpenType features that a page of Chinese text uses: the vertical forms of the glyphs (`vert`) for text set downwards, the contextual spacing of punctuation (`chws`, `vchw`), its half width forms (`halt`, `vhal`), and `calt` and `ccmp`. Fractions, superscripts and the other stylistic sets are left out. The licence of WenKai lets a subset keep the family name when it is made for the web only and is not offered as an installable font.
 
 ## Outlines for shapes
 

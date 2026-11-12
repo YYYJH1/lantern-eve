@@ -51,7 +51,7 @@ def replies(who: str) -> list[str]:
         reply(WATER, **SPLICE),
         reply(WATER, **LEAK),
         reply([belief("pr_rail_located", "self_seen")], mood="wary", address="manager"),
-        reply([{**GUESS, "source": who}], mood="sad", address="friend"),
+        reply([{**GUESS, "source": who}], mood="sad", address="manager"),
         reply([], zh="今天风很大。", en="Windy today."),
         reply([belief("pr_he_under_bridge", "self_seen")]),
         "{'acts': [], 'oops': 1,}",

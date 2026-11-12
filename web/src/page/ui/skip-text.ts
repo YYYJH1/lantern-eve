@@ -7,7 +7,7 @@ import { type Lang, t } from "../../i18n/index.ts";
 import type { SkipState, SkipTime } from "../skip.ts";
 import { clockText, dayLabel } from "./format.ts";
 
-/** A moment of the game as a person says it: "Day 5, 17:00", 第五日 17:00. */
+/** A moment of the game as a person says it: "Day 5, 17:00", 第五天 17:00. */
 export function momentText(lang: Lang, at: SkipTime): string {
   return t("skip.when", { day: dayLabel(lang, at.day), clock: clockText(at.hour, at.minute) });
 }

@@ -168,7 +168,7 @@ promises:
   role:
     text:
       en: the role of honour of {{item}}
-      zh: 灯会上的体面角色：{{item}}
+      zh: 灯会上{{item}}的体面差事
     items:
       t_honor_light:
         en: lighting the main lantern

@@ -1,0 +1,8 @@
+days-real.spec.ts
+festival-card.spec.ts
+guidance.spec.ts
+people-real.spec.ts
+skip-real.spec.ts
+talk-core-server.spec.ts
+talk-core.spec.ts
+talk-routes-real.spec.ts

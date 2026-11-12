@@ -6,7 +6,8 @@ belief for each prop, and it lives in the ``player`` section as a list of entrie
     {"id": "n3",                the number the client knows the entry by, from "n1" on,
      "prop": prop id,
      "note": a belief note (see ``notes``): what was seen, or heard from whom at which hand,
-     "trail": [[holder, claimed source, prop], ...]}
+     "trail": [[holder, claimed source, prop], ...],
+     "where": the place the manager stood at when they wrote the entry down (``encounters``)}
 
 The ``trail`` is the player's tracing of where a heard entry came from, and only the hops the
 player has asked about are in it. The first hop is the one that told the player and the source it
@@ -31,9 +32,17 @@ apply them to the notebook by itself any more.
 Texts. An entry's text is its prop said in both languages by ``cognition.lines``, as a sentence of
 its own: capitalised and with its full stop in English, with the Chinese full stop in Chinese.
 
-The frame shows each entry as ``{"id", "text": {"zh", "en"}, "source", "marks", "chain"}`` (see
-``wire``). ``source`` is ``{"kind": "seen"}`` or ``{"kind": "heard", "who": name, "hand": int}``,
-``marks`` are the page's words for the marks (``marks.ORDER``), and ``chain`` is the teller, then
+The frame shows each entry as ``{"id", "text": {"zh", "en"}, "source", "at", "marks", "chain"}``
+(see ``wire``). ``source`` is ``{"kind": "seen"}``, what the manager saw themselves, or ``{"kind":
+"heard", "who": name, "how": how, "via"?: name}``: the teller, and what the teller said of how they
+came to know it (``how``): ``saw`` (they were there), ``heard`` (they heard it from ``via``, a
+person of the cast) or ``unsure`` (they heard it and cannot say from whom, or they worked it out
+themselves). The number of hands the telling has passed through (``hop`` of the belief) stays in the
+state and is in no frame: a player is told whom to ask and what they said, not how far it has come.
+``at`` is when and where the manager learned the entry: the tick of the belief it keeps (when it was
+said to them, or when they saw it) and the place they stood at, as ``encounters.stamp`` says them,
+and null for an entry written before the places were kept. ``marks`` are the page's words for the
+marks (``marks.ORDER``), and ``chain`` is the teller, then
 each person the trail names, and a null at the end if the last of them has not been asked yet. A
 trail that comes back to the player's own words ends with the player, named ``Festival Manager``
 with the id ``player``. A name is ``{"zh", "en", "id"}``: the page reads the two languages, and
@@ -51,7 +60,7 @@ from lantern_core.cognition import paths
 from lantern_core.cognition.beliefs import SELF_SEEN, UNKNOWN, Belief, BeliefStore, Claim
 from lantern_core.cognition.lines import capitalise
 from lantern_core.cognition.props import ExclusiveGroups, Prop, lineage
-from lantern_core.world.bridge import marks, notes
+from lantern_core.world.bridge import encounters, marks, notes
 from lantern_core.world.bridge.data import SCRIPT
 from lantern_core.world.bridge.lore import lore
 
@@ -126,6 +135,7 @@ def add_heard(section: dict[str, Any], belief: Belief) -> tuple[dict[str, Any], 
         "prop": belief.prop,
         "note": notes.encode_belief(belief),
         "trail": [[belief.teller, trail_word(claimed, belief.teller), belief.prop]],
+        "where": encounters.where_is(section),
     }
     section["notebook"].append(entry)
     return entry, True
@@ -141,6 +151,7 @@ def add_seen(section: dict[str, Any], prop_id: str, tick: int) -> tuple[dict[str
             "prop": prop_id,
             "note": notes.encode_belief(belief),
             "trail": [],
+            "where": encounters.where_is(section),
         }
         section["notebook"].append(entry)
         return entry, True
@@ -148,6 +159,7 @@ def add_seen(section: dict[str, Any], prop_id: str, tick: int) -> tuple[dict[str
         return held, False
     held["note"] = notes.encode_belief(belief)
     held["trail"] = []
+    held["where"] = encounters.where_is(section)
     return held, True
 
 
@@ -358,6 +370,19 @@ def sentence(prop: Prop) -> dict[str, str]:
     return {"zh": said["zh"] + "。", "en": capitalise(said["en"]) + "."}
 
 
+def how_told(world: Any, belief: Belief) -> dict[str, Any]:
+    """What a teller said of how they came to know what they told, for the frame: ``{"how":
+    "saw"}`` if they said they saw it, ``{"how": "heard", "via": name}`` if they named the person
+    they heard it from, and ``{"how": "unsure"}`` if they could not say whom, or gave their own
+    conclusion."""
+    claimed = belief.claimed_source
+    if claimed == SELF_SEEN:
+        return {"how": "saw"}
+    if claimed in (None, UNKNOWN, belief.teller):
+        return {"how": "unsure"}
+    return {"how": "heard", "via": _name(world, claimed)}
+
+
 def chain_of(world: Any, entry: Mapping[str, Any]) -> list[dict[str, str] | None]:
     """The teller, each person the trail names, and a null if the last has yet to be asked."""
     trail = entry["trail"]
@@ -375,10 +400,19 @@ def chain_of(world: Any, entry: Mapping[str, Any]) -> list[dict[str, str] | None
     return chain
 
 
+def when_where(entry: Mapping[str, Any], belief: Belief) -> dict[str, Any] | None:
+    """When and where the manager learned an entry, for the frame: the tick of its belief and the
+    place the manager stood at, or null for an entry that was written without a place."""
+    place = entry.get("where")
+    if place is None:
+        return None
+    return encounters.stamp(belief.tick, place)
+
+
 def _signature(section: Mapping[str, Any], social: Mapping[str, Any]) -> tuple[Any, ...]:
     """Everything the entries as the client reads them depend on, as a value to compare."""
     entries = tuple(
-        (e["id"], e["prop"], e["note"], tuple(tuple(hop) for hop in e["trail"]))
+        (e["id"], e["prop"], e["note"], tuple(tuple(hop) for hop in e["trail"]), e.get("where"))
         for e in section["notebook"]
     )
     made = social.get("props", {})
@@ -429,12 +463,14 @@ def _wire(
         source: dict[str, Any] = {"kind": "seen"}
         if belief.source == "heard":
             assert belief.teller is not None
-            source = {"kind": "heard", "who": _name(world, belief.teller), "hand": belief.hop}
+            source = {"kind": "heard", "who": _name(world, belief.teller)}
+            source.update(how_told(world, belief))
         out.append(
             {
                 "id": entry["id"],
                 "text": sentence(props[entry["prop"]]),
                 "source": source,
+                "at": when_where(entry, belief),
                 "marks": shown[entry["id"]],
                 "chain": chain_of(world, entry),
             }

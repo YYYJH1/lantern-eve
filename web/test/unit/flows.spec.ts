@@ -66,7 +66,7 @@ const SCENE = {
   player: { id: "player", zh: "总管", en: "Festival Manager", role: { zh: "灯会总管", en: "Manager" }, token: { zh: "总", en: "M" }, start: [10, 10], things: [] },
 };
 
-const REQUEST = { id: "ask_bamboo", name: { zh: "把第一批竹料送到桥边", en: "Bring the first bamboo to the bridge" }, body: { kind: "material" } };
+const REQUEST = { id: "ask_bamboo", name: { zh: "请李大把竹料送到桥边", en: "Ask Li Da to bring the bamboo to the bridge" }, body: { kind: "material" } };
 const PROMISE = { id: "give_lamp", name: { zh: "让李家点主灯", en: "Let the Li family light the main lantern" }, body: { op: "make", what: "role", item: "t_honor_light", due: 3 } };
 
 interface Moment {
@@ -281,35 +281,47 @@ test.describe("a request with a preview", () => {
 });
 
 test.describe("pairing two lines of the notebook", () => {
-  test("fills the first place and then the second, puts a picked line back, and a third replaces the second", () => {
+  test("takes the claim first and then a line shown against it, puts a line back, and a new claim keeps the line shown", () => {
     const { play } = setup();
+    // The pair is [shown, claim].
     const pair = () => [play.flows.state.pair.a, play.flows.state.pair.b];
-    play.flows.pick("n_clerk");
-    expect(pair()).toEqual(["n_clerk", null]);
-    play.flows.pick("n_broke");
+    // Nothing is shown before there is a claim.
+    play.flows.present("n_clerk");
+    expect(pair()).toEqual([null, null]);
+    play.flows.claim("n_broke");
+    expect(pair()).toEqual([null, "n_broke"]);
+    play.flows.present("n_clerk");
     expect(pair()).toEqual(["n_clerk", "n_broke"]);
-    play.flows.pick("n_boat");
+    // A line is not shown against itself, and another line takes the place of the one shown.
+    play.flows.present("n_broke");
+    expect(pair()).toEqual(["n_clerk", "n_broke"]);
+    play.flows.present("n_boat");
+    expect(pair()).toEqual(["n_boat", "n_broke"]);
+    play.flows.present("n_boat");
+    expect(pair()).toEqual([null, "n_broke"]);
+    play.flows.present("n_clerk");
+    play.flows.claim("n_boat");
     expect(pair()).toEqual(["n_clerk", "n_boat"]);
-    play.flows.pick("n_clerk");
-    expect(pair()).toEqual(["n_boat", null]);
-    play.flows.pick("n_boat");
+    // The line shown that becomes the claim leaves the place it was shown in.
+    play.flows.claim("n_clerk");
+    expect(pair()).toEqual([null, "n_clerk"]);
+    play.flows.claim("n_clerk");
     expect(pair()).toEqual([null, null]);
   });
 
-  test("sends the judgement once it has two lines and a relation, and shows what the core made of it", () => {
+  test("sends the judgement as soon as an answer is given for a claim and a line shown, which are b and a, and shows what the core made of it", () => {
     const { client, play } = setup();
-    play.flows.judge();
+    play.flows.answer("unsupported");
     expect(client.sent).toEqual([]);
-    play.flows.pick("n_clerk");
-    play.flows.pick("n_broke");
-    play.flows.judge();
+    play.flows.claim("n_broke");
+    play.flows.answer("unsupported");
     expect(client.sent).toEqual([]);
-    play.flows.setRelation("unsupported");
-    play.flows.judge();
+    play.flows.present("n_clerk");
+    play.flows.answer("unsupported");
     expect(client.last).toMatchObject({ type: "judge", a: "n_clerk", b: "n_broke", relation: "unsupported" });
     expect(play.flows.state.pair.waiting).toBe(client.last.action_id);
     // It is not sent twice while it waits.
-    play.flows.judge();
+    play.flows.answer("contradicts");
     expect(client.sent).toHaveLength(1);
     step(client, {}, [ack(client.last.action_id, "applied")]);
     expect(play.flows.state.pair).toMatchObject({ waiting: null, outcome: { a: "n_clerk", b: "n_broke", relation: "unsupported", ok: true, reason: null } });
@@ -317,35 +329,36 @@ test.describe("pairing two lines of the notebook", () => {
 
   test("hears that two lines alone do not show it (not_shown), in no note, and forgets the answer when the pair changes", () => {
     const { client, play } = setup();
-    play.flows.pick("n_clerk");
-    play.flows.pick("n_boat");
-    play.flows.setRelation("contradicts");
-    play.flows.judge();
+    play.flows.claim("n_boat");
+    play.flows.present("n_clerk");
+    play.flows.answer("contradicts");
     step(client, {}, [ack(client.last.action_id, "rejected", "not_shown")]);
     expect(play.flows.state.pair.outcome).toMatchObject({ ok: false, relation: "contradicts", reason: "not_shown" });
     expect(play.state.notes).toEqual([]);
-    play.flows.setRelation("mismatch");
-    expect(play.flows.state.pair.outcome).toBeNull();
-    play.flows.pick("n_broke");
-    expect(play.flows.state.pair).toMatchObject({ a: "n_clerk", b: "n_broke", relation: null, outcome: null });
+    // The same pair can be answered again, and nothing was written down.
+    expect(play.flows.state.pair.waiting).toBeNull();
+    play.flows.present("n_broke");
+    expect(play.flows.state.pair).toMatchObject({ a: "n_broke", b: "n_boat", relation: null, outcome: null });
+    // "Look at another pair" sends nothing.
+    const sent = client.sent.length;
     play.flows.clear();
+    expect(client.sent).toHaveLength(sent);
     expect(play.flows.state.pair).toEqual({ a: null, b: null, relation: null, waiting: null, outcome: null });
   });
 
   test("is told that a note is not in the notebook (unknown_note) in the same place", () => {
     const { client, play } = setup();
-    play.flows.pick("n_clerk");
-    play.flows.pick("n_gone");
-    play.flows.setRelation("unsupported");
-    play.flows.judge();
+    play.flows.claim("n_gone");
+    play.flows.present("n_clerk");
+    play.flows.answer("unsupported");
     step(client, { extras: { notebook: fake.notebook().concat([{ id: "n_gone", text: { zh: "甲", en: "A" }, source: { kind: "seen" }, marks: [], chain: [] }]) } }, [ack(client.last.action_id, "rejected", "unknown_note")]);
     expect(play.flows.state.pair.outcome).toMatchObject({ ok: false, reason: "unknown_note" });
   });
 
   test("drops a line that the notebook no longer has", () => {
     const { client, play } = setup();
-    play.flows.pick("n_clerk");
-    play.flows.pick("n_broke");
+    play.flows.claim("n_broke");
+    play.flows.present("n_clerk");
     step(client, { extras: { notebook: fake.notebook().filter((e) => e.id !== "n_broke") } });
     expect(play.flows.state.pair).toMatchObject({ a: null, b: null });
   });
@@ -363,14 +376,15 @@ test.describe("pairing two lines of the notebook", () => {
     play.flows.hint();
     step(client, { extras: { hint: { a: "n_clerk", b: "n_broke" } } }, [ack(client.last.action_id, "applied")]);
     expect(play.flows.state.hintNone).toBe(false);
-    // The pair the core lit can be set side by side as it is, with the relation once the core has said it.
+    // The pair the core lit can be set side by side as it is: the line shown and the claim. The answer is the player's, even once the core has said it.
     play.flows.useHint();
     expect(play.flows.state.pair).toMatchObject({ a: "n_clerk", b: "n_broke", relation: null });
     step(client, { extras: { hint: { a: "n_clerk", b: "n_broke", relation: "unsupported" } } });
     play.flows.useHint();
-    expect(play.flows.state.pair).toMatchObject({ a: "n_clerk", b: "n_broke", relation: "unsupported" });
-    // Picking a line starts the pair over, and the hint with it.
-    play.flows.pick("n_boat");
+    expect(play.flows.state.pair).toMatchObject({ a: "n_clerk", b: "n_broke", relation: null });
+    expect(client.sent.filter((m) => m.type === "judge")).toEqual([]);
+    // Taking a claim starts the pair over, and the hint with it.
+    play.flows.claim("n_boat");
     expect(play.flows.state.hintNone).toBe(false);
   });
 
@@ -739,7 +753,7 @@ test.describe("the request a task names", () => {
 
   test("is found among the offers of the person by its kind, and for persuasion by the person to talk round", () => {
     expect(requestOffer(offers("li_da"), "material", null)?.id).toBe("material");
-    expect(requestOffer(offers("zhou_zhanggui"), "material", null)?.name.en).toBe("Ask them to bring the timber to the bridge");
+    expect(requestOffer(offers("zhou_zhanggui"), "material", null)?.name.en).toBe("Ask Shopkeeper Zhou to bring the timber to the bridge");
     expect(requestOffer(offers("miaozhu"), "lane", null)?.id).toBe("lane");
     expect(requestOffer(offers("li_laotai"), "lend", null)?.id).toBe("lend");
     expect(requestOffer(offers("gengfu"), "testify", null)?.id).toBe("testify");
@@ -796,11 +810,11 @@ test.describe("the kind of speech a task names", () => {
 test.describe("a new game", () => {
   test("clears what the flows kept", async () => {
     const { client, play } = setup();
-    play.flows.pick("n_clerk");
+    play.flows.claim("n_clerk");
     play.flows.begin("entrust", "li_da", REQUEST);
     await settle();
     client.feed({ type: "reset", seed: 5, scenario: "bridge" });
-    expect(play.flows.state.pair.a).toBeNull();
+    expect(play.flows.state.pair.b).toBeNull();
     expect(play.flows.state.request).toBeNull();
     expect(play.flows.state.recapSeen).toBeNull();
   });

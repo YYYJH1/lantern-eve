@@ -19,12 +19,28 @@ State (``state["world"]["crowd"]``), five parallel lists of ``SIZE`` entries and
      "slot": the slot of the day the townsfolk were last placed for,
      "rng": {"state": hex, "inc": hex}}
 
-``home`` and ``at`` are indices into ``districts.Layout.places``. The crowd draws from an RNG of
-its own, a ``Pcg32`` whose state is kept here, and not from the one the kernel hands round. It is
-seeded from the state of that one when the game is made, without taking a number from it. The
-crowd therefore uses up none of the numbers that the walks of the named people and the weather
-draw, and a change to its rules moves neither. Only what it hands to the talk between named people
-(through ``outbox``) can change what they say.
+``home`` and ``at`` are indices into ``districts.Layout.places``.
+
+Where the numbers come from
+---------------------------
+The crowd never draws from the RNG that the kernel hands round, so it uses up none of the numbers
+that the walks of the named people and the weather draw, and a change to its rules moves neither.
+Only what it hands to the talk between named people (through ``outbox``) can change what they say.
+It has three generators of its own, all ``Pcg32``:
+
+- Its *stream*, whose state is kept in ``rng``. It is seeded from the state of the kernel's RNG
+  when the game is made, without taking a number from it. It places the townsfolk when a slot
+  begins and draws the pairs that meet, and nothing else draws from it.
+- One generator for each time a named person is heard in the street (``hear``), which decides
+  which of the listeners keep what they heard. It is made for the call from the game's seed, the
+  tick, the place, the speaker and the proposition, and is not kept.
+- One generator for the street talk passed on in a tick (``_pass_on``), made from the game's seed
+  and the tick, and not kept either.
+
+So where each townsperson is and who meets whom depend on the seed, the config and the tick alone:
+they are the same in every game of a seed, whatever the manager does. What the manager does
+reaches the opinions of the townsfolk only through the pulls of ``hear``, which move an opinion by
+part of a gap and take no number from the stream.
 
 One tick
 --------
@@ -49,6 +65,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from lantern_core import canon
 from lantern_core.rng import Pcg32
 from lantern_core.world.bridge import clock, districts, npcs, opinions, weather
 
@@ -79,6 +96,16 @@ PULL_PER_STANDING = 40  # per mille of the gap
 
 _SEED_SALT = 0x63726F776421  # the crowd's seed is the state of the kernel's RNG with this mixed in
 _STREAM = 0x63726F7764  # and its increment is this, so that its numbers are another sequence
+
+
+def _draws_for(sim: Sim, *key: str) -> Pcg32:
+    """A generator for one event of the crowd, made from the game's seed, the tick and ``key``.
+
+    It holds no state between calls and does not touch the crowd's stream (see the top of this
+    file), so what is drawn for one event never moves the numbers drawn for another.
+    """
+    digest = canon.digest([sim.ctx.state["seed"], sim.ctx.tick, *key])
+    return Pcg32(int(digest[:16], 16), int(digest[16:32], 16))
 
 
 def init(world: BridgeWorld, rng: Pcg32) -> dict[str, Any]:
@@ -172,7 +199,8 @@ def hear(sim: Sim, place_id: str, prop_id: str, speaker_id: str) -> int:
 
     Their stance and their enthusiasm are pulled toward the speaker's (see ``voice``), and each
     keeps ``prop_id`` in their memory with the chance ``STORE_PER_MILLE``, the oldest going if
-    there are three already. Nothing happens if the place is indoors. Returns the number of
+    there are three already. The chances come from a generator made for this call, so the
+    crowd's stream is not touched. Nothing happens if the place is indoors. Returns the number of
     townsfolk who kept the proposition. An unknown place or speaker is an error.
     """
     world = sim.world
@@ -189,7 +217,7 @@ def hear(sim: Sim, place_id: str, prop_id: str, speaker_id: str) -> int:
     district = lay.index[place_id]
     stance, enthusiasm, per_mille = voice(world, speaker_id)
     section = sim.state["crowd"]
-    rng = Pcg32.from_state(section["rng"])
+    rng = _draws_for(sim, "hear", place_id, speaker_id, prop_id)
     kept = 0
     for k, here in enumerate(section["at"]):
         if here != district:
@@ -198,7 +226,6 @@ def hear(sim: Sim, place_id: str, prop_id: str, speaker_id: str) -> int:
         section["enthusiasm"][k] = opinions.pull(section["enthusiasm"][k], enthusiasm, per_mille)
         if rng.below(1000) < STORE_PER_MILLE and _remember(section["heard"][k], prop_id):
             kept += 1
-    section["rng"] = rng.to_state()
     return kept
 
 
@@ -250,9 +277,14 @@ def _named_in_districts(sim: Sim, lay: districts.Layout) -> dict[int, list[str]]
     return found
 
 
-def _pass_on(sim: Sim, section: dict[str, Any], lay: districts.Layout, rng: Pcg32) -> None:
-    """Try ``PASSES_PER_TICK`` times to have a townsperson tell a named person what they heard."""
+def _pass_on(sim: Sim, section: dict[str, Any], lay: districts.Layout) -> None:
+    """Try ``PASSES_PER_TICK`` times to have a townsperson tell a named person what they heard.
+
+    The townsperson, the person told and the thing told are drawn from a generator made for this
+    tick, so the crowd's stream is not touched.
+    """
     heard, at, outbox = section["heard"], section["at"], section["outbox"]
+    rng = _draws_for(sim, "pass")
     named: dict[int, list[str]] | None = None
     for _ in range(PASSES_PER_TICK):
         k = rng.below(SIZE)
@@ -280,8 +312,8 @@ def tick(sim: Sim) -> None:
         section["slot"] = key
         _place_everyone(sim, section, lay, rng)
     _meet(section, rng)
-    _pass_on(sim, section, lay, rng)
     section["rng"] = rng.to_state()
+    _pass_on(sim, section, lay)
 
 
 def frame(world: BridgeWorld, state: dict[str, Any], out: dict[str, Any]) -> None:

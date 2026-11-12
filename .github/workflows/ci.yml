@@ -68,17 +68,23 @@ jobs:
           fi
 
   web:
-    name: web build and browser tests (Node 22, Chromium, shard ${{ matrix.shard }} of 4)
+    name: web build and browser tests (Node 22, Chromium, ${{ matrix.group }})
     if: ${{ github.repository == 'YYYJH1/lantern-eve' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        # The browser tests run one at a time, so that what they time is the page and not the other
-        # tests. Four runners take a quarter of the browser files each, and the first also runs the
-        # unit tests, which take seconds.
-        shard: [1, 2, 3, 4]
+        # The browser specs are listed in web/test/groups: fake.txt holds the ones that drive the page with a
+        # fake host and real.txt the ones that play the real core, and each list is cut into parts that take
+        # about the same time on the two cores of a runner (web/README.md says how). A runner takes one part.
+        # Playwright's --shard splits by the number of tests, and the specs that play whole games would fill one
+        # runner. The first part of fake also runs the unit tests, which take seconds.
+        group: [fake-1, fake-2, fake-3, fake-4, fake-5, real-1, real-2, real-3]
+    env:
+      # The limits in the tests are those of a development machine, and the two cores of a runner are slower
+      # (web/test/support/time-scale.ts).
+      LANTERN_TIME_SCALE: "3"
     defaults:
       run:
         working-directory: web
@@ -94,19 +100,28 @@ jobs:
       - run: uv sync
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      # Type check, the production build and the test build, then the unit tests on the first runner and
-      # this runner's quarter of the browser tests. Split together, the many small unit files would fill one
-      # quarter and leave the browser files to the others.
+      # Type check, the production build and the test build, then the unit tests in the first part of fake and
+      # the specs of this runner's part. The specs that drive the page with a fake host run two at a time, one
+      # to a core, and the specs that play the real core run one at a time, since some of them time how the page
+      # keeps the clock.
       - run: npm run build && npm run build:e2e
       - run: npx playwright test --project=unit
-        if: matrix.shard == 1
-      - run: npx playwright test --project=chromium --shard=${{ matrix.shard }}/4
+        if: matrix.group == 'fake-1'
+      - name: Browser specs of ${{ matrix.group }}
+        run: |
+          set -euo pipefail
+          case "${{ matrix.group }}" in
+            fake-*) workers=2 ;;
+            *) workers=1 ;;
+          esac
+          files=$(sed 's|^|test/e2e/|' "test/groups/${{ matrix.group }}.txt")
+          npx playwright test --project=chromium --workers="$workers" $files
       # A failed test leaves its page as it stood (error-context.md) and a screenshot in test-results, next to the
       # replays and reports the tests write. Uploaded only when a step above failed, and kept for a week.
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: web-test-results-shard-${{ matrix.shard }}
+          name: web-test-results-${{ matrix.group }}
           path: web/test-results
           retention-days: 7
           if-no-files-found: ignore

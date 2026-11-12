@@ -55,7 +55,7 @@ HUD_KEYS = {"keen", "spent", "held", "cap", "stage", "cloud", "local"}  # crowd 
 # the keys of their own that the modules add
 EXTRA_FRAME_KEYS = {
     "player", "notebook", "ending", "tasks", "tracked", "cards", "judgments", "hint",
-    "commitments", "site", "recap", "board", "statement", "gazette", "night",
+    "commitments", "site", "recap", "board", "statement", "gazette", "night", "people",
 }  # fmt: skip
 
 
@@ -394,13 +394,25 @@ def test_the_scene_gives_the_map_layers_the_places_and_the_cast_in_two_languages
     assert [c["id"] for c in cast] == list(CAST.index) and len(cast) == 20
     for c in cast:
         assert c["zh"] and c["en"] and len(c["token"]["zh"]) == 1 and len(c["token"]["en"]) == 1
-        assert set(c) == {"id", "zh", "en", "role", "bio", "token", "family", "home", "work"}
+        assert set(c) == {
+            "id",
+            "zh",
+            "en",
+            "role",
+            "bio",
+            "intro",
+            "token",
+            "family",
+            "home",
+            "work",
+        }
+        assert set(c["intro"]) == {"zh", "en"} and c["intro"]["zh"] and c["intro"]["en"]
         assert c["role"]["zh"] and c["role"]["en"]
         assert set(c["bio"]) == {"zh", "en"} and c["bio"]["zh"] and c["bio"]["en"]
     assert {c["family"] for c in cast} == {None, "fam_li", "fam_zhou"}
     assert {f["id"]: f["en"] for f in scene["families"]} == {
-        "fam_li": "Li Family",
-        "fam_zhou": "Zhou Family",
+        "fam_li": "Li family",
+        "fam_zhou": "Zhou family",
     }
     assert {w["id"] for w in scene["weather"]} == set(weather.KINDS)
     assert scene["time"]["days"] == 5 and scene["time"]["cycle_ticks"] == CYCLE

@@ -36,7 +36,7 @@ test.describe("the opening page", () => {
       en: {
         title: "Lantern Eve",
         chapter: "The Broken Bridge, Five Days",
-        goal: "In five days, get the Li and Zhou families across the bridge together, lanterns lit.",
+        goal: "You run the lantern festival. In five days, get the Li and Zhou families across the bridge together, lanterns lit.",
         things: ["Mend the bridge", "Set it straight", "Make peace"],
         start: "Start",
         cont: "Continue",
@@ -47,7 +47,7 @@ test.describe("the opening page", () => {
       zh: {
         title: "灯会前夕",
         chapter: "断桥篇，五日",
-        goal: "五天后，让李、周两家一起提灯过桥。",
+        goal: "你是灯会的总管。五天后，让李、周两家一起提灯过桥。",
         things: ["修桥", "说清", "说和"],
         start: "开始",
         cont: "继续",
@@ -113,7 +113,7 @@ test.describe("the opening page", () => {
     await expect(page.getByTestId("seed")).toHaveText("492");
     // And it is the slice: the elder's first job is the first task of the frame.
     await expect(page.getByTestId("task-card")).toHaveAttribute("data-id", "t_bamboo_first");
-    await expect(page.getByTestId("task-text")).toHaveText("Get the first bamboo from the Li family");
+    await expect(page.getByTestId("task-text")).toHaveText("Get the first load of bamboo from the Li family");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -150,7 +150,7 @@ test.describe("the opening page", () => {
     expect(await page.evaluate(() => [localStorage.getItem("lantern.tutorial"), localStorage.getItem("lantern.hints")])).toEqual(["skipped", "off"]);
     await page.getByTestId("opening").getByTestId("lang-zh").click();
     await expect(settings.locator("h2")).toHaveText("设置");
-    await expect(settings.getByTestId("setting-hints")).toContainText("世界里的提示");
+    await expect(settings.getByTestId("setting-hints")).toContainText("画面上的提示");
     await expect(settings.getByTestId("setting-tutorial")).toContainText("第一天的带教");
     await page.getByTestId("settings-close").click();
     await expect(settings).toHaveCount(0);

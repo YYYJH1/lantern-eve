@@ -30,7 +30,7 @@ const task = (id: string, state: string, title: { zh: string; en: string }, over
   ...over,
 });
 
-const WORK_DONE = task("t_work_3", "done", n("第三天早上施工", "Work on the bridge, the third morning"));
+const WORK_DONE = task("t_work_3", "done", n("第三天早上开工", "Work on the bridge, the third morning"));
 const FESTIVAL = task("t_festival_night", "open", n("灯会之夜", "Festival night"), {
   kind: "venue",
   why: n("今夜游灯过桥。先看走不走得通，再看三件事成了几件", "Tonight the lanterns cross the bridge"),
@@ -120,14 +120,14 @@ test.describe("the incense that skips to the next thing", () => {
     await expect(page.getByTestId("task-do")).toHaveCount(0);
     await expect(page.getByTestId("task-window")).toHaveText(/Stone Bridge, 18:00 to 21:00/);
     await lantern.setLang("zh");
-    await expect(incense).toHaveAttribute("aria-label", "快进到第五日 17:00");
+    await expect(incense).toHaveAttribute("aria-label", "快进到第五天 17:00");
     // No window ahead, and no task open: the next thing is not said by its time.
     await feed(page, nothing(at(3, 9, 5)));
     await expect(incense).toHaveAttribute("aria-label", "快进到下一件事");
     await expect(incense).toHaveAttribute("data-day", "");
     await lantern.setLang("en");
     await expect(incense).toHaveAttribute("aria-label", "Skip to the next thing");
-    await expect(page.getByTestId("task-text")).toHaveText("Everything on the list is done. Look around if you like, and wait for the festival on the night of the fifth day.");
+    await expect(page.getByTestId("task-text")).toHaveText("Everything is done. Look around if you like, and wait for the festival on the night of the fifth day.");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -153,7 +153,7 @@ test.describe("the incense that skips to the next thing", () => {
     await feed(page, { ...waiting(at(5, 6, 20)), player: { ...(await fake.playerOf(page)), talk: null } });
     await expect(button).toHaveCount(1);
     // A frame with no board does not say what lies ahead, so there is nothing to skip to.
-    await feed(page, { ...nothing(at(1, 15)), tasks: [task("t_bamboo_first", "done", n("取得李家的第一批竹料", "Get the first bamboo from the Li family"))], board: null });
+    await feed(page, { ...nothing(at(1, 15)), tasks: [task("t_bamboo_first", "done", n("借到李家的第一批竹料", "Get the first load of bamboo from the Li family"))], board: null });
     await expect(page.getByTestId("topbar-task")).toHaveAttribute("data-state", "idle");
     await expect(button).toHaveCount(0);
     // The festival is over once the ending is there.
@@ -268,7 +268,7 @@ test.describe("the incense in both themes and at each width", () => {
       for (const [lang, theme] of [["zh", "light"], ["en", "dark"]] as const) {
         await lantern.setLang(lang);
         await lantern.setTheme(theme);
-        const label = lang === "zh" ? "快进到第五日 17:00" : "Skip to Day 5, 17:00";
+        const label = lang === "zh" ? "快进到第五天 17:00" : "Skip to Day 5, 17:00";
         const button = page.getByTestId("btn-skip");
         // The menu slides away for a moment after it is shut, and lies over the corner while it does.
         await expect(page.getByTestId("menu")).toBeHidden();

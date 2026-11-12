@@ -7,11 +7,11 @@ and ``action_id``). A verb has offers only where it can be used: the first three
 conversation, the last where the manager may speak in public. Nothing here depends on which
 variant of the story is true.
 
-``tell``     for each entry of the notebook (the last ``MAX_ENTRIES``), the ways besides telling it
-             as it is, which the page's own list of entries already does: as if seen, if the
-             manager did not see it, without the source, if it was heard, and with more drama, if
-             a heavier version exists; and a few things to make up, all about who damaged the
-             stone rail.
+``tell``     for each entry of the notebook (the last ``MAX_ENTRIES``), the two ways a player has:
+             as it is (``faithful``) and, for an entry that was only heard, as if seen
+             (``as_seen``), which is a lie about the source and is marked ``"lie": true``. The
+             action takes five ways (``speak.HOWS``: also with more drama, without the source and
+             made up), and the bots use them all, but the town puts forward these two.
 ``entrust``  what this person can be asked: to bring the bamboo or the timber, to open the lane,
              to lend the bamboo, to testify (anyone the script gives a testimony), to join the
              helpers, to talk an acquaintance round, to call the clan.
@@ -23,9 +23,14 @@ variant of the story is true.
 The frame's ``player`` also has ``topics``, what the manager can ask about now (``topics``): in a
 conversation, the entries of the notebook, the things of the story, the bridge and the people,
 each ``{"id", "kind", "label": {"zh", "en"}}`` with ``kind`` one of ``entry``, ``thing``,
-``place`` and ``person``, and an empty list otherwise. It is a list of what ``ask`` takes: every
-id in it is one the core answers, and a person of the cast that the script does not name (Shitou)
-is not in it.
+``place`` and ``person``, then a question about what a person likes (``taste``, the id
+``likes:<person>``, for each person the manager has a card of and has not learned the tastes of in
+full, other than the one they talk to, see ``gifts``), and an empty list outside a conversation. It
+is a list of what ``ask`` takes: every id in it is one the core answers, and a person of the cast
+that the script does not name (Shitou) is not in it.
+
+``request_label`` words a request to a named person ("Ask Li Da to bring the bamboo to the
+bridge"), for the request that the talk puts first (``context``).
 """
 
 from __future__ import annotations
@@ -54,24 +59,53 @@ MAX_ENTRIES = 24
 MAX_TARGETS = 8
 VERBS = ("tell", "entrust", "promise", "speak")
 BRIDGE = "p_bridge"  # the one place that the manager can ask about
-TOPIC_KINDS = ("entry", "thing", "place", "person")
+TOPIC_KINDS = ("entry", "thing", "place", "person", "taste")
 ROLE_NAMES = {
-    "t_honor_light": {"zh": "点主灯的体面", "en": "the honour of lighting the main lantern"},
-    "lead_lanterns": {"zh": "领游灯", "en": "leading the lantern parade"},
-    "stage_words": {"zh": "台上说吉祥话", "en": "speaking the blessings on stage"},
+    "t_honor_light": {"zh": "点主灯的体面差事", "en": "the honour of lighting the main lantern"},
+    "lead_lanterns": {"zh": "领游灯的体面差事", "en": "the honour of leading the lantern parade"},
+    "stage_words": {
+        "zh": "上台说吉祥话的体面差事",
+        "en": "the honour of speaking the blessings on stage",
+    },
 }
 ITEM_NAMES = {
     "bamboo": {"zh": "竹料", "en": "bamboo"},
     "timber": {"zh": "木料", "en": "timber"},
 }
-# who the made-up blame can fall on
-BLAMED = ("li_er", "zhou_dalang", "old_he", "fam_li", "fam_zhou")
-RAIL = "t_rail"
-MAKE_UP_FLOOD = {"how": "fabricate", "pred": "flood_damaged", "subject": RAIL}
 
 
 def _label(zh: str, en: str) -> dict[str, str]:
     return {"zh": zh, "en": en}
+
+
+def request_label(person: str, body: dict[str, Any]) -> dict[str, str]:
+    """A request (the body of an offer of ``entrust``) to ``person``, in words that name them."""
+    names = lore().names
+    who, kind = names[person], body["kind"]
+    if kind == "material":
+        thing = ITEM_NAMES[goals_work.SUPPLIERS[person][0]]
+        return _label(
+            f"请{who['zh']}把{thing['zh']}送到桥边",
+            f"Ask {who['en']} to bring the {thing['en']} to the bridge",
+        )
+    if kind == "lane":
+        return _label(
+            f"请{who['zh']}打开庙后的夹道", f"Ask {who['en']} to open the lane behind the temple"
+        )
+    if kind == "lend":
+        return _label(
+            f"请{who['zh']}把竹料借出来", f"Ask {who['en']} to lend the bamboo for the bridge"
+        )
+    if kind == "testify":
+        return _label(f"请{who['zh']}说说亲眼看见了什么", f"Ask {who['en']} to tell what they saw")
+    if kind == "join":
+        return _label(f"请{who['zh']}来帮忙", f"Ask {who['en']} to join the helpers")
+    if kind == "persuade":
+        target = names[body["target"]]
+        return _label(
+            f"请{who['zh']}去劝{target['zh']}", f"Ask {who['en']} to talk {target['en']} round"
+        )
+    return _label(f"请{who['zh']}把族人召到祠堂", f"Ask {who['en']} to call the clan to the hall")
 
 
 def _offer(offer_id: str, label: dict[str, str], body: dict[str, Any]) -> dict[str, Any]:
@@ -123,136 +157,124 @@ def tell(world_state: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _tell(world_state: dict[str, Any]) -> list[dict[str, Any]]:
-    section, social, lo = world_state["player"], world_state["social"], lore()
+    section, social = world_state["player"], world_state["social"]
     view = notebook.view(social)
     out: list[dict[str, Any]] = []
     for entry in section["notebook"][-MAX_ENTRIES:]:
-        prop = view[entry["prop"]]
-        text = notebook.sentence(prop)
-        heard = notebook.belief_of(entry).source != "saw"
-        ways = []
-        if heard:
-            ways.append(("as_seen", "说成亲眼所见：", "As if you saw it: "))
-            ways.append(("hide_source", "不说来源：", "Without the source: "))
-        if sharpenable(prop):
-            ways.append(("sharpen", "添油加醋：", "Heavier: "))
-        for how, zh, en in ways:
-            label = _label(zh + text["zh"], en + text["en"])
-            out.append(_offer(f"{entry['id']}:{how}", label, {"entry": entry["id"], "how": how}))
-    for who in BLAMED:
-        body = {"how": "fabricate", "pred": "damaged", "subject": who, "object": RAIL}
-        prop = Prop.of("_", "damaged", {"who": who, "what": RAIL})
-        said = lo.lines.statement(prop, lo.names)
-        label = _label("编一个：" + said["zh"], "Make up: " + said["en"])
-        out.append(_offer(f"fab:damaged:{who}", label, body))
-    flood = lo.lines.statement(Prop.of("_", "flood_damaged", {"what": RAIL}), lo.names)
-    out.append(
-        _offer(
-            "fab:flood", _label("编一个：" + flood["zh"], "Make up: " + flood["en"]), MAKE_UP_FLOOD
+        text = notebook.sentence(view[entry["prop"]])
+        said = _label("照实说：" + text["zh"], "Tell it as it is: " + text["en"])
+        out.append(
+            _offer(f"{entry['id']}:faithful", said, {"entry": entry["id"], "how": "faithful"})
         )
-    )
+        if notebook.belief_of(entry).source != "saw":  # told as seen, it is a lie about the source
+            seen = _label("说成我亲眼看见的：" + text["zh"], "Say I saw it myself: " + text["en"])
+            offer = _offer(f"{entry['id']}:as_seen", seen, {"entry": entry["id"], "how": "as_seen"})
+            offer["lie"] = True
+            out.append(offer)
     return out
 
 
 # ---------------------------------------------------------------------------- entrust
 
 
+def _request(offer_id: str, person: str, body: dict[str, Any]) -> dict[str, Any]:
+    """The offer of a request ``body`` to ``person``, worded with their name."""
+    return _offer(offer_id, request_label(person, body), body)
+
+
 def entrust(world: Any, world_state: dict[str, Any], person: str) -> list[dict[str, Any]]:
     layout, out = goals_call.lay(world), []
-    names = lore().names
     if person in goals_work.SUPPLIERS:
-        item = goals_work.SUPPLIERS[person][0]
-        thing = ITEM_NAMES[item]
-        label = _label(
-            f"请对方把{thing['zh']}送到桥边", f"Ask them to bring the {thing['en']} to the bridge"
-        )
-        out.append(_offer("material", label, {"kind": "material"}))
+        out.append(_request("material", person, {"kind": "material"}))
     if person == goals_work.KEEPER:
-        label = _label("请她打开庙后的夹道", "Ask her to open the lane behind the temple")
-        out.append(_offer("lane", label, {"kind": "lane"}))
+        out.append(_request("lane", person, {"kind": "lane"}))
     if person == "li_laotai":
-        label = _label("请她把竹料借给灯会", "Ask her to lend the bamboo for the bridge")
-        out.append(_offer("lend", label, {"kind": "lend"}))
+        out.append(_request("lend", person, {"kind": "lend"}))
     if any(item["acquire"]["from"] == person for item in SCRIPT["evidence"]):
-        out.append(
-            _offer(
-                "testify",
-                _label("请对方说说亲眼所见", "Ask them to tell what they saw"),
-                {"kind": "testify"},
-            )
-        )
+        out.append(_request("testify", person, {"kind": "testify"}))
     joined = goals.joined(world_state)
     if person in layout.helpers and person not in joined:
-        out.append(
-            _offer(
-                "join", _label("请对方加入帮工", "Ask them to join the helpers"), {"kind": "join"}
-            )
-        )
+        out.append(_request("join", person, {"kind": "join"}))
     if person in layout.helpers:
         targets = [b for b in layout.knows.get(person, ()) if b not in joined][:MAX_TARGETS]
         for target in targets:
-            label = _label(
-                f"请对方去劝{names[target]['zh']}", f"Ask them to talk {names[target]['en']} round"
-            )
-            out.append(_offer(f"persuade:{target}", label, {"kind": "persuade", "target": target}))
+            body = {"kind": "persuade", "target": target}
+            out.append(_request(f"persuade:{target}", person, body))
     if person == assembly.ELDER:
-        label = _label("请族长召集族里的人到祠堂", "Ask the elder to call the clan to the hall")
-        out.append(_offer("convene", label, {"kind": "convene"}))
+        out.append(_request("convene", person, {"kind": "convene"}))
     return out
 
 
 # ---------------------------------------------------------------------------- promise
 
 
+def promise_offer(
+    world: Any,
+    section: dict[str, Any],
+    day: int,
+    what: str,
+    item: str = "",
+    amount: int = 0,
+    *,
+    person: str,
+) -> dict[str, Any] | None:
+    """The offer to promise ``person`` ``what`` (``stall``, ``role``, ``wage`` or ``slot``) with its
+    ``item`` and, for a wage, its coins, due the day after next, or None if the manager holds none
+    of it. A place in the programme with no ``item`` is the first one that is free."""
+    have = pledges.left(section)
+    due = min(world.config["days"], day + 2)
+    if what == "slot" and not item and have["slots"]:
+        item = have["slots"][0]
+    if not pledges.holds(section, what, item, amount):
+        return None
+    body: dict[str, Any] = {"op": "make", "due": due, "what": what}
+    who = lore().names[person]
+    if what == "stall":
+        row = "front" if item == "front" else "back"
+        label = (
+            _label(f"许{who['zh']}一个前排摊位", f"Promise {who['en']} a front-row stall")
+            if row == "front"
+            else _label(f"许{who['zh']}一个后排摊位", f"Promise {who['en']} a back-row stall")
+        )
+        return _offer(f"stall:{row}", label, {**body, "item": row})
+    if what == "role":
+        name = ROLE_NAMES[item]
+        label = _label(f"许{who['zh']}{name['zh']}", f"Promise {who['en']} {name['en']}")
+        return _offer(f"role:{item}", label, {**body, "item": item})
+    if what == "wage":
+        label = _label(
+            f"许{who['zh']}{numerals.zh_count(amount)}文工钱",
+            f"Promise {who['en']} {amount} coins in wages",
+        )
+        return _offer(f"wage:{amount}", label, {**body, "amount": amount})
+    label = _label(
+        f"许{who['zh']}节目单上第{numerals.zh_ordinal(int(item))}位",
+        f"Promise {who['en']} slot {item} of the programme",
+    )
+    return _offer(f"slot:{item}", label, {**body, "item": item})
+
+
 def promise(world: Any, world_state: dict[str, Any], person: str, day: int) -> list[dict[str, Any]]:
     section, out = world_state["player"], []
-    due = min(world.config["days"], day + 2)
     have = pledges.left(section)
-
-    def make(offer_id: str, label: dict[str, str], **fields: Any) -> None:
-        out.append(_offer(offer_id, label, {"op": "make", "due": due, **fields}))
-
-    if have["stall_front"] > 0:
-        make(
-            "stall:front",
-            _label("许对方一个前排摊位", "Promise a front-row stall"),
-            what="stall",
-            item="front",
-        )
-    if have["stall_back"] > 0:
-        make(
-            "stall:back",
-            _label("许对方一个后排摊位", "Promise a back-row stall"),
-            what="stall",
-            item="back",
-        )
-    for role in have["roles"]:
-        name = ROLE_NAMES[role]
-        make(
-            f"role:{role}",
-            _label("许对方" + name["zh"], "Promise " + name["en"]),
-            what="role",
-            item=role,
-        )
-    for amount in (10, 20):
-        if amount <= have["purse"]:
-            label = _label(
-                f"许对方{numerals.zh_count(amount)}文工钱", f"Promise {amount} coins in wages"
-            )
-            make(f"wage:{amount}", label, what="wage", amount=amount)
-    if have["slots"]:
-        slot = have["slots"][0]
-        label = _label(
-            f"许对方节目单上第{numerals.zh_ordinal(int(slot))}位",
-            f"Promise slot {slot} of the programme",
-        )
-        make(f"slot:{slot}", label, what="slot", item=slot)
+    wanted: list[tuple[str, str, int]] = [("stall", "front", 0), ("stall", "back", 0)]
+    wanted += [("role", role, 0) for role in have["roles"]]
+    wanted += [("wage", "", amount) for amount in (10, 20)]
+    wanted += [("slot", "", 0)]
+    for what, item, amount in wanted:
+        offer = promise_offer(world, section, day, what, item, amount, person=person)
+        if offer is not None:
+            out.append(offer)
     for pledge in section["pledges"]:
         if pledge["to"] == person and pledge["state"] == pledges.OPEN:
             what = prompts.promise_text(
                 world, pledge["what"], pledge["item"], pledge["amount"], town=True
             )
-            label = _label("兑现许诺：" + what["zh"], "Keep your promise: " + what["en"])
+            who = lore().names[person]
+            label = _label(
+                f"兑现许诺，给{who['zh']}{what['zh']}",
+                f"Keep your promise to {who['en']}: {what['en']}",
+            )
             out.append(_offer(f"keep:{pledge['id']}", label, {"op": "keep", "id": pledge["id"]}))
     return out
 
@@ -265,18 +287,18 @@ def speak(world_state: dict[str, Any]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     held = [item for item in SCRIPT["evidence"] if item["id"] in section["evidence"]]
     if held:
-        label = _label("把手里的证据都拿出来", "Show everything you hold")
+        label = _label("把手里的凭据都拿出来", "Show everything you hold")
         out.append(_offer("all", label, {"kind": "evidence"}))
     if len(held) > 1:
         for item in held:
-            label = _label("出示：" + item["label"], "Show: " + item["label_en"])
+            label = _label("拿出「" + item["label"] + "」", "Show: " + item["label_en"])
             out.append(
                 _offer(f"item:{item['id']}", label, {"kind": "evidence", "evidence": [item["id"]]})
             )
     out.append(
         _offer(
             "statement",
-            _label("作完整陈述", "Make the full statement"),
+            _label("照讲稿当众说", "Make the statement"),
             {"kind": "statement"},
         )
     )
@@ -314,11 +336,14 @@ def _standing(cast: Any, town: Any) -> tuple[dict[str, Any], ...]:
     return tuple(found)
 
 
-def topics(world: Any, entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def topics(
+    world: Any, entries: list[dict[str, Any]], tastes: list[dict[str, Any]] | None = None
+) -> list[dict[str, Any]]:
     """What the manager can ask about in a conversation: the entries of the notebook, as the frame
-    shows them (``notebook.wire``), then the things, the bridge and the people."""
+    shows them (``notebook.wire``), then the things, the bridge and the people, then the questions
+    about what a person likes (``tastes``, made by ``gifts.topics``)."""
     mine = [_topic(e["id"], "entry", e["text"]) for e in entries]
-    return [*mine, *_standing(world.cast, world.town)]
+    return [*mine, *_standing(world.cast, world.town), *(tastes or ())]
 
 
 # ---------------------------------------------------------------------------- the frame

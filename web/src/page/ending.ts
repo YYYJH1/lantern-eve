@@ -4,12 +4,15 @@
  * into what the ending page shows. Everything here tolerates a key that is missing or in another
  * shape: the reveal is what the modules of the core put in it, and a module may add a section of its own.
  *
+ *   ending.tick     the tick the ending was made at (the festival night is seeded by it)
  *   ending.ending   id of the base ending
  *   ending.label    {zh, en}
  *   ending.hidden   [{id, label: {zh, en}}]
  *   ending.inputs   {bridge_fixed, detour_done, reconciled, truth_told: bool}
  *   ending.passage  mended | detour | none
  *   ending.promised, ending.turnout
+ *   ending.festival {route: bridge | lane | none, together: bool, lighter: [person], bearers: {place: people},
+ *                    named: [{npc, place}]}: what the last night is staged from (see `Festival`). In the whole ending and in the compact one.
  *   ending.epilogue [{npc, id, text: {zh, en}}]: one or two sentences about each person who carries the days, in the order of
  *                   the cast. Only the whole form of the ending has it (the compact one of the frames after it leaves it out).
  *   ending.reveal   {truth: {variant, label: {zh, en}, props}, chains: [chain],
@@ -52,6 +55,8 @@ export interface RevealChain {
   trueVersions: string[];
   told: Telling[];
   reached: string[];
+  /** For each version of the story, how many people hold it at the end (`held` of the chain). A version nobody holds has no entry. */
+  held: Record<string, number>;
 }
 
 /** How far the manager's own words went (`reveal.player.spoke`). */
@@ -110,7 +115,25 @@ export interface Epilogue {
   text: Name;
 }
 
+/** The way the parade of the last night goes: over the mended bridge, along the lane behind the temple, or nowhere. */
+export type FestivalRoute = "bridge" | "lane" | "none";
+
+/**
+ * What the core says the last night is to be staged from (`ending.festival`): the way the parade goes, whether the two families are
+ * together (the peace was made), who lights the main lantern (both family heads, the elder alone, or nobody), the people of the picture by
+ * the district they live in (the sum is the turnout, or 120 if that is more), and the place each named person is bound for.
+ */
+export interface Festival {
+  route: FestivalRoute;
+  together: boolean;
+  lighter: string[];
+  bearers: Record<string, number>;
+  named: Array<{ npc: string; place: string }>;
+}
+
 export interface EndingView {
+  /** The tick the ending was made at, which is what the festival night is seeded by. Null where the ending comes from the numbers of a frame only. */
+  tick: number | null;
   /** The id of the base ending. */
   id: string;
   label: Name | null;
@@ -123,6 +146,8 @@ export interface EndingView {
   reveal: Reveal | null;
   /** What became of the people who carry the days. Null where the ending is the compact form or has none. */
   epilogue: Epilogue[] | null;
+  /** What the last night is staged from. Null where the ending comes from the numbers of a frame only, or from a core from before it. */
+  festival: Festival | null;
 }
 
 /** A label that comes as {zh, en}, or as one string. */
@@ -166,7 +191,18 @@ function readChain(raw: unknown): RevealChain | null {
     trueVersions: strings(raw.true),
     told: readTellings(raw.told).sort((a, b) => a.tick - b.tick),
     reached: strings(raw.reached),
+    held: readHeld(raw.held),
   };
+}
+
+/** `held` of a chain, `[[version, [[person, ...], ...]], ...]`, as the number of people for each version. */
+function readHeld(value: unknown): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const row of Array.isArray(value) ? value : []) {
+    if (!Array.isArray(row) || typeof row[0] !== "string" || !Array.isArray(row[1]) || row[1].length === 0) continue;
+    out[row[0]] = row[1].length;
+  }
+  return out;
 }
 
 function readReveal(raw: unknown): Reveal | null {
@@ -251,6 +287,25 @@ export function readEpilogue(raw: unknown): Epilogue[] | null {
   return out;
 }
 
+const ROUTES: readonly FestivalRoute[] = ["bridge", "lane", "none"];
+
+/** The `festival` of an ending, or null where it is not one the page can stage. */
+export function readFestival(raw: unknown): Festival | null {
+  if (!isRecord(raw) || typeof raw.route !== "string" || !ROUTES.includes(raw.route as FestivalRoute)) return null;
+  const bearers: Record<string, number> = {};
+  if (isRecord(raw.bearers)) {
+    for (const [place, count] of Object.entries(raw.bearers)) {
+      const n = int(count);
+      if (n !== null && n > 0) bearers[place] = n;
+    }
+  }
+  const named: Festival["named"] = [];
+  for (const row of Array.isArray(raw.named) ? raw.named : []) {
+    if (isRecord(row) && typeof row.npc === "string" && typeof row.place === "string") named.push({ npc: row.npc, place: row.place });
+  }
+  return { route: raw.route as FestivalRoute, together: raw.together === true, lighter: strings(raw.lighter), bearers, named };
+}
+
 /** The ending the `ending` event reports, or the `ending` key of a frame, which is the same object. */
 export function readEnding(event: Record<string, unknown>): EndingView {
   const hidden: EndingView["hidden"] = [];
@@ -260,6 +315,7 @@ export function readEnding(event: Record<string, unknown>): EndingView {
   const inputs: Record<string, boolean> = {};
   if (isRecord(event.inputs)) for (const [key, value] of Object.entries(event.inputs)) if (typeof value === "boolean") inputs[key] = value;
   return {
+    tick: int(event.tick),
     id: typeof event.ending === "string" ? event.ending : "",
     label: readLabel(event.label),
     hidden,
@@ -269,12 +325,13 @@ export function readEnding(event: Record<string, unknown>): EndingView {
     turnout: int(event.turnout),
     reveal: readReveal(event.reveal),
     epilogue: readEpilogue(event.epilogue),
+    festival: readFestival(event.festival),
   };
 }
 
 /** The ending as far as the numbers of a frame say it: the id and the numbers, with no reveal. For a recording whose frames carry no `ending`. */
 export function endingFromHud(id: string, hud: Record<string, unknown>): EndingView {
-  return { id, label: null, hidden: [], inputs: {}, passage: null, promised: int(hud.promised), turnout: int(hud.turnout), reveal: null, epilogue: null };
+  return { tick: null, id, label: null, hidden: [], inputs: {}, passage: null, promised: int(hud.promised), turnout: int(hud.turnout), reveal: null, epilogue: null, festival: null };
 }
 
 // --- The words of a story ----------------------------------------------------------------------
@@ -358,9 +415,12 @@ export interface Layout {
 
 /**
  * `row` is the distance between two rows, `height` the pill, `words` the room under it for the lines of
- * words (`lines` of them, `line` apart), `column` the narrowest column and `size` the size of the words.
+ * words (`lines` of them, `line` apart), `column` the narrowest column and `size` the size of the words. `air` is the room that a column keeps
+ * to the right of its widest name: a line that changed the story has its number in a circle in the middle of the gap, and a line that leaves a
+ * name as wide as its column has no more than the gap to run in, which the circle takes most of. With `air` there is a run of line between the
+ * name and the circle that is long enough to show three dashes of a dashed line (6 and 4 in ending.css).
  */
-export const TREE = { row: 60, pad: 8, gap: 34, height: 24, words: 28, column: 130, lines: 2, line: 13, size: 11 } as const;
+export const TREE = { row: 60, pad: 8, gap: 34, height: 24, words: 28, column: 130, air: 20, lines: 2, line: 13, size: 11 } as const;
 
 const WIDE = /[⺀-鿿＀-￯]/;
 
@@ -451,7 +511,7 @@ export function layoutForest(roots: readonly TreeNode[], nameOf: (person: string
   };
   for (const root of roots) measure(root, 0);
   const columns: number[] = [];
-  const widths = depthWidths.map((width) => Math.max(width, TREE.column));
+  const widths = depthWidths.map((width) => Math.max(width + TREE.air, TREE.column));
   let at = TREE.pad;
   for (const width of widths) {
     columns.push(at);

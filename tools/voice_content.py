@@ -23,6 +23,18 @@ each reads after "I"; no two people say the same code, or the same frame, in the
 person says two codes in the same words, so that the words tell the line; and no variant repeats
 the plain words of the core (``phrases.py``, the frames of ``sentences.yaml``).
 
+A person may also have a table of the names they use for other people (``call``, after
+``voice``): ``{cast id: {zh, en}}``, such as 老二 for the second son, said by the mother. The words
+that name someone inside what a person says are made with that person's table
+(``world.bridge.voices``), and anyone the table does not list goes by the name of the cast. A table
+may also name a family of the cast: a family speaking of itself says 我们家 ("our family"). What
+is checked: each key is a person of the cast other than the speaker (and not ``player``, whom
+everyone calls the manager) or a family of the cast, each name is a few bare words in each
+language (the Chinese is Chinese and the English is not, no slot, no punctuation of a sentence, no
+pronoun for a person), no two keys share a name in a language, no name is the cast's own name for
+someone else, and only a member of a family calls it 我们家. A person without a table has no
+``call`` in the compiled document.
+
 The ten people who carry the five days have three lists more in their files (see
 ``world.bridge.roles``): ``greet`` and ``chat`` (what they say as a talk opens and as the manager
 leaves) and ``epilogue`` (what is said of them on the ending page). Each is a series of entries in
@@ -50,21 +62,36 @@ from pydantic import Field, ValidationError
 import sentence_content as sc
 import town_content
 from lantern_core import canon
+from lantern_core.cognition._fields import ShapeError
+from lantern_core.cognition.lexicon import CLASSES, Lexicon, blank, normalise, scan
 
 MODULE = "core/lantern_core/world/bridge/voice_data.py"
 PHRASES_FILE = "core/lantern_core/world/bridge/phrases.py"
 MIN_VARIANTS = 2
 MIN_HEDGES = 2
 LINE_LIMIT = {"zh": 60, "en": 140}  # characters of a fixed line
-# the fixed lines that name a person (the one they point to) or the goods of a promise, and the
-# slots each writes once (``phrases.NAMED`` and ``phrases.GOODS`` say the same, a test holds them)
+# the fixed lines that name a person (the one they point to), the goods of a promise or the thing of
+# a gift, and the slots each writes once (``phrases.NAMED``, ``phrases.GOODS`` and ``phrases.GIFT``
+# say the same, a test holds them)
 LINE_SLOTS = {
     "point_heard": {"name"},
     "point_hub": {"name"},
     "promise_open": {"amount", "item", "when"},
     "goods_enough": {"item"},
+    "gift_like": {"item"},
+    "gift_neutral": {"item"},
+    "gift_dislike": {"item"},
 }
 FRAME_LIMIT = {"zh": 40, "en": 90}  # characters of a frame, apart from its slots
+CALL_LIMIT = {"zh": 12, "en": 40}  # characters of a name one person uses for another
+CALL_PLAYER = "player"  # whom everyone calls the manager, so that no table lists them
+OWN_FAMILY = {"zh": "我们家", "en": "our family"}  # what a member of a family calls it
+# what a name may hold: Chinese or English letters and, in English, digits, spaces, apostrophes
+# and the hyphen of a compound. Nothing that ends or splits a sentence, and no slot or quotation.
+CALL_BARE = {
+    "zh": re.compile(r"[^\W\d_]+"),
+    "en": re.compile(r"[A-Za-z][A-Za-z0-9' \-]*"),
+}
 # frame -> the slots it must write, once each. A guess writes its hedge in every variant, in
 # both languages, so that the two languages say the same thing.
 FRAME_NEEDS = {
@@ -76,6 +103,7 @@ FRAME_NEEDS = {
     "guess_heard": {"line", "teller", "hedge"},
     "guess_unknown": {"line", "hedge"},
     "rival": {"line", "teller"},  # said after the belief a person holds: who told them else
+    "known": {"line"},  # a thing seen that the whole town knows
 }
 FRAMES = tuple(FRAME_NEEDS)
 assert set(FRAMES) == set(sc.FRAME_SLOTS)  # one table of frames, here and in sentence_content
@@ -117,6 +145,7 @@ COMMAS_PER_SENTENCE = {"zh": 1, "en": 2}
 ASCII_PUNCTUATION = re.compile(r"[,.!?:;()]")
 LETTERS = re.compile(r"[A-Za-z]")
 SLOT = sc.SLOT
+THE = re.compile(r"^\s*the\s+", re.I)
 SENTENCE_END = re.compile(r"[.!?]\s*$")
 NOT_LETTER = re.compile(r"[\W_]+")
 HEDGE_EN = re.compile(r"I[ ']")  # "I guess", "I'd say": it reads after "and" and starts a sentence
@@ -141,6 +170,7 @@ class After(sc.Strict):
 class VoiceFile(sc.Strict):
     person: str
     voice: sc.Pair
+    call: dict[str, sc.Pair] = Field(default_factory=dict)
     lines: dict[str, list[sc.Pair]]
     frames: dict[str, list[sc.Pair]]
     hedges: list[sc.Pair]
@@ -176,6 +206,43 @@ def cast_people(casts: dict[str, Any]) -> list[str]:
     if not isinstance(people, list):
         return []
     return [p["id"] for p in people if isinstance(p, dict) and isinstance(p.get("id"), str)]
+
+
+def cast_names(casts: dict[str, Any]) -> dict[str, dict[str, str]]:
+    """The name of each person of the bridge cast in both languages, as the cast gives it."""
+    cast = casts.get(town_content.SCENARIOS["bridge"][1])
+    people = cast.get("people") if isinstance(cast, dict) else None
+    if not isinstance(people, list):
+        return {}
+    return {
+        p["id"]: {"zh": p["zh"], "en": p["en"]}
+        for p in people
+        if isinstance(p, dict) and all(isinstance(p.get(k), str) for k in ("id", "zh", "en"))
+    }
+
+
+def load_lexicon(speech: Any) -> Lexicon | None:
+    """The words that the check of a reply looks for, read from the raw ``speech.yaml``, or None
+    where it is missing or malformed (``speech_content`` says what is wrong with it)."""
+    if not isinstance(speech, dict) or not speech:
+        return None
+    try:
+        return Lexicon(speech)
+    except (ShapeError, KeyError, TypeError, AttributeError):
+        return None
+
+
+def cast_families(casts: dict[str, Any]) -> dict[str, str | None]:
+    """The family of each person of the bridge cast (None for a person of no family)."""
+    cast = casts.get(town_content.SCENARIOS["bridge"][1])
+    people = cast.get("people") if isinstance(cast, dict) else None
+    if not isinstance(people, list):
+        return {}
+    return {
+        p["id"]: p.get("family") if isinstance(p.get("family"), str) else None
+        for p in people
+        if isinstance(p, dict) and isinstance(p.get("id"), str)
+    }
 
 
 def cast_script(casts: dict[str, Any]) -> str | None:
@@ -315,11 +382,96 @@ def _hedge_problems(at: str, hedges: list[sc.Pair]) -> list[str]:
     return out
 
 
+def _bare(lang: str, text: str) -> str:
+    """A name without punctuation, spaces or case, and in English without a leading "the"."""
+    return _normal(THE.sub("", text) if lang == "en" else text)
+
+
+def _class_word_problems(at: str, lang: str, text: str, lexicon: Lexicon) -> list[str]:
+    """The words of the six classes that a name holds. The check of a reply looks for them in a
+    line wherever they stand, so a name that holds one would be refused each time it is used."""
+    found = normalise(text)
+    out = []
+    for word_class in CLASSES:
+        masked = blank(found, scan(found, lexicon.masks[word_class]))
+        for _, form, _ in scan(masked, lexicon.classes[word_class]):
+            out.append(
+                f"{at} ({lang}): the name holds {form!r}, a {word_class} word that the check of "
+                f"a reply looks for"
+            )
+    return out
+
+
+def _call_problems(
+    person: str,
+    vf: VoiceFile,
+    people: list[str],
+    names: dict[str, dict[str, str]],
+    lexicon: Lexicon | None,
+    families: dict[str, str | None] | None = None,
+) -> list[str]:
+    """The names a person uses for others: whom they name, and what a name may be. A name is the
+    words the person says for someone, so it is a few bare words in each language. A family is
+    我们家 to its own members and to nobody else."""
+    out: list[str] = []
+    families = families or {}
+    family_ids = {f for f in families.values() if f is not None}
+    own = families.get(person)
+    for other, pair in sorted(vf.call.items()):
+        at = f"lines/{person}.yaml: call {other}"
+        if other == CALL_PLAYER:
+            out.append(f"{at}: everyone calls the manager the same, so no table names {other}")
+        elif other == person:
+            out.append(f"{at}: a person does not name themself")
+        elif other not in people and other not in family_ids:
+            out.append(f"{at}: {other} is not a person or a family of the cast")
+        for lang in ("zh", "en"):
+            if getattr(pair, lang) == OWN_FAMILY[lang] and other != own:
+                out.append(f"{at} ({lang}): only a member of {other} calls it {OWN_FAMILY[lang]!r}")
+        out += sc._language_problems(at, pair)
+        for lang in ("zh", "en"):
+            text = getattr(pair, lang)
+            if text != text.strip() or "  " in text:
+                out.append(f"{at} ({lang}): stray spaces in {text!r}")
+            elif not CALL_BARE[lang].fullmatch(text) or (lang == "zh" and LETTERS.search(text)):
+                out.append(f"{at} ({lang}): a name is bare words, got {text!r}")
+            if any(banned in text for banned in BANNED):
+                out.append(f"{at} ({lang}): no dash in a name, got {text!r}")
+            if len(text) > CALL_LIMIT[lang]:
+                out.append(f"{at} ({lang}): longer than {CALL_LIMIT[lang]} characters: {text!r}")
+            if has_pronoun(lang, text):
+                out.append(f"{at} ({lang}): a person is never he or she, got {text!r}")
+            if lexicon is not None:
+                out += _class_word_problems(at, lang, text, lexicon)
+            for named, name in sorted(names.items()):
+                if named != other and _bare(lang, text) == _bare(lang, name[lang]):
+                    out.append(f"{at} ({lang}): {text!r} is the name of {named}, not of {other}")
+    for lang in ("zh", "en"):
+        seen: dict[str, str] = {}
+        for other, pair in sorted(vf.call.items()):
+            key = _bare(lang, getattr(pair, lang))
+            first = seen.setdefault(key, other)
+            if first != other:
+                out.append(
+                    f"lines/{person}.yaml: call {first} and {other} are the same name ({lang}): "
+                    f"{getattr(pair, lang)!r}"
+                )
+    return out
+
+
 def _voice_problems(
-    person: str, vf: VoiceFile, codes: dict[str, Any], plain_frames: dict[str, Any]
+    person: str,
+    vf: VoiceFile,
+    codes: dict[str, Any],
+    plain_frames: dict[str, Any],
+    people: list[str],
+    names: dict[str, dict[str, str]],
+    lexicon: Lexicon | None,
+    families: dict[str, str | None] | None = None,
 ) -> list[str]:
     where = f"lines/{person}.yaml"
     out = sc._language_problems(f"{where}: voice", vf.voice)
+    out += _call_problems(person, vf, people, names, lexicon, families)
     for code in sorted(set(codes) - set(vf.lines)):
         out.append(f"{where}: no lines for '{code}'")
     for code in sorted(set(vf.lines) - set(codes)):
@@ -487,8 +639,14 @@ def check(
     codes: dict[str, Any],
     plain_frames: dict[str, Any],
     errors: list[str],
+    names: dict[str, dict[str, str]] | None = None,
+    lexicon: Lexicon | None = None,
+    families: dict[str, str | None] | None = None,
 ) -> dict[str, VoiceFile] | None:
-    """The voices as models, or ``None`` after appending what is wrong to ``errors``."""
+    """The voices as models, or ``None`` after appending what is wrong to ``errors``. ``names`` are
+    the names of the cast, which no name in a ``call`` table may be for someone else,
+    ``lexicon`` the words of the check of a reply, which no such name may hold, and ``families``
+    the family of each person of the cast, which their table names."""
     start = len(errors)
     if not files:
         errors.append("lines: no file in content/lines")
@@ -510,7 +668,9 @@ def check(
     for person in sorted(set(voices) - set(people)):
         errors.append(f"lines/{person}.yaml: {person} is not a person of the cast")
     for person, vf in sorted(voices.items()):
-        errors += _voice_problems(person, vf, codes, plain_frames)
+        errors += _voice_problems(
+            person, vf, codes, plain_frames, people, names or {}, lexicon, families
+        )
     errors += _distinct_problems(voices)
     errors += _role_distinct_problems(voices)
     return None if len(errors) > start else voices
@@ -531,12 +691,15 @@ def compile_voices(voices: dict[str, VoiceFile]) -> dict[str, Any]:
 
 def _compile_one(vf: VoiceFile) -> dict[str, Any]:
     """One person's compiled voice. The lists of the people who carry the days are there for them
-    alone: another person's document has only the three keys of the lists of lines."""
+    alone: another person's document has only the three keys of the lists of lines, and ``call``
+    only where the person has names of their own for others."""
     doc: dict[str, Any] = {
         "lines": {k: [p.model_dump() for p in v] for k, v in sorted(vf.lines.items())},
         "frames": {k: [p.model_dump() for p in v] for k, v in sorted(vf.frames.items())},
         "hedges": {"en": [h.en for h in vf.hedges], "zh": [h.zh for h in vf.hedges]},
     }
+    if vf.call:
+        doc["call"] = {other: pair.model_dump() for other, pair in sorted(vf.call.items())}
     for kind in ("greet", "chat"):
         if getattr(vf, kind):
             doc[kind] = [
@@ -558,8 +721,9 @@ def render_module(doc: dict[str, Any]) -> bytes:
         '"""The voices of the townsfolk as Python data.\n\n'
         "``VOICES`` is the compiled document that ``world.bridge.voices`` reads: for each person\n"
         "of the cast, at least two variants in both languages of every fixed line of the town\n"
-        "(``lines``) and of every frame that wraps what they tell (``frames``), and the words\n"
-        "they hedge a guess in (``hedges``).\n\n"
+        "(``lines``) and of every frame that wraps what they tell (``frames``), the words\n"
+        "they hedge a guess in (``hedges``), and where they have them the names they use for\n"
+        "other people (``call``).\n\n"
         "Generated by tools/check_content.py from content/lines/*.yaml. Do not edit it: change\n"
         "the YAML and run the tool. The core cannot read files, so the compiled content travels\n"
         "inside the package. A test holds it equal to content/compiled/voices.json.\n"
@@ -576,15 +740,24 @@ def build(
     codes: dict[str, Any],
     sentences: dict[str, Any],
     errors: list[str],
+    speech: Any = None,
 ) -> tuple[dict[str, bytes], dict[str, bytes], list[str]]:
     """Check the voices and compile them: (json outputs, generated modules, coverage lines).
 
     ``codes`` are the fixed lines of the core and ``sentences`` the raw ``sentences.yaml``, whose
-    frames are the plain voice that a voice must not repeat.
+    frames are the plain voice that a voice must not repeat. ``speech`` is the raw ``speech.yaml``,
+    whose words a name in a ``call`` table must not hold.
     """
     frames = sentences.get("frames") if isinstance(sentences, dict) else None
     voices = check(
-        files, cast_people(casts), codes, frames if isinstance(frames, dict) else {}, errors
+        files,
+        cast_people(casts),
+        codes,
+        frames if isinstance(frames, dict) else {},
+        errors,
+        cast_names(casts),
+        load_lexicon(speech),
+        cast_families(casts),
     )
     if voices is None:
         return {}, {}, []
@@ -601,4 +774,10 @@ def build(
         f"{sum(len(vf.chat) for vf in carrying)} last words, "
         f"{sum(len(vf.epilogue) for vf in carrying)} epilogues",
     ]
+    callers = [vf for vf in voices.values() if vf.call]
+    if callers:
+        coverage.append(
+            f"calls: {len(callers)} people have names of their own for others, "
+            f"{sum(len(vf.call) for vf in callers)} names"
+        )
     return {"voices.json": canon.dumps(doc)}, {MODULE: render_module(doc)}, coverage

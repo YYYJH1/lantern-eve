@@ -204,6 +204,14 @@ def test_a_secret_belongs_to_a_person_of_the_cast():
     )
 
 
+def test_the_manager_is_called_by_the_title_and_by_nothing_else_in_a_reply():
+    """Everyone in town says 总管 and nobody says 朋友: a reply has the title or no address."""
+    assert DOC["addresses"] == {
+        "manager": {"en": "Manager", "zh": "总管"},
+        "none": {"en": "", "zh": ""},
+    }
+
+
 def test_the_moods_and_addresses_are_checked():
     assert has(check(lambda s: s["moods"].pop("plain")), "moods needs 'plain'")
     assert has(check(lambda s: s["moods"]["plain"].update(zh="嗯。")), "moods.plain", "empty")
@@ -212,11 +220,11 @@ def test_the_moods_and_addresses_are_checked():
         check(lambda s: s["moods"]["sad"].update(zh="唉")), "moods.sad (zh)", "end a sentence"
     )
     assert has(
-        check(lambda s: s["moods"]["sad"].update(en="Alas")), "moods.sad (en)", "end a sentence"
+        check(lambda s: s["moods"]["sad"].update(en="Oh dear")), "moods.sad (en)", "end a sentence"
     )
     assert has(
-        check(lambda s: s["addresses"]["friend"].update(en="朋友")),
-        "addresses.friend",
+        check(lambda s: s["addresses"]["manager"].update(en="总管")),
+        "addresses.manager",
         "must be English",
     )
     assert has(check(lambda s: s["moods"].update(Bad=s["moods"]["sad"])), "snake_case")

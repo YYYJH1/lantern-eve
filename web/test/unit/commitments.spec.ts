@@ -54,7 +54,7 @@ test.describe("the hour a promise is for, in words", () => {
     expect(dueWords("en", { day: 1, hour: 7 }, 3)).toBe("Day 1 07:00");
     expect(dueWords("en", { day: 2, hour: 7 }, null)).toBe(dueText("en", { day: 2, hour: 7 }));
     setLang("zh");
-    expect(dueWords("zh", { day: 4, hour: 7 }, 1)).toBe("第四日 07:00");
+    expect(dueWords("zh", { day: 4, hour: 7 }, 1)).toBe("第四天 07:00");
   });
 });
 

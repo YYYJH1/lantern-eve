@@ -75,12 +75,15 @@ KINDS = (CONTRADICTED, UNSEEN, UNSOURCED)
 
 # why a full statement cannot be made now (the reasons of the rejections of the speech too)
 WHY_NOT = {
-    "talking": {"zh": "先结束谈话", "en": "Finish the talk first"},
+    "talking": {"zh": "先跟人告辞", "en": "Finish the talk first"},
     "busy": {"zh": "手上的事还没做完", "en": "Finish what you are doing first"},
-    "stated_today": {"zh": "今天已经陈述过一次", "en": "A statement has been made today already"},
-    "incomplete": {"zh": "三栏还没有填满", "en": "The three parts are not all filled in"},
+    "stated_today": {
+        "zh": "今天已经照讲稿说过一回",
+        "en": "A statement has been made today already",
+    },
+    "incomplete": {"zh": "讲稿的三条还没写全", "en": "The three parts are not all filled in"},
     "no_venue": {
-        "zh": "去茶馆（傍晚）或族长召集的祠堂陈述",
+        "zh": "傍晚去茶馆说，或者等族长把族人召到祠堂",
         "en": "Go to the teahouse in the evening, or the hall once the elder has called the clan",
     },
     "not_evening": {
@@ -93,8 +96,8 @@ WHY_NOT = {
     },
     "empty_room": {"zh": "这里没有人听", "en": "Nobody is here to hear it"},
     "few_present": {
-        "zh": "在场有名有姓的人不到五位",
-        "en": "Fewer than five named people are here",
+        "zh": "在场的熟面孔不到五个",
+        "en": "Fewer than five familiar faces are here",
     },
 }
 ORDINALS = {
@@ -102,17 +105,19 @@ ORDINALS = {
     "en": ("first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"),
 }
 PROOF = {
-    "zh": "每一栏都对得上，可手里的凭据还分不出是哪一种说法",
+    "zh": "每一条都对，可你的凭据分不出是哪种说法",
     "en": "Every part holds, but what you hold cannot tell one story from the others",
 }
+# what was wrong with a part, said after the part: 「桥是怎么坏的」这一条，和更夫亲眼看见的不一样
 FAILURE = {
     CONTRADICTED: {
-        "zh": "这和{who}亲眼所见矛盾",
-        "en": "this contradicts what {who} saw with {own} own eyes",
+        "zh": "和{who}亲眼看见的不一样",
+        "en": "goes against what {who} saw with {own} own eyes",
     },
-    UNSEEN: {"zh": "没有人亲眼看见", "en": "nobody has seen this with their own eyes"},
-    UNSOURCED: {"zh": "来源对不上", "en": "the sources do not line up"},
+    UNSEEN: {"zh": "没有人亲眼看见", "en": "rests on nothing anyone saw"},
+    UNSOURCED: {"zh": "话传走样了", "en": "rests on talk that changed as it was passed on"},
 }
+PART = {"zh": "「{title}」这一条，{text}", "en": "The part “{title}” {text}"}
 
 
 # ---------------------------------------------------------------------------- the content
@@ -281,9 +286,8 @@ def ordinal(lang: str, number: int) -> str:
 def too_early_words() -> dict[str, str]:
     day, _ = opens()
     return {
-        "zh": f"完整陈述要等到第{ordinal('zh', day)}天傍晚的公议",
-        "en": f"The full statement waits for the public meeting on the evening of the "
-        f"{ordinal('en', day)} day",
+        "zh": f"要等第{ordinal('zh', day)}天傍晚，才能照讲稿当众说",
+        "en": f"The statement has to wait for the evening of the {ordinal('en', day)} day",
     }
 
 
@@ -292,10 +296,14 @@ def why_not_words(reason: str) -> dict[str, str]:
 
 
 def _person(world: BridgeWorld, who: str) -> dict[str, str]:
+    """A person as the words of a failure name them: you, or the name of the cast, which in English
+    has the article a sentence wants (the Night Watchman)."""
+    from lantern_core.world.bridge.lore import lore  # not at the top: the lore reads the script
+
     if who == notebook.PLAYER_ID:
         return {"zh": "你", "en": "you"}
     name = notebook._name(world, who)
-    return {"zh": name["zh"], "en": name["en"]}
+    return {"zh": name["zh"], "en": lore().names.get(who, name)["en"]}
 
 
 def failure_words(world: BridgeWorld, fail: list[str]) -> dict[str, str]:
@@ -309,8 +317,7 @@ def failure_words(world: BridgeWorld, fail: list[str]) -> dict[str, str]:
         text = FAILURE[kind][lang].format(
             who=name, own="your" if who == notebook.PLAYER_ID else "their"
         )
-        colon = "：" if lang == "zh" else ": "
-        out[lang] = f"{part['title'][lang]}{colon}{text}"
+        out[lang] = PART[lang].format(title=part["title"][lang], text=text)
     return out
 
 

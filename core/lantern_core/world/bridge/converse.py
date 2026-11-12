@@ -85,35 +85,40 @@ def with_words(out: dict[str, Any], body: dict[str, Any], where: str) -> dict[st
     return out
 
 
-def words(world_state: dict[str, Any], line: list[Any], plain: bool = False) -> dict[str, str]:
+def words(
+    world_state: dict[str, Any], line: list[Any], plain: bool = False, today: int | None = None
+) -> dict[str, str]:
     """The two texts of a line on show, in the voice of the person who says it (``voices``).
 
     A line is ``[npc, until, kind, arg, lead]``. A ``text`` is a code of ``phrases`` said as that
     person says it, and a ``point`` is a code of ``phrases.NAMED`` said so with the name of the
-    person in ``lead`` (``pointers``). A ``goods`` is a code of ``phrases.GOODS`` said so with the
-    slots filled from the promise whose number is in ``lead`` (``promise_open``) or from the item
-    that is in it (``goods_enough``, see ``commitments.say_goods``). A ``claim`` is a claim kept as
-    an answer (``arg`` is its id), said in the person's voice and opened by the phrase ``lead`` if
-    there is one, and followed by the account somebody else told them if they said one with it
-    (``notebook.twin_of``), a ``role`` is an entry (``lead``) of the list ``arg`` (``greet`` or
-    ``chat``) of the person, which the state of the game chose (``roles``), and a
-    ``said`` is a line a model wrote or the core made from the acts of a reply: ``arg`` is the
-    Chinese and ``lead`` the English, as they passed the check. With ``plain`` a ``text``, a
-    ``point`` and a ``claim`` are said in the plain words of the town and not in a voice of their
-    own, which is what a prompt is made from, so that the state does not know there are voices
-    (a ``role`` has no plain words of the town: it is the first variant of the entry).
+    person in ``lead`` (``pointers``) as the speaker calls them (``voices.called``). A ``goods``
+    is a code of ``phrases.GOODS`` said so with the slots filled from the promise whose number is
+    in ``lead`` (``promise_open``) or from the item that is in it (``goods_enough``, see
+    ``commitments.say_goods``), the time of the promise said as a person says it on the day
+    ``today``, or by the date of the game where no day is named. A ``claim`` is a claim kept as an
+    answer (``arg`` is its id), said in the person's voice, with the people it names called what
+    that person calls them, and opened by the phrase ``lead`` if there is one, and followed by the
+    account somebody else told them if they said one with it (``notebook.twin_of``), a ``role`` is
+    an entry (``lead``) of the list ``arg`` (``greet`` or ``chat``) of the person, which the state
+    of the game chose (``roles``), and a ``said`` is a line a model wrote or the core made from the
+    acts of a reply: ``arg`` is the Chinese and ``lead`` the English, as they passed the check.
+    With ``plain`` a ``text``, a ``point`` and a ``claim`` are said in the plain words of the
+    town, with the names of the cast, and not in a voice of their own, which is what a prompt is
+    made from, so that the state does not know there are voices (a ``role`` has no plain words of
+    the town: it is the first variant of the entry).
     """
     npc, until, kind, arg, lead = line
     if kind == "text":
         return phrases.phrase(arg) if plain else voices.phrase(npc, arg, until)
     if kind == "point":  # a line that names the person it points to (``lead``)
         said = phrases.phrase(arg) if plain else voices.phrase(npc, arg, until)
-        return phrases.named(said, lore().names[lead])
+        return phrases.named(said, lore().names[lead] if plain else voices.called(npc, lead))
     if kind == "goods":  # a line of the goods: ``lead`` is the promise or the item it speaks of
         from lantern_core.world.bridge import commitments  # not at the top: it reads the voices
 
         said = phrases.phrase(arg) if plain else voices.phrase(npc, arg, until)
-        return commitments.say_goods(world_state, said, arg, lead)
+        return commitments.say_goods(world_state, said, arg, lead, today)
     if kind == "role":  # a line the person's lists choose by the state of the game (``roles``)
         from lantern_core.world.bridge import roles  # not at the top: it reads the voices
 

@@ -26,6 +26,10 @@ before the class is searched.
 Besides the six classes there are the *names* (the label of each entity in both languages and its
 other names), the words that say the act of each predicate, and the words that give each motive.
 A line that holds one of them says that thing, and it needs an act that does.
+
+A speaker may have names of their own for people (a mother calls her younger son "老二"): those
+are names of that person for that speaker and for no one else, and they win over any other name
+the town gives the same words. ``Vocabulary.calling`` makes the vocabulary of such a speaker.
 """
 
 from __future__ import annotations
@@ -229,7 +233,7 @@ class Vocabulary:
     motives stands for all of them.
     """
 
-    __slots__ = ("_said", "forms", "labels", "motive_words", "pred_words", "terms")
+    __slots__ = ("_derived", "_said", "forms", "labels", "motive_words", "pred_words", "terms")
 
     def __init__(self, lexicon: Lexicon, names: Mapping[str, Mapping[str, str]]) -> None:
         forms: dict[str, dict[str, list[str]]] = {}
@@ -252,11 +256,17 @@ class Vocabulary:
         self.labels = labels
         self.pred_words = _merged(lexicon.events)
         self.motive_words = _merged(lexicon.motives)
+        self._derived: dict[tuple[tuple[str, str, str], ...], Vocabulary] = {}
+        self._index()
+
+    def _index(self) -> None:
+        """Make ``terms`` and the words each thing is said by from ``forms`` and the event and
+        motive words."""
         terms: list[Term] = []
         claimed: set[tuple[str, bool]] = set()
-        for eid in sorted(forms):
+        for eid in sorted(self.forms):
             for lang in LANGUAGES:
-                for form in forms[eid][lang]:
+                for form in self.forms[eid][lang]:
                     key = (form, lang == "en")
                     if form and key not in claimed:
                         claimed.add(key)
@@ -266,15 +276,58 @@ class Vocabulary:
                 terms.append((form, (kind, ids), whole))
         self.terms = TermSet(terms)
         said: dict[tuple[str, str], list[tuple[str, bool]]] = {}
-        for eid in sorted(forms):
-            said[(NAME, eid)] = [(f, False) for f in forms[eid]["zh"]] + [
-                (f, True) for f in forms[eid]["en"]
+        for eid in sorted(self.forms):
+            said[(NAME, eid)] = [(f, False) for f in self.forms[eid]["zh"]] + [
+                (f, True) for f in self.forms[eid]["en"]
             ]
         for kind, table in ((EVENT, self.pred_words), (MOTIVE, self.motive_words)):
             for key, ids in sorted(table.items()):
                 for ident in ids:
                     said.setdefault((kind, ident), []).append(key)
         self._said = said
+
+    def calling(self, calls: Mapping[str, Mapping[str, str]]) -> Vocabulary:
+        """The vocabulary of a speaker who has names of their own for people.
+
+        ``calls`` is ``{entity id: {"zh": name, "en": name}}``. Each name is a name of that entity,
+        on top of the ones it has. A word that is another entity's name for everyone else is the
+        entity's for this speaker alone, since a speaker means by it who they have said they mean.
+        A speaker with no names of their own has this vocabulary itself. The result is made once
+        for each table and kept.
+        """
+        if not calls:
+            return self
+        key = tuple((eid, calls[eid]["zh"], calls[eid]["en"]) for eid in sorted(calls))
+        found = self._derived.get(key)
+        if found is None:
+            found = self._derived[key] = self._called(calls)
+        return found
+
+    def _called(self, calls: Mapping[str, Mapping[str, str]]) -> Vocabulary:
+        forms = {
+            eid: {lang: list(words) for lang, words in pair.items()}
+            for eid, pair in self.forms.items()
+        }
+        labels = dict(self.labels)
+        for eid in sorted(calls):
+            labels.setdefault(eid, eid)
+            mine = forms.setdefault(eid, {"zh": [], "en": []})
+            for lang in LANGUAGES:
+                form = normalise(calls[eid][lang])
+                form = _bare(form) if lang == "en" else form
+                if not form:
+                    continue
+                for other_id, theirs in forms.items():
+                    if other_id != eid and form in theirs[lang]:
+                        theirs[lang].remove(form)
+                if form not in mine[lang]:
+                    mine[lang].append(form)
+        derived = object.__new__(Vocabulary)
+        derived.forms, derived.labels = forms, labels
+        derived.pred_words, derived.motive_words = self.pred_words, self.motive_words
+        derived._derived = {}
+        derived._index()
+        return derived
 
     def words_of(self, kind: str, ident: str) -> list[tuple[str, bool]]:
         """Every form that says the entity (``name``), predicate (``event``) or motive, each as

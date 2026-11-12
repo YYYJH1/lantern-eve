@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import { expect, test } from "../support/fixtures.ts";
 import { openTheNote } from "../support/play.ts";
+import { openTopic } from "../support/real.ts";
 import * as fake from "../support/slice.ts";
 
 // The page with the real shapes of the frame on the first day: who will be there, when a person has to go, why a track was turned down,
@@ -15,6 +16,9 @@ test.describe("an occasion that people are expected at", () => {
     const page = lantern.page;
     await fake.openFirstDay(lantern, fake.tasks("t_evening"));
     const row = page.getByTestId("task-expected");
+    // The people who will be there are a reason for the task, behind the line of reasons of the slip.
+    await expect(row).toBeHidden();
+    await page.getByTestId("slip-why").locator("summary").click();
     const words = {
       en: [["Teahouse Keeper", "17:00–19:00"], ["Zhou's Clerk", "18:36–19:00"], ["Granny Li", "17:30–19:00"]],
       zh: [["茶馆老板娘", "17:00–19:00"], ["周家伙计", "18:36–19:00"], ["李老太", "17:30–19:00"]],
@@ -23,7 +27,7 @@ test.describe("an occasion that people are expected at", () => {
       await lantern.setTheme(theme);
       for (const lang of ["en", "zh"] as const) {
         await lantern.setLang(lang);
-        await expect(row.locator(".note-lead")).toHaveText(lang === "en" ? "There then:" : "到时在场：");
+        await expect(row.locator(".note-lead")).toHaveText(lang === "en" ? "Who will be there:" : "到时在场的人");
         const people = row.getByTestId("task-expected-person");
         await expect(people).toHaveCount(3);
         for (const [i, [name, hours]] of words[lang].entries()) {
@@ -46,7 +50,7 @@ test.describe("an occasion that people are expected at", () => {
     await page.getByTestId("task-expected-more").locator("summary").click();
     await expect(page.getByTestId("task-expected-more").locator("li")).toHaveCount(2);
     await lantern.setLang("zh");
-    await expect(page.getByTestId("task-expected-more").locator("summary")).toHaveText("另有两人");
+    await expect(page.getByTestId("task-expected-more").locator("summary")).toHaveText("还有两人");
     await lantern.setLang("en");
     await fake.feedFrame(page, fake.tasks("t_evening"));
     // A task that is settled, or has lapsed, lists nobody.
@@ -102,17 +106,19 @@ test.describe("a task that cannot be followed", () => {
     await more.locator("summary").click();
     for (const [reason, en, zh] of [
       ["unknown_task", "There is no such task.", "没有这件事。"],
-      ["not_open", "That one is already settled or has lapsed, so there is nothing to follow.", "这件事已经办完，或者已经过期，没什么可追的了。"],
+      ["not_open", "That one is done already, or its time has passed.", "这件事已经办完，或者过了时候。"],
     ] as const) {
-      await page.getByTestId("task-other").first().getByTestId("task-track").click();
-      const id = await lastId(page);
-      expect((await fake.sentSoFar(page)).at(-1)).toMatchObject({ type: "track", task: "t_source" });
-      await fake.feedFrame(page, {}, [{ kind: "action_ack", tick: 3, action_id: id, result: "rejected", reason }]);
-      await expect(page.getByTestId("game-note").last()).toHaveText(en);
-      await expect(page.getByTestId("game-note").last()).toHaveAttribute("data-reason", reason);
-      await lantern.setLang("zh");
-      await expect(page.getByTestId("game-note").last()).toHaveText(zh);
-      await lantern.setLang("en");
+      // A note goes by itself a few seconds after it comes, and the page of this spec draws the map, so that a call can take as long as that on a slow machine: the
+      // reason is refused again in each language, and its note is read within two calls of its coming.
+      for (const lang of ["en", "zh"] as const) {
+        await lantern.switchLang(lang);
+        await page.getByTestId("task-other").first().getByTestId("task-track").click();
+        const id = await lastId(page);
+        expect((await fake.sentSoFar(page)).at(-1)).toMatchObject({ type: "track", task: "t_source" });
+        await fake.feedFrame(page, {}, [{ kind: "action_ack", tick: 3, action_id: id, result: "rejected", reason }]);
+        await expect(page.getByTestId("game-note").last()).toHaveText(lang === "en" ? en : zh);
+        await expect(page.getByTestId("game-note").last()).toHaveAttribute("data-reason", reason);
+      }
     }
     expect(lantern.pageErrors).toEqual([]);
   });
@@ -120,14 +126,14 @@ test.describe("a task that cannot be followed", () => {
   test("tells why the followed task is the one it is, for a task that came of the last one finishing, and says nothing for the player's own pick", async ({ lantern }) => {
     const page = lantern.page;
     await fake.openFirstDay(lantern);
-    const reason = { zh: "「李家不肯给竹料」办成了，接着追踪「李二那晚为什么在桥边？」", en: "“The Li family will not give bamboo” is done. Now following “Why was Li Er by the bridge that night?”" };
+    const reason = { zh: "「借到李家的第一批竹料」办成了，接着办「李二那晚为什么在桥边？」", en: "“Get the first load of bamboo from the Li family” is done. Now on to “Why was Li Er by the bridge that night?”" };
     await fake.feedFrame(page, fake.tasks("t_source"), [{ kind: "task_changed", tick: 7, from: "t_bamboo_first", to: "t_source", cause: "chosen", reason }]);
     await expect(page.getByTestId("task-changed")).toHaveCount(0);
     await fake.feedFrame(page, fake.tasks("t_source"), [{ kind: "task_changed", tick: 8, from: "t_bamboo_first", to: "t_source", cause: "done", reason }]);
     await expect(page.getByTestId("task-changed")).toHaveText(reason.en);
     await expect(page.getByTestId("task-changed")).toHaveAttribute("data-cause", "done");
     // The start of the game follows the first task, and there is nothing to tell about that.
-    await fake.feedFrame(page, fake.tasks("t_source"), [{ kind: "task_changed", tick: 9, from: null, to: "t_source", cause: "new", reason: { zh: "有了新的事项：「x」", en: "A new task: “x”" } }]);
+    await fake.feedFrame(page, fake.tasks("t_source"), [{ kind: "task_changed", tick: 9, from: null, to: "t_source", cause: "new", reason: { zh: "多了一件事要办：「x」", en: "A new task: “x”" } }]);
     await expect(page.getByTestId("task-changed")).toHaveCount(0);
     expect(lantern.pageErrors).toEqual([]);
   });
@@ -141,6 +147,7 @@ test.describe("a reply that sends the player to somebody", () => {
    * event `asked` (`pointer`, an id), as the core does, and the line says the name in words.
    */
   async function answered(page: Page, pointer: string | null, text = REPLY): Promise<void> {
+    expect(await openTopic(page, "li_er")).toBe(true);
     await page.locator('[data-testid="topic-chip"][data-id="li_er"]').click();
     const reply = { npc: "li_laotai", until: 999_999, text };
     const asked = { kind: "asked", tick: 2, npc: "li_laotai", topic: "li_er", answer: "ignorant", path: "", prop: null, source: null, entry: null, new: false, ...(pointer === null ? {} : { pointer }) };
@@ -178,7 +185,7 @@ test.describe("a reply that sends the player to somebody", () => {
     // The player is in a talk, so the walk waits: the button is the same as the card's, and does nothing a talk would refuse.
     await lantern.setLang("zh");
     await expect(page.getByTestId("talk-line").last().getByTestId("pointer")).toHaveText("周家二郎");
-    await expect(lead).toContainText("李老太指的路");
+    await expect(lead).toContainText("李老太让你去问");
     await expect(lead.getByTestId("lead-go")).toHaveText("去找这个人");
     // The same person pointed to again is the same lead.
     await page.getByTestId("talk-line").last().getByTestId("pointer").click();

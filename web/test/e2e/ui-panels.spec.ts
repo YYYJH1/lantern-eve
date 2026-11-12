@@ -29,18 +29,18 @@ test.describe("the notebook", () => {
 
     const notes = page.getByTestId("note");
     await expect(notes.first()).toBeVisible();
-    await expect(notes.nth(0).getByTestId("source-badge")).toHaveText("Seen myself");
+    await expect(notes.nth(0).getByTestId("source-badge")).toHaveText("You saw it");
     await expect(notes.nth(0).getByTestId("source-badge")).toHaveAttribute("data-source", "seen");
-    await expect(notes.nth(1).getByTestId("source-badge")).toHaveText("Heard from Zhou's Clerk, 2nd hand");
-    await expect(notes.nth(2).getByTestId("source-badge")).toHaveText("Heard from Shopkeeper Zhou, 3rd hand");
+    await expect(notes.nth(1).getByTestId("source-badge")).toHaveText("Zhou's Clerk says they heard it from Night Watchman");
+    await expect(notes.nth(2).getByTestId("source-badge")).toHaveText("Shopkeeper Zhou cannot say who told them");
     await expect(notes.nth(0).getByTestId("seal-contradicts")).toHaveCount(0);
 
     // Every mark has a seal of its own, in the language of the page, with what it means to hover on.
     const seals = {
-      contradicts: ["Contradicts", "It cannot be true together with another entry."],
-      unsupported: ["Unsupported", "The conclusion does not follow from what is known."],
-      sourceMismatch: ["Source mismatch", "What the speaker says about the source differs from what the source says."],
-      unconfirmed: ["Unconfirmed", "Nobody has seen it with their own eyes yet."],
+      contradicts: ["Says the opposite", "Another note says the opposite. They cannot both be right."],
+      unsupported: ["No grounds", "What you know does not show this to be true yet."],
+      sourceMismatch: ["Changed on the way", "The teller names who they heard it from, but that person said something else."],
+      unconfirmed: ["Nobody saw it", "Nobody has said they saw it with their own eyes."],
     } as const;
     for (const [mark, [label, hint]] of Object.entries(seals)) {
       const seal = page.getByTestId(`seal-${mark}`).first();
@@ -55,11 +55,11 @@ test.describe("the notebook", () => {
 
     // Chinese: the same marks under their Chinese names.
     await lantern.setLang("zh");
-    for (const [mark, label] of [["contradicts", "矛盾"], ["unsupported", "无据"], ["sourceMismatch", "来源对不上"], ["unconfirmed", "未证实"]] as const) {
+    for (const [mark, label] of [["contradicts", "说法相反"], ["unsupported", "没有根据"], ["sourceMismatch", "传走样了"], ["unconfirmed", "没人亲眼看见"]] as const) {
       await expect(page.getByTestId(`seal-${mark}`).first()).toHaveText(label);
     }
-    await expect(notes.nth(0).getByTestId("source-badge")).toHaveText("亲见");
-    await expect(notes.nth(1).getByTestId("source-badge")).toHaveText("听周家伙计说，第二手");
+    await expect(notes.nth(0).getByTestId("source-badge")).toHaveText("你亲眼看见的");
+    await expect(notes.nth(1).getByTestId("source-badge")).toHaveText("周家伙计说，是听更夫说的");
     await expect(page.getByTestId("notebook-entries")).toHaveText("五条");
 
     // How a thing reached the player, hop by hop, with the hops not asked yet marked.
@@ -85,26 +85,26 @@ test.describe("the notebook", () => {
     await lantern.waitForTick(300);
     await expect(page.getByTestId("notebook-count")).toHaveText("0");
     await page.getByTestId("btn-notebook").click();
-    await expect(page.getByTestId("notebook-empty")).toHaveText("Nothing written yet. What you hear and see is noted here.");
+    await expect(page.getByTestId("notebook-empty")).toHaveText("Nothing written yet. What you hear and see goes in here.");
     await expect(page.getByTestId("notebook-sample")).toHaveCount(0);
 
     await page.evaluate(() =>
       window.__lantern.inject({
         notebook: [
-          { id: "k1", text: { zh: "老何在桥下。", en: "Old He is under the bridge." }, source: { kind: "heard", who: { zh: "更夫", en: "Night Watchman" }, hand: 1 }, marks: ["unconfirmed"], chain: [{ zh: "更夫", en: "Night Watchman" }] },
+          { id: "k1", text: { zh: "老何在桥下。", en: "Boatman He is under the bridge." }, source: { kind: "heard", who: { zh: "更夫", en: "Night Watchman", id: "gengfu" }, how: "saw" }, marks: ["unconfirmed"], chain: [{ zh: "更夫", en: "Night Watchman" }] },
         ],
       }),
     );
     await expect(page.getByTestId("notebook-count")).toHaveText("1");
     await expect(page.getByTestId("note")).toHaveCount(1);
-    await expect(page.getByTestId("note")).toContainText("Old He is under the bridge.");
+    await expect(page.getByTestId("note")).toContainText("Boatman He is under the bridge.");
     await expect(page.getByTestId("seal-unconfirmed")).toBeVisible();
     await expect(page.getByTestId("notebook-empty")).toHaveCount(0);
   });
 });
 
 test.describe("the bar under the page and the acts of the player", () => {
-  test("has one line and the way to the notebook, and no act that is greyed out: an act is there when the world offers it", async ({ lantern }) => {
+  test("has one line and the way to the notebook, and where the world gives no reasons no act that is greyed out: an act is there when the world offers it", async ({ lantern }) => {
     const page = lantern.page;
     await lantern.open(TOWN, { menu: false });
     await lantern.waitForTick(300);
@@ -120,7 +120,7 @@ test.describe("the bar under the page and the acts of the player", () => {
 
     // Outside a talk the frame can offer listening, looking, calling for helpers and speaking up. Those that it lists are there.
     await page.evaluate(() => window.__lantern.inject({ hud: { verbs: ["listen", "look", "rally", "speak"] } }));
-    const words = { en: { listen: "Listen", look: "Look", rally: "Rally", speak: "Speak up" }, zh: { listen: "听", look: "查看", rally: "召集", speak: "当众说" } } as const;
+    const words = { en: { listen: "Listen in", look: "Look closely", rally: "Call for helpers", speak: "Speak up" }, zh: { listen: "凑近听", look: "细看", rally: "召集帮手", speak: "当众说" } } as const;
     for (const lang of ["en", "zh"] as const) {
       await lantern.setLang(lang);
       for (const verb of ["listen", "look", "rally", "speak"] as const) {
@@ -141,29 +141,38 @@ test.describe("the bar under the page and the acts of the player", () => {
     for (const verb of ["talk", "ask", "askSource", "tell", "entrust", "promise", "leave"]) await expect(page.getByTestId(`verb-${verb}`)).toHaveCount(0);
   });
 
-  test("has the acts of a talk in the talk, the frame deciding which, and the core's own name for asking about a source read as the page's", async ({ lantern }) => {
+  test("has the acts of a talk in the talk, the frame deciding which are on offer, and an act that is off greyed, with the reason", async ({ lantern }) => {
     const page = lantern.page;
     await lantern.open(TOWN, { menu: false });
     await lantern.waitForTick(300);
     await fake.startTalk(page, "li_laotai", {}, ["leave", "ask", "tell", "promise"]);
-    const words = { en: { ask: "Ask", askSource: "Ask the source", tell: "Tell", entrust: "Request", promise: "Promise", leave: "Leave" }, zh: { ask: "问", askSource: "问来源", tell: "说", entrust: "求", promise: "许", leave: "告辞" } } as const;
-    for (const verb of ["tell", "promise", "leave"] as const) {
+    const words = { en: { ask: "Ask around", entrust: "Ask a favour", tell: "Tell", leave: "Take your leave" }, zh: { ask: "打听", entrust: "请帮忙", tell: "说", leave: "告辞" } } as const;
+    for (const verb of ["ask", "tell", "leave"] as const) {
       await expect(page.getByTestId(`verb-${verb}`)).toBeEnabled();
       await expect(page.getByTestId(`verb-${verb}`)).toHaveAttribute("title", /.+/);
     }
-    // Asking is the row of topic tags, there when the frame lists `ask`, and it is not a button of the row of acts.
-    await expect(page.getByTestId("topic-chips")).toBeVisible();
-    await expect(page.getByTestId("verb-ask")).toHaveCount(0);
-    for (const verb of ["askSource", "entrust"]) await expect(page.getByTestId(`verb-${verb}`)).toHaveCount(0);
-    await fake.feedFrame(page, { hud: { verbs: ["leave", "ask_source", "entrust"] } });
-    await expect(page.getByTestId("verb-askSource")).toBeEnabled();
+    // Asking is an act of the row, which opens the list of topics, there when the frame lists `ask`. The source is asked after an answer.
+    await expect(page.getByTestId("topic-chips")).toHaveCount(0);
+    await expect(page.getByTestId("verb-askSource")).toHaveCount(0);
+    // The request is not on offer: the act is there, greyed, and its title says why.
+    await expect(page.getByTestId("verb-entrust")).toHaveAttribute("aria-disabled", "true");
+    await expect(page.getByTestId("verb-entrust")).toHaveAttribute("title", "Not yet.");
+    await fake.feedFrame(page, { hud: { verbs: ["leave", "ask_source", "entrust"], verbs_off: fake.offReasons(["leave", "ask_source", "entrust"]) } });
     await expect(page.getByTestId("verb-entrust")).toBeEnabled();
+    await expect(page.getByTestId("verb-ask")).toHaveAttribute("aria-disabled", "true");
+    await expect(page.getByTestId("verb-tell")).toHaveAttribute("aria-disabled", "true");
     for (const lang of ["en", "zh"] as const) {
       await lantern.setLang(lang);
-      for (const verb of ["askSource", "entrust", "leave"] as const) await expect(page.getByTestId(`verb-${verb}`)).toContainText(words[lang][verb]);
+      for (const verb of ["ask", "tell", "leave"] as const) await expect(page.getByTestId(`verb-${verb}`)).toContainText(words[lang][verb]);
     }
-    // Asking, telling and promising are not there now: the frame did not list them.
-    for (const verb of ["tell", "promise"]) await expect(page.getByTestId(`verb-${verb}`)).toHaveCount(0);
+    // A talk of the older shape has no request on its button, which says the plain words.
+    const player = await fake.playerOf(page);
+    const talk = player.talk as Record<string, unknown>;
+    await fake.feedFrame(page, { player: { ...player, talk: { npc: talk.npc, costs: talk.costs, leaves_at: talk.leaves_at } } });
+    await expect(page.getByTestId("verb-entrust")).toHaveText(words.zh.entrust);
+    // An act that the frame does not list and gives no reason for is not drawn.
+    await fake.feedFrame(page, { hud: { verbs: ["leave"], verbs_off: {} } });
+    for (const verb of ["ask", "tell", "entrust"]) await expect(page.getByTestId(`verb-${verb}`)).toHaveCount(0);
     await expect(page.getByTestId("topic-chips")).toHaveCount(0);
   });
 
@@ -210,7 +219,7 @@ test.describe("the menu", () => {
     await expect(page.getByTestId("btn-save")).toHaveText("存档");
     await expect(page.getByTestId("btn-new")).toHaveText("新游戏");
     await expect(page.getByTestId("btn-export")).toHaveText("导出录像");
-    await expect(page.getByTestId("select-provider").locator("option").first()).toHaveText("离线（不调用模型）");
+    await expect(page.getByTestId("select-provider").locator("option").first()).toHaveText("离线，不用模型");
   });
 });
 

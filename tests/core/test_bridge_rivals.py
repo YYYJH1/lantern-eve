@@ -53,10 +53,8 @@ BOAT, LI_ER, FLOOD, DALANG = (
     "pr_flood_damaged",
     "pr_dalang_damaged",
 )
-PLAIN_ENGLISH = (
-    "But Shopkeeper Zhou has told me that Li Er damaged the Stone Bridge Railing last night."
-)
-PLAIN_CHINESE = "但周掌柜也对我说过，李二昨夜弄坏了石桥栏杆。"
+PLAIN_ENGLISH = "But Shopkeeper Zhou told me that Li Er broke the bridge railing last night."
+PLAIN_CHINESE = "可周掌柜跟我说的是，李二昨晚把栏杆弄坏了。"
 
 
 class Recorder:
@@ -350,16 +348,28 @@ def said(game, who="li_laotai"):
     return bubble["text"]
 
 
+def granny_says(person):
+    """What Granny Li calls ``person`` when she speaks: her own name for them, else the cast's."""
+    return voices.called("li_laotai", person)
+
+
+def holds(text, name):
+    """Whether the words hold the name of ``name`` (``{"zh", "en"}``), in either language."""
+    return name["zh"] in text["zh"] or name["en"].lower() in text["en"].lower()
+
+
 def test_a_torn_person_asked_about_the_bridge_says_what_they_hold_and_what_else_they_were_told():
     game = torn()
     out = act(game, "ask", topic=BOAT)
     assert acks(out) == [("applied", None)]
     words = said(game)
-    held, other = words["zh"].split("。")[:2]
-    assert "老何" in held and "周掌柜" not in held  # what they hold first, the other after it
-    assert "周掌柜" in other and "李二" in other
-    assert "Boatman He" in words["en"] and "Li Er" in words["en"]
-    assert words["en"].index("Boatman He") < words["en"].index("Shopkeeper Zhou")
+    zh, en = words["zh"], words["en"]
+    he, shop, accused = (granny_says(p) for p in ("old_he", "zhou_zhanggui", "li_er"))
+    teller, other = zh.find(shop["zh"]), zh.find(accused["zh"])
+    assert -1 < zh.find(he["zh"]) < teller < other  # what they hold first, the other after it
+    low = en.lower()
+    assert he["en"].lower() in low and accused["en"].lower() in low
+    assert low.index(he["en"].lower()) < low.index(shop["en"].lower())
     assert me(game)["twins"] == {"p1": "p2"}
     asked = [e for e in out["events"] if e["kind"] == "asked"]
     assert [(e["prop"], e["source"]) for e in asked] == [(BOAT, "gengfu")]  # the event is as it was
@@ -374,13 +384,14 @@ def test_a_torn_person_who_greeted_the_manager_answers_with_both_accounts_in_the
     game = torn()
     assert state_of(game)["player"]["line"][2:4] == ["role", "greet"]
     greeting = said(game)
-    assert "周掌柜" not in greeting["zh"] and "Shopkeeper Zhou" not in greeting["en"]
+    shop, he = granny_says("zhou_zhanggui"), granny_says("old_he")
+    assert not holds(greeting, shop)
     assert acks(act(game, "ask", topic=BOAT)) == [("applied", None)]
     assert state_of(game)["player"]["line"][2] == "claim"
     answer = said(game)
     assert greeting["zh"] not in answer["zh"] and greeting["en"] not in answer["en"]
-    assert "周掌柜" in answer["zh"] and "Shopkeeper Zhou" in answer["en"]
-    assert "老何" in answer["zh"] and "Boatman He" in answer["en"]
+    assert shop["zh"] in answer["zh"] and shop["en"].lower() in answer["en"].lower()
+    assert he["zh"] in answer["zh"] and he["en"].lower() in answer["en"].lower()
 
 
 def test_the_account_somebody_else_told_goes_into_the_notebook_as_heard_from_them():
@@ -396,20 +407,22 @@ def test_the_account_somebody_else_told_goes_into_the_notebook_as_heard_from_the
 def test_asked_about_a_subject_the_person_says_the_rival_too():
     game = torn()
     act(game, "ask", topic="t_rail")
-    assert "周掌柜" in said(game)["zh"] and "李二" in said(game)["zh"]
+    assert granny_says("zhou_zhanggui")["zh"] in said(game)["zh"]
+    assert granny_says("li_er")["zh"] in said(game)["zh"]
 
 
 def test_asked_about_an_account_they_do_not_hold_they_say_no_and_what_they_hold_and_were_told():
     game = torn()
     act(game, "ask", topic=FLOOD)
     assert me(game)["line"][4] == "not_so"
-    assert "周掌柜" in said(game)["zh"] and "老何" in said(game)["zh"]
+    assert granny_says("zhou_zhanggui")["zh"] in said(game)["zh"]
+    assert granny_says("old_he")["zh"] in said(game)["zh"]
 
 
 def test_asked_about_the_rival_account_itself_they_say_what_they_know_of_it():
     game = torn()
     act(game, "ask", topic=LI_ER)  # what Li Er was seen doing is something they know first-hand
-    assert "twins" not in me(game) and "李二" in said(game)["zh"]
+    assert "twins" not in me(game) and granny_says("li_er")["zh"] in said(game)["zh"]
 
 
 def test_a_person_with_no_rival_answers_as_ever():
@@ -418,14 +431,17 @@ def test_a_person_with_no_rival_answers_as_ever():
     act(game, "ask", topic=BOAT)
     assert "twins" not in me(game)
     assert len(me(game)["notebook"]) == 1
-    assert "周掌柜" not in said(game)["zh"] and len(said(game)["zh"].split("。")) == 2
+    zh = said(game)["zh"]  # one account, whatever the number of sentences its frame has
+    assert (
+        granny_says("zhou_zhanggui")["zh"] not in zh and zh.count(granny_says("old_he")["zh"]) == 1
+    )
 
 
 def test_asked_who_told_them_the_answer_is_the_source_alone():
     game = torn()
     act(game, "ask", topic=BOAT)
     act(game, "ask_source", entry="n1")
-    assert "周掌柜" not in said(game)["zh"]
+    assert granny_says("zhou_zhanggui")["zh"] not in said(game)["zh"]
     assert me(game)["twins"] == {"p1": "p2"}  # only the first answer had a rival
 
 
@@ -463,7 +479,9 @@ def test_the_newest_rival_is_the_one_said():
     hear(game, "li_laotai", "pr_li_damaged", 10, "cha_laoban", tick=30, claim="c2")
     act(game, "ask", topic=BOAT)
     zh = said(game)["zh"]
-    assert "茶馆老板娘" in zh and "李家" in zh and "李二" not in zh
+    assert voices.called("li_laotai", "cha_laoban")["zh"] in zh
+    assert voices.called("li_laotai", "fam_li")["zh"] in zh  # 我们家, as she calls her family
+    assert voices.called("li_laotai", "li_er")["zh"] not in zh
 
 
 # ------------------------------------------------------------------------------ the words
@@ -474,11 +492,14 @@ def test_every_person_has_a_voice_for_the_rival_in_both_languages():
     said_by = {}
     for person in LO.people:
         assert len(VOICES[person]["frames"]["rival"]) >= 2
+        teller, accused = voices.called(person, "zhou_zhanggui"), voices.called(person, "li_er")
         for tick in range(40):
             words = voices.rival_words(prop, "zhou_zhanggui", person, tick)
             assert set(words) == {"zh", "en"}
-            assert "周掌柜" in words["zh"] and "Shopkeeper Zhou" in words["en"]
-            assert ("李二" in words["zh"] and "Li Er" in words["en"]) or person == "li_er"
+            assert teller["zh"] in words["zh"] and teller["en"].lower() in words["en"].lower()
+            assert person == "li_er" or (  # the accused says "I" of himself
+                accused["zh"] in words["zh"] and accused["en"].lower() in words["en"].lower()
+            )
             assert words["en"][0].isupper() and "{" not in words["zh"] + words["en"]
             said_by.setdefault(person, set()).add(words["zh"])
     assert all(len(ways) == 2 for ways in said_by.values())  # each says it in two ways
@@ -499,7 +520,7 @@ def test_nobody_says_the_rival_in_the_words_of_somebody_else_or_of_the_plain_voi
 def test_a_person_who_is_blamed_in_the_account_says_i_and_not_their_name():
     words = voices.rival_words(BOOK.props[BOAT], "zhou_zhanggui", "old_he", 3)
     assert "老何" not in words["zh"] and "我" in words["zh"]
-    assert "Boatman He" not in words["en"] and " I damaged" in words["en"]
+    assert "Boatman He" not in words["en"] and " I broke" in words["en"]
 
 
 def test_the_plain_words_are_what_a_model_is_given():
@@ -527,8 +548,8 @@ def test_the_card_shows_the_rival_when_the_person_said_it_to_the_player():
     assert stance["text"]["zh"].startswith("船夫老何")
     assert stance["rival"] == {
         "text": {
-            "zh": "李二昨夜弄坏了石桥栏杆。",
-            "en": "Li Er damaged the Stone Bridge Railing last night.",
+            "zh": "李二昨晚把栏杆弄坏了。",
+            "en": "Li Er broke the bridge railing last night.",
         },
         "who": {"zh": "周掌柜", "en": "Shopkeeper Zhou", "id": "zhou_zhanggui"},
     }
@@ -565,7 +586,7 @@ def test_the_card_has_no_rival_for_another_belief_that_was_said_without_one():
     believe(game, "li_laotai", FLOOD, 90, source="heard", teller="miaozhu")  # another account now
     act(game, "ask", topic=FLOOD)
     stance = card_of(game)["stance"]
-    assert stance["text"]["zh"].startswith("石桥栏杆是被汛水冲坏的") and "rival" not in stance
+    assert stance["text"]["zh"].startswith("栏杆是秋汛冲坏的") and "rival" not in stance
 
 
 def test_the_account_said_after_the_belief_is_not_the_stance():

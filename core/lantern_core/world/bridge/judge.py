@@ -41,6 +41,14 @@ Actions (both cost no time, and need no talk)
            order of the notebook. Asking again about the same pair says the relation too. With
            no such pair the hint is empty. Always applied.
 
+A page that asks in plain words puts the claim first and then the entry that is shown against it,
+and the three answers are these relations, with ``a`` the entry shown and ``b`` the claim: "that
+does not prove the claim" is ``unsupported``, "that says the opposite" is ``contradicts`` (in either
+order, so the two ids may go either way) and "that was passed on wrongly" is ``mismatch``. A pair
+that the player looks at again with another pair in mind sends nothing: choosing "look at another
+pair" is not an action, nothing is judged and nothing is written. The core takes the three relations
+and the direction as they are above whatever the words of the page.
+
 The frame. ``judgments`` is ``[{"a", "b", "relation", "made"}]`` and ``hint`` is ``{"a", "b"}``,
 with ``"relation"`` once the manager has asked again for the same pair, or null. ``hud.verbs``
 lists ``judge`` and ``hint`` once the notebook has two entries.

@@ -73,7 +73,7 @@ interface Card {
 const cardOf = async (page: Page): Promise<Card> => ((await frameOf(page)) as unknown as { statement: Card }).statement;
 
 /** From the recording of the fourth evening: the card is filled in with the right option in each part, the manager walks to the hall by the button of the task, the notebook is turned to the card, and the full statement is made from it. */
-async function statementFromTheCard(page: Page, tag: string, lang: "zh" | "en"): Promise<void> {
+async function statementFromTheCard(page: Page, tag: string, lang: "zh" | "en", heldAt: number): Promise<void> {
   const frame = await frameOf(page);
   expect(frame.time).toMatchObject({ day: 4, hour: 17 });
   let card = await cardOf(page);
@@ -84,10 +84,11 @@ async function statementFromTheCard(page: Page, tag: string, lang: "zh" | "en"):
   expect(frame.tracked).toBe("t_tell_town");
   await expect(page.getByTestId("task-do")).toHaveCount(1);
   await page.getByTestId("task-do").click();
-  await page.getByTestId("btn-pause").click();
-  await page.waitForFunction(() => window.__lantern.client.state.paused === false, undefined, { timeout: 30_000 });
-  await expect.poll(async () => (await cardOf(page)).can_state, { timeout: 240_000, intervals: [400] }).toBe(true);
-  await page.getByTestId("btn-pause").click(); // held, as a player who reads the card holds it
+  await page.getByTestId("btn-pause").click(); // a game that is loaded is held: this lets it go
+  // The clan stands at the hall from 17:15 to 18:12, which is 114 ticks and about four seconds at the pace of this page, so a test that watches the card and then pauses the
+  // world comes too late on a slow machine. The host holds the world itself at `heldAt`, with the manager at the hall and the clan there, as it is for a player who reads the card.
+  await page.waitForFunction((tick) => window.__lantern.client.state.paused && window.__lantern.client.state.simTick >= tick, heldAt, { timeout: 240_000 });
+  expect((await cardOf(page)).can_state).toBe(true);
 
   await page.getByTestId("btn-notebook").click();
   // the card is the right page of the book
@@ -137,7 +138,7 @@ async function statementFromTheCard(page: Page, tag: string, lang: "zh" | "en"):
 /** The summary of a night and the paper of the morning after it, on the recording of the follower at five to nine of the evening: the world is let go, and the cards come as the core makes them. */
 async function theNightAndThePaper(page: Page, tag: string, lang: "zh" | "en", day: number): Promise<void> {
   expect((await frameOf(page)).time).toMatchObject({ day, hour: 20, minute: 55 });
-  const dayWords = (n: number): string => (lang === "zh" ? `第${"零一二三四五"[n]}日` : `Day ${n}`);
+  const dayWords = (n: number): string => (lang === "zh" ? `第${"零一二三四五"[n]}天` : `Day ${n}`);
   await asPlayer(page);
   await letGo(page);
   // dusk of the second day: the summary of the night holds the world until it is put away
@@ -174,8 +175,10 @@ test.describe("the full statement on the fourth evening, on the real core, in Ch
     test.setTimeout(900_000);
     const page = lantern.page;
     const recording = recordFollower(4, 17, 10);
-    await loadMoment(page, () => lantern.waitReady(), lantern.servers.app.origin, "fourth evening", recording);
-    await statementFromTheCard(page, "zh-light-1280x760", "zh");
+    // The manager is at the hall with the clan from about 11 to 125 ticks after the recording (17:15 to 18:12), and the host holds the world 60 ticks after it.
+    const heldAt = recording.tick + 60;
+    await loadMoment(page, () => lantern.waitReady(), lantern.servers.app.origin, "fourth evening", recording, heldAt);
+    await statementFromTheCard(page, "zh-light-1280x760", "zh", heldAt);
     expect(lantern.pageErrors).toEqual([]);
   });
 

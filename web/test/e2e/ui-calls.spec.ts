@@ -52,7 +52,7 @@ test.describe("the model call log", () => {
       Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
     });
     await lantern.open("pace=20&seed=4&until=600");
-    await expect(page.getByTestId("calls-empty")).toHaveText("No model has been asked for anything yet.");
+    await expect(page.getByTestId("calls-empty")).toHaveText("No model has been called yet.");
     await lantern.configure({ provider: "bailian", key, baseUrl: servers.mock.baseUrl("ok") });
     await lantern.setVisibility("visible");
     await lantern.waitForTick(600);
@@ -119,7 +119,7 @@ test.describe("the model call log", () => {
     await expect(row("r60-0")).toContainText("held ¥0.00098");
     await expect(row("r60-0")).not.toContainText("charged");
     // An answer the game dropped, and one that came late.
-    await expect(row("r50-0")).toContainText("The game had cancelled the call and dropped the answer.");
+    await expect(row("r50-0")).toContainText("The game had cancelled the call, so the answer was not used.");
     await expect(row("r70-0")).toContainText("The answer came late. It was not charged again.");
     await expect(row("r10-0")).toContainText("50 in, 20 out");
     await expect(row("r10-0")).toContainText("charged ¥0.00007");
@@ -144,16 +144,16 @@ test.describe("the model call log", () => {
     await expect(row("r20-0").locator(".call-given")).toHaveText("便宜档");
     await expect(row("r20-0")).toContainText("导演");
     await expect(row("r20-0")).toContainText("超时");
-    await expect(row("r20-0")).toContainText("已降档：预算快用完了。");
+    await expect(row("r20-0")).toContainText("预算快用完了，降了档。");
     await expect(row("r20-0")).toContainText("预留 ¥0.000196");
     await expect(row("r20-0")).toContainText("扣费 ¥0.000196");
     await expect(row("r30-0")).toContainText("台词库");
     await expect(row("r30-0")).toContainText("未发出");
-    await expect(row("r30-0")).toContainText("已降档：连不上云端。");
+    await expect(row("r30-0")).toContainText("连不上云端，降了档。");
     await expect(row("r30-0")).toContainText("无模型");
     await expect(row("r40-0")).toContainText("预取");
     await expect(row("r50-0")).toContainText("反思");
-    await expect(row("r50-0")).toContainText("游戏已经取消了这次调用，答复被丢弃。");
+    await expect(row("r50-0")).toContainText("游戏已经取消了这次调用，答复没用上。");
     await expect(row("r70-0")).toContainText("答复来得太晚，没有再扣一次钱。");
     await expect(row("r60-0")).toContainText("第 60 拍");
     await expect(page.getByTestId("calls-moved").locator("..")).toContainText("已降档");
@@ -170,7 +170,7 @@ test.describe("the model call log", () => {
     await expect(page.getByTestId("calls-total")).toHaveText("230");
     await expect(page.getByTestId("call").first()).toHaveAttribute("data-id", "c229");
     await expect(page.getByTestId("call").last()).toHaveAttribute("data-id", "c30");
-    await expect(page.getByTestId("calls-cap")).toHaveText("Only the newest 200 calls are listed. The figures count them all.");
+    await expect(page.getByTestId("calls-cap")).toHaveText("Only the newest 200 calls are listed. The figures above count them all.");
     await expect(page.getByTestId("calls-booked")).toHaveText("¥0.00023");
     // A call that was heard of before changes where it stands.
     await feed(page, { type: "model-calls", replace: false, calls: [{ ...many[229], status: "timeout", late: true }] });

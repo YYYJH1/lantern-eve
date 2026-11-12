@@ -65,10 +65,11 @@ def test_hello_is_checked_field_by_field():
         assert code_of(protocol.hello_fields, message) == "bad_message", field
 
 
-def test_pause_reasons_are_the_three_the_page_has():
+def test_pause_reasons_are_the_four_the_page_has():
     assert protocol.pause_reason({"type": "pause", "reason": "user"}) == "user"
     assert protocol.pause_reason({"type": "resume", "reason": "hidden"}) == "hidden"
     assert protocol.pause_reason({"type": "pause", "reason": "page"}) == "page"
+    assert protocol.pause_reason({"type": "pause", "reason": "show"}) == "show"
     for reason in ("offline", "", None, 1, ["user"]):
         assert code_of(protocol.pause_reason, {"type": "pause", "reason": reason}) == "bad_message"
 

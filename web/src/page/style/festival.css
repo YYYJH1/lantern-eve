@@ -1,0 +1,59 @@
+/* The festival night (festival/show.ts). While it plays the page lays nothing over the map but the opening line, the words of the stop that is on and the
+   button that skips it: what the game keeps at its edges (the roof line, the ledger, the corner, the strip of the talk) is put out of sight, and comes back
+   when the night is over. */
+
+.shell[data-festival="true"] > :not(.stage) {
+  visibility: hidden;
+}
+
+.shell[data-festival="true"] .map-ui > :not(.director) {
+  visibility: hidden;
+}
+
+/* The opening line is set in the middle of the town, large, and fades in and out. */
+.director-title {
+  position: absolute;
+  top: 34%;
+  right: 0;
+  left: 0;
+  margin: 0;
+  padding: 0.5em 1.5rem;
+  background: color-mix(in srgb, var(--xuanqing) 74%, transparent);
+  color: var(--yase);
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1.4;
+  text-align: center;
+  text-wrap: balance; /* a line that has to break is set in even lines */
+  animation: director-title 3.4s ease both;
+  pointer-events: none;
+}
+
+:root:lang(en) .director-title {
+  letter-spacing: 0.04em;
+}
+
+@keyframes director-title {
+  0% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  72% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .director-title {
+    animation: none;
+  }
+}

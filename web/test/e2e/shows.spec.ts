@@ -93,7 +93,7 @@ test.describe("the card of a job that is done", () => {
     await expect(page.getByTestId("show-glow")).toHaveAttribute("data-job", "peace");
     await expect(page.getByTestId("show-glow")).toHaveAttribute("data-at", "player");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("show-title")).toHaveText("两家和解了");
+    await expect(page.getByTestId("show-title")).toHaveText("两家和好了");
     await expect(page.getByTestId("show-text")).toHaveText("李、周两家的人坐到了一处，旧账不再挂在嘴上。");
     await lantern.setLang("en");
     await page.getByTestId("show-close").click();

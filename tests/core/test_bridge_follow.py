@@ -202,8 +202,8 @@ def test_the_task_followed_turns_to_waiting_and_the_next_one_is_followed_with_th
     (event,) = seen
     assert who(event) == ("first", "second", "waiting")
     assert event["reason"] == {
-        "zh": "「事项first」眼下只能等，先看「事项second」",
-        "en": "“Task first” can only wait for now. Now following “Task second”",
+        "zh": "「事项first」眼下只能等，先办「事项second」",
+        "en": "“Task first” has to wait for now. Now on to “Task second”",
     }
 
 
@@ -219,8 +219,8 @@ def test_it_is_followed_again_when_it_has_something_to_do(book):
     (event,) = seen
     assert who(event) == ("second", "first", "ready")
     assert event["reason"] == {
-        "zh": "「事项first」有事可办了，改追踪它",
-        "en": "There is something to do for “Task first” now. Now following it",
+        "zh": "「事项first」现在能办了，先办这件",
+        "en": "“Task first” can be done now. On to it",
     }
     seen = at_the_hour(game, 1, 14)
     assert [who(e) for e in seen] == [("first", "second", "waiting")]
@@ -234,8 +234,8 @@ def test_the_time_of_another_task_coming_is_said_in_both_languages(book):
     (event,) = seen
     assert who(event) == ("always", "timed", "window")
     assert event["reason"] == {
-        "zh": "「事项timed」的时间到了，改追踪它",
-        "en": "It is time for “Task timed”. Now following it",
+        "zh": "「事项timed」的时间到了，先办这件",
+        "en": "It is time for “Task timed”. On to it",
     }
 
 
@@ -247,7 +247,7 @@ def test_a_task_that_ends_hands_over_by_the_order_and_says_so_as_before(book):
     game = slice_game()
     (event,) = at_the_hour(game, 1, 8)
     assert who(event) == ("one", "two", "stale")
-    assert event["reason"]["en"] == "“Task one” has lapsed. Now following “Task two”"
+    assert event["reason"]["en"] == "“Task one” has lapsed. Now on to “Task two”"
 
 
 # ---------------------------------------------------------------------------- the player's pick

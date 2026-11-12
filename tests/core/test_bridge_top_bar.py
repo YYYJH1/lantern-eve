@@ -129,11 +129,11 @@ def test_li_da_who_has_not_heard_that_the_talk_was_set_straight_is_told_by_the_c
     blocked = card(game, BAMBOO)
     assert blocked["state"] == "blocked"
     assert blocked["blocker"] == {
-        "zh": "李大还不知道谣言已经说清了",
+        "zh": "李大还不知道那句闲话已经说清了",
         "en": "Li Da has not heard that the talk was set straight",
     }
     assert blocked["next"] == {
-        "zh": "告诉李大谣言已经说清了，再请李大送竹料。",
+        "zh": "先告诉李大那事已经当众说清了，再请李大送竹料。",
         "en": "Tell Li Da the talk was set straight, then ask Li Da for the bamboo.",
     }
     # the card names the note by its entry in the notebook, which the script names by its prop
@@ -223,7 +223,7 @@ def test_a_look_that_was_turned_away_is_asked_again_after_a_talk_or_a_promise_an
     assert holds(game, kind="turned_down", npc=OLD_HE, request="look")
     shut = card(game, BROKE)
     assert shut["action"] == {"verb": "talk", "npc": OLD_HE}
-    assert shut["next"]["zh"] == "船主还不让你看船，先去和船主聊几句。"
+    assert shut["next"]["zh"] == "船主还不让你看船。先去聊几句。"
     # the first talk of the day earns a little trust: the look is a new question
     meet(game, OLD_HE)
     act(game, "leave")
@@ -239,7 +239,7 @@ def test_a_look_that_was_turned_away_is_asked_again_after_a_talk_or_a_promise_an
     promise = card(game, BROKE)
     assert promise["action"] == {"verb": "promise", "npc": OLD_HE}
     assert promise["next"]["en"] == (
-        "The boat's owner will not let you look yet, so promise the owner something and come back."
+        "The boat's owner will not let you look yet. Promise something and come back."
     )
     meet(game, OLD_HE)
     assert acks(act(game, "promise", op="make", what="stall", item="front", due=3)) == [

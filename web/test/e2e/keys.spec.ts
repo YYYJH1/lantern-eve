@@ -78,7 +78,7 @@ test.describe("key hygiene", () => {
     await page.getByTestId("btn-pause").click();
     await expect(page.getByTestId("status")).toHaveText("paused");
     await page.getByTestId("btn-save").click();
-    await expect(page.getByTestId("notice")).toContainText("saved #1");
+    await expect(page.getByTestId("notice")).toContainText("saved, Day");
 
     // The scan is not empty: the key did reach the provider, and the logs have lines.
     expect(mock.posts().filter((p) => p.authorization === `Bearer ${key}`).length).toBeGreaterThanOrEqual(5);
@@ -119,7 +119,7 @@ test.describe("key hygiene", () => {
     expect((await lantern.request("r-1")).status).toBe("ok");
     await lantern.waitForTick(300);
     await page.getByTestId("btn-save").click();
-    await expect(page.getByTestId("notice")).toContainText("saved #1");
+    await expect(page.getByTestId("notice")).toContainText("saved, Day");
 
     const places = await everywhere(lantern);
     expect(places.localStorage).toContain(key);

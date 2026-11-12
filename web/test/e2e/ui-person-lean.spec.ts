@@ -2,7 +2,7 @@ import { mkdirSync } from "node:fs";
 import path from "node:path";
 import type { Page } from "@playwright/test";
 import { expect, test } from "../support/fixtures.ts";
-import { mapDrawn, pickAtSpot } from "../support/play.ts";
+import { mapAtRest, pickAtSpot } from "../support/play.ts";
 import * as fake from "../support/slice.ts";
 
 // This spec looks at the page with the map on it.
@@ -10,8 +10,8 @@ test.use({ map: true });
 
 /** What the card of Granny Li says in each language when she has said her stand and the other account with it. */
 const WORDS = {
-  en: { label: "Leans to:", held: "Li Er broke the rail.", by: "Also heard from Shopkeeper Zhou:", account: "Boatman He damaged the Stone Bridge Railing last night." },
-  zh: { label: "倾向：", held: "李二弄坏了栏杆。", by: "也听周掌柜说过：", account: "船夫老何昨夜弄坏了石桥栏杆。" },
+  en: { label: "Believes:", held: "Li Er broke the bridge railing last night.", by: "Also heard from Shopkeeper Zhou:", account: "Boatman He broke the bridge railing last night, by accident." },
+  zh: { label: "信的是：", held: "李二昨晚把栏杆弄坏了。", by: "也听周掌柜说过：", account: "船夫老何昨晚把栏杆弄坏了，是不小心的。" },
 } as const;
 
 /** The frame's cards with the other account in the stance of Granny Li (the key is there only when she said it). */
@@ -22,7 +22,7 @@ function cardsWithRival(): Record<string, unknown> {
 
 /** Picks a person by clicking their piece on the map. A card that is open for them already is the pick. */
 async function pickOnMap(page: Page, id: string): Promise<void> {
-  await mapDrawn(page);
+  await mapAtRest(page);
   const open = page.getByTestId("person-card");
   if ((await open.count()) > 0 && (await open.getAttribute("data-person")) === id) return;
   const spot = await page.evaluate((who) => window.__lantern.view.screenPositionOf(who), id);
@@ -108,8 +108,8 @@ const AT_SEVEN = { time: { day: 2, hour: 7, minute: 0, phase: "day" } };
 
 /** The words of the item as the core makes them from the two accounts the street gave out in public (the script's line, with the accounts filled in). */
 const STORIES = {
-  zh: "街上有两种说法：一说李二昨夜弄坏了石桥栏杆，一说船夫老何昨夜弄坏了石桥栏杆，是不小心的。",
-  en: "The street has two stories. Some say that Li Er damaged the Stone Bridge Railing last night, and others say that Boatman He damaged the Stone Bridge Railing last night, by accident.",
+  zh: "街上有两种说法。有人说李二昨晚把栏杆弄坏了。也有人说船夫老何昨晚把栏杆弄坏了，是不小心的。",
+  en: "The street has two stories. Some say that Li Er broke the bridge railing last night. Others say that Boatman He broke the bridge railing last night, by accident.",
 } as const;
 
 test.describe("the paper of the morning", () => {

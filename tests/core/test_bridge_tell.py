@@ -363,7 +363,7 @@ def test_what_the_manager_said_reads_as_the_manager_said_it_in_both_languages():
         claimed_source=claim.claimed_source,
         speaker=PLAYER,
     )
-    assert said["en"].startswith("I saw it myself") and said["zh"].startswith("我亲眼看见")
+    assert said == notebook.sentence(notebook.view(social)[claim.prop])  # a plain statement
     # and when a neighbour says whom they heard it from, the manager has a name
     retold = LO.lines.say(
         notebook.view(social)[claim.prop],
@@ -373,7 +373,7 @@ def test_what_the_manager_said_reads_as_the_manager_said_it_in_both_languages():
         speaker=LISTENER,
     )
     assert retold["en"].startswith("The Festival Manager told me that")
-    assert retold["zh"].startswith("听总管说")
+    assert retold["zh"].startswith("总管跟我说")
 
 
 # ------------------------------------------------------------------------------ the action itself

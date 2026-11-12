@@ -9,11 +9,24 @@ test.use({ map: true });
 
 const card = (page: Page) => page.getByTestId("show-card");
 
+/**
+ * The clan elder comes by when nothing has moved for 600 ticks of the game's time, which is a few seconds at the pace of these tests, and his card
+ * holds the world and keeps the card of a job waiting behind it. The game runs at its own pace whatever the machine, and a slow machine takes longer
+ * between two steps of a test than the elder waits. The page of these tests has the hints turned off, so that no card but the one under test can
+ * come.
+ */
+async function quietWorld(page: Page): Promise<void> {
+  await page.addInitScript(() => localStorage.setItem("lantern.hints", "off"));
+}
+
 test.describe("the card of a job, on the real core", () => {
   test("the truth and then the peace: a card each, from the flags the core raises, and a light where it was done", async ({ lantern }) => {
     test.setTimeout(240_000);
     const page = lantern.page;
-    await page.goto(`${lantern.servers.app.origin}/?scenario=bridge&seed=7&pace=20&guide=on&config=dev_actions:1`);
+    await quietWorld(page);
+    // The first day ends after some 2300 ticks of the game, and the card of the night then holds the world and keeps the card of a job waiting behind it. That is twelve seconds at pace 20,
+    // which a slow page can take between the start and the flag, and two minutes at pace 2.
+    await page.goto(`${lantern.servers.app.origin}/?scenario=bridge&seed=7&pace=2&guide=on&config=dev_actions:1`);
     await lantern.waitReady();
     await expect(page.getByTestId("status")).toHaveText("running");
     await expect(card(page)).toHaveCount(0);
@@ -59,6 +72,7 @@ test.describe("the bridge, on a recording of the follower", () => {
     test.setTimeout(600_000);
     const page = lantern.page;
     const recording = recordFollower(4, 6, 10);
+    await quietWorld(page);
     await page.goto(`${lantern.servers.app.origin}/?start=1&pace=3&guide=on`);
     await lantern.waitReady();
     const id = await putSave(page, "fourth morning", recording);

@@ -259,7 +259,7 @@ def test_what_has_reached_the_person_lately_is_their_own_news():
                    game.tick - 5, "c1")  # fmt: skip
     notes.hold(social, heard)
     user = messages(game)[1]["content"]
-    assert "Li Da told you:" in user and "was at the Stone Bridge" in user
+    assert "Li Da told you:" in user and "was at the bridge" in user
     assert prompts.NO_LATELY not in user
 
 
@@ -286,10 +286,14 @@ def test_the_prompt_holds_nothing_that_is_private_to_anyone_else():
             assert bio["en"] not in text and bio["zh"] not in text
 
 
-def test_the_prompt_does_not_depend_on_the_voices():
+def test_the_prompt_does_not_depend_on_the_voices(monkeypatch):
+    """The ways a person says things are the voices' business and not the prompt's. The one thing of
+    a voice that the prompt holds is the names the person uses for others (``prompts.calls_note``),
+    which test_bridge_calls holds, and is left out here."""
     game = talking("cha_laoban")
     from lantern_core.world.bridge import voices
 
+    monkeypatch.setattr(prompts, "calls_note", lambda person: "")
     plain = messages(game)
     original = voices.VOICES
     try:

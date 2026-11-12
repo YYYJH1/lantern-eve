@@ -97,9 +97,9 @@ test.describe("the people at the end of a real game", () => {
 
     // The story that was told is the boatman's, and his epilogue and Zhou Dalang's say so. No other epilogue names the cause.
     const said = (id: string) => lines.find((line) => line.npc === id)?.text.en ?? "";
-    expect(said("old_he")).toContain("owned that the boat had struck the rail");
+    expect(said("old_he")).toContain("owned that the boat had struck the railing");
     expect(said("zhou_dalang")).toContain("nobody made a point of the smell of wine");
-    for (const line of lines.filter((l) => !["old_he", "zhou_dalang"].includes(l.npc))) expect(line.text.en + line.text.zh).not.toMatch(/boat|rail broke|撑船|船头|秋汛|踢/i);
+    for (const line of lines.filter((l) => !["old_he", "zhou_dalang"].includes(l.npc))) expect(line.text.en + line.text.zh).not.toMatch(/boat|rail(ing)? broke|撑船|船头|秋汛|踢/i);
 
     await lantern.setLang("zh");
     await expect(card.getByRole("heading")).toHaveText("后来");

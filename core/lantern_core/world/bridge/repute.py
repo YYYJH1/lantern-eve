@@ -46,11 +46,22 @@ def trust(section: dict[str, Any], index: int) -> int:
     return int(section["trust"][index])
 
 
-def nudge(section: dict[str, Any], index: int, delta: int) -> int:
-    """Move a person's trust by ``delta``, within 0 and 100. Returns the trust now."""
+def nudge(section: dict[str, Any], index: int, delta: int, why: str = "other") -> int:
+    """Move a person's trust by ``delta``, within 0 and 100. Returns the trust now.
+
+    ``why`` is the reason, one of ``hearts.WHY``: the hearts of the person say it if they move
+    (``hearts.sync`` reads it from the key ``why`` of the section, where it waits)."""
     value = max(0, min(100, section["trust"][index] + delta))
+    if value != section["trust"][index]:
+        note(section, index, why)
     section["trust"][index] = value
     return value
+
+
+def note(section: dict[str, Any], index: int, why: str) -> None:
+    """Keep the reason the trust of the person at ``index`` moves, until the hearts are next looked
+    at (``hearts.sync``)."""
+    section.setdefault("why", {})[lore().people[index]] = why
 
 
 def stars(section: dict[str, Any]) -> int:
@@ -106,4 +117,4 @@ def watch(sim: Sim) -> None:
             continue
         for index, person in enumerate(lore().people):
             if believes(social, person, prop_id) and mark(section, prop_id, person):
-                nudge(section, index, -HEARSAY_DROP[prop_id])
+                nudge(section, index, -HEARSAY_DROP[prop_id], "hearsay")

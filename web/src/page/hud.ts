@@ -7,7 +7,9 @@
  *   turnout      the expected turnout (an integer)
  *   bridge       {"done": workers on the job, "need": workers it takes, "percent"?: the work done,
  *                 "hours"?: the work hours done, "hours_need"?: the work hours it takes,
- *                 "lacking"?: an item id or {"zh", "en"}, "state"?: broken, repairing, mended or detour},
+ *                 "lacking"?: an item id or {"zh", "en"}, "state"?: broken, repairing, mended or detour,
+ *                 "short"?: how many helpers the crew still lacks for the next morning,
+ *                 "families_missing"?: the family ids that have nobody in the crew yet},
  *                 or a number, the percent that is done
  *   reputation   the player's standing, from 0 to 3 stars (a value above 3 is read as a percent)
  *   cost         what the game has cost so far, in millionths of a yuan (the budget gate calls it `spent`)
@@ -17,6 +19,8 @@
  *   cloud        whether the host last said that the cloud can be reached (true until it says not)
  *   local        whether the host last said that a local model is there (false until it says so)
  *   verbs        the verbs the player can use now, a list of ids
+ *   verbs_off    {verb: reason} for each verb that is not in `verbs`: talking, busy, not_talking, far, night, not_yet, done,
+ *                gift_today or gift_full (see `readVerbsOff`)
  *   pledges      the promises still open, [{id, to: {zh, en, id}, what, item, amount, due}]: `what` is
  *                stall, role, wage or slot, `item` which one (front or back, a role, a slot), `amount`
  *                the coins of a wage, and `due` the game day by which it has to be kept
@@ -36,6 +40,10 @@ export interface BridgeProgress {
   /** An item id, when the core names the missing item by its id only. */
   lackingId: string | null;
   state: string | null;
+  /** How many helpers the crew still lacks for the next morning's work (0 when the crew is complete, the bridge is mended or the detour is done). Null where the frame does not say. */
+  short: number | null;
+  /** The families that have nobody in the crew yet. Empty where the frame does not say. */
+  familiesMissing: string[];
 }
 
 /** A promise of the manager that is still open. */
@@ -99,10 +107,10 @@ function firstOf(hud: Record<string, unknown>, names: readonly string[]): unknow
 
 function readBridge(value: unknown): BridgeProgress | null {
   if (typeof value === "number" && Number.isFinite(value)) {
-    return { done: null, need: null, percent: Math.min(100, Math.max(0, Math.round(value))), hours: null, hoursNeed: null, lacking: null, lackingId: null, state: null };
+    return { done: null, need: null, percent: Math.min(100, Math.max(0, Math.round(value))), hours: null, hoursNeed: null, lacking: null, lackingId: null, state: null, short: null, familiesMissing: [] };
   }
   if (!isRecord(value)) return null;
-  const lacking = firstOf(value, ["lacking", "missing", "short"]);
+  const lacking = firstOf(value, ["lacking", "missing"]);
   return {
     done: int(firstOf(value, ["done", "workers", "have"])),
     need: int(firstOf(value, ["need", "required", "of"])),
@@ -112,6 +120,8 @@ function readBridge(value: unknown): BridgeProgress | null {
     lacking: typeof lacking === "string" ? null : isRecord(lacking) ? readName(lacking) : null,
     lackingId: typeof lacking === "string" ? lacking : null,
     state: typeof value.state === "string" ? value.state : null,
+    short: int(value.short) === null ? null : Math.max(0, int(value.short) ?? 0),
+    familiesMissing: strings(value.families_missing),
   };
 }
 
@@ -126,7 +136,9 @@ export function passageOf(state: string | null): Passage | null {
   return state === "broken" || state === "repairing" ? "none" : null;
 }
 
-const strings = (value: unknown): string[] => (Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : []);
+function strings(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
+}
 
 function readPledges(value: unknown): Pledge[] | null {
   if (!Array.isArray(value)) return null;
@@ -183,4 +195,36 @@ export function readHud(hud: Record<string, unknown>): HudValues {
 export function readVerbs(hud: Record<string, unknown>): Set<string> {
   const verbs = hud.verbs;
   return new Set(Array.isArray(verbs) ? verbs.filter((v): v is string => typeof v === "string") : []);
+}
+
+/** Why an act of the manager is not available now, as the core says it (`hud.verbs_off`). */
+export type OffReason = "talking" | "busy" | "not_talking" | "far" | "night" | "not_yet" | "done" | "gift_today" | "gift_full";
+export const OFF_REASONS: readonly OffReason[] = ["talking", "busy", "not_talking", "far", "night", "not_yet", "done", "gift_today", "gift_full"];
+export const isOffReason = (value: string): value is OffReason => (OFF_REASONS as readonly string[]).includes(value);
+
+/**
+ * `hud.verbs_off` as the core gives it, whatever the reason. The talk says a reason it has no words for in its general line (`talk.off.other`), and the act
+ * stays on its strip, greyed. Empty where the frame has none.
+ */
+export function readVerbsOffAny(hud: Record<string, unknown>): ReadonlyMap<string, string> {
+  const out = new Map<string, string>();
+  const raw = hud.verbs_off;
+  if (!isRecord(raw)) return out;
+  for (const [verb, reason] of Object.entries(raw)) if (typeof reason === "string" && reason !== "") out.set(verb, reason);
+  return out;
+}
+
+/**
+ * The reasons the acts that are not on offer are not: `hud.verbs_off`, `{verb: reason}`. A verb whose reason the page does not know is
+ * left out, so that nothing is said that the page cannot put in words. Empty where the frame has none.
+ */
+export function readVerbsOff(hud: Record<string, unknown>): ReadonlyMap<string, OffReason> {
+  const out = new Map<string, OffReason>();
+  const raw = hud.verbs_off;
+  if (!isRecord(raw)) return out;
+  for (const [verb, reason] of Object.entries(raw)) {
+    const known = OFF_REASONS.find((r) => r === reason);
+    if (known !== undefined) out.set(verb, known);
+  }
+  return out;
 }

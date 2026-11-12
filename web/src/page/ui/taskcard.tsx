@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { type Lang, pick, t } from "../../i18n/index.ts";
 import type { TaskChange } from "../flows.ts";
 import { REST_WORDS, restOf } from "../firstday.ts";
+import type { BridgeProgress } from "../hud.ts";
 import type { Play } from "../play.ts";
 import type { Scene } from "../scene.ts";
 import { type Commitment, type Expected, type SliceFrame, type Task, trackedTask } from "../slice.ts";
@@ -13,7 +14,7 @@ import { CloseIcon } from "./icons.tsx";
 import { Brush, Stamp, Tick, Underline } from "./ink.tsx";
 import { STRIKE_LINES } from "./marks.ts";
 import { count } from "./paper-text.ts";
-import { whenWhere } from "./slip-text.ts";
+import { crewShortfall, isCrewTask, shortfallWords, whenWhere } from "./slip-text.ts";
 
 // The words of the buttons and the names of things are in actions.ts and names.ts, which the unit tests can read; the views take them from here.
 export { actionLabel };
@@ -108,6 +109,8 @@ const NOTE_LEAST = 120;
  * While a person is picked their note stands at the foot of the page, and the note of the slip ends above it and scrolls. The room is what lies between where the
  * title of the slip ends (which depends on the lines it runs to, in this language and this window) and where the note of the person begins (which depends on what
  * is written in it), measured as the page runs. Where nobody is picked the note is as tall as what is written in it. The ref goes on the note of the slip.
+ * The lines the title runs to are also kept in `--slip-lines` of the page: the ledger and the book start one line lower for each line after the first, so that
+ * they never lie over the slip (the style sheets say how).
  */
 function useNoteRoom(): preact.RefObject<HTMLDivElement | null> {
   const note = useRef<HTMLDivElement>(null);
@@ -119,6 +122,9 @@ function useNoteRoom(): preact.RefObject<HTMLDivElement | null> {
     const shell = element?.closest<HTMLElement>(".shell") ?? null;
     const head = element?.parentElement?.querySelector<HTMLElement>(".slip-head") ?? null;
     if (element === null || shell === null || head === null) return;
+    const title = head.querySelector<HTMLElement>(".slip-title");
+    const leading = title === null ? 0 : Number.parseFloat(getComputedStyle(title).lineHeight);
+    shell.style.setProperty("--slip-lines", String(title !== null && leading > 0 ? Math.max(1, Math.round(title.offsetHeight / leading)) : 1));
     const person = shell.querySelector<HTMLElement>(".person-note");
     if (person === null) element.style.removeProperty("max-height");
     else element.style.maxHeight = `${Math.max(NOTE_LEAST, Math.floor(person.getBoundingClientRect().top - head.getBoundingClientRect().bottom - NOTE_GAP))}px`;
@@ -132,6 +138,7 @@ function useNoteRoom(): preact.RefObject<HTMLDivElement | null> {
   useLayoutEffect(fit);
   useLayoutEffect(() => {
     const head = note.current?.parentElement?.querySelector(".slip-head") ?? null;
+    const shell = note.current?.closest<HTMLElement>(".shell") ?? null;
     const observer = new ResizeObserver(fit);
     watch.current = observer;
     if (head !== null) observer.observe(head);
@@ -141,6 +148,7 @@ function useNoteRoom(): preact.RefObject<HTMLDivElement | null> {
       watch.current = null;
       watched.current = null;
       window.removeEventListener("resize", fit);
+      shell?.style.removeProperty("--slip-lines");
     };
   }, []);
   return note;
@@ -159,18 +167,22 @@ export interface TaskCardProps {
   today: number | null;
   /** Something else has taken the stage (the ledger or the notebook is open, or the manager is in a talk): the note folds, and the player can open it again. */
   yielded?: boolean;
+  /** How the bridge stands (`hud.bridge`), for what its crew still lacks, which the note says where the bridge is the thing. */
+  bridge?: BridgeProgress | null;
 }
 
 /**
  * The task the player follows, as a slip of red paper that hangs from the roof line with the name of the task in brush on it, and
- * that opens into a small note: why, the next step, when and where, and one phrase underlined in ink that does it. A player who chose
+ * that opens into a small note that says one thing: what to do, where and when, and one phrase underlined in ink that does it. Why it
+ * is so and what stands in the way are behind a line of their own, and the other tasks are behind "and more". Where the bridge is the
+ * thing (the task is about its crew) the note says how many helpers are still missing and which family has nobody. A player who chose
  * the brief guidance gets the goal, why, what is in the way, and the time and place, and neither the next step nor the phrase
  * (`Guide.brief`): the clan elder gives them when asked.
  *
  * The note is open for each new task, and the player folds it by pressing the slip. It opens again for the next task, and where the
- * help points at something in it.
+ * help points at something in it. The slip only stresses a task: every act stays where it is.
  */
-export function TaskCard({ slice, scene, lang, play, verbs, ended = false, today, yielded = false }: TaskCardProps) {
+export function TaskCard({ slice, scene, lang, play, verbs, ended = false, today, yielded = false, bridge = null }: TaskCardProps) {
   const tasks = slice.tasks;
   const task = trackedTask(tasks);
   const brief = play.guide.brief;
@@ -178,6 +190,7 @@ export function TaskCard({ slice, scene, lang, play, verbs, ended = false, today
   const canTrack = verbs.has("track");
   const place = task?.window == null ? null : placeName(scene, lang, task.window.place);
   const changeLine = changeNote(play.flows.state.change, task?.id ?? null, lang);
+  const lack = isCrewTask(task) ? crewShortfall(bridge) : null;
   const rest = task === null && tasks !== null ? restOf(slice.tasks, ended) : null;
   const barState = task === null ? (rest ?? "none") : task.state;
   // The note is open for a task until the player folds it. The key says which task that was.
@@ -239,31 +252,41 @@ export function TaskCard({ slice, scene, lang, play, verbs, ended = false, today
                   {changeLine}
                 </p>
               )}
-              {task.why === null ? null : (
-                <p class="note-line" data-testid="task-why">
-                  {pick(task.why, lang)}
-                </p>
-              )}
               {task.next === null || brief ? null : (
-                <p class="note-line" data-testid="task-next">
+                <p class="note-line note-next" data-testid="task-next">
                   {pick(task.next, lang)}
                 </p>
               )}
-              {task.state === "blocked" && task.blocker !== null ? (
-                <p class="note-line is-blocked" data-testid="task-blocker">
-                  {t("slip.blocked", { text: pick(task.blocker, lang) })}
-                </p>
-              ) : null}
               {task.window === null ? null : (
                 <p class="note-when" data-testid="task-window">
                   {whenWhere(lang, task.window, place, today)}
                 </p>
               )}
-              {task.expected === null || task.state === "done" || task.state === "stale" ? null : (
-                <div class="note-expected" data-testid="task-expected">
-                  <p class="note-lead">{t("slip.there")}</p>
-                  <ExpectedList expected={task.expected} scene={scene} lang={lang} />
-                </div>
+              {lack === null ? null : (
+                <p class="note-short" data-testid="task-short" data-short={lack.short} data-families={lack.families.join(" ")}>
+                  {shortfallWords(lang, scene, lack)}
+                </p>
+              )}
+              {task.why === null && !(task.state === "blocked" && task.blocker !== null) && !(task.expected !== null && task.state !== "done" && task.state !== "stale") ? null : (
+                <details class="slip-why" data-testid="slip-why" open={play.guide.signal("task-card") && task.state === "blocked" ? true : undefined}>
+                  <summary>{t("slip.why")}</summary>
+                  {task.why === null ? null : (
+                    <p class="note-line" data-testid="task-why">
+                      {pick(task.why, lang)}
+                    </p>
+                  )}
+                  {task.state === "blocked" && task.blocker !== null ? (
+                    <p class="note-line is-blocked" data-testid="task-blocker">
+                      {t("slip.blocked", { text: pick(task.blocker, lang) })}
+                    </p>
+                  ) : null}
+                  {task.expected === null || task.state === "done" || task.state === "stale" ? null : (
+                    <div class="note-expected" data-testid="task-expected">
+                      <p class="note-lead">{t("slip.there")}</p>
+                      <ExpectedList expected={task.expected} scene={scene} lang={lang} />
+                    </div>
+                  )}
+                </details>
               )}
               {task.action === null || brief ? null : (
                 <p class="note-do">
@@ -278,7 +301,7 @@ export function TaskCard({ slice, scene, lang, play, verbs, ended = false, today
           <Leads play={play} scene={scene} lang={lang} />
           {others.length === 0 ? null : (
             <details class={`task-more${signalClass(play, "task-more")}`} data-sig="task-more" data-testid="task-more">
-              <summary>{t("task.more", { n: others.length })}</summary>
+              <summary>{t("slip.more", { n: count(lang, others.length) })}</summary>
               <ul class="task-others">
                 {others.map((other) => (
                   <OtherTask key={other.id} task={other} canTrack={canTrack} play={play} lang={lang} />

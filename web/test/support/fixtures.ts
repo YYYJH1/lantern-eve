@@ -7,6 +7,7 @@ import type { HostStats, ModelRequest, Replay } from "../../src/shared/protocol.
 import type { ModelOutcome } from "../../src/shared/transport.ts";
 import { type MockServer, startMockServer } from "./mock-server.ts";
 import { type StaticServer, startStaticServer } from "./static-server.ts";
+import { scaled } from "./time-scale.ts";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const WEB_DIR = path.resolve(HERE, "../..");
@@ -188,6 +189,69 @@ export class LanternPage {
     await this.inMenu(() => this.page.getByTestId(`lang-${lang}`).click());
   }
 
+  /**
+   * Chooses the language by a click in the page itself and not through the menu, which takes no time on any machine. A test that reads a note in both languages needs it,
+   * since a note goes by itself some five seconds after it comes (`NOTE_MS` in play.ts) and a round through the menu can take that long on a slow one. The menu is tested
+   * where it is the subject.
+   */
+  async switchLang(lang: "zh" | "en"): Promise<void> {
+    await this.page.getByTestId(`lang-${lang}`).first().evaluate((button: HTMLElement) => button.click());
+  }
+
+  /**
+   * The text of the last element of a kind in each language, read in one call of the page: the language is switched by a click, read, and switched back, with nothing
+   * between the calls of the test, so that what goes by itself some seconds after it comes (a note, a reason, a pop of hearts) cannot go in the middle of it, as it can
+   * between the calls of a test on a slow machine. The text is as `toHaveText` reads it, with the white space made one space, and `attributes` are read from the same
+   * element. Null where there is no such element.
+   */
+  async textsInBothLanguages(testId: string, attributes: string[] = []): Promise<{ en: string; zh: string; attributes: Record<string, string | null> } | null> {
+    return this.page.evaluate(
+      async ([id, names]) => {
+        const last = (): Element | null => {
+          const all = document.querySelectorAll(`[data-testid="${id}"]`);
+          return all.item(all.length - 1);
+        };
+        const text = (element: Element | null): string | null => (element === null ? null : (element.textContent ?? "").replace(/\s+/g, " ").trim());
+        const choose = async (lang: "zh" | "en"): Promise<void> => {
+          document.querySelector<HTMLElement>(`[data-testid="lang-${lang}"]`)?.click();
+          await new Promise((resolve) => setTimeout(resolve, 40));
+        };
+        const now = document.querySelector('[data-testid="lang-switch"]')?.getAttribute("data-lang") === "zh" ? "zh" : "en";
+        const other = now === "zh" ? "en" : "zh";
+        const element = last();
+        const here = text(element);
+        const read: Record<string, string | null> = {};
+        for (const name of names) read[name] = element?.getAttribute(name) ?? null;
+        await choose(other);
+        const there = text(last());
+        await choose(now);
+        if (here === null || there === null) return null;
+        return now === "zh" ? { zh: here, en: there, attributes: read } : { en: here, zh: there, attributes: read };
+      },
+      [testId, attributes] as const,
+    );
+  }
+
+  /**
+   * Makes the timers of the page of one length run `factor` times as long, for a test that reads what the page shows for a few seconds and goes by itself (a reason on an act
+   * after 5, the pop of a heart after 6, the notice of a save after 3.5) across calls that take longer than that on a slow machine. It is set before the page opens, and a
+   * test that waits for the thing to go waits `factor` times as long.
+   */
+  async stretchTimer(delay: number, factor = 4): Promise<void> {
+    await this.page.addInitScript(
+      ([ms, by]) => {
+        const original = window.setTimeout.bind(window);
+        window.setTimeout = ((handler: TimerHandler, timeout?: number, ...args: unknown[]) => original(handler, timeout === ms ? ms * by : timeout, ...args)) as typeof window.setTimeout;
+      },
+      [delay, factor] as const,
+    );
+  }
+
+  /** Chooses the theme by a click in the page itself and not through the menu, for the reason `switchLang` gives. */
+  async switchTheme(theme: "auto" | "light" | "dark"): Promise<void> {
+    await this.page.getByTestId(`theme-${theme}`).first().evaluate((button: HTMLElement) => button.click());
+  }
+
   /** Chooses the theme in the menu. */
   async setTheme(theme: "auto" | "light" | "dark"): Promise<void> {
     await this.inMenu(() => this.page.getByTestId(`theme-${theme}`).click());
@@ -366,7 +430,7 @@ export class LanternPage {
   }
 }
 
-export const test = base.extend<{ lantern: LanternPage; map: boolean }, { servers: Servers }>({
+const extended = base.extend<{ lantern: LanternPage; map: boolean }, { servers: Servers }>({
   /** Whether the pages of the spec draw the map. Off unless the spec says `test.use({ map: true })`. */
   map: [false, { option: true }],
   servers: [
@@ -391,5 +455,12 @@ export const test = base.extend<{ lantern: LanternPage; map: boolean }, { server
     await use(lantern);
   },
 });
+
+// A limit that a spec sets for itself with `test.setTimeout(ms)` is written for a development machine like the limits of the config, and is stretched by
+// the same factor (LANTERN_TIME_SCALE, see time-scale.ts).
+const setLimit = extended.setTimeout.bind(extended);
+extended.setTimeout = (ms: number): void => setLimit(scaled(ms));
+
+export const test = extended;
 
 export { expect };

@@ -7,14 +7,16 @@
 import type { CoreEvent } from "../shared/protocol.ts";
 import { type DayFrame, type DayState, OVER, primeDay, stepDay, WATCHING } from "./firstday.ts";
 import type { ViewFrame } from "./frame.ts";
-import { type Guidance, readGuidance, readHintsOn, readTutorialPref, writeGuidance, writeHintsOn, writeTutorialPref } from "./guide-prefs.ts";
+import { type Guidance, readGuidance, readHintsOn, readTaught, readTutorialPref, writeGuidance, writeHintsOn, writeTaught, writeTutorialPref } from "./guide-prefs.ts";
 import { ELDER_LEVELS, type HintContext, type HintEntry, Hints, Stall, ticksCount } from "./hints.ts";
 import { readVerbs } from "./hud.ts";
 import { type NotebookEntry, readNotebook } from "./notebook.ts";
 import type { Play } from "./play.ts";
 import { type Job, jobOf, jobsDone, Shows } from "./shows.ts";
 import { isLive, type SliceFrame, trackedTask } from "./slice.ts";
-import { examplePair, TASK, Tutorial, type TutorialContext } from "./tutorial.ts";
+import { followedEntry } from "./talk-frame.ts";
+import { actsOfAction, liveAsks } from "./teach.ts";
+import { CLERK, examplePair, TASK, Tutorial, type TutorialContext } from "./tutorial.ts";
 
 /** How long the light on the map goes on after the card of a job is put away, in milliseconds. */
 export const GLOW_FADE_MS = 2600;
@@ -28,6 +30,16 @@ export interface ElderState {
 }
 
 const closedElder = (): ElderState => ({ open: false, given: [], visit: false });
+
+/**
+ * The kinds of request the town puts forward for the person the manager talks with: the one on the button of the talk and the others behind
+ * "others" (`player.talk`), or, for a frame that does not carry them, the requests among the offers.
+ */
+function askKinds(view: ViewFrame | null): Set<string> {
+  const more = view?.player?.talk?.more ?? null;
+  const offers = more === null ? (view?.player?.offers.entrust ?? []) : [...(more.askFor === null ? [] : [more.askFor]), ...more.asksMore];
+  return new Set(offers.flatMap((offer) => (typeof offer.body?.kind === "string" ? [offer.body.kind] : [])));
+}
 
 /** The element a verb of a talk is on, for the signal that points at it. */
 const VERB_TARGET: Readonly<Record<string, string>> = {
@@ -47,6 +59,8 @@ export class Guide {
   /** The light on the map for the job whose card is up, and for a moment after: `fading` once the card is put away. */
   glow: { job: Job; fading: boolean } | null = null;
   hintsOn = readHintsOn();
+  /** The acts the player has been taught or has used, so that a card does not teach them again. Kept per browser. */
+  readonly taught: Set<string> = readTaught();
   /** How much the task card and the bars do for the player: what the viewer chose, which the tutorial does not follow (see `brief`). */
   guidance: Guidance = readGuidance();
   /**
@@ -139,7 +153,7 @@ export class Guide {
     const step = this.tutorial.step;
     if (step === null || this.tutorial.phase === "waiting") return out;
     const verb = trackedTask(this.play.slice.tasks)?.action?.verb;
-    if (step === "ask" || step === "source") {
+    if (step === "granny" || step === "clerk") {
       out.add("task-do");
       // In a talk the button of the act the task asks for is the one that is lit.
       const target = verb === undefined ? undefined : VERB_TARGET[verb];
@@ -147,7 +161,7 @@ export class Guide {
     } else if (step === "evening") {
       out.add("task-do");
     } else if (step === "compare") {
-      for (const key of ["btn-notebook", "pairing", "pair-judge"]) out.add(key);
+      for (const key of ["btn-notebook", "pairing", "pair-unsupported"]) out.add(key);
     }
     return out;
   }
@@ -170,6 +184,9 @@ export class Guide {
   /** A new game with the tutorial: the page asks for the game, and the tutorial begins when the game does. */
   restartWithTutorial(newGame: () => void): void {
     writeTutorialPref("new");
+    // A player who asks to see the help again is shown all of it again.
+    this.taught.clear();
+    writeTaught(this.taught);
     this.restarting = true;
     this.play.hold.take("guide");
     newGame();
@@ -188,6 +205,27 @@ export class Guide {
     if (ctx === null || this.tutorial.card === null) return;
     this.tutorial.dismiss(ctx);
     this.moved();
+  }
+
+  /** The acts of the cards are learned: a card is not given for one that is taught. */
+  private markTaught(acts: readonly string[]): void {
+    let more = false;
+    for (const act of acts) {
+      if (!this.taught.has(act)) {
+        this.taught.add(act);
+        more = true;
+      }
+    }
+    if (more) writeTaught(this.taught);
+  }
+
+  /** The manager did something: an act that is used is learned, its card is not given, and the card that is lit for it has done its work. */
+  noteUsed(body: Readonly<Record<string, unknown>>): void {
+    if (!this.active) return;
+    const acts = actsOfAction(body);
+    this.markTaught(acts);
+    const lit = this.hints.lit;
+    if (lit !== null && acts.some((act) => lit.id === `teach.${act}`)) this.touched(lit.target);
   }
 
   setHintsOn(on: boolean): void {
@@ -222,7 +260,8 @@ export class Guide {
     const step = this.tutorial.step;
     if (ctx !== null && step !== null) {
       if (phase === "card" && step === "compare") this.setUpPair();
-      if (phase === "doing" && step === "ask") this.ringFor(ctx.tasks.get(TASK.bamboo)?.action?.npc ?? null, "person");
+      if (phase === "doing" && step === "granny") this.ringFor(ctx.tasks.get(TASK.bamboo)?.action?.npc ?? null, "person");
+      if (phase === "doing" && step === "clerk") this.ringFor(CLERK, "person");
       if (phase === "doing" && step === "evening") this.ringFor(ctx.tasks.get(TASK.evening)?.window?.place ?? null, "place");
     }
     this.settle();
@@ -243,13 +282,8 @@ export class Guide {
   private setUpPair(): void {
     const pair = examplePair(this.entries, null);
     if (pair === null) return;
-    const flows = this.play.flows;
-    if (flows.state.pair.a !== pair.a || flows.state.pair.b !== pair.b) {
-      flows.clear();
-      flows.pick(pair.a);
-      flows.pick(pair.b);
-    }
-    flows.setRelation("unsupported");
+    // The first-hand line is what is shown, and the rumour is the claim.
+    this.play.flows.setPair(pair.a, pair.b);
     this.onNotebook?.(true);
   }
 
@@ -380,7 +414,7 @@ export class Guide {
     this.settle();
   }
 
-  /** An event of the frame: the refusal of Granny Li is what the second step waits for, and a flag that says a job is done is a card to come. */
+  /** An event of the frame: the refusal of Granny Li is what the first step waits for, and a flag that says a job is done is a card to come. */
   onEvent(event: CoreEvent): void {
     const job = jobOf(event);
     if (job !== null) this.shows.note(job);
@@ -416,6 +450,8 @@ export class Guide {
     if (this.hintsOn && !this.tutorial.on) {
       const at = { day: view.time.day, hour: view.time.hour, minute: view.time.minute };
       const gave = this.hints.check(hintCtx, tick, at, performance.now(), this.brief);
+      // A card is given once: the act it teaches is taught from now on, in this browser.
+      this.markTaught(gave.flatMap((entry) => (entry.act === null ? [] : [entry.act])));
       for (const entry of gave) this.ringHint(entry, hintCtx);
       if (gave.length > 0 || this.hints.lit !== null) this.scheduleExpiry();
     }
@@ -461,9 +497,14 @@ export class Guide {
       entries: ctx.entries,
       verbs: ctx.verbs,
       talking: this.play.state.talk?.npc ?? null,
+      follow: (this.play.state.talk?.lines ?? []).some((line) => followedEntry(line, ctx.entries) !== null),
       leaves: view?.player?.talk?.leavesAt != null,
       promised: (slice.commitments ?? []).filter((c) => c.state === "promised").length,
       leads: this.play.flows.state.leads.length,
+      day: view?.time.day ?? 1,
+      taught: this.taught,
+      asks: askKinds(view),
+      live: liveAsks(slice.tasks?.list ?? []),
     };
   }
 

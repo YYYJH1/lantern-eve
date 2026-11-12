@@ -1,6 +1,7 @@
 import { type Lang, pick, t } from "../../i18n/index.ts";
 import { dayPart, shichen } from "../frame.ts";
 import type { Name } from "../scene.ts";
+import { timeAtTick } from "../moments.ts";
 import type { Commitment } from "../slice.ts";
 
 const DIGITS = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
@@ -43,9 +44,15 @@ export function clockText(hour: number, minute: number): string {
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
-/** "第三日" or "Day 3". */
+/** "第三天" or "Day 3". */
 export function dayLabel(lang: Lang, day: number): string {
   return t("hud.day", { n: lang === "zh" ? zhNumeral(day) : day });
+}
+
+/** The game time at a tick as a player reads it: "第二天 14:20" and "Day 2 14:20". */
+export function tickText(lang: Lang, tick: number): string {
+  const at = timeAtTick(tick);
+  return `${dayLabel(lang, at.day)} ${clockText(at.hour, at.minute)}`;
 }
 
 /** The name of the time of day: the double hour in Chinese (申时), a word in English. */

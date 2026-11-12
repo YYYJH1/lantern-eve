@@ -3,15 +3,17 @@
  * the replay file, and the messages between the page and the host worker.
  */
 
-export const HOST_VERSION = "0.1.1";
+export const HOST_VERSION = "0.2.0";
 export const REPLAY_FORMAT = 1;
 
 export type ProviderId = "bailian" | "deepseek" | "ollama";
 /**
- * Why the world is paused. The world runs when no reason is left. `user` is the pause button, `hidden` a tab that is hidden, and
- * `page` the page holding the world while a sheet of its own is up (the notebook, a card of the help), which is not a pause of the player's.
+ * Why the world is paused. The world runs when no reason is left. `user` is the pause button, `hidden` a tab that is hidden, `page`
+ * the page holding the world while a sheet of its own is up (the notebook, a card of the help), which is not a pause of the player's,
+ * and `show` the page holding it while a show plays on the map (a moment of the festival, the festival night), which is let go alone
+ * when the show ends.
  */
-export type PauseReason = "user" | "hidden" | "page";
+export type PauseReason = "user" | "hidden" | "page" | "show";
 
 // --- The core boundary ----------------------------------------------------------------------
 

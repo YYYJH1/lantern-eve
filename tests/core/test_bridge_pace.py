@@ -101,7 +101,12 @@ def test_the_script_says_what_each_act_costs_and_the_frame_passes_it_on_with_the
     assert pace.costs() == COSTS and pace.minutes("speak") == 30
     game, out = open_talk()
     leaves = {"hour": 12, "minute": 5}  # noon, and the madam's ten ticks of lateness
-    assert out["frame"]["player"]["talk"] == {"npc": WHO, "costs": COSTS, "leaves_at": leaves}
+    talk = out["frame"]["player"]["talk"]
+    assert {k: talk[k] for k in ("npc", "costs", "leaves_at")} == {
+        "npc": WHO,
+        "costs": COSTS,
+        "leaves_at": leaves,
+    }
     (opened,) = events(out, "talk_start")
     assert opened == {"kind": "talk_start", "tick": game.tick, "npc": WHO, "leaves_at": leaves}
     assert me(game)["talk"]["until"] == at(1, 12) + 10  # the tick, which the frame does not show

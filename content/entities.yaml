@@ -3,8 +3,8 @@
 # each language of what the town says of them. It holds public things only, so it is true whichever
 # story of a script is true, and it points the way without giving the answer.
 families:
-  - {id: fam_li, label: 李家, label_en: "Li Family"}
-  - {id: fam_zhou, label: 周家, label_en: "Zhou Family"}
+  - {id: fam_li, label: 李家, label_en: "Li family"}
+  - {id: fam_zhou, label: 周家, label_en: "Zhou family"}
 
 people:
   - id: li_laotai
@@ -54,8 +54,8 @@ people:
     label_en: "Zhou's Clerk"
     family: fam_zhou
     bio:
-      zh: "伙计在周家帮工好些年，记性好，手脚勤快。遇上什么事，他一开口总是「掌柜的说了算」。"
-      en: "Zhou's Clerk has worked for the Zhou family for years, with a good memory and quick hands. Whatever comes up, his first words are that the Shopkeeper decides."
+      zh: "周家伙计在周家帮工好些年，记性好，手脚勤快。遇上什么事，开口总是「掌柜的说了算」。"
+      en: "Zhou's Clerk has worked for the Zhou family for years, with a good memory and quick hands. Whatever comes up, the clerk's first words are that the Shopkeeper decides."
   - id: zhou_dalang
     label: 周家大郎
     label_en: "Zhou Dalang"
@@ -68,7 +68,7 @@ people:
     label_en: "Madam Zhou"
     family: fam_zhou
     bio:
-      zh: "周娘子是周掌柜的妻子，天天在集市上走动。街坊谁家有点事，她总是头一个知道，也头一个说出去。"
+      zh: "周娘子是周掌柜的媳妇，天天在集市上走动。街坊谁家有点事，她总是头一个知道，也头一个说出去。"
       en: "Madam Zhou is the Shopkeeper's wife and is out at the market every day. When anything happens in any house on the street, she is the first to hear of it and the first to tell it."
   - id: zhou_erlang
     label: 周家二郎
@@ -81,8 +81,8 @@ people:
     label: 船夫老何
     label_en: "Boatman He"
     bio:
-      zh: "老何在渡口摆了二十多年渡船，镇上的人谁都坐过他的船。河上的事他看得多，说得少。"
-      en: "Boatman He has run the ferry for more than twenty years, and everyone in town has crossed in his boat. The boatman sees a great deal of what happens on the river and says little of it."
+      zh: "老何在渡口摆了二十多年渡船，镇上的人谁都坐过这条船。河上的事，老何看得多，说得少。"
+      en: "Boatman He has run the ferry for more than twenty years, and everyone in town has crossed in that boat. The boatman sees a great deal of what happens on the river and says little of it."
   - id: xiao_man
     label: 小满
     label_en: "Xiaoman"
@@ -93,14 +93,14 @@ people:
     label: 更夫
     label_en: "Night Watchman"
     bio:
-      zh: "更夫打了十几年更，每夜提着锣沿河岸、过石桥报时。他爱喝两口，镇上人都说他夜里看见的事要打个折扣。"
-      en: "The Night Watchman has walked his rounds for more than ten years, along the river and over the stone bridge, calling the hours on his gong. He likes a drink, and the town says that what he sees at night should be taken with some doubt."
+      zh: "更夫打了十几年更，每夜提着锣沿河岸、过石桥报时。平日爱喝两口，镇上人都说，打更的夜里看见的事得打个折扣。"
+      en: "The Night Watchman has walked the rounds for more than ten years, along the river and over the stone bridge, calling the hours on the gong. The watchman likes a drink, and the town says that what the watchman sees at night should be taken with some doubt."
   - id: zhangfang
     label: 账房
     label_en: "Accountant"
     bio:
-      zh: "账房先生管着全镇的公账。修桥修路、灯会的花销，一笔一笔都记在他的账本上。"
-      en: "The Accountant keeps the town's common accounts. Every coin spent on bridges, roads and the festival is written down in his ledger."
+      zh: "账房管着全镇的公账。修桥修路、灯会的花销，一笔一笔都记在账本上。"
+      en: "The Accountant keeps the town's common accounts. Every coin spent on bridges, roads and the festival is written down in the ledger."
   - id: cha_laoban
     label: 茶馆老板娘
     label_en: "Teahouse Keeper"
@@ -123,8 +123,8 @@ people:
     label: 木匠
     label_en: "Carpenter"
     bio:
-      zh: "木匠在扎灯坊里有一张工台，镇上门窗桌椅坏了都找他。修桥要动木头，少不了他的手艺。"
-      en: "The Carpenter keeps a bench in the lantern workshop, and the town brings him every broken door, window and chair. Any repair to the bridge that needs timber will need his hands."
+      zh: "木匠在扎灯坊里有一张工台，镇上门窗桌椅坏了都找木匠。修桥要动木头，少不了这门手艺。"
+      en: "The Carpenter keeps a bench in the lantern workshop, and the town brings every broken door, window and chair there. Any repair to the bridge that needs timber will need that craft."
   - id: zhadeng_shifu
     label: 扎灯师傅
     label_en: "Lantern Maker"
@@ -148,8 +148,8 @@ people:
     label_en: "Peddler from the Next Town"
 
 things:
-  - {id: t_rail, label: 石桥栏杆, label_en: "Stone Bridge Railing"}
-  - {id: t_he_boat, label: 老何的船, label_en: "The Ferry Boat"}
+  - {id: t_rail, label: 栏杆, label_en: "Stone Bridge Railing"}
+  - {id: t_he_boat, label: 渡船, label_en: "The Ferry Boat"}
   - {id: t_li_er_lantern, label: 掉进水里的灯笼, label_en: "The Lost Lantern"}
   - {id: t_repair_ledger, label: 账房的修船记录, label_en: "The Accountant's Boat Repair Ledger"}
   - {id: t_main_lantern, label: 主灯, label_en: "The Main Lantern"}
@@ -162,7 +162,7 @@ things:
 
 places:
   - {id: p_bridge, label: 石桥, label_en: "Stone Bridge"}
-  - {id: p_under_bridge, label: 桥下水面, label_en: "Water Beneath the Bridge"}
+  - {id: p_under_bridge, label: 桥下的水面, label_en: "Water Beneath the Bridge"}
   - {id: p_riverbank, label: 河滩, label_en: "Riverbank"}
   - {id: p_ferry, label: 渡口, label_en: "Ferry Landing"}
   - {id: p_he_home, label: 老何家, label_en: "Boatman He's House"}

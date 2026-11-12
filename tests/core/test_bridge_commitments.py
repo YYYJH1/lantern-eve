@@ -308,8 +308,8 @@ def test_a_promise_made_in_the_day_gives_both_tasks_of_the_bamboo_its_own_hours(
 BAMBOO = "t_bamboo_first"
 ASK_LI_DA = {"verb": "entrust", "npc": LI_DA, "item": "bamboo"}
 PROMISED_WHY = {
-    "zh": "李大答应了，把四根竹料送到桥边。",
-    "en": "Li Da has promised 4 poles of bamboo at the bridge.",
+    "zh": "李大答应把四根竹料送到桥边。",
+    "en": "Li Da has promised to bring 4 poles of bamboo to the bridge.",
 }
 PROMISED_NEXT = {
     "zh": "按约好的时间去桥边，看竹料送到没有。",
@@ -407,7 +407,7 @@ def test_the_task_of_the_bamboo_asks_for_li_da_again_when_he_takes_the_promise_b
     play_to(game, log, at(1, 19, 5))  # the next hour: the tasks look again
     task = the_bamboo(frame_now(game))
     assert task["state"] == "open" and task["action"] == ASK_LI_DA
-    assert task["why"]["zh"] == "李老太不再拦着了，竹料在李大手里。"
+    assert task["why"]["zh"] == "李老太松口了。竹料归李大管。"
 
 
 def test_the_bamboo_arrives_with_a_word_over_the_head_of_whoever_brought_it_for_a_little_while():
@@ -528,10 +528,10 @@ def test_events_that_other_subsystems_emit_make_the_other_lines_of_the_recap(mon
     lines = state_of(game)[commitments.SECTION]["recap"]["lines"]
     assert [line["text"]["en"] for line in lines] == [
         "The 4 poles of bamboo that Li Da promised have reached the Stone Bridge.",
-        "Granny Li no longer stands in the way: lending the bamboo",
+        "Granny Li has given way on lending the bamboo.",
         "Li Da promised to bring 4 poles of bamboo.",
     ]  # the delivery, the person who withdrew an objection, the promise: not the claim set straight
-    assert lines[1]["text"]["zh"] == "李老太撤回了阻拦：借竹料"
+    assert lines[1]["text"]["zh"] == "李老太松口了，答应借竹料。"
     withdrawn = next(e for e in log.of("objection_withdrawn"))
     assert lines[1]["events"] == [log.number(withdrawn)]
 
@@ -557,9 +557,9 @@ def test_a_claim_set_straight_in_public_is_the_line_of_the_people_who_changed_th
     play_to(game, log, at(2, 8))
     (line,) = state_of(game)[commitments.SECTION]["recap"]["lines"]
     assert line["text"] == {
-        "zh": "你当众指出那句话说过了头，周家伙计、李老太、茶馆老板娘听后改了口。",
+        "zh": "你当众讲明，那话传过了头。周家伙计、李老太、茶馆老板娘听了，改了口。",
         "en": (
-            "You said in public that the claim went too far, and Zhou's Clerk, Granny Li and "
+            "You told everyone the talk had gone too far. Zhou's Clerk, Granny Li and "
             "Teahouse Keeper changed their minds."
         ),
     }
@@ -611,7 +611,7 @@ def test_the_recap_has_three_lines_at_most_and_prefers_a_kind_it_has_not_got_yet
     assert commitments._lines(world, []) == []
     # a stance and nothing else
     (only,) = commitments._lines(world, [withdrawn(4, 9)])
-    assert only["text"]["en"] == "Granny Li no longer stands in the way."
+    assert only["text"]["en"] == "Granny Li has given way."
     assert only["events"] == [4]
     # five withdrawals: three lines, the newest of them first within the kind
     people = ("li_laotai", "li_da", "zuzhang", "cha_laoban", "gengfu")
@@ -1028,7 +1028,7 @@ def test_the_term_commitment_holds_for_the_person_the_item_and_the_state():
 
 LI_DA_MATERIAL = {"verb": "entrust", "npc": LI_DA, "kind": "material"}
 PROMISED_LINE = {
-    "zh": "李大已经答应了：四根竹料，明早07:00前",
+    "zh": "李大已经答应了，明早07:00前送四根竹料",
     "en": "Li Da has promised already: 4 poles of bamboo, by 7 tomorrow morning",
 }
 ENOUGH_LINE = {
@@ -1048,8 +1048,9 @@ def said_by(out: dict, person: str = LI_DA) -> dict:
 
 def ways_to_say(game: Game, code: str, lead: str, person: str = LI_DA) -> list[dict]:
     """Every way ``person`` says the line ``code`` about the promise or the item ``lead`` now."""
+    today = clock.at(game.tick).day
     return [
-        commitments.say_goods(state_of(game), way, code, lead)
+        commitments.say_goods(state_of(game), way, code, lead, today)
         for way in voices.variants(person, code)
     ]
 
@@ -1145,8 +1146,8 @@ def test_asking_while_a_promise_is_open_is_answered_with_a_line_that_names_it():
     assert said in ways_to_say(game, "promise_open", "m1")
     assert len(voices.variants(LI_DA, "promise_open")) >= 2
     # the amount, the item and the day and the hour are in it, in both languages
-    assert "四根竹料" in said["zh"] and "第二日07:00前" in said["zh"]
-    assert "4 poles of bamboo" in said["en"] and "by 07:00 on day 2" in said["en"]
+    assert "四根竹料" in said["zh"] and "明早七点前" in said["zh"]
+    assert "4 poles of bamboo" in said["en"] and "by seven tomorrow morning" in said["en"]
     assert "{" not in said["zh"] + said["en"]
     assert said not in voices.variants(LI_DA, "said_already")  # not the bare "I have said so"
 
@@ -1198,7 +1199,7 @@ def test_the_same_holds_for_the_timber_when_the_script_gives_it_in_batches(scrip
     meet(game, "zhou_zhanggui")
     assert look(game, npc="zhou_zhanggui")["blockers"] == [
         {
-            "zh": "周掌柜已经答应了：三根木料，明早07:00前",
+            "zh": "周掌柜已经答应了，明早07:00前送三根木料",
             "en": "Shopkeeper Zhou has promised already: 3 poles of timber, by 7 tomorrow morning",
         }
     ]
@@ -1223,18 +1224,63 @@ def test_the_plain_words_of_the_goods_lines_fill_the_slots_too_for_the_prompt_of
     game, log, _ = promised_in_the_evening()
     world = state_of(game)
     open_line = [LI_DA, game.tick + 600, "goods", "promise_open", "m1"]
+    today = clock.at(game.tick).day
+    assert converse.words(world, open_line, plain=True, today=today) == {
+        "zh": "我答应过了，明早七点前把四根竹料送到桥边。",
+        "en": "I've promised already: 4 poles of bamboo at the bridge by seven tomorrow morning.",
+    }
+    # where no day is named the time is the date of the game, as the cards write it
     assert converse.words(world, open_line, plain=True) == {
-        "zh": "我答应过了，第二日07:00前把四根竹料送到桥边。",
-        "en": "I have promised already: 4 poles of bamboo at the bridge by 07:00 on day 2.",
+        "zh": "我答应过了，第二天07:00前把四根竹料送到桥边。",
+        "en": "I've promised already: 4 poles of bamboo at the bridge by 07:00 on day 2.",
     }
     enough = [LI_DA, game.tick + 600, "goods", "goods_enough", "timber"]
     assert converse.words(world, enough, plain=True) == {
         "zh": "桥边的木料已经够了。",
         "en": "There is enough timber at the bridge already.",
     }
-    voiced = converse.words(world, open_line)  # in his voice, the same numbers
+    voiced = converse.words(world, open_line, today=today)  # in his voice, the same numbers
     assert voiced in ways_to_say(game, "promise_open", "m1")
-    assert voiced != converse.words(world, open_line, plain=True)
+    assert voiced != converse.words(world, open_line, plain=True, today=today)
+
+
+SPOKEN = [  # (today, day, hour) -> what a person says
+    ((1, 1, 9), "今早九点前", "by nine this morning"),
+    ((1, 1, 13), "今天下午一点前", "by one this afternoon"),
+    ((1, 1, 17), "今天傍晚五点前", "by five this evening"),
+    ((1, 1, 21), "今天晚上九点前", "by nine tonight"),
+    ((1, 2, 7), "明早七点前", "by seven tomorrow morning"),
+    ((1, 2, 10), "明天上午十点前", "by ten tomorrow morning"),
+    ((1, 2, 12), "明天中午十二点前", "by noon tomorrow"),
+    ((1, 2, 14), "明天下午两点前", "by two tomorrow afternoon"),
+    ((1, 2, 18), "明天傍晚六点前", "by six tomorrow evening"),
+    ((1, 2, 22), "明天晚上十点前", "by ten tomorrow night"),
+    ((1, 3, 18), "后天傍晚前", "by the evening of the day after tomorrow"),
+    ((1, 3, 7), "后天早上七点前", "by seven on the morning of the day after tomorrow"),
+    ((1, 3, 12), "后天中午前", "by noon on the day after tomorrow"),
+    ((2, 4, 18), "后天傍晚前", "by the evening of the day after tomorrow"),
+    ((1, 4, 18), "第四天傍晚前", "by the evening of day 4"),
+    ((1, 5, 7), "第五天早上七点前", "by seven on the morning of day 5"),
+    ((3, 2, 7), "第二天07:00前", "by 07:00 on day 2"),  # a day gone by is dated, as on the cards
+]
+
+
+@pytest.mark.parametrize(("when", "zh", "en"), SPOKEN)
+def test_a_person_says_when_a_promise_falls_due_by_the_day_it_is_said_on(when, zh, en):
+    assert commitments.spoken_when(*when) == {"zh": zh, "en": en}
+
+
+def test_the_spoken_time_has_no_digit_and_no_slot_for_any_hour_of_the_game_in_either_language():
+    for today in (1, 2, 4):
+        for day in range(today, today + 5):
+            for hour in range(6, 24):
+                said = commitments.spoken_when(today, day, hour)
+                assert said["zh"].endswith("前") and said["en"].startswith("by ")
+                assert "{" not in said["zh"] + said["en"]
+                digits = any(ch.isdigit() for ch in said["zh"] + said["en"])
+                assert not digits or "day " in said["en"], said
+    # the cards keep the date of the game, which does not change as time goes by
+    assert commitments.when_words(2, 7) == {"zh": "第二天07:00前", "en": "by 07:00 on day 2"}
 
 
 def test_the_answer_to_a_request_that_is_turned_away_is_not_an_event_of_the_promises():

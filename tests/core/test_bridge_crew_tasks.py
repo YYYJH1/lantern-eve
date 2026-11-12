@@ -116,15 +116,23 @@ def test_the_card_of_the_third_morning_says_it_in_both_languages_and_so_does_the
         act(game, "dev_goal", op="join", npc=who)
     run_to(game, at(3, 7, 30))
     work = tasks_of(frame_now(game))["t_work_3"]
-    assert work["why"] == {
-        "zh": "五个帮手一早上能做五个钟头，桥还差十个钟头。",
-        "en": "5 helpers give 5 hours in a morning, and 10 are still to do.",
+    assert work["why"] == {  # the work that is left in mornings, the hours on the board
+        "zh": "照这几个帮手，再干两个早上桥就修完了。",
+        "en": "With these helpers, two more mornings and the bridge is done.",
     }
     run_to(game, at(3, 14))
     last = tasks_of(frame_now(game))["t_work_4"]
+    assert last["why"] == {  # the afternoon before: the last morning is tomorrow's
+        "zh": "明早是最后一个早上。照这几个帮手，明早就能把桥修完。",
+        "en": (
+            "Tomorrow morning is the last one. With these helpers, the bridge will be done by then."
+        ),
+    }
+    run_to(game, at(4, 7))
+    last = tasks_of(frame_now(game))["t_work_4"]
     assert last["why"] == {
-        "zh": "这是最后一个早上，帮手能做五个钟头，桥还差五个钟头。",
-        "en": "The last morning: the helpers give 5 hours, and 5 are still to do.",
+        "zh": "今天是最后一个早上。照这几个帮手，今天就能把桥修完。",
+        "en": "This is the last morning. With these helpers, the bridge will be done today.",
     }
 
 

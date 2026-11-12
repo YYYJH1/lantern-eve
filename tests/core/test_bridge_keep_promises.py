@@ -61,14 +61,14 @@ def test_a_promise_gets_a_task_that_says_what_was_promised_to_whom_and_by_when()
     assert (found["kind"], found["job"], found["state"]) == ("promise", None, "open")
     assert found["text"] == {"zh": "兑现对李大的许诺", "en": "Keep the promise to Li Da"}
     assert found["why"] == {
-        "zh": "你答应了李大：灯会上的前排摊位，最迟第四日要当面兑现，失信要折信用。",
+        "zh": "你答应给李大灯会上的前排摊位，最迟第四天要当面给。到时不给，李大就不信你了。",
         "en": (
-            "You promised Li Da a front-row stall at the festival, to be kept in person by "
-            "day 4, or it costs you trust."
+            "You promised Li Da a front-row stall at the festival, to give in person by day 4. "
+            "If you do not, Li Da will trust you less."
         ),
     }
     assert found["next"] == {
-        "zh": "第四日当天去找李大当面兑现，早些也行。",
+        "zh": "第四天去找李大当面兑现，早点去也行。",
         "en": "On day 4, go to Li Da and keep it in person, or sooner.",
     }
     # nothing to do with it before the day: the bar stays on what it was
@@ -127,7 +127,7 @@ def test_from_the_morning_it_falls_due_the_task_has_the_action_and_the_bar_follo
     found = task(game, 1)
     assert found["action"] == {"verb": "promise", "npc": LI_DA, "item": "k1", "kind": "keep"}
     assert found["why"]["en"].startswith(
-        "You promised Li Da a front-row stall at the festival, and"
+        "You promised Li Da a front-row stall at the festival. It is due today"
     )
     assert found["next"] == {
         "zh": "今天去找李大，当面兑现。",
@@ -144,8 +144,8 @@ def test_the_bar_changes_to_it_when_its_day_comes_and_says_why():
     to_it = [e for e in seen if e["to"] == "t_keep_1"]
     assert [e["cause"] for e in to_it] == ["window"]
     assert to_it[0]["reason"] == {
-        "zh": "「兑现对李大的许诺」的时间到了，改追踪它",
-        "en": "It is time for “Keep the promise to Li Da”. Now following it",
+        "zh": "「兑现对李大的许诺」的时间到了，先办这件",
+        "en": "It is time for “Keep the promise to Li Da”. On to it",
     }
 
 
@@ -204,12 +204,11 @@ def test_a_promise_not_kept_by_its_day_goes_stale_and_the_bar_says_what_it_cost(
     gone = [e for e in seen if e["from"] == "t_keep_1" and e["cause"] == "stale"]
     assert len(gone) == 1
     assert gone[0]["reason"]["en"].startswith(
-        "You did not keep your promise of a front-row stall at the festival to Li Da by the end "
-        "of day 3. Li Da trusts you less now, and word of it will go round the town. Now following"
+        "You promised Li Da a front-row stall at the festival by day 3 and did not keep it. "
+        "Li Da trusts you less now. Word of it will go round the town. Now on to"
     )
     assert gone[0]["reason"]["zh"].startswith(
-        "你没有在第三日之内兑现对李大的许诺（灯会上的前排摊位），李大更不信你了，"
-        "这件事还会在镇上传开。改追踪"
+        "你答应最迟第三天给李大的灯会上的前排摊位，没给成。李大更不信你了。这事还会在镇上传开。改办"
     )
 
 
@@ -222,11 +221,10 @@ def test_when_another_task_is_followed_the_lapse_is_said_all_the_same_without_a_
     assert len(lapsed) == 1
     assert lapsed[0]["from"] == lapsed[0]["to"] == frame_now(game)["tracked"]  # nothing changes
     assert lapsed[0]["reason"]["zh"] == (
-        "你没有在第三日之内兑现对李大的许诺（灯会上的前排摊位），李大更不信你了，"
-        "这件事还会在镇上传开。"
+        "你答应最迟第三天给李大的灯会上的前排摊位，没给成。李大更不信你了。这事还会在镇上传开。"
     )
-    assert lapsed[0]["reason"]["en"].startswith("You did not keep your promise of a front-row")
-    assert "Now following" not in lapsed[0]["reason"]["en"]
+    assert lapsed[0]["reason"]["en"].startswith("You promised Li Da a front-row stall")
+    assert "Now on to" not in lapsed[0]["reason"]["en"]
 
 
 def test_the_cost_is_the_trust_of_the_person_and_a_fact_that_spreads():
@@ -248,7 +246,7 @@ def test_the_cost_is_the_trust_of_the_person_and_a_fact_that_spreads():
     ("what", "item", "amount", "zh", "en"),
     [
         ("stall", "back", 0, "灯会上的后排摊位", "a back-row stall at the festival"),
-        ("role", "t_honor_light", 0, "灯会上的体面角色：点主灯", "lighting the main lantern"),
+        ("role", "t_honor_light", 0, "灯会上点主灯的体面差事", "lighting the main lantern"),
         ("wage", "", 20, "二十文工钱", "20 coins in wages"),
         ("slot", "2", 0, "节目单上的第二位", "place 2 in the programme"),
     ],
@@ -259,7 +257,7 @@ def test_the_words_name_each_kind_of_promise(what, item, amount, zh, en):
     assert facts["pledge1_what"]["zh"] == zh
     assert en in facts["pledge1_what"]["en"]
     assert facts["pledge1_to"] == {"zh": "李大", "en": "Li Da"}
-    assert facts["pledge1_due"] == {"zh": "第四日", "en": "day 4"}
+    assert facts["pledge1_due"] == {"zh": "第四天", "en": "day 4"}
     assert zh in task(game, 1)["why"]["zh"] and en in task(game, 1)["why"]["en"]
 
 

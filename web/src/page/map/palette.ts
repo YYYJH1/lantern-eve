@@ -114,6 +114,11 @@ export function noise(a: number, b = 0, salt = 0): number {
   return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
 }
 
+/** The colour of one of the two families, or null for a person who belongs to neither. */
+export function familyColour(family: string | null): number | null {
+  return family === null ? null : (FAMILY_COLOURS[family] ?? null);
+}
+
 export function pieceColour(id: string, family: string | null): number {
   if (family !== null) {
     const known = FAMILY_COLOURS[family];

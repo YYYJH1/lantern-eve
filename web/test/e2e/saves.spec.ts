@@ -2,6 +2,8 @@ import { expect, replayInCpython, test } from "../support/fixtures.ts";
 import { byAnotherVersion, readSaved, tamper } from "../support/stored-saves.ts";
 
 const SUMMON = { type: "summon", npc: "npc03", x: 31, y: 10 };
+/** What the menu says of a save: no number of the save, no tick, only the game time. */
+const SAVED_NOTICE = /^saved, Day \d+ \d\d:\d\d$/;
 
 test.describe("saves", () => {
   test("a save is the replay in IndexedDB: save, reload the page, load, the same hash", async ({ lantern }) => {
@@ -13,7 +15,7 @@ test.describe("saves", () => {
 
     await page.getByTestId("save-name").fill("round trip");
     await page.getByTestId("btn-save").click();
-    await expect(page.getByTestId("notice")).toContainText("saved #1");
+    await expect(page.getByTestId("notice")).toHaveText(SAVED_NOTICE);
     const saved = await page.evaluate(() => window.__lantern.client.state.lastSaved);
     expect(saved).toMatchObject({ id: 1, name: "round trip" });
     expect(saved?.tick).toBeGreaterThanOrEqual(450);
@@ -68,12 +70,13 @@ test.describe("saves", () => {
     const savedTick = (await page.getByTestId("tick").textContent())?.trim() ?? "";
     expect(Number(savedTick)).toBeGreaterThanOrEqual(120);
     await page.getByTestId("btn-save").click();
-    await expect(page.getByTestId("notice")).toContainText("saved #1");
+    await expect(page.getByTestId("notice")).toHaveText(SAVED_NOTICE);
     await page.getByTestId("btn-pause").click();
     await lantern.waitForTick(Number(savedTick) + 140);
     await page.getByTestId("save-name").fill("later");
     await page.getByTestId("btn-save").click();
-    await expect(page.getByTestId("notice")).toContainText("saved #2");
+    await expect(page.getByTestId("notice")).toHaveText(SAVED_NOTICE);
+    await expect.poll(() => page.evaluate(() => window.__lantern.client.state.lastSaved?.id)).toBe(2);
     const options = await page.getByTestId("select-saves").locator("option").allTextContents();
     expect(options).toHaveLength(2);
     expect(options[0]).toContain("later");
@@ -93,7 +96,7 @@ test.describe("saves", () => {
     await lantern.open("pace=30&seed=41");
     await lantern.waitForTick(300);
     await page.getByTestId("btn-save").click();
-    await expect(page.getByTestId("notice")).toContainText("saved #1");
+    await expect(page.getByTestId("notice")).toHaveText(SAVED_NOTICE);
     await tamper(lantern, 1, (replay) => {
       replay.final.hash = "0".repeat(64);
     });
@@ -110,7 +113,7 @@ test.describe("saves", () => {
     await lantern.open("pace=30&seed=45");
     await lantern.waitForTick(300);
     await page.getByTestId("btn-save").click();
-    await expect(page.getByTestId("notice")).toContainText("saved #1");
+    await expect(page.getByTestId("notice")).toHaveText(SAVED_NOTICE);
     await tamper(lantern, 1, byAnotherVersion);
     const before = await lantern.tick();
     await page.getByTestId("btn-load").click();
@@ -120,10 +123,10 @@ test.describe("saves", () => {
     // The host's own words follow them: the code, where the hashes part, and what made the save.
     await expect(notice).toContainText(/hash_mismatch: .*\(saved by core 0\.0\.0 \/ c0ffee00, running /);
     // The plain words follow the language of the page as it is switched, and the host's words stay as the host gave them.
-    await lantern.setLang("zh");
+    await lantern.switchLang("zh");
     await expect(notice).toContainText("这份存档是另一个版本的游戏存的，这一版读不出来。");
     await expect(notice).toContainText("hash_mismatch");
-    await lantern.setLang("en");
+    await lantern.switchLang("en");
     await expect(notice).toContainText("This save was made by another version of the game");
     // The game that runs is left alone.
     await expect(page.getByTestId("loaded")).toHaveCount(0);
@@ -138,7 +141,7 @@ test.describe("saves", () => {
     await page.evaluate((body) => window.__lantern.client.player(body), { ...SUMMON, action_id: "t-1" });
     await lantern.waitForTick(450);
     await page.getByTestId("btn-save").click();
-    await expect(page.getByTestId("notice")).toContainText("saved #1");
+    await expect(page.getByTestId("notice")).toHaveText(SAVED_NOTICE);
     await tamper(lantern, 1, (replay) => {
       // The summoned NPC is sent somewhere else.
       const record = replay.records.find((r) => r[2] === "player");
@@ -156,7 +159,7 @@ test.describe("saves", () => {
     await page.evaluate((body) => window.__lantern.client.player(body), { ...SUMMON, action_id: "t-2" });
     await lantern.waitForTick(120);
     await page.getByTestId("btn-save").click();
-    await expect(page.getByTestId("notice")).toContainText("saved #1");
+    await expect(page.getByTestId("notice")).toHaveText(SAVED_NOTICE);
     await tamper(lantern, 1, (replay) => {
       const record = replay.records.find((r) => r[2] === "player");
       if (record !== undefined) record[3].type = "teleport";

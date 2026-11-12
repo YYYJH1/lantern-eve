@@ -69,6 +69,7 @@ Counting
 
 from __future__ import annotations
 
+import dataclasses
 import functools
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -84,6 +85,8 @@ from lantern_core.world.bridge import (
     goals_ending,
     notebook,
     notes,
+    prompts,
+    recall,
     retell,
     voices,
 )
@@ -177,7 +180,8 @@ def speaker_for(
     """``speaker``, a person of the cast, as the game state has them at ``tick``, speaking to
     ``listeners``.
 
-    ``pick`` chooses among the speaker's hedges when the core words a guess. ``world_state`` is
+    ``pick`` chooses among the speaker's hedges when the core words a guess. The speaker's own
+    names for people are the checker's too (``voices.calls``). ``world_state`` is
     ``state["world"]``.
     """
     lo = lore()
@@ -194,6 +198,7 @@ def speaker_for(
         guards=lambda prop: lo.guards(speaker, prop),
         settle=lambda draft: _settle(lo, made, draft),
         voice=BridgeVoice(speaker, tick, pick),
+        calls=voices.calls(speaker),
     )
 
 
@@ -357,6 +362,33 @@ def _cause(status: str, text: str) -> str:
     return text if text in BUDGET_CAUSES else "error"
 
 
+def answer_problems(
+    sim: Sim, gated: contract.Gated, about: Mapping[str, Any]
+) -> tuple[contract.Error, ...]:
+    """What is wrong with a reply that passed the gate, as the answer to a question: it says more
+    than ``prompts.ASK_ACTS`` things (the claims it makes and a feigned ignorance count each), or an
+    act is on something that was not asked. A thing is asked if it is a prop or an entity that the
+    question named, a version or the story of such a prop, or a prop the answer of the rules said
+    (``about`` is what ``replies.about`` kept). An error of the type ``path`` and the code
+    ``off_topic`` names the act."""
+    errors: list[contract.Error] = []
+    said = len(gated.claims) + len(gated.feigned)
+    if said > prompts.ASK_ACTS:
+        detail = f"at most {prompts.ASK_ACTS} acts in an answer to a question"
+        errors.append(contract.Error("format", "acts", "too_many_acts", detail))
+    book = notebook.view(sim.state["social"])
+    made = {prop.id: prop for prop in gated.props}
+    for number, claim in enumerate(gated.claims):
+        prop = made.get(claim.prop) or book.get(claim.prop)
+        if claim.prop in about["kept"] or prop is None:
+            continue
+        near = recall.relevance(prop, book, about["props"], about["subjects"])
+        if near == 0:
+            detail = f"{claim.prop} is not about what was asked"
+            errors.append(contract.Error("path", f"acts[{number}]", "off_topic", detail))
+    return tuple(errors)
+
+
 def land(
     sim: Sim,
     request: Mapping[str, Any],
@@ -365,11 +397,14 @@ def land(
     *,
     speaker: str,
     listeners: Sequence[str],
+    about: Mapping[str, Any] | None = None,
 ) -> Landed:
     """Take in a result for a reply of ``speaker`` to ``listeners`` (see the module docstring).
 
     Call it from the handler of the results of the categories ``reply`` and ``prefetch``, once for
     every result. The world is given what to show or write down in the ``Landed`` that comes back.
+    ``about`` is what a question was about (``replies.about``): the reply is then held to saying at
+    most ``prompts.ASK_ACTS`` things, all of them about what was asked.
     """
     counts = section(sim.state)
     if status == "cancelled":
@@ -380,6 +415,10 @@ def land(
     gated = contract.gate(
         text, speaker_for(sim.state, speaker, listeners, tick, counts["seq"]), script()
     )
+    if gated.ok and about is not None:
+        problems = answer_problems(sim, gated, about)
+        if problems:
+            gated = dataclasses.replace(gated, ok=False, errors=problems, claims=(), props=())
     _count(counts, gated)
     repair = is_repair(request)
     if gated.ok:
@@ -453,7 +492,15 @@ def on_result(sim: Sim, request: dict[str, Any], status: str, text: str) -> None
         del pending[interaction]
         judged(sim, row, status, text)
         return
-    landed = land(sim, request, status, text, speaker=row["npc"], listeners=[notebook.PLAYER_ID])
+    landed = land(
+        sim,
+        request,
+        status,
+        text,
+        speaker=row["npc"],
+        listeners=[notebook.PLAYER_ID],
+        about=row.get("about"),
+    )
     if landed.kind == "repair":
         return  # the repair is the same interaction, and its result lands in this row
     del pending[interaction]
@@ -480,6 +527,7 @@ def deliver(sim: Sim, row: dict[str, Any], landed: Landed) -> None:
             claim_id, entry, _ = notebook.take_answer(world_state, npc, claim, reuse=True)
             claims.append(claim_id)
             entries.append(entry["id"])
+            sim.told.append((npc, claim.prop))
         for claim_id in claims:  # an answer that said another account after it, and no longer does
             twin = notebook.twin_of(section_, claim_id)
             if twin is not None and twin not in claims:

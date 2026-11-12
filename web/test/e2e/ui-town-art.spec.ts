@@ -55,7 +55,7 @@ test.describe("the buildings of the town are sprites of the kit", () => {
     await openTown(lantern, NIGHT, 1900);
     await inject(page, { dots: [], bubbles: [], lanterns: [], weather: "clear" });
     await clearStage(page);
-    // Twelve places have a household and a door: the teahouse, the school, the hall, the temple, Old He's, the accountant's, Xiaoman's, the watch post, the carpenter's, the workshop and the two families' (two houses each).
+    // Twelve places have a household and a door: the teahouse, the school, the hall, the temple, Boatman He's, the accountant's, Xiaoman's, the watch post, the carpenter's, the workshop and the two families' (two houses each).
     const d = await drawing(page);
     expect(d.lamps).toBe(28);
     const places = [...new Set(d.lampList.map((l) => l.place))].sort();

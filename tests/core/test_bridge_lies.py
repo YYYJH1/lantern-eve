@@ -181,12 +181,12 @@ def test_what_the_town_says_of_the_manager_reads_in_both_languages():
     tell(game, **LIE)
     social = state_of(game)["social"]
     for pred, id_, en, zh in (
-        (repute.LIED, "lied", "If you ask me, the Festival Manager lied.", "依我看，总管撒了谎。"),
+        (repute.LIED, "lied", "If you ask me, the Festival Manager lied.", "照我看，总管撒了谎。"),
         (
             repute.BROKE,
             "broke",
-            "If you ask me, the Festival Manager broke a promise.",
-            "依我看，总管说话不算数。",
+            "If you ask me, the Festival Manager broke their word.",
+            "照我看，总管说话不算数。",
         ),
     ):
         prop = repute.prop(social, pred)

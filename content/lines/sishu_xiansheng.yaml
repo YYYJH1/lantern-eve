@@ -1,152 +1,168 @@
-# The Schoolmaster, who teaches the children and edits the Town Gazette. Bookish and measured,
-# humble in the first person (在下), and never says a thing before it has been weighed.
+# The Schoolmaster, who teaches the children and edits the Town Gazette. A man of books who speaks
+# plainly and in order, drops a learned phrase now and then, calls himself 在下 only now and then,
+# and cares whether a thing is true before it goes into the Gazette.
 person: sishu_xiansheng
 voice:
-  zh: 私塾先生，办《镇报》。文雅持重，自称在下，话出口前先斟酌，爱用书面语。
-  en: Schoolmaster and editor of the Town Gazette. Bookish and measured, humble in the first person, weighs every word, prefers the written register.
+  zh: 私塾先生，办《镇报》。读书人，说话斯文、有条理，偶尔掉一句书袋，可说的是大白话，不说「曾言及」「据某某所言」这类话。自称「在下」用得少，平常就说「我」。最在乎报上登的是不是真的，还有孩子们念书。不想说的事就说「这事还没查实，在下不好乱讲」。对总管说「您」。叫族长「族长」，叫李老太「李家老太太」，叫船夫老何「老何」。
+  en: The schoolmaster, editor of the Town Gazette. Speaks gently and in good order, now and then a learned phrase, but in plain words and never like a report. Cares whether what the Gazette prints is true, and about the children's lessons. When he would rather not say, he says it has not been checked yet.
+call:
+  li_laotai: {zh: 李家老太太, en: Granny Li}
+  old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "呼……子曰……学而时习之……（睡熟了）", en: "Zzz... the Master said... to learn and to practise... (fast asleep)"}
-    - {zh: "唔……这一版……还缺一篇稿……（睡熟了）", en: "Mm... this edition... still short one article... (fast asleep)"}
+    - {zh: "呼……这一期……还缺一篇……（睡熟了）", en: "Zzz... this issue... still one piece short... (fast asleep)"}
+    - {zh: "唔……学而时习之……（睡熟了）", en: "Mm... learn, and practise it... (fast asleep)"}
   busy:
-    - {zh: "在下正校对《镇报》。改日再叙。", en: "I am proofreading the Gazette. Another day, if you please."}
-    - {zh: "总管见谅。在下手头事务未毕。", en: "Forgive me, Manager. My business here is not yet done."}
+    - {zh: "我正校着《镇报》，您改日再来。", en: "I'm proofreading the Gazette. Come another day, please."}
+    - {zh: "学生在念书，我走不开。", en: "The pupils are reading and I can't leave them."}
   timeout:
-    - {zh: "学生们还等着上课。在下告辞。", en: "The pupils await their lesson. I must take my leave."}
-    - {zh: "时辰到了。该回去温书了。", en: "The hour is up. I must return to my books."}
+    - {zh: "学生还等着上课，我得回去了。", en: "The pupils are waiting for their lesson. I must go back."}
+    - {zh: "时辰到了。报上的稿子还没写完。", en: "It's time. I haven't finished writing for the Gazette."}
   unknown:
-    - {zh: "此事在下不曾听闻。", en: "I have not heard of this matter."}
-    - {zh: "容在下思量……实在不知。", en: "Let me consider... no, I truly do not know."}
+    - {zh: "这件事我没听人说过。", en: "Nobody has spoken to me about this."}
+    - {zh: "这个我不知道，也没人往报上递过话。", en: "I don't know, and nobody has sent word of it to the Gazette."}
   evade:
-    - {zh: "此事不便多言。", en: "This matter is not one to speak of at length."}
-    - {zh: "慎言为上。恕在下不答。", en: "Prudence in speech is wise. Pardon me if I do not answer."}
+    - {zh: "这事还没查实，在下不好乱讲。", en: "This hasn't been checked yet, so I won't speak loosely about it."}
+    - {zh: "没查清楚的事，我不往外说。", en: "I don't repeat what hasn't been looked into."}
   not_said:
-    - {zh: "在下从未说过此话。", en: "I have never said such a thing."}
-    - {zh: "此言并非出自在下之口。", en: "Those words did not come from my lips."}
+    - {zh: "这话不是我说的，我说的不是这个。", en: "Those aren't my words. That's not what I said."}
+    - {zh: "我从没这样讲过。", en: "I never said it that way."}
   not_so:
-    - {zh: "非也。事情并非如此。", en: "Not so. The matter is not as you say."}
-    - {zh: "此说有误。", en: "That account is mistaken."}
+    - {zh: "不是这样，您弄错了。", en: "That's not so. You have it wrong."}
+    - {zh: "这个说法有出入。", en: "That account doesn't square with the facts."}
   keeper_no:
-    - {zh: "你我初次相识。此事容后再议。", en: "We have only just met. The matter can wait."}
-    - {zh: "此物非可轻示外人。", en: "This is not to be shown lightly to outsiders."}
+    - {zh: "你我刚认识，这个以后再说。", en: "We've only just met. That can wait."}
+    - {zh: "这东西我不轻易给人看。", en: "I don't show that to people lightly."}
   took_in:
-    - {zh: "原来如此。在下记下了。", en: "I see. I shall make a note of it."}
-    - {zh: "承蒙告知。在下谨记。", en: "Thank you for informing me. I shall bear it in mind."}
+    - {zh: "原来如此，我记下了。", en: "I see. I'll note it down."}
+    - {zh: "多谢相告。这事我得核一核。", en: "Thank you for telling me. I'll need to check it."}
   knew:
-    - {zh: "此事在下早有所闻。", en: "I had heard of this matter already."}
-    - {zh: "这一节在下已知晓。", en: "That point is already known to me."}
+    - {zh: "这件事我已经听说了。", en: "I had already heard about it."}
+    - {zh: "这个我知道，前头已经有人跟我讲过。", en: "I know. Someone told me before you did."}
   doubted:
-    - {zh: "在下所闻与此不同。", en: "What I have heard differs from this."}
-    - {zh: "此说与在下所知不合。", en: "That account does not agree with what I know."}
+    - {zh: "我听到的跟这个不一样。", en: "What I heard was not the same."}
+    - {zh: "这和我知道的对不上，还得再查。", en: "That doesn't fit what I know. It needs checking."}
   caught:
-    - {zh: "你竟以谎言欺我！此后你的话，在下不敢再信！", en: "You have deceived me with a lie! Henceforth I shall trust no word of yours!"}
-    - {zh: "原来句句是虚言！在下不会再信你了！", en: "So it was falsehood throughout! I shall not trust you again!"}
+    - {zh: "原来是你编的。这样的话，我差点登上报。", en: "So you made it up. I nearly printed that in the Gazette."}
+    - {zh: "你骗了我。往后你的话，我得先查过再信。", en: "You lied to me. From now on I'll check what you say before I believe it."}
   deal:
-    - {zh: "善。就依此约定。", en: "Good. Let it be so agreed."}
-    - {zh: "一言为定。在下应允。", en: "Agreed. I give my word."}
+    - {zh: "一言为定，我记下了。", en: "Agreed. I've written it down."}
+    - {zh: "好，就照这么办。", en: "Good. We'll do it like that."}
   empty:
-    - {zh: "空言无据。在下不信。", en: "Empty words without proof. I do not believe them."}
-    - {zh: "言而无征。难以取信。", en: "A claim without evidence earns no credence."}
+    - {zh: "空口无凭，我没法信。", en: "There's nothing behind that, so I can't believe it."}
+    - {zh: "没凭据的话报上不登，我也不信。", en: "Words without proof don't go in the Gazette, and I don't believe them either."}
   kept_thanks:
-    - {zh: "总管言而有信。在下铭记于心。", en: "The Manager is true to their word. I shall remember it gratefully."}
-    - {zh: "君之所诺，果然兑现。多谢。", en: "What you promised has come to pass. My thanks."}
+    - {zh: "您说到做到，难得。", en: "You did what you said. That's rare."}
+    - {zh: "答应的事办到了，多谢。", en: "What you promised got done. Thank you."}
   will_do:
-    - {zh: "好，此事在下承办。", en: "Very well. I shall undertake it."}
-    - {zh: "可。请放心交给在下。", en: "Agreed. Leave it with me."}
+    - {zh: "好，这件事我去办。", en: "Very well, I'll see to it."}
+    - {zh: "可以，交给我吧。", en: "Yes, leave it to me."}
   cannot:
-    - {zh: "此事在下爱莫能助。", en: "In this matter I am unable to assist."}
-    - {zh: "力有未逮，抱歉。", en: "It is beyond my powers. My apologies."}
+    - {zh: "这件事我帮不上忙。", en: "I'm afraid I can't help with that."}
+    - {zh: "我只会教书写字，这个办不了。", en: "I can only teach and write. I can't do this."}
   turned_down:
-    - {zh: "抱歉，此事在下不能应允。", en: "My apologies, I cannot consent to this."}
-    - {zh: "此请恕在下难以应允。", en: "I regret that I must refuse this request."}
+    - {zh: "抱歉，这件事我应不了。", en: "I'm sorry, I can't agree to this."}
+    - {zh: "这个请求，恕在下不能从命。", en: "I'm afraid I must decline."}
   said_already:
-    - {zh: "在下方才已经言明。", en: "I have made that plain already."}
-    - {zh: "此事前已述及。不再赘言。", en: "I touched on this before, and will not repeat it."}
+    - {zh: "这个我刚才说过了。", en: "I said that a moment ago."}
+    - {zh: "前面已经讲清楚了，不再重复。", en: "I made that clear before, and I won't repeat it."}
   closed:
-    - {zh: "此刻不便。请换个时辰再来。", en: "This moment is not convenient. Please come at another hour."}
-    - {zh: "眼下不宜。晚些再叙。", en: "Now is not suitable. Let us speak later."}
+    - {zh: "这会儿在上课，请换个时辰再来。", en: "I'm teaching now. Please come at another hour."}
+    - {zh: "眼下不方便，晚些再谈。", en: "It isn't convenient just now. Let's talk later."}
   needs_nod:
-    - {zh: "此事须先禀明族长。", en: "This must first be put before the clan elder."}
-    - {zh: "没有族长应允，在下不敢擅专。", en: "The elder has not consented, so I dare not act alone."}
+    - {zh: "这件事得先问过族长。", en: "This must go to the clan elder first."}
+    - {zh: "族长没点头，我不好自作主张。", en: "The elder hasn't agreed, and it's not for me to decide alone."}
   nothing_to_say:
-    - {zh: "对此，在下无可奉告。", en: "On that I have nothing to offer."}
-    - {zh: "此事在下无话可说。", en: "In this matter I have nothing to say."}
+    - {zh: "这件事我没看见，说不上什么。", en: "I didn't see it, so I can't tell you anything."}
+    - {zh: "这事我没见着，不好乱说。", en: "I didn't see it, and I won't guess."}
   testified:
-    - {zh: "在下所言，皆为亲眼所见。", en: "All that I tell you, I saw with my own eyes."}
-    - {zh: "未曾亲见者，在下不敢妄言。", en: "What I did not see, I will not presume to state."}
+    - {zh: "在下说的都是亲眼看见的。", en: "Everything I tell you, I saw myself."}
+    - {zh: "没亲眼见过的，我不乱说。", en: "I don't talk about what I haven't seen."}
   too_late:
-    - {zh: "夜色已深。请明晨再来。", en: "The night is far gone. Please come back at dawn."}
-    - {zh: "时辰太晚。明日再叙。", en: "The hour is too late. Let us speak tomorrow."}
+    - {zh: "夜深了，请明早再来。", en: "It's late. Please come back in the morning."}
+    - {zh: "时辰太晚了，明天再谈。", en: "It's too late in the day. We'll talk tomorrow."}
   will_ask:
-    - {zh: "好，在下去向对方说明。", en: "Very well, I shall go and explain it to them."}
-    - {zh: "此话在下代为转达。", en: "I shall convey your words."}
+    - {zh: "好，我去替您说明。", en: "Very well. I'll go and explain it for you."}
+    - {zh: "这话我替您转达。", en: "I'll pass your words on."}
   will_call:
-    - {zh: "好，在下这就去请诸位到祠堂。", en: "Very well. I shall go and invite everyone to the hall."}
-    - {zh: "容在下去召集众人。祠堂相会。", en: "Allow me to gather the townsfolk. We meet at the hall."}
+    - {zh: "好，我这就去请大家到祠堂。", en: "Very well. I'll go and ask everyone to the hall."}
+    - {zh: "我让学生们挨家去报个信，祠堂见。", en: "I'll send the pupils round every house with the message. We'll meet at the hall."}
   hard_hc_li_bamboo:
-    - {zh: "谣言一日不当众澄清，此事一日免谈。", en: "So long as the slander stands uncleared in public, this matter is closed."}
-    - {zh: "须先当众辨明谣言。然后方可商议。", en: "The slander must first be refuted in public. Only then may we discuss it."}
+    - {zh: "谣言一天不当众澄清，这事就一天不谈。", en: "So long as the rumour stands uncleared in public, this is not up for discussion."}
+    - {zh: "先当众把谣言说清楚，再来商量。", en: "Clear up the rumour in public first. Then we can talk it over."}
   hard_hc_li_bamboo_rumour:
-    - {zh: "谣言遍传全镇，总管却一语不发。在下以为，此事难允。", en: "The slander runs through the whole town, yet the Manager says not a word. In my humble view, this cannot be granted."}
-    - {zh: "流言未辨，总管亦缄默。在下不敢轻诺。", en: "The rumour is unrefuted, and the Manager keeps silent. This humble scholar dares not promise lightly."}
+    - {zh: "谣言传遍了全镇，总管却一句话不说。这事我不能答应。", en: "The rumour has gone all round town and you haven't said a word, Manager. I can't agree to this."}
+    - {zh: "谣言没说清，总管也不开口。我不敢轻易应下。", en: "The rumour hasn't been cleared and you won't speak, Manager. I won't agree lightly."}
   hard_other:
+    - {zh: "这事没有商量的余地。", en: "There's no room to bargain on this."}
     - {zh: "断无可能。", en: "That is quite impossible."}
-    - {zh: "此事不容商议。", en: "This matter admits no discussion."}
   elder_yes:
-    - {zh: "在下已然明白。便如此罢。", en: "I understand now. Let it be so."}
-    - {zh: "所言有理。在下心服。", en: "Your argument holds. I am persuaded."}
+    - {zh: "说得在理，证据也对得上。我信服。", en: "That makes sense, and the proof fits. I'm convinced."}
+    - {zh: "我听明白了，心服口服。", en: "I understand now, and I accept it fully."}
   elder_no:
-    - {zh: "仅凭此言，尚难定论。", en: "On these words alone no conclusion can be drawn."}
-    - {zh: "论据未足。在下不敢轻信。", en: "The argument is insufficient. I dare not believe it lightly."}
+    - {zh: "单凭这几句，还难下定论。", en: "On these few words alone, no conclusion can be drawn."}
+    - {zh: "理由还不够，我不敢轻信。", en: "The reasons aren't enough yet. I won't believe it lightly."}
   objection_withdrawn:
-    - {zh: "事既辨明，在下不再阻拦。", en: "The matter being made clear, I shall no longer stand in the way."}
-    - {zh: "误会已释，在下无异议了。", en: "The misunderstanding is dispelled. This humble scholar has no more objection."}
+    - {zh: "事情既然说明白了，我不再阻拦。", en: "Since the matter has been made clear, I won't stand in the way."}
+    - {zh: "误会解开了，我没有异议。", en: "The misunderstanding is cleared up. I have no objection."}
   witness_in_public:
-    - {zh: "在下仅述所见，不敢增减一字。", en: "I relate only what I saw, and dare not add or take away a word."}
-    - {zh: "在下所见止于此，余事不知。", en: "What this humble scholar saw ends here. The rest I do not know."}
+    - {zh: "我只说看见的，一个字不增不减。", en: "I tell only what I saw, not a word more or less."}
+    - {zh: "我看见的就到这里，其余的不知道。", en: "What I saw ends there. I don't know the rest."}
   batch_promised:
-    - {zh: "在下应允，明晨送至桥边。", en: "I consent. It shall be delivered to the bridge tomorrow morning."}
-    - {zh: "明晨必到，在下可以作保。", en: "It will come by tomorrow morning, and this humble scholar will vouch for it."}
+    - {zh: "我答应了，明早送到桥边。", en: "I've said yes. It will reach the bridge tomorrow morning."}
+    - {zh: "明早一定送到，这个我可以担保。", en: "It will be there tomorrow morning. I can promise you that."}
   bamboo_arrived:
-    - {zh: "竹料已抵桥边。在下记入《镇报》。", en: "The bamboo has reached the bridge. This humble scholar will put it in the Gazette."}
-    - {zh: "桥边已有竹料，在下以为修桥可期。", en: "There is bamboo at the bridge now, and in my view the mending can be hoped for."}
+    - {zh: "竹料到桥边了，桥总算能动工了。", en: "The bamboo is at the bridge. At last the work can start."}
+    - {zh: "桥边有了竹料，修桥有望了。", en: "There's bamboo at the bridge now, so the mending has a chance."}
   promise_open:
-    - {zh: "在下已然应允。{when}，{amount}根{item}送至桥边。", en: "I have already given my consent: {amount} poles of {item} to the bridge {when}."}
-    - {zh: "此事前已应下。{amount}根{item}，{when}交付。", en: "This was agreed earlier, and this humble scholar will deliver {amount} poles of {item} {when}."}
+    - {zh: "我已经答应了，{when}把{amount}根{item}送到桥边。", en: "I've already given my word. It's {amount} poles of {item} at the bridge {when}."}
+    - {zh: "这件事早就应下了，{when}交{amount}根{item}。", en: "This was agreed earlier. I'll deliver {amount} poles of {item} {when}."}
   goods_enough:
-    - {zh: "桥边之{item}，已然足用。", en: "The {item} at the bridge is already sufficient."}
-    - {zh: "{item}既足，在下不敢再添。", en: "As the {item} suffices, this humble scholar dares add no more."}
+    - {zh: "桥边的{item}已经够用了。", en: "The {item} at the bridge is already enough."}
+    - {zh: "{item}够了，不必再添。", en: "There's enough {item}. No need to add more."}
   point_heard:
-    - {zh: "此事在下不曾听闻。然而在下曾闻{name}言及，不妨一问。", en: "This humble scholar has not heard of it. Yet I once heard {name} speak of it, and it may be worth asking."}
-    - {zh: "容在下思量……实在不知。依稀记得{name}谈起过，可往一询。", en: "Let me consider... no, I do not know. I faintly recall {name} discussing it, so you may inquire of them."}
+    - {zh: "这件事我没听说过。不过听{name}谈起过，您去问问。", en: "I haven't heard of it. But I heard {name} talking about it, so you might ask."}
+    - {zh: "我不清楚。记得{name}说起过，可以去问问。", en: "I'm not sure. I remember {name} mentioning it, so ask there."}
   point_hub:
-    - {zh: "此事无从查考。镇上的消息，在下以为{name}所知最广。", en: "There is nothing to consult on this. In matters of the town, I believe {name} knows the most."}
-    - {zh: "在下不敢妄言。若问坊间之事，可请教{name}。", en: "This humble scholar dares not speak idly. For talk of the town, you might consult {name}."}
+    - {zh: "这件事我无从知道。镇上的消息，问{name}最全。", en: "I've no way of knowing. For the town's news, ask {name}."}
+    - {zh: "我不敢乱说。想打听街坊的事，可以去问{name}。", en: "I won't guess. If you want the talk of the street, ask {name}."}
+  gift_like:
+    - {zh: "{item}，正合我意。多谢。", en: "Ah, {item}, just to my taste. My thanks."}
+    - {zh: "{item}？这怎么好意思。在下收下了。", en: "Some {item}? You're too kind. I accept with thanks."}
+  gift_neutral:
+    - {zh: "{item}啊，有心了。", en: "Some {item}. That's thoughtful."}
+    - {zh: "{item}也好，分给学生们吃。", en: "Some {item}, then. The pupils can share them."}
+  gift_dislike:
+    - {zh: "{item}在下不饮。心意领了。", en: "I don't drink {item}. But I accept the thought."}
+    - {zh: "{item}就留着送别人吧。还是多谢。", en: "Better give the {item} to someone else. Thank you all the same."}
 frames:
   seen:
-    - {zh: "在下亲眼所见：{line}。", en: "I witnessed it with my own eyes: {line}."}
-    - {zh: "在下当时在场。目击其事：{line}。", en: "I was present and witnessed it: {line}."}
+    - {zh: "这是在下亲眼所见。{line}。", en: "I was there and saw that {line}."}
+    - {zh: "{line}。这是我亲眼所见。", en: "{line}. This I saw with my own eyes."}
   heard:
-    - {zh: "据{teller}所述：{line}。", en: "As {teller} relates it, {line}."}
-    - {zh: "{teller}曾对在下言及：{line}。", en: "{teller} remarked to me that {line}."}
+    - {zh: "{teller}跟我说过。说是{line}。", en: "I heard it from {teller}, who said {line}."}
+    - {zh: "我是听{teller}讲的，还没查实。说是{line}。", en: "I had it from {teller}, and I haven't checked it yet. The account was that {line}."}
   unknown:
-    - {zh: "坊间有言：{line}。", en: "It is said in town that {line}."}
-    - {zh: "此说出处不详：{line}。", en: "Of uncertain origin, it is said that {line}."}
+    - {zh: "镇上有这么个说法。说{line}。", en: "There's a story going round town that {line}."}
+    - {zh: "这话是谁先说的，我还没查到。说是{line}。", en: "I haven't found out who said it first. The story is that {line}."}
   own:
-    - {zh: "以在下之见：{line}。", en: "In my humble view, {line}."}
-    - {zh: "在下的看法是：{line}。", en: "My considered opinion is that {line}."}
+    - {zh: "以在下之见，{line}。", en: "In my humble view, {line}."}
+    - {zh: "我前后想过了，{line}。", en: "I've thought it through, and I believe {line}."}
   guess_own:
-    - {zh: "不敢遽下断语。{hedge}{line}。", en: "I dare not pronounce it settled. {hedge} {line}."}
-    - {zh: "此乃揣测之言。{hedge}{line}。", en: "This is mere surmise. {hedge} {line}."}
+    - {zh: "这只是在下的推测。{hedge}{line}。", en: "This is no more than a guess. {hedge} {line}."}
+    - {zh: "还没查实，不好说定。{hedge}{line}。", en: "It hasn't been checked, so I can't be sure. {hedge} {line}."}
   guess_heard:
-    - {zh: "{teller}语焉不详。{hedge}{line}。", en: "{teller} was not specific. {hedge} {line}."}
-    - {zh: "揣{teller}之意，{hedge}{line}。", en: "To judge from what {teller} implied, {hedge} {line}."}
+    - {zh: "{teller}没说清楚。{hedge}{line}。", en: "{teller} wasn't clear about it. {hedge} {line}."}
+    - {zh: "{teller}提过，可惜语焉不详。{hedge}{line}。", en: "{teller} mentioned it, though without much detail. {hedge} {line}."}
   guess_unknown:
-    - {zh: "出处不明。{hedge}{line}。", en: "The source is not clear. {hedge} {line}."}
-    - {zh: "传闻而已。{hedge}{line}。", en: "It is but rumour. {hedge} {line}."}
+    - {zh: "出处不明。{hedge}{line}。", en: "Nobody knows where it came from. {hedge} {line}."}
+    - {zh: "不过是街头的传言。{hedge}{line}。", en: "It's only street talk. {hedge} {line}."}
   rival:
-    - {zh: "然{teller}亦曾向在下言及另一说：{line}。", en: "Yet {teller} has also informed me of another account: {line}."}
-    - {zh: "不过{teller}对在下所述，却不尽相同：{line}。", en: "However, {teller}'s account to me differs: {line}."}
+    - {zh: "{teller}的说法却不一样。说是{line}。", en: "The account {teller} gave me is different, though. It has it that {line}."}
+    - {zh: "另有一种说法，是{teller}讲的。说{line}。", en: "There's another account, from {teller}, that {line}."}
+  known:
+    - {zh: "{line}，镇上无人不知。", en: "{line}. There's nobody in town who doesn't know it."}
+    - {zh: "{line}。这是镇上人人都知道的。", en: "{line}. It's known to everyone in town."}
 hedges:
-  - {zh: 在下以为, en: I surmise}
-  - {zh: 料想, en: I conjecture}
+  - {zh: 想必, en: I surmise}
+  - {zh: 大概, en: I presume}

@@ -1,0 +1,8 @@
+acceptance-real.spec.ts
+another-truth.spec.ts
+director-real.spec.ts
+ending-people-real.spec.ts
+festival-real.spec.ts
+guidance-real.spec.ts
+shows-real.spec.ts
+slice-walk.spec.ts

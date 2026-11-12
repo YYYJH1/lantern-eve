@@ -1,0 +1,49 @@
+/* The moments of the game at the foot of the ending page (ui/moments.tsx): a row of small pictures, each with its words and where and when it was, or a
+   small card of paper with the same words where the page has no picture. */
+
+.moments-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.moment {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  width: 216px;
+}
+
+.moment-picture {
+  display: block;
+  width: 216px;
+  height: 135px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  object-fit: cover;
+}
+
+.moment-card {
+  display: grid;
+  align-content: space-between;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 216px;
+  min-height: 135px;
+  margin: 0;
+}
+
+.moment-words {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.moment-where {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+}

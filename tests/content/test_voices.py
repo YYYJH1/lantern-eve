@@ -61,7 +61,7 @@ def test_every_person_of_the_cast_has_a_voice_and_nobody_else():
 def test_a_person_has_at_least_two_variants_of_every_line_and_frame_in_both_languages(person):
     voice = DOC[person]
     own = ["chat", "epilogue", "frames", "greet", "hedges", "lines"]  # the ten who carry the days
-    assert sorted(voice) in (["frames", "hedges", "lines"], own)
+    assert sorted(k for k in voice if k != "call") in (["frames", "hedges", "lines"], own)
     assert sorted(voice["lines"]) == CODES and sorted(voice["frames"]) == FRAMES
     for table in ("lines", "frames"):
         for kind, variants in voice[table].items():
@@ -174,20 +174,22 @@ def test_the_voices_keep_the_characters_they_were_written_for():
 
     others = sorted(length(p) for p in PEOPLE if p != "old_he")
     assert length("old_he") < others[len(others) // 2] / 2  # the boatman spends words like coins
-    assert share("cha_laoban", "！") > 0.8  # the teahouse keeper makes everything an event
-    assert share("zuzhang", "！") < 0.1 and share("zuzhang", "老夫") > 0.4  # the elder does not
+    # the teahouse keeper talks more than most and raises her voice only when something happens
+    assert length("cha_laoban") > others[len(others) // 2] and share("cha_laoban", "！") < 0.15
+    # the self-words of a station, now and then and not in every line: about one line in seven
+    assert share("zuzhang", "！") < 0.1 and 0.08 < share("zuzhang", "老夫") < 0.25
+    assert 0.08 < share("li_laotai", "老婆子") < 0.25
+    assert 0.08 < share("zhou_huoji", "小的") < 0.25  # the clerk's humility
     assert share("zhangfang", "！") < 0.1 and share("zhangfang", "账") > 0.1
-    assert share("zhou_huoji", "小的") > 0.5  # the clerk's humility
-    assert share("sishu_xiansheng", "在下") > 0.5  # the schoolmaster's
+    assert 0 < share("sishu_xiansheng", "在下") < 0.2  # the schoolmaster's, now and then
     for child in ("shitou", "xiao_man"):
         assert length(child) < sorted(others)[len(others) // 3]  # the children use short words
 
 
 def test_nobody_says_他_or_她_of_a_person_in_general_in_the_lines_of_the_townsfolk():
     """A line that is the same whoever it is about, such as the answer of someone who will go and
-    speak to a third person, leaves the person out or says 对方 or 这个人: the cast has fixed
-    sexes, so 他 would be wrong for half of the town. The one line that remains says what the
-    clerk saw of Li Er."""
+    speak to a third person, leaves the person out or names them: the cast has fixed sexes, so 他
+    would be wrong for half of the town. The clerk's line of what he saw names Li Er."""
     plain = re.compile(r"其他|他人|他们")
     found = {
         (person, code)
@@ -195,7 +197,7 @@ def test_nobody_says_他_or_她_of_a_person_in_general_in_the_lines_of_the_towns
         for code, variants in DOC[person]["lines"].items()
         if any(re.search(r"[他她]", plain.sub("", pair["zh"])) for pair in variants)
     }
-    assert found == {("zhou_huoji", "witness_in_public")}
+    assert found == set()
     assert not re.search(r"[他她]", phrases.PHRASES["will_ask"]["zh"])
 
 
@@ -228,14 +230,14 @@ def test_the_compiled_file_the_module_and_the_tool_agree():
     assert report.generated[vc.MODULE] == module
     assert module.decode("utf-8").count('"""') == 4  # the docstring, and the raw string
     assert any(
-        line.startswith("voices: 20 people, 39 fixed lines and 8 frames")
+        line.startswith("voices: 20 people, 42 fixed lines and 9 frames")
         for line in report.coverage
     )
 
 
 def test_the_note_on_how_a_person_talks_stays_out_of_the_compiled_document():
     assert all(
-        set(v)
+        set(v) - {"call"}
         in (
             {"frames", "hedges", "lines"},
             {"frames", "hedges", "lines", "greet", "chat", "epilogue"},
@@ -517,3 +519,34 @@ def test_a_stray_key_or_a_missing_note_in_a_file_is_refused():
     assert has(check(lambda s: s.voices["old_he"].update(mood="grim")), "mood")
     assert has(check(lambda s: s.voices["old_he"].pop("voice")), "voice")
     assert has(check(lambda s: s.voices["old_he"].update(voice={"zh": "", "en": ""})), "voice")
+
+
+# the words the game uses for its own workings, which a person of the town never says: what the
+# notebook is, a proposition, the hand a thing came at, the chain of who told whom, how sure
+GAME_WORDS = {
+    "zh": re.compile(r"见闻|命题|第.手|几手|来源链|来源|把握"),
+    "en": re.compile(r"(?i)\b(?:notebook|proposition|second-hand|third-hand|chain|confidence)\b"),
+}
+
+
+def test_nobody_in_town_speaks_in_the_words_of_the_game():
+    said = [
+        (f"{person} {table} {kind}", pair)
+        for person in PEOPLE
+        for table in ("lines", "frames")
+        for kind, variants in DOC[person][table].items()
+        for pair in variants
+    ]
+    said += [(f"plain {code}", text) for code, text in phrases.PHRASES.items()]
+    town = canon.loads((COMPILED / "sentences.json").read_bytes())
+    said += [(f"plain frame {key}", pair) for key, pair in town["frames"].items()]
+    said += [(f"motive {key}", pair) for key, pair in town["motives"].items()]
+    for pred, line in town["predicates"].items():
+        said += [(f"predicate {pred}", line), (f"predicate {pred} neg", line["neg"])]
+    found = [
+        (where, lang, pair[lang])
+        for where, pair in said
+        for lang in ("zh", "en")
+        if GAME_WORDS[lang].search(pair[lang])
+    ]
+    assert found == []

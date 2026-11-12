@@ -6,7 +6,10 @@
  * npcs and time.
  */
 import type { Frame } from "../shared/protocol.ts";
+import { knownIds, type Relation, readRelations } from "./relations.ts";
 import { type Name, readName } from "./scene.ts";
+import { readTasks, trackedTask } from "./slice.ts";
+import { readTalkMore, type TalkMore } from "./talk-frame.ts";
 
 export interface FramePerson {
   id: string;
@@ -55,9 +58,9 @@ export interface Offer {
   body: Record<string, unknown> | null;
 }
 
-/** What a topic of a question is: a line of the notebook, a thing of the story, a place, or a person. */
-export type AskKind = "entry" | "thing" | "place" | "person";
-export const ASK_KINDS: readonly AskKind[] = ["entry", "thing", "place", "person"];
+/** What a topic of a question is: a line of the notebook, a thing of the story, a place, a person, or what a person likes (`likes:<person>`). */
+export type AskKind = "entry" | "thing" | "place" | "person" | "taste";
+export const ASK_KINDS: readonly AskKind[] = ["entry", "thing", "place", "person", "taste"];
 
 /** Something the player can ask about in a talk: `player.topics` of the frame. */
 export interface Topic {
@@ -96,6 +99,8 @@ export interface FrameTalk {
   costs: TalkCosts | null;
   /** Null when the frame does not say. */
   leavesAt: LeavesAt | null;
+  /** The request put forward, what the person asks in return, the promises to keep and make, and the order they are shown in. Null where the frame has none of it. */
+  more: TalkMore | null;
 }
 
 /** Where the player stands, what they are doing, the talk they are in and what they could look at. */
@@ -129,8 +134,14 @@ export interface ViewFrame {
   dots: Dot[];
   lanterns: Lantern[];
   hud: Record<string, unknown>;
+  /** The ids of the people the player has talked with (`people` of the frame): the map writes their names over their heads and the role over everyone else. */
+  acquainted: ReadonlySet<string>;
+  /** The person the red slip points to now (the person its action is about), or null. */
+  pointed: string | null;
   /** The ending as the `ending` event carried it, in every frame after the last night. Null before, and in a frame from a core that does not send it. */
   ending: Record<string, unknown> | null;
+  /** How close each person stands to the manager (`people` of the frame), by person. Empty where the frame has none. */
+  relations: ReadonlyMap<string, Relation>;
   /** Anything else the frame carries, for the readers that know a key of their own. */
   raw: Frame;
 }
@@ -189,7 +200,7 @@ export function readLeavesAt(value: unknown): LeavesAt | null {
 
 function readTalk(value: unknown): FrameTalk | null {
   if (!isRecord(value) || typeof value.npc !== "string") return null;
-  return { npc: value.npc, costs: readCosts(value.costs), leavesAt: readLeavesAt(value.leaves_at) };
+  return { npc: value.npc, costs: readCosts(value.costs), leavesAt: readLeavesAt(value.leaves_at), more: readTalkMore(value) };
 }
 
 function readPlayer(value: unknown): FramePlayer | null {
@@ -261,6 +272,7 @@ export function readFrame(frame: Frame): ViewFrame {
     lanterns.push({ household: str(raw.household), place: str(raw.place), x: raw.x, y: raw.y });
   }
 
+  const relations = readRelations(frame as unknown as Record<string, unknown>);
   return {
     people,
     player: readPlayer(frame.player),
@@ -271,7 +283,10 @@ export function readFrame(frame: Frame): ViewFrame {
     dots,
     lanterns,
     hud: isRecord(frame.hud) ? frame.hud : {},
+    acquainted: knownIds(relations),
+    pointed: trackedTask(readTasks(frame as unknown as Record<string, unknown>))?.action?.npc ?? null,
     ending: isRecord(frame.ending) ? frame.ending : null,
+    relations,
     raw: frame,
   };
 }

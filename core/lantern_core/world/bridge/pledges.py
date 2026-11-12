@@ -226,7 +226,7 @@ def _make(sim: Sim, body: dict[str, Any], index: int) -> None:
             "ended": -1,
         }
     )
-    repute.nudge(section, index, MADE_GAIN[size])
+    repute.nudge(section, index, MADE_GAIN[size], "promise")
     converse.reply(sim, "deal")
     sim.emit("pledged", npc=person, pledge=pledge_id, what=what, item=item, amount=owed, due=due)
     converse.ack(sim, body)
@@ -244,7 +244,7 @@ def _keep(sim: Sim, body: dict[str, Any], index: int) -> None:
         return converse.ack(sim, body, "kept_already" if pledge["state"] == KEPT else "lapsed")
     pledge["state"], pledge["ended"] = KEPT, tick
     add_deed(section, f"kept:{pledge['id']}", person, pledge["size"], 1, tick)
-    repute.nudge(section, index, KEPT_GAIN[pledge["size"]])
+    repute.nudge(section, index, KEPT_GAIN[pledge["size"]], "kept")
     converse.reply(sim, "kept_thanks")
     sim.emit("pledge_kept", npc=person, pledge=pledge["id"], what=pledge["what"])
     converse.ack(sim, body)
@@ -261,7 +261,7 @@ def watch(sim: Sim) -> None:
             continue
         pledge["state"], pledge["ended"] = BROKEN, tick
         person = pledge["to"]
-        repute.nudge(section, lo.index[person], -BROKEN_DROP[pledge["size"]])
+        repute.nudge(section, lo.index[person], -BROKEN_DROP[pledge["size"]], "broken")
         repute.learn(social, person, repute.BROKE, tick)
         repute.mark(section, repute.BROKE, person)
         sim.emit("pledge_broken", npc=person, pledge=pledge["id"], what=pledge["what"])

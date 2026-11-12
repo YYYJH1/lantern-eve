@@ -25,8 +25,8 @@ const GAP = 8;
 const SLACK = 1;
 
 const NOTEBOOK_TWO = [
-  { id: "n_clerk", text: { zh: "周家伙计说他看见李二那晚在桥边。", en: "Zhou's Clerk says he saw Li Er by the bridge that night." }, source: { kind: "heard", who: { zh: "周家伙计", en: "Zhou's Clerk" }, hand: 1 }, marks: [], chain: [] },
-  { id: "n_broke", text: { zh: "李二弄坏了桥。", en: "Li Er broke the bridge." }, source: { kind: "heard", who: { zh: "茶馆老板娘", en: "Teahouse Keeper" }, hand: 3 }, marks: ["unconfirmed"], chain: [] },
+  { id: "n_clerk", text: { zh: "李二昨晚在桥边。", en: "Li Er was at the bridge last night." }, source: { kind: "heard", who: { zh: "周家伙计", en: "Zhou's Clerk", id: "zhou_huoji" }, how: "saw" }, marks: [], chain: [] },
+  { id: "n_broke", text: { zh: "李二昨晚把栏杆弄坏了。", en: "Li Er broke the bridge railing last night." }, source: { kind: "heard", who: { zh: "茶馆老板娘", en: "Teahouse Keeper", id: "cha_laoban" }, how: "unsure" }, marks: ["unconfirmed"], chain: [] },
 ];
 
 type Line = "step5" | "step6" | "hint";
@@ -50,7 +50,7 @@ async function raise(page: Page, line: Line): Promise<void> {
   await fake.beginTutorial(page);
   await page.evaluate((step) => {
     const tutorial = window.__lantern.play.guide.tutorial;
-    tutorial.index = step === "step5" ? 4 : 5;
+    tutorial.index = step === "step5" ? 2 : 3;
     tutorial.phase = step === "step5" ? "doing" : "waiting";
     window.__lantern.play.touch();
   }, line);
@@ -337,6 +337,95 @@ for (const size of TOAST_SIZES) {
             await lower(page, line);
             await expect.poll(async () => Math.round((await boxOf(page, ".toasts")).top)).toBe(TOASTS_TOP);
           }
+          expect(lantern.pageErrors).toEqual([]);
+        });
+      }
+    });
+  }
+}
+
+// The words of the skip at the end of the tutorial line are a phrase of a button, and a phrase of a button is not broken inside itself: in Chinese the
+// line (at most 380 px wide, 348 at the smallest window) has the text of the step and the skip to share, and the skip, a flex item that may shrink, gave up its width
+// until it held one character to a line. The chip stays inside the window, and the skip, the step count and the text each stay inside the chip. Measured in the
+// smallest window and one a little above it, in Chinese on the light theme and in English on the dark one, at each step that has a line.
+
+const CHIP_SIZES = [
+  { width: 1200, height: 600 },
+  { width: 1280, height: 720 },
+];
+
+/** The steps that have a line: the index of the step in the tutorial, the phase it is in, and whether the notebook already holds the two lines of the pair (the step before that waits for them). */
+const CHIP_STEPS = [
+  { step: "granny", index: 0, phase: "doing", pair: false },
+  { step: "clerk", index: 1, phase: "doing", pair: false },
+  { step: "compare", index: 2, phase: "doing", pair: true },
+  { step: "evening", index: 3, phase: "waiting", pair: true },
+] as const;
+
+/** The tutorial line as it stands: how many lines of text the skip takes, and the boxes of the line and of its three parts. */
+async function chipFacts(page: Page): Promise<{ window: { width: number; height: number }; chip: Box; parts: Record<string, Box>; skipLines: number; skipText: string }> {
+  return page.evaluate(() => {
+    const box = (el: Element): { left: number; top: number; right: number; bottom: number } => {
+      const r = el.getBoundingClientRect();
+      return { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+    };
+    const chip = document.querySelector('[data-testid="tutorial-chip"]');
+    const skip = chip?.querySelector('[data-testid="tutorial-skip"]');
+    if (chip === null || chip === undefined || skip === null || skip === undefined) throw new Error("no tutorial line or no skip in it");
+    // the lines that the words of the skip are set in: the distinct tops of the boxes of its text (not of the stroke under it)
+    const tops = new Set<number>();
+    const walker = document.createTreeWalker(skip, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      for (const r of Array.from(range.getClientRects())) if (r.width > 0.5 && r.height > 0.5) tops.add(Math.round(r.top));
+    }
+    return {
+      window: { width: window.innerWidth, height: window.innerHeight },
+      chip: box(chip),
+      parts: { count: box(chip.querySelector('[data-testid="tutorial-step"]') as Element), text: box(chip.querySelector('[data-testid="tutorial-line"]') as Element), skip: box(skip) },
+      skipLines: tops.size,
+      skipText: skip.textContent ?? "",
+    };
+  });
+}
+
+for (const size of CHIP_SIZES) {
+  for (const look of LOOKS) {
+    test.describe(`the skip of the tutorial line, ${look.lang} ${look.theme} ${size.width}x${size.height}`, () => {
+      test.use({ locale: look.locale, colorScheme: look.theme, viewport: { width: size.width, height: size.height } });
+
+      for (const at of CHIP_STEPS) {
+        test(`${at.step}: the words of the skip stand on one line, and the line and its parts stay in the window`, async ({ lantern }) => {
+          test.setTimeout(120_000);
+          const page = lantern.page;
+          await guided(lantern, at.pair ? "step5" : "hint");
+          await fake.beginTutorial(page);
+          await page.evaluate(
+            ([index, phase]) => {
+              const tutorial = window.__lantern.play.guide.tutorial;
+              tutorial.index = index as number;
+              tutorial.phase = phase as "doing" | "waiting";
+              window.__lantern.play.touch();
+            },
+            [at.index, at.phase],
+          );
+          await expect(page.getByTestId("tutorial-chip")).toHaveAttribute("data-step", at.step);
+          const found = await chipFacts(page);
+          expect(found.skipText.trim(), "the words of the skip").toBe(look.lang === "zh" ? "跳过带教" : "Skip the tutorial");
+          expect(found.skipLines, "the words of the skip are on one line").toBe(1);
+          // the line is in the window, and its parts are in the line
+          expect(found.chip.left, "the line is not left of the window").toBeGreaterThanOrEqual(0);
+          expect(found.chip.top, "the line is not above the window").toBeGreaterThanOrEqual(0);
+          expect(found.chip.right, "the line is not right of the window").toBeLessThanOrEqual(found.window.width);
+          expect(found.chip.bottom, "the line is not under the window").toBeLessThanOrEqual(found.window.height);
+          for (const [name, part] of Object.entries(found.parts)) {
+            expect(part.left, `the ${name} is not left of the line`).toBeGreaterThanOrEqual(found.chip.left - 0.5);
+            expect(part.right, `the ${name} is not right of the line`).toBeLessThanOrEqual(found.chip.right + 0.5);
+          }
+          // the parts stand side by side: the count, then the text, then the skip
+          expect(found.parts.count?.right ?? 0, "the count is left of the text").toBeLessThanOrEqual((found.parts.text?.left ?? 0) + 0.5);
+          expect(found.parts.text?.right ?? 0, "the text is left of the skip").toBeLessThanOrEqual((found.parts.skip?.left ?? 0) + 0.5);
           expect(lantern.pageErrors).toEqual([]);
         });
       }

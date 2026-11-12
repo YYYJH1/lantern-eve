@@ -8,18 +8,12 @@ import { type Lang, pick } from "../../i18n/index.ts";
 import type { Bubble } from "../frame.ts";
 import type { Scene } from "../scene.ts";
 import type { Camera } from "./camera.ts";
+import { type Box, slideClear } from "./clear.ts";
 import { CELL, CELL_DEPTH, clamp } from "./geometry.ts";
 import { LABEL_FONT, onLabelFont, TAG, writeAgain } from "./fonts.ts";
 import { PAL } from "./palette.ts";
 import { wrapChinese } from "./wrap.ts";
 import { FONT_STACK, type People } from "./people.ts";
-
-interface Box {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
 
 const overlaps = (a: Box, b: Box, gap = 3): boolean =>
   a.x < b.x + b.w + gap && b.x < a.x + a.w + gap && a.y < b.y + b.h + gap && b.y < a.y + a.h + gap;
@@ -149,6 +143,16 @@ export class PlaceLabels {
     return this.labels.length;
   }
 
+  /** The boxes of the names that are showing, in the pixels of the screen: the tags over the heads keep off them. */
+  boxes(): Box[] {
+    const out: Box[] = [];
+    for (const label of this.labels) {
+      if (!label.node.visible) continue;
+      out.push({ x: label.node.x - label.box.w / 2, y: label.node.y - label.box.h / 2, w: label.box.w, h: label.box.h });
+    }
+    return out;
+  }
+
   visibleIds(): string[] {
     return this.labels.filter((l) => l.node.visible).map((l) => l.id);
   }
@@ -171,10 +175,10 @@ export class PlaceLabels {
     return null;
   }
 
-  /** The words on the plates that are showing, by place id. */
+  /** The words on the plates, by place id, whether the plate is showing or is left out for the room it would need (the language is read from them). */
   texts(): Record<string, string> {
     const out: Record<string, string> = {};
-    for (const label of this.labels) if (label.node.visible) out[label.id] = label.text.text;
+    for (const label of this.labels) out[label.id] = label.text.text;
     return out;
   }
 
@@ -206,8 +210,11 @@ export class PlaceLabels {
     label.box = { x: 0, y: 0, w, h };
   }
 
-  /** Puts each label where its place is on the screen, and hides the ones that would overlap a more important one. */
-  layout(camera: Camera, viewW: number, viewH: number): void {
+  /**
+   * Puts each label where its place is on the screen, and hides the ones that would overlap a more important one. `avoid` are the boxes of the page
+   * that lie over the map: a label that one of them would cover slides along its line to the edge of the box, or is hidden when its place is under it.
+   */
+  layout(camera: Camera, viewW: number, viewH: number, avoid: readonly Box[] = []): void {
     const placed: Box[] = [];
     for (const label of this.labels) {
       const p = camera.project(label.x, label.y);
@@ -217,12 +224,14 @@ export class PlaceLabels {
       // A label whose place is in view but near the edge stays on the screen. One whose place is out of view is hidden.
       const inside = p.x > -w / 4 && p.x < viewW + w / 4 && cy + h / 2 > 0 && cy - h / 2 < viewH;
       const left = clamp(p.x - w / 2, 4, Math.max(4, viewW - w - 4));
-      const box: Box = { x: left, y: cy - h / 2, w, h };
-      const clash = placed.some((other) => overlaps(box, other));
-      label.node.visible = inside && !clash;
-      if (!label.node.visible) continue;
-      label.node.position.set(Math.round(left + w / 2), Math.round(cy));
-      placed.push(box);
+      const at = inside ? slideClear({ x: left, y: cy - h / 2, w, h }, p.x, avoid, viewW) : null;
+      if (at === null || placed.some((other) => overlaps(at, other))) {
+        label.node.visible = false;
+        continue;
+      }
+      label.node.visible = true;
+      label.node.position.set(Math.round(at.x + w / 2), Math.round(cy));
+      placed.push(at);
     }
   }
 }
@@ -263,6 +272,12 @@ export class Bubbles {
   readonly layer = new Container();
   private readonly pool: BubbleSprite[] = [];
   private active = 0;
+  private placed: Box[] = [];
+
+  /** The boxes the bubbles of the last update stand in, on the screen, for a layer of bubbles drawn after this one to keep clear of. */
+  get boxes(): readonly Box[] {
+    return this.placed;
+  }
 
   get shown(): number {
     return this.active;
@@ -297,7 +312,7 @@ export class Bubbles {
     return sprite;
   }
 
-  update(bubbles: readonly Bubble[], tick: number, lang: Lang, people: People, camera: Camera, viewW: number, viewH: number): void {
+  update(bubbles: readonly Bubble[], tick: number, lang: Lang, people: People, camera: Camera, viewW: number, viewH: number, avoid: readonly Box[] = []): void {
     const live: Array<{ bubble: Bubble; sx: number; sy: number; fade: number }> = [];
     for (const bubble of bubbles) {
       if (tick >= bubble.until) continue;
@@ -309,7 +324,8 @@ export class Bubbles {
     }
     // The ones lowest on the screen first, so that each bubble can be pushed up off the one below.
     live.sort((a, b) => b.sy - a.sy);
-    const placed: Box[] = [];
+    const placed: Box[] = [...avoid];
+    const mine: Box[] = [];
     let used = 0;
     for (const item of live) {
       if (used >= MAX_BUBBLES) break;
@@ -343,10 +359,12 @@ export class Bubbles {
       sprite.node.alpha = item.fade;
       sprite.node.visible = item.sx > -40 && item.sx < viewW + 40 && item.sy > -40 && item.sy < viewH + 60;
       placed.push(box);
+      mine.push(box);
       used++;
     }
     for (let i = used; i < this.pool.length; i++) (this.pool[i] as BubbleSprite).node.visible = false;
     this.active = used;
+    this.placed = mine;
   }
 }
 

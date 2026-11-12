@@ -51,6 +51,8 @@ export interface Person {
   role: Name;
   /** What the town says of the person, two sentences. Static, like the name: it is in the scene and in no frame. Empty where the scene has none. */
   bio: Name;
+  /** The line the town says of who the person is: public, the same in every game and for someone the player has not met. Empty where the scene has none. */
+  intro: Name;
   /** The character drawn on the piece: the surname in Chinese, an initial in English. */
   token: Name;
   family: string | null;
@@ -90,6 +92,8 @@ export interface Scene {
   /** The player of the bridge town. The demo world has none. */
   player: PlayerInfo | null;
   families: Map<string, Name>;
+  /** The small things of the day that can be given to a person, by id. */
+  gifts: Map<string, Name>;
   items: Map<string, Name>;
   activities: Map<string, Name>;
   weather: Map<string, Name>;
@@ -208,6 +212,7 @@ function readCast(raw: Record<string, unknown>): Person[] {
       name,
       role: readName(entry.role),
       bio: readName(entry.bio),
+      intro: readName(entry.intro),
       token,
       family: typeof entry.family === "string" ? entry.family : null,
       home: typeof entry.home === "string" ? entry.home : null,
@@ -287,6 +292,7 @@ export function parseScene(raw: Record<string, unknown>): Scene {
     cast: readCast(raw),
     player: readPlayer(raw.player),
     families,
+    gifts: nameMap(raw.gifts),
     items: nameMap(raw.items),
     activities: nameMap(raw.activities),
     weather: nameMap(raw.weather),

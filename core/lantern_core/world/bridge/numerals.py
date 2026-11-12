@@ -32,7 +32,7 @@ def zh_count(number: int) -> str:
 
 
 def zh_ordinal(number: int) -> str:
-    """The number of a place in a row, as in 第一位 and 第二日: 二 for two, else a count."""
+    """The number of a place in a row, as in 第一位 and 第二天: 二 for two, else a count."""
     return "二" if number == 2 else zh_count(number)
 
 

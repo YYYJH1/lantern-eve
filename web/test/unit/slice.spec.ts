@@ -31,8 +31,8 @@ test.describe("the tasks of the frame", () => {
     expect(tasks?.list.map((t) => t.id)).toEqual(["t_bamboo_first", "t_source", "t_evening", "t_promise"]);
     const first = tasks?.list[0];
     expect(first).toMatchObject({ kind: "obstacle", job: "bridge", state: "blocked", action: { verb: "talk", npc: "li_laotai", place: null, item: null }, window: { day: 1, from: 8, to: 17, place: "p_li_house" } });
-    expect(first?.why?.en).toContain("manager did nothing");
-    expect(first?.next).toEqual({ zh: "问清这话的来源", en: "Find out where that talk came from" });
+    expect(first?.why?.en).toContain("have said nothing");
+    expect(first?.next).toEqual({ zh: "问清这话是谁先说的。", en: "Find out who started that talk." });
     expect(trackedTask(tasks)?.id).toBe("t_source");
     expect(tasks?.list[3]?.window).toBeNull();
   });
@@ -71,7 +71,7 @@ test.describe("the tasks of the frame", () => {
   });
 
   test("give a person's card one button for each thing to do, even when two tasks ask for the same of the same person", () => {
-    // After Granny Li says no, the first bamboo and the talk that blames Li Er both end in asking her.
+    // After Granny Li says no, the first load of bamboo and the talk that blames Li Er both end in asking her.
     const ask = { verb: "ask", npc: "li_laotai" };
     const task = (id: string, action: Record<string, unknown>): Record<string, unknown> => ({ id, text: { zh: id, en: id }, state: "open", action });
     const slice = readSlice(
@@ -144,7 +144,7 @@ test.describe("the commitments and the pile at the bridge", () => {
 
   test("read the reason the core gives for a promise that was not kept or was taken back, and none for any other", () => {
     expect(readCommitments(frameOf(fake.commitmentEnded("broken", "rain")))?.[0]).toMatchObject({ state: "broken", reason: { en: "The heavy rain kept the goods off the road", zh: "下大雨，货运不出来" } });
-    expect(readCommitments(frameOf(fake.commitmentEnded("withdrawn", "taken_back")))?.[0]).toMatchObject({ state: "withdrawn", reason: { en: "They took the promise back" } });
+    expect(readCommitments(frameOf(fake.commitmentEnded("withdrawn", "taken_back")))?.[0]).toMatchObject({ state: "withdrawn", reason: { en: "Word is they changed their mind" } });
     // A broken promise whose reason the frame leaves out, or that is empty, has none. The promise is still broken.
     expect(readCommitments(frameOf(fake.commitmentEnded("broken", null)))?.[0]).toMatchObject({ state: "broken", reason: null });
     expect(readCommitments(frameOf({ commitments: [{ id: "m1", by: "li_da", state: "broken", reason: { zh: "", en: "" } }] }))?.[0]?.reason).toBeNull();
@@ -270,7 +270,7 @@ test.describe("what the page reads besides the keys of the first day", () => {
     expect(stanceOfLiLaotai(fake.cards())?.rival).toBeNull();
     const got = stanceOfLiLaotai(withRival(fake.RIVAL));
     expect(got?.rival).toEqual({ text: fake.RIVAL.text, who: { zh: "周掌柜", en: "Shopkeeper Zhou" } });
-    expect(got?.text.en).toBe("Li Er broke the rail.");
+    expect(got?.text.en).toBe("Li Er broke the bridge railing last night.");
     // A rival with no words, or with no one who told it, or of another shape, is not one.
     for (const bad of [null, "x", 3, [], {}, { text: fake.RIVAL.text }, { who: fake.RIVAL.who }, { text: {}, who: fake.RIVAL.who }, { text: fake.RIVAL.text, who: { zh: "", en: "" } }]) {
       expect(stanceOfLiLaotai(withRival(bad))?.rival, JSON.stringify(bad)).toBeNull();
@@ -363,9 +363,9 @@ test.describe("when a person has to go", () => {
 test.describe("the extras of the talk in the player's part of a frame", () => {
   test("are the minutes of each act and the hour the person leaves, and null where the frame has none", () => {
     const view = readFrame({ npcs: [], player: { x: 1, y: 2, activity: "chat", talk: { npc: "li_laotai", costs: fake.COSTS, leaves_at: { hour: 15, minute: 30 } } } } as unknown as Frame);
-    expect(view.player?.talk).toEqual({ npc: "li_laotai", costs: { ask: 10, askSource: 10, tell: 15, entrust: 20, promise: 20 }, leavesAt: { hour: 15, minute: 30 } });
+    expect(view.player?.talk).toEqual({ npc: "li_laotai", costs: { ask: 10, askSource: 10, tell: 15, entrust: 20, promise: 20 }, leavesAt: { hour: 15, minute: 30 }, more: null });
     const bare = readFrame({ npcs: [], player: { x: 1, y: 2, activity: "chat", talk: { npc: "li_laotai" } } } as unknown as Frame);
-    expect(bare.player?.talk).toEqual({ npc: "li_laotai", costs: null, leavesAt: null });
+    expect(bare.player?.talk).toEqual({ npc: "li_laotai", costs: null, leavesAt: null, more: null });
     const odd = readFrame({ npcs: [], player: { x: 1, y: 2, activity: "chat", talk: { npc: "a", costs: { ask: -5, tell: "ten", entrust: 7.9 }, leaves_at: { hour: "late" } } } } as unknown as Frame);
     expect(odd.player?.talk?.costs).toEqual({ ask: null, askSource: null, tell: null, entrust: 7, promise: null });
     expect(odd.player?.talk?.leavesAt).toBeNull();

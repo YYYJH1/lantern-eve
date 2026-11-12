@@ -4,6 +4,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { DIST_E2E, OUT_DIR, REPO_DIR, replayInCpython } from "../support/fixtures.ts";
 import { clearTheMap } from "../support/play.ts";
+import { openTopic } from "../support/real.ts";
 
 interface ServerHost {
   origin: string;
@@ -184,7 +185,7 @@ test("the page draws the bridge town from a server host too: the scene comes wit
     await expect(page.getByTestId("map")).toHaveAttribute("data-dots", "20");
     await expect(page.getByTestId("hud-day")).toHaveText("Day 1");
     // The slip of the first day: the core follows its first task from the start, and the speed of the day is the page's own choice, which the server host does not take. It is chosen in the menu, as the language is.
-    await expect(page.getByTestId("topbar-task-text")).toHaveText("Get the first bamboo from the Li family");
+    await expect(page.getByTestId("topbar-task-text")).toHaveText("Get the first load of bamboo from the Li family");
     await page.getByTestId("btn-menu").click();
     await page.getByTestId("speed-slow").click();
     await expect(page.getByTestId("speed-slow")).toHaveAttribute("aria-pressed", "true");
@@ -193,7 +194,7 @@ test("the page draws the bridge town from a server host too: the scene comes wit
     await page.getByTestId("lang-zh").click();
     await page.getByTestId("menu-close").click();
     await expect.poll(() => page.evaluate(() => window.__lantern.view.texts().labels.p_teahouse)).toBe("茶馆");
-    await expect(page.getByTestId("hud-day")).toHaveText("第一日");
+    await expect(page.getByTestId("hud-day")).toHaveText("第一天");
     // The server sends the scene with every whole state, and the page draws the town once.
     expect(await page.evaluate(() => window.__lantern.client.state.sceneVersion)).toBe(1);
     expect(lines.filter((l) => l.startsWith("[pageerror]") || l.startsWith("[error]"))).toEqual([]);
@@ -265,13 +266,14 @@ test("the player plays the bridge town through a server host: a walk, a talk wit
     await expect(page.getByTestId("talk-badge")).toBeVisible({ timeout: 30_000 });
     // The talk holds the world by itself: the core's clock is paused at the normal rate, the badge says that the world stands still and when the person has to go, and the bar says that the time is held. The page lets go of its own pause, so that nothing else holds it.
     await page.evaluate(() => window.__lantern.client.resume());
-    await expect(page.getByTestId("status")).toHaveText("time held");
+    await expect(page.getByTestId("status")).toHaveText("time stopped");
     expect(await page.evaluate(() => window.__lantern.client.state.rate)).toEqual([1, 1]);
     expect(await page.evaluate(() => window.__lantern.client.state.paused)).toBe(true);
     await expect(page.getByTestId("talk-still")).toBeVisible();
     await expect(page.getByTestId("talk-leaves")).toHaveText(/^Leaves at \d\d:\d\d$/);
     await expect(page.getByTestId("calm")).toHaveAttribute("data-on", "true");
     // A question costs ten minutes. The world runs through them at once and holds again, and the server's mock model, whose answer is due a good many ticks after the question, answers while it is held: the clock of the model's transport goes on when the clock of the game does not.
+    expect(await openTopic(page, "t_he_boat")).toBe(true);
     await page.locator('[data-testid="topic-chip"][data-id="t_he_boat"]').click();
     await expect(page.getByTestId("talk-line")).toHaveCount(2);
     await expect.poll(() => page.evaluate(() => window.__lantern.client.state.stats?.models.ok ?? 0), { timeout: 30_000 }).toBeGreaterThanOrEqual(1);
@@ -299,7 +301,7 @@ test("the player plays the bridge town through a server host: a walk, a talk wit
     // Call for helpers, and let the day run to its last night. The page shows the ending that the server's core wrote.
     await page.getByTestId("verb-rally").click();
     // Whoever joins at once is a note too, after it.
-    await expect(page.getByTestId("game-note").filter({ hasText: "You called for helpers." })).toHaveCount(1);
+    await expect(page.getByTestId("game-note").filter({ hasText: "You called on the town to come and help." })).toHaveCount(1);
     await page.evaluate(() => {
       window.__lantern.client.player({ type: "dev_goal", op: "truth" });
       window.__lantern.client.resume();
@@ -325,6 +327,9 @@ test("the player plays the bridge town through a server host: a walk, a talk wit
     );
     expect(await page.evaluate(() => window.__lantern.play.state.ending?.reveal != null)).toBe(true);
     await page.evaluate(() => window.__lantern.client.pause());
+    // The host answers a pause with a frame, after the ticks that were due when the pause came. A frame that carries the ending gives a page that has none its ending (as a page
+    // that comes to a game that is over has it), so the page forgets the ending below only once the answer is in: it says it is paused when it has read that frame.
+    await page.waitForFunction(() => window.__lantern.client.state.paused === true, undefined, { timeout: 30_000 });
     await expect(page.getByTestId("tree-node")).toHaveCount(trees);
 
     // The page comes back to the game that is over: it has forgotten the ending, the connection is made again, and the
@@ -333,6 +338,8 @@ test("the player plays the bridge town through a server host: a walk, a talk wit
       const play = window.__lantern.play;
       play.state.ending = null;
       play.state.endingOpen = false;
+      // The page draws again when something tells it to, and a paused world whose answer is in sends nothing that does: it is told.
+      play.touch();
     });
     await expect(page.getByTestId("ending")).toHaveCount(0);
     await page.evaluate(() => (window.__lantern.client as unknown as { port: { ws: WebSocket } }).port.ws.close());

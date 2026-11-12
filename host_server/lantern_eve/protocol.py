@@ -28,9 +28,10 @@ Page to server
     the page is hidden, as the ``hidden`` flag of ``init``. A newer connection for a session
     closes the older one with code 4000.
 ``pause`` and ``resume``
-    ``{"type": "pause", "reason": "user" | "hidden" | "page"}`` (the pause button, a tab that is
-    hidden, and the page holding the world for a sheet of its own). As in the browser host the
-    world runs when no reason to pause is left. A change between running and paused is an input
+    ``{"type": "pause", "reason": "user" | "hidden" | "page" | "show"}`` (the pause button, a tab
+    that is hidden, the page holding the world for a sheet of its own, and the page holding it
+    while a show plays on the map). As in the browser host the world runs when no reason to pause
+    is left. A change between running and paused is an input
     of the core (``pause`` or ``resume``), recorded like any other.
 ``player``
     ``{"type": "player", "body": {"action_id": str, ...}}``. The body is a player action of the
@@ -163,7 +164,7 @@ from lantern_core import canon
 PROTOCOL_VERSION = 1
 MAX_MESSAGE_BYTES = 64 * 1024
 MAX_ID_CHARS = 64
-PAUSE_REASONS = ("user", "hidden", "page")
+PAUSE_REASONS = ("user", "hidden", "page", "show")
 CALL_OPS = ("save", "load", "list-saves", "delete-save", "export", "ending", "preview")
 # Close codes of this transport. 1001 is "going away", the rest are the application's own.
 CLOSE_REPLACED = 4000

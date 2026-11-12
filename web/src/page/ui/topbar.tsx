@@ -1,6 +1,7 @@
 import { LANGS, type Lang, t } from "../../i18n/index.ts";
 import type { PageState } from "../client.ts";
 import type { ViewFrame } from "../frame.ts";
+import { readHud } from "../hud.ts";
 import type { Play } from "../play.ts";
 import { chooseLanguage, chooseTheme, type ThemeChoice } from "../prefs.ts";
 import type { Scene } from "../scene.ts";
@@ -175,7 +176,7 @@ export function TopBar({ s, lang, theme, sceneName, scene, frame, slice, play, v
       </p>
 
       <Placard frame={frame} scene={scene} lang={lang} />
-      <TaskCard slice={slice} scene={scene} lang={lang} play={play} verbs={verbs} ended={ended} today={frame?.time.day ?? null} yielded={yielded} />
+      <TaskCard slice={slice} scene={scene} lang={lang} play={play} verbs={verbs} ended={ended} today={frame?.time.day ?? null} yielded={yielded} bridge={readHud(frame?.hud ?? {}).bridge} />
 
       {replay !== null ? (
         <div class="run run-replay">

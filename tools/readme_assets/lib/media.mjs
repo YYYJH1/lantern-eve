@@ -58,13 +58,17 @@ export async function makeGif({ dir, out, fps, width, edge, maxBytes, palette })
   return { size, colors: 32, tooLarge: true };
 }
 
-/** Write a PNG with a palette of at most `colors` colours, which is a fraction of the size of the true-colour one. */
-export async function quantizePng({ input, out, colors, palette, crop }) {
+/**
+ * Write a PNG with a palette of at most `colors` colours, which is a fraction of the size of the true-colour one. `crop` is the part of the input
+ * to keep, `width` the width to scale that part to (it keeps its shape).
+ */
+export async function quantizePng({ input, out, colors, palette, crop, width }) {
   const cut = crop === undefined ? '' : `crop=${crop.width}:${crop.height}:${crop.x}:${crop.y},`;
-  await ffmpeg(['-i', input, '-vf', `${cut}palettegen=max_colors=${colors}:stats_mode=full`, '-frames:v', '1', '-update', '1', palette]);
+  const fit = width === undefined ? '' : `scale=${width}:-1:flags=lanczos,`;
+  await ffmpeg(['-i', input, '-vf', `${cut}${fit}palettegen=max_colors=${colors}:stats_mode=full`, '-frames:v', '1', '-update', '1', palette]);
   await ffmpeg([
     '-i', input, '-i', palette,
-    '-lavfi', `${cut.slice(0, -1) || 'null'} [x]; [x][1:v] paletteuse=dither=none`,
+    '-lavfi', `${(cut + fit).slice(0, -1) || 'null'} [x]; [x][1:v] paletteuse=dither=none`,
     '-frames:v', '1', '-update', '1', '-compression_level', '9', out,
   ]);
   const { size } = await stat(out);

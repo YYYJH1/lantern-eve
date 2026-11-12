@@ -60,6 +60,7 @@ UNREAD = (
     "hubs",
     "statement",
     "paper",
+    "gifts",
 )
 
 

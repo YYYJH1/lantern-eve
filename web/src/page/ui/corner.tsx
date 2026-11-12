@@ -4,7 +4,7 @@ import { loadSheetData, type SheetData } from "../map/atlas.ts";
 import { frameRect, type SpriteDef } from "../map/manifest.ts";
 import type { Play } from "../play.ts";
 import type { SkipState } from "../skip.ts";
-import { HelpBar, signalClass } from "./guide.tsx";
+import { signalClass } from "./guide.tsx";
 import { skipLabel } from "./skip-text.ts";
 
 /**
@@ -139,7 +139,6 @@ export function Corner({ play, lang, skip, onSkip, drawn, onNotebook, notebookOp
   const bookWords = t("notebook.open");
   return (
     <aside class="corner" data-testid="corner" ref={root}>
-      <HelpBar play={play} lang={lang} />
       <div class="things">
         {guide.active ? (
           <button type="button" class="thing thing-seal" data-testid="btn-elder" aria-label={elderWords} disabled={guide.tutorial.card !== null || guide.endUp || guide.showUp} onClick={() => guide.askElder()}>

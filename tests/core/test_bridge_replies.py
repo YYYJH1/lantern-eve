@@ -18,7 +18,7 @@ from reply_helpers import Room, Script, belief, notice_act, say
 from speech_helpers import unnamed
 
 from lantern_core.api import Game
-from lantern_core.world.bridge import notebook, notes, replies, speech, voices
+from lantern_core.world.bridge import notebook, notes, prompts, replies, speech, voices
 
 WHO = "cha_laoban"
 GOOD = say("听说栏杆坏了。", "I heard the rail is broken.", notice_act())
@@ -57,7 +57,7 @@ def test_the_rules_have_answered_whatever_the_model_does_and_their_line_is_what_
     room = Room(WHO)
     out = room.act("ask", topic="t_rail")
     assert room.line()[2:4] == ["claim", "p1"]
-    assert room.bubble(out)["en"].endswith("the Stone Bridge Railing is broken!")
+    assert room.bubble(out)["en"].endswith("the bridge railing is broken.")
     assert [n["id"] for n in me(room.game)["notebook"]] == ["n1"]  # and the notebook knows it
 
 
@@ -186,25 +186,25 @@ def test_nothing_of_a_reply_is_shown_before_it_has_passed():
 
 def test_what_the_person_says_is_written_down_as_the_rules_write_down_an_answer():
     room = Room("zhou_zhanggui", hour=9)
-    for pid in ("pr_flooded", "pr_liner_at_bridge"):
+    for pid in ("pr_rail_located", "pr_liner_at_bridge"):
         assert pid in {b.prop for b in notes.store(state_of(room.game)["social"], "zhou_zhanggui")}
     request = asked(room.act("ask", topic="t_rail"))
-    acts = [belief("pr_flooded", "self_seen"), unnamed("pr_rail_broken")]
+    acts = [belief("pr_rail_located", "self_seen"), unnamed("pr_rail_broken")]
     # a core-written sentence, for the sourced act, and a plain one: the core writes both
-    out = room.result(request, "ok", say("x", "y", *acts, mood="sad", address="friend"))
+    out = room.result(request, "ok", say("x", "y", *acts, mood="sad", address="manager"))
     (done,) = room.answered(out)
     assert done["by"] == "core" and done["result"] == "line"
     section = me(room.game)
     assert done["claims"] == [c for c in done["claims"] if c in section["claims"]]
     assert len(done["claims"]) == 2
     kept = {notebook.answer(section, cid).prop for cid in section["claims"]}
-    assert {"pr_flooded", "pr_rail_broken"} <= kept
+    assert {"pr_rail_located", "pr_rail_broken"} <= kept
     entries = {e["id"]: e["prop"] for e in section["notebook"]}
     assert set(done["entries"]) <= set(entries)
     assert all(notebook.answer(section, cid).speaker == "zhou_zhanggui" for cid in done["claims"])
     line = room.line()
-    assert line[2] == "said" and line[3].startswith("唉。") and "，朋友" in line[3]
-    assert line[4].startswith("Alas. ") and ", friend" in line[4]
+    assert line[2] == "said" and line[3].startswith("唉。") and "，总管" in line[3]
+    assert line[4].startswith("Oh dear. ") and ", Manager" in line[4]
 
 
 def test_a_fact_the_rules_already_wrote_down_is_not_written_twice():
@@ -220,15 +220,15 @@ def test_a_fact_the_rules_already_wrote_down_is_not_written_twice():
 def test_a_fact_the_rules_did_not_say_is_written_as_heard_from_the_person():
     room = Room(WHO)
     request = asked(room.act("ask", topic="t_rail"))
-    flooded = say(
-        "听说桥下涨水了。", "I heard the water is up beneath the bridge.", unnamed("pr_flooded")
+    located = say(
+        "听说栏杆就在桥上。", "I heard the rail is on the bridge.", unnamed("pr_rail_located")
     )
-    out = room.result(request, "ok", flooded)
+    out = room.result(request, "ok", located)
     (done,) = room.answered(out)
     assert done["claims"] == ["p2"] and done["entries"] == ["n2"]
     entry = next(e for e in me(room.game)["notebook"] if e["id"] == "n2")
     belief_ = notebook.belief_of(entry)
-    assert (belief_.prop, belief_.source, belief_.teller) == ("pr_flooded", "heard", WHO)
+    assert (belief_.prop, belief_.source, belief_.teller) == ("pr_rail_located", "heard", WHO)
     assert belief_.claimed_source == "unknown" and belief_.hop == 1
     assert belief_.confidence == notebook.heard_confidence(1, "assert")
 
@@ -623,6 +623,9 @@ def test_a_free_line_that_names_what_no_act_covers_is_refused():
 
 
 def test_the_prompt_and_so_the_request_do_not_depend_on_the_voices(monkeypatch):
+    # the names a person uses for others are the one thing of a voice that a prompt holds
+    # (``prompts.calls_note``, held by test_bridge_calls), and are left out here
+    monkeypatch.setattr(prompts, "calls_note", lambda person: "")
     first = Room(WHO).act("ask", topic="t_rail")["requests"]
     with monkeypatch.context() as patch:
         patch.setattr(voices, "VOICES", {})

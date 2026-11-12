@@ -64,9 +64,9 @@ const SCENE = {
   ],
   cast: [
     { id: "cha", zh: "茶馆老板娘", en: "Teahouse Keeper", role: { zh: "老板娘", en: "Keeper" }, token: { zh: "茶", en: "T" }, family: null, home: "p_tea", work: "p_tea" },
-    { id: "he", zh: "老何", en: "Old He", role: { zh: "船夫", en: "Boatman" }, token: { zh: "何", en: "H" }, family: null, home: null, work: null },
+    { id: "he", zh: "老何", en: "Boatman He", role: { zh: "船夫", en: "Boatman" }, token: { zh: "何", en: "H" }, family: null, home: null, work: null },
   ],
-  player: { id: "player", zh: "总管", en: "Festival Manager", role: { zh: "灯会总管", en: "Manager" }, token: { zh: "总", en: "M" }, start: [10, 10], things: [{ id: "t_boat", zh: "老何的船", en: "Old He's Boat" }] },
+  player: { id: "player", zh: "总管", en: "Festival Manager", role: { zh: "灯会总管", en: "Manager" }, token: { zh: "总", en: "M" }, start: [10, 10], things: [{ id: "t_boat", zh: "老何的船", en: "Boatman He's Boat" }] },
 };
 
 interface Scene {
@@ -203,7 +203,7 @@ test.describe("talking", () => {
     const { client, play } = open([{ npc: "he", until: 330, text: { zh: "路过。", en: "Passing by." } }, { npc: "cha", until: 330, text: greeting }]);
     expect(play.state.talk).toEqual({ npc: "cha", lines: [], leavesAt: { hour: 9, minute: 30 }, opening: greeting });
     // It stays the opening when the person answers something, and the answer is a line of the log after it.
-    play.ask("t_boat", { zh: "老何的船", en: "Old He's Boat" });
+    play.ask("t_boat", { zh: "老何的船", en: "Boatman He's Boat" });
     step(client, { me: { x: 31, y: 10, activity: "chat", talk: { npc: "cha", leaves_at: { hour: 9, minute: 30 } } }, bubbles: [{ npc: "cha", until: 330, text: { zh: "我亲眼看见。", en: "I saw it myself." } }] }, [ack(String(client.last.action_id), "applied")]);
     expect(play.state.talk?.opening).toEqual(greeting);
     expect(play.state.talk?.lines).toHaveLength(2);
@@ -229,7 +229,7 @@ test.describe("talking", () => {
       { kind: "talk_start", tick: 30, npc: "cha", leaves_at: { hour: 9, minute: 30 } },
       ack(String(client.last.action_id), "applied"),
     ]);
-    play.ask("t_boat", { zh: "老何的船", en: "Old He's Boat" });
+    play.ask("t_boat", { zh: "老何的船", en: "Boatman He's Boat" });
     step(client, { me, bubbles: [{ npc: "cha", until: 330, text: both }] }, [ack(String(client.last.action_id), "applied")]);
     expect(play.state.talk?.opening).toEqual(greeting);
     expect(play.state.talk?.lines).toHaveLength(2);
@@ -250,17 +250,17 @@ test.describe("talking", () => {
   test("a question and the answer to it are two lines of the talk", () => {
     const { client, play } = setup({ me: { x: 31, y: 10, activity: "chat", talk: { npc: "cha", leaves_at: { hour: 9, minute: 30 } } } });
     expect(play.state.talk?.npc).toBe("cha");
-    play.ask("t_boat", { zh: "老何的船", en: "Old He's Boat" });
+    play.ask("t_boat", { zh: "老何的船", en: "Boatman He's Boat" });
     expect(client.last).toMatchObject({ type: "ask", topic: "t_boat" });
-    step(client, { me: { x: 31, y: 10, activity: "chat", talk: { npc: "cha", leaves_at: { hour: 9, minute: 30 } } }, bubbles: [{ npc: "cha", until: 330, text: { zh: "船是老何的。", en: "The boat is Old He's." } }] }, [
+    step(client, { me: { x: 31, y: 10, activity: "chat", talk: { npc: "cha", leaves_at: { hour: 9, minute: 30 } } }, bubbles: [{ npc: "cha", until: 330, text: { zh: "船是老何的。", en: "The boat is Boatman He's." } }] }, [
       { kind: "asked", tick: tickNo, npc: "cha", topic: "t_boat", answer: "claim" },
       ack(String(client.last.action_id), "applied"),
     ]);
     expect(play.state.talk?.lines).toEqual([
-      { who: "you", how: "ask", subject: { zh: "老何的船", en: "Old He's Boat" } },
-      { who: "them", text: { zh: "船是老何的。", en: "The boat is Old He's." } },
+      { who: "you", how: "ask", subject: { zh: "老何的船", en: "Boatman He's Boat" } },
+      { who: "them", text: { zh: "船是老何的。", en: "The boat is Boatman He's." } },
     ]);
-    play.askSource("n1", { zh: "船是老何的。", en: "The boat is Old He's." });
+    play.askSource("n1", { zh: "船是老何的。", en: "The boat is Boatman He's." });
     expect(client.last).toMatchObject({ type: "ask_source", entry: "n1" });
     step(client, { me: { x: 31, y: 10, activity: "chat", talk: { npc: "cha", leaves_at: { hour: 9, minute: 30 } } }, bubbles: [{ npc: "cha", until: 330, text: { zh: "我亲眼看见。", en: "I saw it myself." } }] }, [ack(String(client.last.action_id), "applied")]);
     expect(play.state.talk?.lines.map((l) => l.who)).toEqual(["you", "them", "you", "them"]);
@@ -269,10 +269,10 @@ test.describe("talking", () => {
   test("what the town offers to tell, entrust or promise is a line of the talk too, and goes as the fields it came with", () => {
     const { client, play } = setup({ me: { x: 31, y: 10, activity: "chat", talk: { npc: "cha", leaves_at: { hour: 9, minute: 30 } } } });
     const talking = { me: { x: 31, y: 10, activity: "chat", talk: { npc: "cha", leaves_at: { hour: 9, minute: 30 } } } } as const;
-    play.other("tell", { entry: "n1", how: "as_seen" }, { zh: "说成亲眼所见：船是老何的。", en: "As if you saw it yourself: the boat is Old He's." });
+    play.other("tell", { entry: "n1", how: "as_seen" }, { zh: "说成亲眼所见：船是老何的。", en: "As if you saw it yourself: the boat is Boatman He's." });
     expect(client.last).toMatchObject({ type: "tell", entry: "n1", how: "as_seen" });
     step(client, { ...talking, bubbles: [{ npc: "cha", until: 330, text: { zh: "原来如此。", en: "Is that so." } }] }, [ack(String(client.last.action_id), "applied")]);
-    play.other("promise", { op: "make", what: "stall", item: "front", due: 3 }, { zh: "许对方一个前排摊位", en: "Promise a front-row stall" });
+    play.other("promise", { op: "make", what: "stall", item: "front", due: 3 }, { zh: "许李老太一个前排摊位", en: "Promise Granny Li a front-row stall" });
     expect(client.last).toMatchObject({ type: "promise", op: "make", what: "stall" });
     step(client, talking, [ack(String(client.last.action_id), "applied")]);
     play.other("speak", { kind: "meal" });
@@ -374,7 +374,7 @@ test.describe("the festival", () => {
       ack(String(client.last.action_id), "applied"),
     ]);
     expect(play.state.notes.map((n) => n.key)).toEqual(["note.rally", "note.joinedMore"]);
-    expect(play.state.notes[1]?.values).toMatchObject({ names: { zh: "茶馆老板娘、老何", en: "Teahouse Keeper, Old He" }, n: { zh: "一", en: "1" } });
+    expect(play.state.notes[1]?.values).toMatchObject({ names: { zh: "茶馆老板娘、老何", en: "Teahouse Keeper, Boatman He" }, n: { zh: "一", en: "1" } });
   });
 
   test("the ending event opens the ending page and pauses the world; a new game takes it away", () => {
@@ -607,7 +607,7 @@ test.describe("what the town says to the dealings of the manager", () => {
     expect(play.state.notes[0]?.values).toMatchObject({ name: { zh: "茶馆老板娘", en: "Teahouse Keeper" } });
     // The coins of a wage are in the event.
     expect(play.state.notes[1]?.values).toMatchObject({ what: { zh: "二十文工钱", en: "20 coins in wages" }, due: { zh: "三", en: "3" } });
-    expect(play.state.notes[2]?.values).toMatchObject({ name: { zh: "老何", en: "Old He" } });
+    expect(play.state.notes[2]?.values).toMatchObject({ name: { zh: "老何", en: "Boatman He" } });
   });
 
   test("a speech and a table name the place, and an entrusting that is refused is one note, not two", () => {

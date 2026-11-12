@@ -48,7 +48,7 @@ test.describe("what kind of failure a save is", () => {
     setLang("en");
     expect(failureText("storage")).toBe("The game could not be saved: the browser did not let it write. You can try again from Saves in the menu.");
     setLang("zh");
-    expect(failureText("storage")).toBe("没能存档：浏览器没有让游戏写入。可以在菜单的「存档」里再存一次。");
+    expect(failureText("storage")).toBe("没能存档，浏览器不让游戏写入。可以到菜单的「存档」里再存一次。");
     setLang("en");
   });
 

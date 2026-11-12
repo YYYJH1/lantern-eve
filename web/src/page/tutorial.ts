@@ -1,13 +1,12 @@
 /**
  * The tutorial of the first day: the clan elder walks the player through the first round, and the player does each thing
- * in the game itself. Six steps, each a card that holds the world while it is up and then a line of what to do until the
+ * in the game itself. Four steps, each a card that holds the world while it is up and then a line of what to do until the
  * thing is done. A step is done when the game says it is (a task that is blocked, a task that appeared, a judgement the
- * core accepted), never when time has passed.
+ * core accepted), never when time has passed. The first two lead to the two people the first day is about, and each rings the
+ * person on the map.
  *
- *   goal      the goal of the five days and the first task
- *   ask       go to Granny Li and ask her for bamboo
- *   refusal   her refusal, and why
- *   source    ask around where the talk came from
+ *   granny    the goal of the five days, and go to Granny Li and ask her for bamboo (her refusal is what ends the step)
+ *   clerk     her refusal and why, and go to Zhou's Clerk to ask where the talk came from
  *   compare   the notebook: "he was at the bridge" against "he broke the rail", and how they stand (shown once)
  *   evening   the teahouse in the evening (shown when the core lists the occasion, and left out if it has gone by)
  *
@@ -18,8 +17,11 @@
 import type { NotebookEntry } from "./notebook.ts";
 import type { Judgment, Task } from "./slice.ts";
 
-export type StepId = "goal" | "ask" | "refusal" | "source" | "compare" | "evening";
-export const STEPS: readonly StepId[] = ["goal", "ask", "refusal", "source", "compare", "evening"];
+export type StepId = "granny" | "clerk" | "compare" | "evening";
+export const STEPS: readonly StepId[] = ["granny", "clerk", "compare", "evening"];
+
+/** The clerk of the Zhou family, whom the second step leads to. */
+export const CLERK = "zhou_huoji";
 
 /**
  * The tasks of the slice that the steps and the hints read, by the ids the core gives them: the bamboo of the Li family, the
@@ -51,15 +53,15 @@ const stateOf = (ctx: TutorialContext, id: string): Task["state"] | null => ctx.
 /** The task that says the player has what they need to compare two lines: a rumour and a first-hand word from the clerk. */
 export function proofAppeared(ctx: TutorialContext): boolean {
   if (ctx.tasks.has(TASK.proof)) return true;
-  // A game whose tasks do not have it: a line heard at the first hand, and another to set it against.
-  return ctx.entries.length >= 2 && ctx.entries.some((e) => e.source.kind === "heard" && e.source.hand === 1);
+  // A game whose tasks do not have it: a line a teller says they saw themselves, and another to set it against.
+  return ctx.entries.length >= 2 && ctx.entries.some((e) => e.source.kind === "heard" && e.source.how === "saw");
 }
 
-/** Whether a line was seen, or heard at the first hand and not marked unconfirmed: what a claim is set against. */
-export const isFirstHand = (e: NotebookEntry): boolean => e.source.kind === "seen" || (e.source.kind === "heard" && e.source.hand === 1 && !e.marks.includes("unconfirmed"));
+/** Whether a line was seen, or heard from someone who says they saw it and not marked unconfirmed: what a claim is set against. */
+export const isFirstHand = (e: NotebookEntry): boolean => e.source.kind === "seen" || (e.source.kind === "heard" && e.source.how === "saw" && !e.marks.includes("unconfirmed"));
 
-/** Whether a line is a rumour: marked unconfirmed, or heard beyond the first hand (a core that marks only what the player judged sends no `unconfirmed`). */
-export const isHearsay = (e: NotebookEntry): boolean => e.marks.includes("unconfirmed") || (e.source.kind === "heard" && e.source.hand > 1);
+/** Whether a line is a rumour: marked unconfirmed, or heard from someone who did not see it (a core that marks only what the player judged sends no `unconfirmed`). */
+export const isHearsay = (e: NotebookEntry): boolean => e.marks.includes("unconfirmed") || (e.source.kind === "heard" && e.source.how !== "saw");
 
 /** The pair the tutorial shows: the line that was seen, or heard at first hand, and the rumour that goes beyond it. */
 export function examplePair(entries: readonly NotebookEntry[], hint: { a: string; b: string } | null): { a: string; b: string } | null {
@@ -87,13 +89,11 @@ interface StepRule {
 }
 
 const RULES: Readonly<Record<StepId, StepRule>> = {
-  goal: { due: () => true, done: () => true },
-  ask: {
+  granny: {
     due: () => true,
     done: (ctx) => ctx.refused || stateOf(ctx, TASK.bamboo) === "blocked" || stateOf(ctx, TASK.bamboo) === "done",
   },
-  refusal: { due: () => true, done: () => true },
-  source: { due: () => true, done: (ctx) => proofAppeared(ctx) },
+  clerk: { due: () => true, done: (ctx) => proofAppeared(ctx) },
   compare: {
     due: (ctx) => proofAppeared(ctx),
     // The core takes judgements where it lists the verb. Where it does not, seeing it once is all there is to do.

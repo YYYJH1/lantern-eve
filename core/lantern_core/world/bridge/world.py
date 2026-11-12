@@ -12,10 +12,16 @@ from lantern_core.world.bridge import (
     budget,
     clock,
     commitments,
+    context,
     gazette,
+    gifts,
     goals,
+    hearts,
+    moments,
     order,
     preview,
+    roster,
+    unavailable,
     weather,
 )
 from lantern_core.world.bridge.data import CAST, SCRIPT, TABLES, TOWN
@@ -233,10 +239,22 @@ class BridgeWorld:
                 for p in town["places"]
             ],
             "families": list(cast["families"]),
+            "gifts": [{key: g[key] for key in ("id", "zh", "en")} for g in gifts.things()],
             "cast": [
                 {
                     key: p[key]
-                    for key in ("id", "zh", "en", "role", "bio", "token", "family", "home", "work")
+                    for key in (
+                        "id",
+                        "zh",
+                        "en",
+                        "role",
+                        "bio",
+                        "intro",
+                        "token",
+                        "family",
+                        "home",
+                        "work",
+                    )
                 }
                 for p in cast["people"]
             ],
@@ -283,7 +301,10 @@ class BridgeWorld:
     def apply_player(self, ctx: Ctx, body: dict[str, Any]) -> None:
         sim = Sim(self, ctx)
         if not preview.reject_if_stale(sim, body):
+            seen = len(ctx.events)
             self.actions[body["type"]][1](sim, body)
+            hearts.sync(sim)  # a call may take an action and simulate nothing (a paused world)
+            moments.after_action(sim, ctx.events[seen:])  # a moment may come of what was done
         agenda.refresh(sim)  # a call may take an action and simulate nothing (a paused world)
 
     def preview(self, state: dict[str, Any], action: Any) -> dict[str, Any]:
@@ -314,7 +335,9 @@ class BridgeWorld:
         land = self.results.get(request["category"])
         if land is not None:
             sim = Sim(self, ctx)
+            seen = len(ctx.events)
             land(sim, request, status, text)
+            moments.after_action(sim, ctx.events[seen:])  # words that land may be an echo
             agenda.refresh(sim)
 
     # ------------------------------------------------------------------ the budget gate
@@ -337,10 +360,13 @@ class BridgeWorld:
         return clock.rate(state["world"])
 
     def halted(self, state: dict[str, Any]) -> bool:
-        """Whether the world holds its own clock: the manager is in a conversation and the world
-        owes no time for what they did (see ``pace``). The kernel does not simulate a held world,
-        and the host sees ``clock.paused`` as true, on top of any pause of its own."""
+        """Whether the world holds its own clock: a moment of the festival is held for the page
+        (see ``moments``), or the manager is in a conversation and the world owes no time for what
+        they did (see ``pace``). The kernel does not simulate a held world, and the host sees
+        ``clock.paused`` as true, on top of any pause of its own."""
         world_state = state["world"]
+        if moments.holding(world_state):
+            return True
         return bool(world_state["player"]["talk"]) and not clock.owed(world_state)
 
     def ending(self, state: dict[str, Any]) -> dict[str, Any] | None:
@@ -361,4 +387,15 @@ class BridgeWorld:
         for hook in self._frame_hooks:
             hook(self, state, out)
         gazette.frame(self, state, out)  # the paper reads the keys the hooks made
+        self.finish_frame(state, out)
         return out
+
+    def finish_frame(self, state: dict[str, Any], out: dict[str, Any]) -> None:
+        """The keys that read the others: what the talk puts first (``context``), the people
+        (``roster``) and why an act is off (``unavailable``)."""
+        world_state, tick = state["world"], state["tick"]
+        context.talk_fields(self, out, world_state, tick)
+        out["people"] = roster.wire(self, world_state)
+        out["hud"]["verbs_off"] = unavailable.verbs_off(
+            self, world_state, tick, out["hud"]["verbs"], out["player"]["look"]
+        )

@@ -31,11 +31,11 @@ export function tasks(tracked: string | null = "t_bamboo_first", done: string[] 
         id: "t_bamboo_first",
         kind: "obstacle",
         job: "bridge",
-        text: n("李家不肯给竹料", "The Li family will not give bamboo"),
-        why: n("他们认为总管没有制止毁桥的说法", "They think the manager did nothing about the talk that Li Er broke the bridge"),
-        next: n("问清这话的来源", "Find out where that talk came from"),
+        text: n("借到李家的第一批竹料", "Get the first load of bamboo from the Li family"),
+        why: n("镇上都在传李二毁了桥。李老太怪你这个总管一声不吭。", "The town is saying Li Er broke the bridge. Granny Li is angry that you, the manager, have said nothing."),
+        next: n("问清这话是谁先说的。", "Find out who started that talk."),
         state: "blocked",
-        blocker: n("镇上说李二毁了桥，李老太不肯借竹料", "The town says Li Er broke the bridge, so Granny Li will not lend bamboo"),
+        blocker: n("李家不肯给竹料", "The Li family will not give the bamboo"),
         action: { verb: "talk", npc: "li_laotai" },
         window: { day: 1, from: 8, to: 17, place: "p_li_house" },
       },
@@ -44,8 +44,8 @@ export function tasks(tracked: string | null = "t_bamboo_first", done: string[] 
         kind: "lead",
         job: "truth",
         text: n("李二那晚为什么在桥边？", "Why was Li Er by the bridge that night?"),
-        why: n("周家伙计说他看见了李二", "Zhou's Clerk says he saw Li Er there"),
-        next: n("问周家伙计是怎么看见的", "Ask Zhou's Clerk how he saw it"),
+        why: n("周家伙计看见了李二", "Zhou's Clerk saw Li Er there"),
+        next: n("问周家伙计是怎么看见的", "Ask Zhou's Clerk how it was seen"),
         state: "open",
         blocker: null,
         action: { verb: "ask_source", npc: "zhou_huoji" },
@@ -72,7 +72,7 @@ export function tasks(tracked: string | null = "t_bamboo_first", done: string[] 
         id: "t_promise",
         kind: "promise",
         job: "bridge",
-        text: n("李大：第一批竹料", "Li Da: the first bamboo"),
+        text: n("李大答应的竹料", "The bamboo that Li Da promised"),
         why: null,
         next: n("等李老太撤回阻拦，再请李大送料", "Once Granny Li lets go, ask Li Da to bring it"),
         state: "open",
@@ -84,28 +84,34 @@ export function tasks(tracked: string | null = "t_bamboo_first", done: string[] 
   };
 }
 
-/** The notebook of the first evening: four lines, two heard and one seen. */
+/** When and where a line of the notebook was learned, on the first morning: `place` is a place id or null for the street. */
+const learned = (hour: number, minute: number, place: string | null): Record<string, unknown> => ({ tick: (hour - 6) * 120 + minute * 2, day: 1, hour, minute, place });
+
+/** The notebook of the first evening: four lines, one seen and three told, with where each came from and when. */
 export function notebook(): Array<Record<string, unknown>> {
   return [
-    { id: "n_scrape", text: n("桥墩上有新的刮痕。", "There are fresh scrapes on the bridge pier."), source: { kind: "seen" }, marks: [], chain: [] },
+    { id: "n_scrape", text: n("渡船上有新刮痕。", "The boat has fresh scratches."), source: { kind: "seen" }, at: learned(8, 10, "p_bridge"), marks: [], chain: [] },
     {
       id: "n_clerk",
-      text: n("周家伙计说他看见李二那晚在桥边。", "Zhou's Clerk says he saw Li Er by the bridge that night."),
-      source: { kind: "heard", who: n("周家伙计", "Zhou's Clerk"), hand: 1 },
+      text: n("李二昨晚在桥边。", "Li Er was at the bridge last night."),
+      source: { kind: "heard", who: { ...n("周家伙计", "Zhou's Clerk"), id: "zhou_huoji" }, how: "saw" },
+      at: learned(8, 20, "p_teahouse"),
       marks: [],
       chain: [n("周家伙计", "Zhou's Clerk")],
     },
     {
       id: "n_broke",
-      text: n("李二弄坏了桥。", "Li Er broke the bridge."),
-      source: { kind: "heard", who: n("茶馆老板娘", "Teahouse Keeper"), hand: 3 },
+      text: n("李二昨晚把栏杆弄坏了。", "Li Er broke the bridge railing last night."),
+      source: { kind: "heard", who: { ...n("茶馆老板娘", "Teahouse Keeper"), id: "cha_laoban" }, how: "heard", via: { ...n("周掌柜", "Shopkeeper Zhou"), id: "zhou_zhanggui" } },
+      at: learned(8, 24, "p_teahouse"),
       marks: [],
       chain: [n("茶馆老板娘", "Teahouse Keeper"), n("周掌柜", "Shopkeeper Zhou"), null],
     },
     {
       id: "n_boat",
-      text: n("老何那晚在桥下撑船。", "Old He was poling his boat under the bridge that night."),
-      source: { kind: "heard", who: n("茶馆老板娘", "Teahouse Keeper"), hand: 2 },
+      text: n("船夫老何昨晚在桥下。", "Boatman He was at the river under the bridge last night."),
+      source: { kind: "heard", who: { ...n("茶馆老板娘", "Teahouse Keeper"), id: "cha_laoban" }, how: "unsure" },
+      at: learned(8, 26, "p_teahouse"),
       marks: [],
       chain: [n("茶馆老板娘", "Teahouse Keeper"), null],
     },
@@ -118,21 +124,27 @@ export const ALL_COSTS = { ...COSTS, speak: 30 } as const;
 
 const REQUEST = {
   id: "ask_bamboo",
-  label: n("请对方把竹料送到桥边", "Ask them to bring the bamboo to the bridge"),
+  label: n("请李老太把竹料送到桥边", "Ask Granny Li to bring the bamboo to the bridge"),
   body: { kind: "material" },
 };
 const GIVE = {
   id: "give_lamp",
-  label: n("许对方点主灯的体面", "Promise the honour of lighting the main lantern"),
+  label: n("许李老太点主灯的体面差事", "Promise Granny Li the honour of lighting the main lantern"),
   body: { op: "make", what: "role", item: "t_honor_light", due: 3 },
 };
 
-/** What the manager can tell, with the other ways of telling the notebook line about Li Er. */
+/**
+ * What the manager can tell: each line of the notebook as it is, and, for the lines they did not see themselves, as if they had. The line
+ * the manager saw (the scrapes on the pier) can be told one way.
+ */
 const TELL = [
-  { id: "n_clerk:as_seen", label: n("说成亲眼所见：周家伙计说他看见李二那晚在桥边。", "As if you saw it yourself: Zhou's Clerk says he saw Li Er by the bridge that night."), body: { entry: "n_clerk", how: "as_seen" } },
-  { id: "n_clerk:hide_source", label: n("不说来源：周家伙计说他看见李二那晚在桥边。", "Without the source: Zhou's Clerk says he saw Li Er by the bridge that night."), body: { entry: "n_clerk", how: "hide_source" } },
-  { id: "n_broke:sharpen", label: n("添油加醋：李二弄坏了桥。", "Heavier: Li Er broke the bridge."), body: { entry: "n_broke", how: "sharpen" } },
-  { id: "made_up", label: n("编一条：老何的船撞了桥。", "Make one up: Old He's boat hit the bridge."), body: { how: "fabricate", pred: "hit", subject: "old_he", object: "t_rail", source: "self_seen" } },
+  { id: "n_scrape:faithful", label: n("照实说：渡船上有新刮痕。", "Tell it as it is: The boat has fresh scratches."), body: { entry: "n_scrape", how: "faithful" } },
+  { id: "n_clerk:faithful", label: n("照实说：李二昨晚在桥边。", "Tell it as it is: Li Er was at the bridge last night."), body: { entry: "n_clerk", how: "faithful" } },
+  { id: "n_clerk:as_seen", label: n("说成我亲眼看见的：李二昨晚在桥边。", "Say I saw it myself: Li Er was at the bridge last night."), body: { entry: "n_clerk", how: "as_seen" }, lie: true },
+  { id: "n_broke:faithful", label: n("照实说：李二昨晚把栏杆弄坏了。", "Tell it as it is: Li Er broke the bridge railing last night."), body: { entry: "n_broke", how: "faithful" } },
+  { id: "n_broke:as_seen", label: n("说成我亲眼看见的：李二昨晚把栏杆弄坏了。", "Say I saw it myself: Li Er broke the bridge railing last night."), body: { entry: "n_broke", how: "as_seen" }, lie: true },
+  { id: "n_boat:faithful", label: n("照实说：船夫老何昨晚在桥下。", "Tell it as it is: Boatman He was at the river under the bridge last night."), body: { entry: "n_boat", how: "faithful" } },
+  { id: "n_boat:as_seen", label: n("说成我亲眼看见的：船夫老何昨晚在桥下。", "Say I saw it myself: Boatman He was at the river under the bridge last night."), body: { entry: "n_boat", how: "as_seen" }, lie: true },
 ];
 
 /** The player's part of a frame in a talk with `npc`, over the `player` the live frame has. `entrust` is what the town puts forward to ask this person (the one request of the bamboo unless a test says). */
@@ -146,18 +158,35 @@ export function playerInTalk(
   return {
     ...(base ?? {}),
     costs: ALL_COSTS,
-    talk: { npc, costs: COSTS, leaves_at: leaves },
+    talk: { npc, costs: COSTS, leaves_at: leaves, ...talkKeys(entrust, promise) },
     offers: { entrust, promise, tell: TELL, speak: [] },
     topics: [
-      { id: "n_clerk", kind: "entry", label: n("周家伙计说他看见李二那晚在桥边。", "Zhou's Clerk says he saw Li Er by the bridge that night.") },
-      { id: "t_rail", kind: "thing", label: n("桥栏杆", "The bridge rail") },
+      { id: "n_clerk", kind: "entry", label: n("李二昨晚在桥边。", "Li Er was at the bridge last night.") },
+      { id: "t_rail", kind: "thing", label: n("栏杆", "Stone Bridge Railing") },
       { id: "li_er", kind: "person", label: n("李二", "Li Er") },
     ],
   };
 }
 
+/**
+ * The keys of a talk the core adds for the page: the first request of the town's offers is the one put forward, the others are "others", the
+ * first promise is the one the person wants and the other new ones the rest (a promise that keeps another is not a new one).
+ */
+export function talkKeys(entrust: unknown[], promise: unknown[]): Record<string, unknown> {
+  const [first, ...others] = entrust as Array<Record<string, unknown>>;
+  const make = (promise as Array<Record<string, unknown>>).filter((offer) => (offer.body as Record<string, unknown> | undefined)?.op !== "keep");
+  return {
+    ask_for: first === undefined ? null : { ...first, status: "open", for: "t_bamboo_first" },
+    asks_more: others.map((offer) => ({ ...offer, status: "open" })),
+    wants: null,
+    keep: null,
+    give: { preferred: make[0] ?? null, more: make.slice(1), ways: [] },
+    queue: make.length === 0 ? [] : [{ kind: "give" }],
+  };
+}
+
 /** The verbs the world offers in a talk, with those of the slice. */
-export const TALK_VERBS = ["leave", "ask", "ask_source", "tell", "entrust", "promise", "judge", "hint", "track"];
+export const TALK_VERBS = ["leave", "ask", "ask_source", "tell", "entrust", "promise", "gift", "judge", "hint", "track"];
 /** And outside one. */
 export const FREE_VERBS = ["move", "talk", "listen", "look", "rally", "judge", "hint", "track"];
 
@@ -185,8 +214,8 @@ export function commitments(state: "promised" | "delivered" = "promised"): Recor
 export const REASONS = {
   rain: n("下大雨，货运不出来", "The heavy rain kept the goods off the road"),
   failed: n("路上出了岔子，货没能送到", "Something went wrong and the goods did not get there"),
-  late: n("没能赶在期限前送到", "It did not arrive in time"),
-  taken_back: n("应承被收了回去", "They took the promise back"),
+  late: n("没赶在约好的时间前送到", "It did not arrive in time"),
+  taken_back: n("说是改了主意", "Word is they changed their mind"),
 } as const;
 
 /** The promise of `commitments()` in another state, with the reason the core gives for it. */
@@ -199,7 +228,7 @@ export const JUDGMENT = { a: "n_clerk", b: "n_broke", relation: "unsupported", m
 
 /** The other account that Granny Li gave with her stance, as the core sends it (the key is there only then). */
 export const RIVAL = {
-  text: n("船夫老何昨夜弄坏了石桥栏杆。", "Boatman He damaged the Stone Bridge Railing last night."),
+  text: n("船夫老何昨晚把栏杆弄坏了，是不小心的。", "Boatman He broke the bridge railing last night, by accident."),
   who: { ...n("周掌柜", "Shopkeeper Zhou"), id: "zhou_zhanggui" },
 };
 
@@ -221,7 +250,7 @@ export function cards(): Record<string, unknown> {
         wants: [{ id: "w_li_laotai_public", text: n("有人出来把「李二毁桥」这话当众说清", "Someone to set the talk that Li Er wrecked the bridge straight in public") }],
         favours: 0,
         stance: {
-          text: n("李二弄坏了栏杆。", "Li Er broke the rail."),
+          text: n("李二昨晚把栏杆弄坏了。", "Li Er broke the bridge railing last night."),
           tick: 480,
           at: { day: 1, hour: 8, minute: 0 },
           how: n("亲口告诉你的", "They told you themselves"),
@@ -315,8 +344,8 @@ export function promiseOf(id: string, by: string, item: "bamboo" | "timber", amo
 
 /** The reason the last work time did nothing, in the words of the core. */
 export const RAIN_STOP = n("昨天下大雨，没有人上工", "Heavy rain the day before kept everyone off the bridge");
-/** Why the last public statement fell short: fewer than five named people were there, and the elder did not come. */
-export const SHORT_WHY = n("在场有名有姓的人不足五个，族长也没来", "Fewer than five named people were there, and the elder did not come");
+/** Why the last public statement fell short: fewer than five familiar faces were there, and the elder did not come. */
+export const SHORT_WHY = n("在场的熟面孔不到五个，族长也不在场", "Fewer than five familiar faces were there, and the elder was not there");
 
 /** The last public statement, which fell short. */
 export const FELL_SHORT = { day: 3, hour: 18, venue: "p_teahouse", named: 4, accepted: 2, percent: 50, elder: "absent", why: SHORT_WHY };
@@ -455,17 +484,19 @@ export function promiseOffers(): Array<Record<string, unknown>> {
 export function entrustOffers(npc: string): Array<Record<string, unknown>> {
   const offer = (id: string, zh: string, en: string, body: Record<string, unknown>): Record<string, unknown> => ({ id, label: n(zh, en), body });
   const out: Array<Record<string, unknown>> = [];
-  if (npc === "li_da") out.push(offer("material", "请对方把竹料送到桥边", "Ask them to bring the bamboo to the bridge", { kind: "material" }));
-  if (npc === "zhou_zhanggui") out.push(offer("material", "请对方把木料送到桥边", "Ask them to bring the timber to the bridge", { kind: "material" }));
-  if (npc === "miaozhu") out.push(offer("lane", "请她打开庙后的夹道", "Ask her to open the lane behind the temple", { kind: "lane" }));
-  if (npc === "li_laotai") out.push(offer("lend", "请她把竹料借给灯会", "Ask her to lend the bamboo for the bridge", { kind: "lend" }));
-  if (npc === "gengfu") out.push(offer("testify", "请对方说说亲眼所见", "Ask them to tell what they saw", { kind: "testify" }));
-  if (["zhou_dalang", "zhou_erlang", "li_xiaomei", "li_er"].includes(npc)) out.push(offer("join", "请对方加入帮工", "Ask them to join the helpers", { kind: "join" }));
+  if (npc === "li_da") out.push(offer("material", "请李大把竹料送到桥边", "Ask Li Da to bring the bamboo to the bridge", { kind: "material" }));
+  if (npc === "zhou_zhanggui") out.push(offer("material", "请周掌柜把木料送到桥边", "Ask Shopkeeper Zhou to bring the timber to the bridge", { kind: "material" }));
+  if (npc === "miaozhu") out.push(offer("lane", "请庙祝打开庙后的夹道", "Ask the Temple Keeper to open the lane behind the temple", { kind: "lane" }));
+  if (npc === "li_laotai") out.push(offer("lend", "请李老太把竹料借给灯会", "Ask Granny Li to lend the bamboo for the bridge", { kind: "lend" }));
+  if (npc === "gengfu") out.push(offer("testify", "请更夫说说亲眼所见", "Ask the Night Watchman to tell what they saw", { kind: "testify" }));
+  const joiners: Record<string, [string, string]> = { zhou_dalang: ["周家大郎", "Zhou Dalang"], zhou_erlang: ["周家二郎", "Zhou Erlang"], li_xiaomei: ["李家小妹", "Li Xiaomei"], li_er: ["李二", "Li Er"] };
+  const joiner = joiners[npc];
+  if (joiner !== undefined) out.push(offer("join", `请${joiner[0]}加入帮工`, `Ask ${joiner[1]} to join the helpers`, { kind: "join" }));
   if (npc === "li_xiaomei") {
-    out.push(offer("persuade:zhou_dalang", "请对方去劝周家大郎", "Ask them to talk Zhou Dalang round", { kind: "persuade", target: "zhou_dalang" }));
-    out.push(offer("persuade:zhou_erlang", "请对方去劝周家二郎", "Ask them to talk Zhou Erlang round", { kind: "persuade", target: "zhou_erlang" }));
+    out.push(offer("persuade:zhou_dalang", "请李家小妹去劝周家大郎", "Ask Li Xiaomei to talk Zhou Dalang round", { kind: "persuade", target: "zhou_dalang" }));
+    out.push(offer("persuade:zhou_erlang", "请李家小妹去劝周家二郎", "Ask Li Xiaomei to talk Zhou Erlang round", { kind: "persuade", target: "zhou_erlang" }));
   }
-  if (npc === "zuzhang") out.push(offer("convene", "请族长召集族里的人到祠堂", "Ask the elder to call the clan to the hall", { kind: "convene" }));
+  if (npc === "zuzhang") out.push(offer("convene", "请族长召集族里的人到祠堂", "Ask the Clan Elder to call the clan to the hall", { kind: "convene" }));
   return out;
 }
 
@@ -546,7 +577,7 @@ export const previewsAsked = (page: Page): Promise<unknown[]> => page.evaluate((
 export const PREVIEW = {
   version: 42,
   cost: 20,
-  asks: n("请李大把第一批竹料送到桥边", "Ask Li Da to bring the first bamboo to the bridge"),
+  asks: n("请李大把竹料送到桥边", "Ask Li Da to bring the bamboo to the bridge"),
   gives: null,
   blockers: [n("李老太还没撤回阻拦", "Granny Li has not dropped her objection")],
   odds: "mid",
@@ -589,11 +620,51 @@ export async function openFirstDay(
 /** The player's part of the frame on screen. */
 export const playerOf = (page: Page): Promise<Record<string, unknown>> => page.evaluate(() => window.__lantern.client.state.frame?.player as Record<string, unknown>);
 
+/** The four small things of the day, as `hud.gift` has them. */
+export const GIFT_ITEMS = [
+  { id: "tea", ...n("茶叶", "tea leaves") },
+  { id: "pastry", ...n("点心", "pastries") },
+  { id: "lantern_paper", ...n("灯纸", "lantern paper") },
+  { id: "wine", ...n("酒", "wine") },
+];
+
+/** `hud.gift` for a day: the market's four things, and whether the one gift of the day has been given. */
+export const giftHud = (given = false, to: string | null = null): Record<string, unknown> => ({ day: 1, items: GIFT_ITEMS, given, to });
+
+/** One row of `people` in a frame: how close the manager stands to the person, with the card that says why. */
+export function relationRow(id: string, over: Record<string, unknown> = {}): Record<string, unknown> {
+  return {
+    id,
+    known: true,
+    hearts: 3,
+    likes_known: [],
+    gifts: 0,
+    card: {
+      trust: "acquainted",
+      owes_you: 0,
+      you_owe: 0,
+      you_promised: [],
+      promised_you: [],
+      changes: [{ tick: 360, day: 1, hour: 9, minute: 0, delta: 1, why: "talk" }],
+      waiting: null,
+      joined: false,
+    },
+    ...over,
+  };
+}
+
+/** Why each act that is not on offer is not, for a talk with these verbs on offer: the core gives a reason for every one of them. */
+export function offReasons(verbs: readonly string[]): Record<string, string> {
+  const off: Record<string, string> = {};
+  for (const verb of ["ask", "tell", "entrust", "promise", "ask_source", "gift"]) if (!verbs.includes(verb)) off[verb] = verb === "gift" ? "gift_today" : "not_yet";
+  return off;
+}
+
 /** Puts the player in a talk with `npc`, with the acts of a talk on offer. */
 export async function startTalk(page: Page, npc: string, extras: Record<string, unknown> = {}, verbs: string[] = TALK_VERBS, entrust?: unknown[], promise?: unknown[]): Promise<void> {
   const base = await playerOf(page);
   const leaves = { hour: 15, minute: 30 };
-  await feedFrame(page, { player: playerInTalk(base, npc, leaves, entrust, promise), ...extras, hud: { verbs } }, [{ kind: "talk_start", tick: 1, npc, leaves_at: leaves }]);
+  await feedFrame(page, { people: [relationRow(npc)], player: playerInTalk(base, npc, leaves, entrust, promise), ...extras, hud: { verbs, verbs_off: offReasons(verbs), gift: giftHud() } }, [{ kind: "talk_start", tick: 1, npc, leaves_at: leaves }]);
 }
 
 /** The contrast ratio of the text of an element against what is behind it, as the browser draws them (WCAG 2). */
@@ -672,6 +743,17 @@ export async function primeHelp(page: Page): Promise<void> {
   await feedFrame(page, {});
 }
 
+/**
+ * Lights the signal of a hint of the log again, as "show me" in the list of hints does. A signal goes out nine seconds after it was lit, by the
+ * clock of the page, so a test that looks at one over a longer stretch than that, which is what a slow machine makes of a few menu clicks, lights it
+ * again before each look instead of racing that clock.
+ */
+export const relight = (page: Page, id: string): Promise<void> =>
+  page.evaluate((hint) => {
+    window.__lantern.play.guide.hints.again(hint, performance.now());
+    window.__lantern.play.touch();
+  }, id);
+
 /** Feeds a frame at a tick of the test's own, for what counts the ticks of the game. */
 export function feedAt(page: Page, tick: number, extras: Record<string, unknown> = {}, events: unknown[] = []): Promise<void> {
   return page.evaluate(
@@ -720,8 +802,8 @@ export function gazetteBody(over: Record<string, unknown> = {}): Record<string, 
       },
     ],
     talk: [
-      { kind: "festival_warm", text: n("街上都在说灯会，哪家挂几盏灯，已经有人在数了。", "The street talks of little else than the festival, and people are already counting the lanterns at each door.") },
-      { kind: "split", text: n("街上分成了两拨，一拨向着李家，一拨向着周家，谁也说不服谁。", "The street has split into two camps, one for the Li family and one for the Zhou family, and neither can win the other over.") },
+      { kind: "festival_warm", text: n("街上都在说灯会。哪家挂几盏灯，已经有人在数了。", "The street talks of little but the festival. People are already counting the lanterns at each door.") },
+      { kind: "split", text: n("街上分成了两拨，一拨向着李家，一拨向着周家。谁也说不服谁。", "The street has split into two camps, one for the Li family and one for the Zhou family. Neither can win the other over.") },
     ],
     ...over,
   };
@@ -738,7 +820,7 @@ export function nightBody(over: Record<string, unknown> = {}): Record<string, un
     day: 1,
     changed: { kind: "promise", text: n("李大答应送来四根竹料。", "Li Da promised to bring 4 poles of bamboo.") },
     blocked: { id: "t_timber", text: n("取得周家的木料", "Get the timber from the Zhou family"), blocker: n("周掌柜还没松口", "Shopkeeper Zhou has not agreed yet") },
-    step: { id: "t_bamboo_first", text: n("取得李家的第一批竹料", "Get the first bamboo from the Li family"), window: { day: 2, from: 6, to: 7, place: "p_bridge" } },
+    step: { id: "t_bamboo_first", text: n("借到李家的第一批竹料", "Get the first load of bamboo from the Li family"), window: { day: 2, from: 6, to: 7, place: "p_bridge" } },
     ...over,
   };
 }

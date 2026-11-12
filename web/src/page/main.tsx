@@ -1,7 +1,9 @@
 import { render } from "preact";
+import { createSoundscape, festival } from "./audio/index.ts";
 import { HostClient } from "./client.ts";
 import { MapView } from "./map/map-view.ts";
 import { Play } from "./play.ts";
+import { registerFestivalShow, setFestivalSound } from "./festival/show.ts";
 import { bindLanguage, bindTheme } from "./prefs.ts";
 import type { LanternHandle } from "./e2e.ts";
 import { parseReplayHash } from "./replays.ts";
@@ -13,6 +15,7 @@ import "./style/tokens.css";
 import "./style/base.css";
 import "./style/layout.css";
 import "./style/cards.css";
+import "./style/hearts.css";
 import "./style/notebook.css";
 import "./style/menu.css";
 import "./style/calls.css";
@@ -21,12 +24,18 @@ import "./style/play.css";
 import "./style/slice.css";
 import "./style/statement.css";
 import "./style/guide.css";
+import "./style/director.css";
+import "./style/festival.css";
+import "./style/moments.css";
 import "./style/replays.css";
 import "./style/paper.css";
 import "./style/sheets.css";
 import "./style/talk.css";
 import "./style/ending.css";
 import "./style/opening.css";
+import "./style/people.css";
+import "./style/sound.css";
+import "./style/eggs.css";
 
 const params = new URLSearchParams(location.search);
 // ?seed=, ?pace=, ?until=, ?scenario=, ?config=, ?notebook=, ?start=, ?guide=, ?autosave= and ?map= are read in test builds only.
@@ -68,7 +77,12 @@ const client = new HostClient(spawnWorker());
 const mapOff = __LANTERN_E2E__ && params.get("map") === "off";
 const makeView = (): MapView => new MapView({ off: mapOff });
 const view = makeView();
+// A test page opened with ?showclock=manual plays its shows on a clock that the test moves by hand.
+const showClock = __LANTERN_E2E__ && params.get("showclock") === "manual" ? (await import("./show-clock.ts")).manualShowClock() : null;
+if (showClock !== null) (await import("./director.ts")).overrideDirectorEnv(() => showClock.env);
 const play = new Play(client);
+// The sound of the game. It makes nothing until the player has pressed Start or Continue (`release` below), and it only reads the frames.
+const sound = createSoundscape(client, view);
 
 const root = document.getElementById("app");
 if (root === null) throw new Error("the page has no #app");
@@ -87,6 +101,7 @@ document.addEventListener("visibilitychange", syncVisibility);
 const release = (): void => {
   holding = false;
   client.setHidden(document.visibilityState === "hidden");
+  sound.begin();
 };
 
 const startLive = (): void =>
@@ -110,6 +125,12 @@ const intro = !linked && !namesGame;
 let holding = intro;
 // The help (tutorial, hints, the elder) is on for a page that began with the opening page. A test page turns it on with ?guide=on.
 play.guide.enabled = intro || (__LANTERN_E2E__ && params.get("guide") === "on");
+// The moments of the festival and the festival night are shown on the same pages. A test page turns them on with ?director=on.
+play.director.enabled = intro || (__LANTERN_E2E__ && params.get("director") === "on");
+// The festival night plays before the ending page on the same pages. A test page that is not about it leaves it out, and turns it on with ?festival=on.
+if (!__LANTERN_E2E__ || params.get("festival") === "on") registerFestivalShow();
+// The drums, the gongs and the tune of the procession are the sound's: the show tells it when a parade walks, how far it is and when it is over.
+setFestivalSound(festival);
 // The saves the page makes by itself (each morning, and at the ending) are for the same page, on a host that keeps saves, which the server host
 // does not. A test page turns them on with ?autosave=on.
 play.autosave.enabled = (intro || (__LANTERN_E2E__ && params.get("autosave") === "on")) && serverUrlFor(location.search, location) === null;
@@ -117,7 +138,10 @@ play.autosave.enabled = (intro || (__LANTERN_E2E__ && params.get("autosave") ===
 let hooks: LanternHandle | null = null;
 if (__LANTERN_E2E__) {
   const { installE2E } = await import("./e2e.ts");
-  hooks = installE2E(client, view, play);
+  hooks = installE2E(client, view, play, showClock);
+  hooks.sound = sound;
+  hooks.renderSound = (await import("./audio/render.ts")).renderClip;
+  hooks.festivalSound = festival;
 }
 
 render(
@@ -130,6 +154,7 @@ render(
     startLive={startLive}
     liveStarted={!linked}
     intro={intro}
+    sound={sound}
     onBegin={release}
     onOpen={(open) => {
       if (hooks !== null) hooks.replay = open;

@@ -2,9 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { pick } from "../../i18n/index.ts";
 import type { HostClient } from "../client.ts";
 import { readFrame } from "../frame.ts";
-import { readVerbs } from "../hud.ts";
+import { readVerbs, readVerbsOff, readVerbsOffAny } from "../hud.ts";
+import { readGiftHud } from "../talk-frame.ts";
 import type { MapView } from "../map/map-view.ts";
 import { type NotebookEntry, readNotebook } from "../notebook.ts";
+import { relationRows } from "../relations.ts";
 import type { Play } from "../play.ts";
 import { readPref, type Remembered, writePref } from "../storage.ts";
 import { readSlice } from "../slice.ts";
@@ -14,17 +16,21 @@ import { AroundYou } from "./around.tsx";
 import { type LedgerPage, PrepBoard } from "./board.tsx";
 import { Corner } from "./corner.tsx";
 import { DialogueBar } from "./dialogue.tsx";
+import { DirectorLayer } from "./director.tsx";
 import { EndingPage } from "./ending.tsx";
 import { useClientState, useLang, useScene, useTheme } from "./hooks.ts";
+import { MapContext } from "./mapacts.tsx";
 import { MenuDrawer } from "./menu.tsx";
 import { ElderSheet, EndCard, GuideDock } from "./guide.tsx";
 import { ClarifyView, GazetteCard, NightCard, RecapCard } from "./overlays.tsx";
+import { RiddleSheet } from "./riddle.tsx";
 import { MapGlow, ShowCard } from "./show.tsx";
 import { PersonCard, type TalkControl } from "./person.tsx";
 import { ReplayBar } from "./replay-bar.tsx";
 import { Calm, EndingTab, type Hover, MapLegend, MapPing, MapTools, PersonTooltip, Toasts, Veil } from "./stage.tsx";
 import { TalkStrip } from "./strip.tsx";
-import { TalkArea } from "./talk.tsx";
+import { offWords, TalkArea } from "./talk.tsx";
+import { HeartsSheet } from "./hearts.tsx";
 import { todayLine } from "./today.ts";
 import { type SpeedChoice, SPEEDS, TopBar } from "./topbar.tsx";
 import { NotebookWorkspace } from "./workspace.tsx";
@@ -61,8 +67,8 @@ function initialSpeed(): SpeedChoice {
   return SPEEDS.find((s) => s === stored) ?? "normal";
 }
 
-/** The notebook is open at its notes or at its statement card; while it is shut there is no page. */
-type BookPage = "notebook" | "statement";
+/** The notebook is open at its notes, at its statement card or at the book of the people; while it is shut there is no page. */
+type BookPage = "notebook" | "statement" | "people";
 
 export function App({ client, view, play, remembered, sampleNotebook: sample, replay = null, onGallery, covered = false }: AppProps) {
   const s = useClientState(client);
@@ -85,6 +91,8 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
   const stage = useRef<HTMLElement>(null);
   const selectedNow = useRef<string | null>(null);
   const pickedAt = useRef(0);
+  /** Whether the riddle lantern on the map opens for a click now: no card, ledger, notebook, menu or ending lies over the map. */
+  const lanternFree = useRef(false);
   selectedNow.current = selected;
 
   const ending = play.state.ending;
@@ -97,6 +105,8 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
   const workspaceOpen = book !== null;
   const notebookOpen = book === "notebook";
   const statementOpen = book === "statement" && cardInFrame;
+  const peopleOpen = book === "people";
+  const peopleRows = useMemo(() => (frame === null ? null : relationRows(frame.relations)), [frame]);
 
   const stated = play.flows.state.stated;
   // What the people said of a full statement is the panel of a clarification, so a clarification does not lie under it.
@@ -109,6 +119,7 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
   const recap = play.flows.state.recap !== null && sheetsFree ? play.flows.state.recap : null;
   const night = play.flows.state.night !== null && sheetsFree && recap === null ? play.flows.state.night.night : null;
   const sheetOpen = recap !== null || night !== null || clarified !== null || stated !== null || elderOpen || endUp || play.guide.showUp;
+  lanternFree.current = replay === null && !sheetOpen && !endingOpen && !menuOpen && ledger === null && !workspaceOpen && !play.director.busy && play.state.heartsOpen === null;
 
   // The map is drawn by PixiJS into the stage. It reports what is under the pointer, what is picked and where the ground was clicked.
   useEffect(() => {
@@ -118,6 +129,7 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
       hover: (id) => setHover((previous) => (previous?.id === id || (previous === null && id === null) ? previous : id === null ? null : { id })),
       select: (id) => {
         const now = performance.now();
+        play.eggs.pick(id, now);
         // The person who is picked already, clicked again, is one the player wants to talk to.
         if (id !== null && id === selectedNow.current && now - pickedAt.current > DOUBLE_CLICK_MS) play.talkOrWalk(id);
         pickedAt.current = now;
@@ -126,18 +138,35 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
         setSelected(id);
       },
       ground: (hit) => play.goTo(hit),
+      riddle: () => lanternFree.current && play.eggs.openRiddle(),
     };
+    // The shows of the page (the moments of the festival, the festival night) move the camera of the map, and an ending that comes before the map is
+    // up waits for it.
+    if (view.drawn) play.director.expectMap();
     view.mount(element, client).then(
-      () => setMapReady(true),
+      () => {
+        setMapReady(true);
+        if (view.drawn && view.ready) play.director.attach(view);
+        else play.director.mapFailed();
+      },
       (err: unknown) => {
         // The map needs WebGL. Without it the host still runs and the panel still works.
         console.warn(`map unavailable: ${err instanceof Error ? err.message : String(err)}`);
         setMapFailed(true);
+        play.director.mapFailed();
       },
     );
+    return () => play.director.detach();
   }, [view, client, play]);
 
   useEffect(() => view.setLang(lang), [view, lang]);
+  // The riddle lantern at the workshop burns brighter for each riddle guessed right, and what the page has people say over the map is drawn by the map.
+  const lanternLevel = play.eggs.brightness;
+  useEffect(() => view.setRiddleLevel(lanternLevel), [view, lanternLevel]);
+  const pageLines = play.eggs.lines;
+  useEffect(() => view.setPageLines(pageLines), [view, pageLines]);
+  const showing = play.director.busy;
+  useEffect(() => view.setShowing(showing), [view, showing]);
   // A reply that sends the player to somebody brings them into view: picked on the map, with their card.
   useEffect(() => {
     if (replay !== null) return;
@@ -232,6 +261,7 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
     client.resume();
   };
   const verbs = useMemo(() => readVerbs(frame?.hud ?? {}), [frame]);
+  const verbsOff = useMemo(() => readVerbsOff(frame?.hud ?? {}), [frame]);
   const sceneName = scene === null ? "" : pick(scene.name, lang);
   const control: TalkControl | null = play.playing
     ? { can: verbs.has("move") && talkingWith === null, talking: talkingWith !== null && talkingWith === selected, onTalk: (id: string) => play.talkOrWalk(id) }
@@ -242,8 +272,10 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
   const workspace = (
     <NotebookWorkspace
       open={workspaceOpen}
-      part={statementOpen ? "statement" : "notes"}
-      onPart={(page) => setBook(page === "statement" ? "statement" : "notebook")}
+      part={peopleOpen ? "people" : statementOpen ? "statement" : "notes"}
+      people={peopleRows}
+      sprites={view.drawn}
+      onPart={(page) => setBook(page === "statement" ? "statement" : page === "people" ? "people" : "notebook")}
       scene={scene}
       entries={entries.list}
       sample={entries.sample}
@@ -253,14 +285,24 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
       slice={slice}
       verbs={verbs}
       talking={talkingWith !== null}
-      speakCost={frame?.player?.costs?.speak ?? null}
       onClose={() => setBook(null)}
     />
   );
   const toggleNotebook = (): void => setBook((now) => (now === null ? "notebook" : null));
+  // The small things of the day, by what the frame says; the card of the hearts can give one when a talk with that person is on.
+  const giftHud = readGiftHud(frame?.hud ?? {});
+  const giftName = (id: string): string => pick(giftHud?.items.find((item) => item.id === id)?.name, lang) || id;
+  const giftReason = (id: string): string | null => {
+    const who = scene?.cast.find((p) => p.id === id);
+    const name = who === undefined ? id : pick(who.name, lang);
+    if (talkingWith !== id) return offWords("not_talking", "gift", name);
+    if (verbs.has("gift")) return null;
+    const reason = readVerbsOffAny(frame?.hud ?? {}).get("gift");
+    return reason === undefined ? null : offWords(reason, "gift", name);
+  };
 
   return (
-    <div class="shell" data-menu={menuOpen} data-notebook={workspaceOpen} data-page={workspaceOpen ? (statementOpen ? "statement" : "notes") : ""} data-replay={replay !== null} data-talking={talkingWith !== null} data-ledger={ledger ?? ""} data-ending={endingOpen} data-picked={selected !== null || talkingWith !== null}>
+    <div class="shell" data-menu={menuOpen} data-notebook={workspaceOpen} data-page={workspaceOpen ? (peopleOpen ? "people" : statementOpen ? "statement" : "notes") : ""} data-replay={replay !== null} data-talking={talkingWith !== null} data-ledger={ledger ?? ""} data-ending={endingOpen} data-festival={play.director.current?.show.id === "festival"} data-picked={selected !== null || talkingWith !== null}>
       <TopBar
         s={s}
         lang={lang}
@@ -287,11 +329,14 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
       />
 
       <main class="stage" id="stage" ref={stage} aria-label={sceneName}>
+        {/* The acts that come to what is pointed at hang over the map and under every sheet, the slip and the ledger. A show on the map (a moment, the festival night) has none of them over it. */}
+        {replay === null && !play.director.busy ? <MapContext view={view} scene={scene} lang={lang} play={play} frame={frame} selected={selected} enabled={verbs} off={verbsOff} /> : null}
         <div class="map-ui" data-talk={talkingWith !== null}>
           <Calm on={talkingWith !== null && !play.paying} />
           <MapTools view={view} />
           {scene === null || scene.plain ? null : <MapLegend />}
-          <PersonTooltip view={view} scene={scene} hover={hover} lang={lang} state={s} />
+          {/* The card of a person under the pointer lies over the line the page has them say (a verse, a rumour), so it waits for the line to go. */}
+          <PersonTooltip view={view} scene={scene} hover={hover !== null && play.eggs.lines.some((line) => line.npc === hover.id) ? null : hover} lang={lang} state={s} />
           <MapPing ping={play.state.ping} view={view} scene={scene} lang={lang} />
           {replay === null ? <MapGlow play={play} view={view} scene={scene} slice={slice} /> : null}
           <TalkStrip lang={lang} scene={scene} frame={frame} play={play} tick={s.frameTick ?? 0} selectedId={selected} person={person}>
@@ -303,7 +348,8 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
           {replay === null ? <ElderSheet play={play} scene={scene} lang={lang} slice={slice} entries={entries.list} /> : null}
           {replay === null ? <EndCard play={play} /> : null}
           {replay === null ? <ShowCard play={play} /> : null}
-          <EndingTab show={ending !== null && !endingOpen} onShow={() => play.showEnding(true)} />
+          <EndingTab show={ending !== null && !endingOpen && !play.director.busy} onShow={() => play.showEnding(true)} />
+          <DirectorLayer play={play} />
           {recap === null ? null : recap.gazette !== null ? (
             <GazetteCard gazette={recap.gazette} scene={scene} lang={lang} onClose={() => play.flows.dismissRecap()} />
           ) : (
@@ -312,6 +358,25 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
           {night === null ? null : <NightCard night={night} scene={scene} lang={lang} onClose={() => play.flows.dismissNight()} />}
           {clarified === null ? null : <ClarifyView clarified={clarified} entries={entries.list} scene={scene} lang={lang} onClose={() => play.flows.dismissClarified()} />}
           {stated === null ? null : <ClarifyView clarified={stated.heard} statement={{ card: slice.statement, last: stated.last }} entries={entries.list} scene={scene} lang={lang} onClose={() => play.flows.dismissStated()} />}
+          {replay === null ? <RiddleSheet play={play} scene={scene} lang={lang} /> : null}
+          {replay === null ? (
+            <HeartsSheet
+              play={play}
+              frame={frame}
+              scene={scene}
+              lang={lang}
+              itemName={giftName}
+              onGift={
+                giftHud === null
+                  ? undefined
+                  : (id) => {
+                      play.closeHearts();
+                      if (talkingWith === id) play.flows.suggestGift(id);
+                    }
+              }
+              giftOff={giftReason}
+            />
+          ) : null}
           <Veil s={s} mapFailed={mapFailed} mapReady={mapReady} />
         </div>
       </main>
@@ -331,7 +396,7 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
       />
 
       <aside class="side" aria-label={sceneName} data-testid="side">
-        <AroundYou lang={lang} scene={scene} frame={frame} play={play} enabled={verbs} entries={entries.list} />
+        <AroundYou lang={lang} scene={scene} frame={frame} play={play} enabled={verbs} />
         {replay !== null ? <ReplayBar client={client} s={s} /> : null}
       </aside>
       {replay !== null ? null : <DialogueBar lang={lang} scene={scene} frame={frame} play={play} tick={s.frameTick ?? 0} selectedId={selected} />}
@@ -346,6 +411,8 @@ export function App({ client, view, play, remembered, sampleNotebook: sample, re
           onNew={replay === null ? newGame : replay.onClose}
           onBack={() => play.showEnding(false)}
           newLabel={replay !== null ? "replay.back" : s.preset !== null ? "ending.another" : "ending.new"}
+          moments={play.momentCards}
+          riddles={play.eggs.riddles.opened ? play.eggs.riddles.right : null}
         />
       ) : null}
       {replay === null ? (

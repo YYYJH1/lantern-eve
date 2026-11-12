@@ -13,8 +13,8 @@
 
 .stmt-part {
   display: grid;
-  grid-template-columns: 3.4em minmax(0, 1fr);
-  gap: 0 12px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px 0;
   padding: 12px 0 10px;
   border-top: 1px solid var(--structure);
 }
@@ -24,11 +24,12 @@
   border-top: 0;
 }
 
+/* A part is one line of the statement with a blank in it: the question, then what was chosen to fill it, on a line of ink that is empty until a choice is made. The way to take the choice back is beside it. */
 .stmt-part-head {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  align-items: baseline;
 }
 
 .stmt-part-title {
@@ -39,21 +40,16 @@
   line-height: 1.5;
 }
 
-/* The names of the parts in English are words, not two characters: they stand over their lines, with the way to take a choice back beside them. */
-
-:root:lang(en) .stmt-part {
-  grid-template-columns: minmax(0, 1fr);
+.stmt-blank {
+  display: inline-block;
+  min-width: 8em;
+  border-bottom: 1.5px solid var(--ink);
+  letter-spacing: 0.04em;
+  vertical-align: baseline;
 }
 
-:root:lang(en) .stmt-part-head {
-  flex-direction: row;
-  gap: 14px;
-  align-items: baseline;
-}
-
-:root:lang(en) .stmt-gap,
-:root:lang(en) .stmt-options {
-  grid-column: 1;
+.stmt-blank.is-filled {
+  font-weight: 400;
 }
 
 .stmt-clear.ink-act {
@@ -64,14 +60,12 @@
 }
 
 .stmt-gap {
-  grid-column: 2;
   margin: 0 0 4px;
   font-size: 15px;
 }
 
 .stmt-options {
   display: grid;
-  grid-column: 2;
   gap: 2px;
   margin: 0;
   padding: 0;

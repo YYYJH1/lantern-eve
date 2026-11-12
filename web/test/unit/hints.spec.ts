@@ -6,15 +6,24 @@ import { WorldHold } from "../../src/page/hold.ts";
 
 const name = (en: string) => ({ zh: en, en });
 const task = (id: string, state: Task["state"] = "open", over: Partial<Task> = {}): Task => ({ id, kind: "need", job: null, text: name(id), why: null, next: name(`next of ${id}`), state, blocker: null, action: null, window: null, expected: null, ...over });
-const entry = (id: string, hand: number | "seen", marks: NotebookEntry["marks"] = []): NotebookEntry => ({ id, text: name(`line ${id}`), source: hand === "seen" ? { kind: "seen" } : { kind: "heard", who: name("x"), hand }, marks, chain: [] });
+/** A line heard from somebody who saw it (first hand), who heard it from another (second), or who cannot say from whom (any later). */
+const told = (hand: number): NotebookEntry["source"] => ({ kind: "heard", who: name("x"), whoId: "x", how: hand === 1 ? "saw" : hand === 2 ? "heard" : "unsure", via: hand === 2 ? name("y") : null });
+const entry = (id: string, hand: number | "seen", marks: NotebookEntry["marks"] = []): NotebookEntry => ({ id, text: name(`line ${id}`), source: hand === "seen" ? { kind: "seen" } : told(hand), at: null, marks, chain: [] });
 
-const idle = (over: Partial<HintContext> = {}): HintContext => ({ tasks: new Map(), tracked: null, entries: [], verbs: new Set(), talking: null, leaves: false, promised: 0, leads: 0, ...over });
+const idle = (over: Partial<HintContext> = {}): HintContext => ({ tasks: new Map(), tracked: null, entries: [], verbs: new Set(), talking: null, follow: false, leaves: false, promised: 0, leads: 0, day: 1, taught: new Set(), asks: new Set(), live: new Set(), ...over });
 const AT = { day: 1, hour: 8, minute: 30 };
 
 test.describe("the hints of the world", () => {
-  test("have a rule and a place for each, and each is given once, in order, one lit at a time", () => {
+  test("are five of the story, all of the first day, and then the cards that teach an act", () => {
     const ids = HINTS.map((h) => h.id);
     expect(new Set(ids).size).toBe(ids.length);
+    expect(ids.slice(0, 5)).toEqual(["notebook", "compare", "blocked", "source", "evening"]);
+    expect(ids.slice(5).every((id) => id.startsWith("teach."))).toBe(true);
+    // Only the cards have a title and an act.
+    for (const hint of HINTS) expect(hint.act !== undefined, hint.id).toBe(hint.id.startsWith("teach."));
+  });
+
+  test("have a rule and a place for each, and each is given once, in order, one lit at a time", () => {
     const hints = new Hints();
     expect(hints.check(idle(), 0, AT, 0)).toEqual([]);
     expect(hints.lit).toBeNull();
@@ -43,7 +52,7 @@ test.describe("the hints of the world", () => {
     hints.check(idle({ entries: [entry("n1", 1)] }), 5, AT, 0);
     hints.settle();
     expect(hints.lit).toBeNull();
-    expect(hints.log[0]).toMatchObject({ id: "notebook", tick: 5, at: AT, text: "hint.notebook" });
+    expect(hints.log[0]).toMatchObject({ id: "notebook", tick: 5, at: AT, text: "cue.notebook", title: null, act: null });
     hints.again("notebook", 500);
     expect(hints.lit).toEqual({ id: "notebook", target: "btn-notebook", until: 500 + SIGNAL_MS });
     hints.again("nothing", 600);
@@ -64,16 +73,32 @@ test.describe("the hints of the world", () => {
     expect(hints.check({ ...ctx, entries: [entry("n1", 1), entry("n2", 1)] }, 2, AT, 0).map((g) => g.id)).toEqual(["compare"]);
   });
 
-  test("point at what is new: a tag for a talk, the badge for the hour, the task that is blocked, the teahouse in the evening", () => {
+  test("hold a card back for an act that was of use when they began to look, and give it the next time the act is of use", () => {
     const hints = new Hints();
-    const talk = idle({ talking: "li_laotai", verbs: new Set(["ask"]), leaves: true });
-    expect(hints.check(talk, 1, AT, 0).map((g) => [g.id, g.target])).toEqual([["chips", "topic-chips"], ["leaves", "talk-badge"]]);
+    const near = idle({ verbs: new Set(["look"]) });
+    hints.absorb(near);
+    expect(hints.check(near, 1, AT, 0)).toEqual([]);
+    // The thing goes out of reach, and nothing is given for that.
+    expect(hints.check(idle(), 2, AT, 0)).toEqual([]);
+    // Another is within reach: the act is of use again, and the card is its first.
+    expect(hints.check(near, 3, AT, 0).map((g) => g.id)).toEqual(["teach.look"]);
+    hints.reset();
+    hints.absorb(near);
+    hints.reset();
+    expect(hints.check(near, 4, AT, 0).map((g) => g.id)).toEqual(["teach.look"]);
+  });
+
+  test("point at what is new: the task that is blocked, the teahouse in the evening", () => {
+    const hints = new Hints();
     const evening = task("t_tea_tonight", "open", { window: { day: 1, from: 17, to: 19, place: "p_teahouse" } });
-    const ctx = idle({ tasks: new Map([[evening.id, evening]]), tracked: task("t", "blocked"), verbs: new Set(["track", "speak"]), leads: 1, promised: 2 });
+    const ctx = idle({ tasks: new Map([[evening.id, evening]]), tracked: task("t", "blocked") });
     const gave = hints.check(ctx, 2, AT, 0);
-    expect(gave.map((g) => g.id)).toEqual(["blocked", "track", "lead", "evening", "speak", "promised"]);
+    expect(gave.map((g) => [g.id, g.target])).toEqual([
+      ["blocked", "task-card"],
+      ["evening", "task-card"],
+    ]);
     expect(hints.def("evening")?.ping?.(ctx)).toMatchObject({ id: "p_teahouse", kind: "place" });
-    expect(hints.def("chips")?.ping).toBeUndefined();
+    expect(hints.def("blocked")?.ping).toBeUndefined();
   });
 });
 
@@ -90,27 +115,23 @@ test.describe("the hints on the way through the first day", () => {
     // 1. Granny Li refuses over the rumour: the task is blocked, and another one is there to follow.
     const blocked = { ...bamboo, state: "blocked" as const };
     const who = task("t_who_said", "open", { action: act("ask_source", { npc: "cha_laoban" }) });
-    expect(gave(hints, idle({ tasks: tasksOf(blocked, who), tracked: blocked, verbs: new Set(["track", "judge", "hint"]) }), 2)).toEqual(["blocked", "track"]);
+    expect(gave(hints, idle({ tasks: tasksOf(blocked, who), tracked: blocked, verbs: new Set(["track", "judge", "hint"]) }), 2)).toEqual(["blocked"]);
     // 2. The player follows the telling back: the question is the task that is followed, and its button names the person to ask.
     expect(gave(hints, idle({ tasks: tasksOf(blocked, who), tracked: who, verbs: new Set(["track"]), entries: [entry("n1", 2)] }), 3)).toEqual(["notebook", "source"]);
     // The question is done and the words are there to set side by side: the clerk's first hand and a rumour.
     const proof = task("t_what_proves", "open");
     const doneWho = { ...who, state: "done" as const, action: null };
     expect(gave(hints, idle({ tasks: tasksOf(blocked, doneWho, proof), tracked: proof, entries: [entry("n1", 4), entry("n3", 1)] }), 4)).toEqual(["compare"]);
-    // 4. The rumour is to be set straight at the teahouse, in the evening.
+    // 3. The rumour is to be set straight at the teahouse, in the evening, and where it may be done the card of speaking up is given.
     const clear = task("t_clear_rumour", "open", { action: act("move", { place: "p_teahouse" }) });
     const evening = task("t_tea_tonight", "open", { window: { day: 1, from: 17, to: 19, place: "p_teahouse" } });
     const ctx = idle({ tasks: tasksOf(blocked, doneWho, proof, clear, evening), tracked: clear, entries: [entry("n1", 4), entry("n3", 1)] });
     expect(gave(hints, ctx, 5)).toEqual(["evening"]);
-    expect(gave(hints, { ...ctx, verbs: new Set(["speak"]) }, 6)).toEqual(["speak"]);
-    // 5 and 6. Granny Li has let go: the task of the bamboo is open again, and the person to ask is Li Da. Then he promises.
-    const opened = task("t_bamboo_first", "open", { action: act("entrust", { npc: "li_da" }) });
-    expect(gave(hints, idle({ tasks: tasksOf(opened, clear), tracked: opened }), 7)).toEqual(["opened"]);
-    expect(gave(hints, idle({ tasks: tasksOf(opened), tracked: opened, promised: 1 }), 8)).toEqual(["promised"]);
-    expect(hints.log.map((g) => g.id)).toEqual(["blocked", "track", "notebook", "source", "compare", "evening", "speak", "opened", "promised"]);
+    expect(gave(hints, { ...ctx, verbs: new Set(["speak"]) }, 6)).toEqual(["teach.speak"]);
+    expect(hints.log.map((g) => g.id)).toEqual(["blocked", "notebook", "source", "compare", "evening", "teach.speak"]);
   });
 
-  test("do not say that the bamboo is open while Granny Li is still the one to ask, nor that two lines can be compared when there is nothing to compare", () => {
+  test("do not say that two lines can be compared when there is nothing to compare", () => {
     const hints = new Hints();
     const still = task("t_bamboo_first", "open", { action: act("entrust", { npc: "li_laotai" }) });
     expect(gave(hints, idle({ tasks: tasksOf(still), tracked: still }), 1)).toEqual([]);

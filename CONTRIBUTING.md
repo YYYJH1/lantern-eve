@@ -10,4 +10,4 @@ Every document for readers exists in English (`X.md`, the source) and in Chinese
 
 ## Checks
 
-The commands are in [docs/development.md](docs/development.md). The core uses the standard library only and keeps floats out of its state. `tests/core/test_core_rules.py` fails on `/`, floats and walking a set in every module of the core except `text/`, the helpers that read what a model wrote.
+The commands are in [docs/development.md](docs/development.md). The core uses the standard library only and keeps floats out of its state. `tests/core/test_core_rules.py` reads every module of the core except `text/`, the helpers that read what a model wrote. It fails on `/`, on floats, on walking a set, on calls such as `open`, `hash` and `print`, and on an import from outside a short list.

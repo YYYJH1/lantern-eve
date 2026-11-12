@@ -70,7 +70,7 @@ test.describe("language", () => {
         notebook: "见闻簿",
         board: "筹备",
         weather: "晴",
-        day: "第一日",
+        day: "第一天",
         teahouse: "茶馆",
         bridge: "石桥",
         bubble: SAYING.text.zh,

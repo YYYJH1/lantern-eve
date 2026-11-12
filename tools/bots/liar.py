@@ -26,6 +26,16 @@ REGULARS = (
     "zhou_zhanggui",
 )
 
+# the things the bot makes up, all about who damaged the stone rail (the core takes any fact of its
+# table of predicates as a made-up telling)
+RAIL = "t_rail"
+MADE_UP = [
+    {
+        "id": f"fab:damaged:{who}",
+        "body": {"how": "fabricate", "pred": "damaged", "subject": who, "object": RAIL},
+    }
+    for who in ("li_er", "zhou_dalang", "old_he", "fam_li", "fam_zhou")
+] + [{"id": "fab:flood", "body": {"how": "fabricate", "pred": "flood_damaged", "subject": RAIL}}]
 # a lie to make up, by the words of the evidence that points at it
 POINTS_AT = (
     ("flood", "fab:flood"),
@@ -66,7 +76,7 @@ class Lies(Dealer):
                 told.add(offer["id"])
                 result, _ = yield from self.act("tell", **offer["body"])
                 return offer["body"]["entry"] if result == "applied" else None
-        made_up = [o for o in offers if o["id"].startswith("fab:") and o["id"] not in told]
+        made_up = [o for o in MADE_UP if o["id"] not in told]
         if made_up:
             pick = self.best_lie(made_up)
             told.add(pick["id"])

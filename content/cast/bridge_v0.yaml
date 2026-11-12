@@ -33,23 +33,23 @@ items:
 
 activities:
   - {id: sleep, zh: 睡觉, en: Sleeping}
-  - {id: meal, zh: 用饭, en: Having a meal}
+  - {id: meal, zh: 吃饭, en: Having a meal}
   - {id: work, zh: 干活, en: Working}
   - {id: tea, zh: 喝茶, en: Having tea}
   - {id: drink, zh: 喝酒, en: Drinking}
-  - {id: chat, zh: 闲谈, en: Chatting}
+  - {id: chat, zh: 闲聊, en: Chatting}
   - {id: pray, zh: 上香, en: Praying}
   - {id: teach, zh: 教书, en: Teaching}
   - {id: study, zh: 读书, en: Studying}
   - {id: play, zh: 玩耍, en: Playing}
   - {id: fish, zh: 钓鱼, en: Fishing}
   - {id: ferry, zh: 摆渡, en: Ferrying}
-  - {id: patrol, zh: 巡夜, en: On the night round}
+  - {id: patrol, zh: 打更, en: On the night round}
   - {id: council, zh: 议事, en: In council}
-  - {id: rest, zh: 歇息, en: Resting}
+  - {id: rest, zh: 歇着, en: Resting}
   # what a person does when something other than the routine decides
   - {id: walk, zh: 赶路, en: Walking, system: true}
-  - {id: carry, zh: 搬运, en: Carrying a load, system: true}
+  - {id: carry, zh: 搬东西, en: Carrying a load, system: true}
   - {id: shelter, zh: 躲雨, en: Sheltering from the rain, system: true}
 
 people:
@@ -65,6 +65,12 @@ people:
     work: p_li_house
     traits: {gossip: 35, conformity: 70, suspicion: 60, warmth: 55}
     ops: {level: 20, sharpen: 25, assimilate: 40, fill: 15}
+    intro:
+      zh: "李大、李二的娘。李家的大事，最后都是老太太拿主意。"
+      en: "Mother of Li Da and Li Er. In the Li house, the old lady has the last word on anything big."
+    likes: [pastry]
+    dislikes: [wine]
+    ask: {what: role, item: t_honor_light}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_li_house}
@@ -88,6 +94,12 @@ people:
     work: p_li_house
     traits: {gossip: 40, conformity: 55, suspicion: 45, warmth: 50}
     ops: {level: 25, sharpen: 25, assimilate: 35, fill: 15}
+    intro:
+      zh: "李家长子，管着家里的竹林和竹料。做事稳当，大事要等老太太发话。"
+      en: "Eldest Li son, in charge of the family bamboo grove. Steady at the work, and waits for Granny Li's word on anything big."
+    likes: [tea, wine]
+    dislikes: [pastry]
+    ask: {what: wage, amount: 20}
     holdings:
       - {item: bamboo, qty: 30, at: p_li_house}
     routine:
@@ -113,6 +125,12 @@ people:
     work: p_workshop
     traits: {gossip: 45, conformity: 40, suspicion: 35, warmth: 55}
     ops: {level: 30, sharpen: 20, assimilate: 25, fill: 25}
+    intro:
+      zh: "李家次子，在扎灯坊帮工，糊的灯又圆又亮。镇上老老少少，都和李二说得上话。"
+      en: "Second Li son. Pastes lanterns at the lantern workshop, round and bright. Has a word for everyone in town, young or old."
+    likes: [lantern_paper]
+    dislikes: []
+    ask: {what: stall, item: back}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_li_house}
@@ -127,7 +145,7 @@ people:
   - id: shitou
     zh: 石头
     en: "Shitou"
-    role: {zh: 李家的孩子, en: "Child of the Li family"}
+    role: {zh: 李大的儿子, en: "Son of Li Da"}
     token: {zh: 李, en: L}
     family: fam_li
     tags: []
@@ -135,6 +153,12 @@ people:
     work: p_school
     traits: {gossip: 55, conformity: 30, suspicion: 15, warmth: 80}
     ops: {level: 40, sharpen: 25, assimilate: 15, fill: 20}
+    intro:
+      zh: "李大的小儿子，白天在私塾念书，一下学就往河滩跑。嗓门大，藏不住话。"
+      en: "Li Da's young son. At the school by day, down on the riverbank the moment lessons end. Loud, and bad at keeping a secret."
+    likes: [pastry]
+    dislikes: [tea]
+    ask: {what: slot}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_li_house}
@@ -149,7 +173,7 @@ people:
   - id: li_xiaomei
     zh: 李家小妹
     en: "Li Xiaomei"
-    role: {zh: 李家小女儿, en: "Youngest daughter of the Li family"}
+    role: {zh: 李大的女儿, en: "Daughter of Li Da"}
     token: {zh: 李, en: L}
     family: fam_li
     tags: [bridge]
@@ -157,6 +181,12 @@ people:
     work: p_workshop
     traits: {gossip: 60, conformity: 35, suspicion: 25, warmth: 80}
     ops: {level: 30, sharpen: 10, assimilate: 20, fill: 40}
+    intro:
+      zh: "李大的女儿，常去扎灯坊裁纸、糊灯面。手巧嘴甜，街坊都喜欢。"
+      en: "Li Da's daughter, often at the lantern workshop cutting paper and pasting shades. Deft, sweet-tongued, liked all along the street."
+    likes: [lantern_paper, pastry]
+    dislikes: [wine]
+    ask: {what: slot}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_li_house}
@@ -179,6 +209,12 @@ people:
     work: p_zhou_house
     traits: {gossip: 50, conformity: 60, suspicion: 65, warmth: 35}
     ops: {level: 15, sharpen: 25, assimilate: 40, fill: 20}
+    intro:
+      zh: "周家的掌柜，做了半辈子木料生意。修桥要的木料，大半在周家库里。"
+      en: "Head of the Zhou shop, a timber dealer for half a lifetime. Most of the timber a bridge repair needs sits in the Zhou store."
+    likes: [tea]
+    dislikes: [pastry]
+    ask: {what: stall, item: front}
     holdings:
       - {item: timber, qty: 24, at: p_zhou_house}
     routine:
@@ -202,6 +238,12 @@ people:
     work: p_market
     traits: {gossip: 70, conformity: 60, suspicion: 50, warmth: 50}
     ops: {level: 20, sharpen: 30, assimilate: 30, fill: 20}
+    intro:
+      zh: "周掌柜的媳妇，天天在集市上转。街坊谁家有点事，周娘子总是头一个知道。"
+      en: "The Shopkeeper's wife, out at the market every day. When something happens in a house on the street, Madam Zhou is usually the first to hear."
+    likes: [pastry, tea]
+    dislikes: [wine]
+    ask: {what: stall, item: back}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_zhou_house}
@@ -224,6 +266,12 @@ people:
     work: p_zhou_house
     traits: {gossip: 45, conformity: 20, suspicion: 40, warmth: 30}
     ops: {level: 10, sharpen: 45, assimilate: 25, fill: 20}
+    intro:
+      zh: "周掌柜的长子，帮家里扛木料、跑买卖。力气大，脾气也大。"
+      en: "The Shopkeeper's elder son, who carries timber and runs errands for the trade. Strong, and short-tempered."
+    likes: [wine]
+    dislikes: [tea]
+    ask: {what: wage, amount: 10}
     holdings: []
     routine:
       - {hour: 6, act: sleep, place: p_zhou_house}
@@ -246,6 +294,12 @@ people:
     work: p_zhou_house
     traits: {gossip: 55, conformity: 30, suspicion: 30, warmth: 75}
     ops: {level: 30, sharpen: 10, assimilate: 20, fill: 40}
+    intro:
+      zh: "周掌柜的次子，性子温和，常替家里去集市和河边办事。见了李家人也照样问好。"
+      en: "The Shopkeeper's younger son, mild by nature, often sent to the market and the river. Still greets the Li family whenever they meet."
+    likes: [tea, lantern_paper]
+    dislikes: [wine]
+    ask: {what: slot}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_zhou_house}
@@ -267,6 +321,12 @@ people:
     work: p_zhou_house
     traits: {gossip: 65, conformity: 75, suspicion: 40, warmth: 45}
     ops: {level: 30, sharpen: 20, assimilate: 30, fill: 20}
+    intro:
+      zh: "在周家帮工好些年，手脚勤快。遇上什么事，总说「掌柜的说了算」。"
+      en: "Has worked for the Zhou family for years, with quick hands. Whatever comes up, the answer is that the Shopkeeper decides."
+    likes: [pastry]
+    dislikes: [lantern_paper]
+    ask: {what: wage, amount: 10}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_zhou_house}
@@ -290,6 +350,12 @@ people:
     work: p_teahouse
     traits: {gossip: 92, conformity: 55, suspicion: 40, warmth: 70}
     ops: {level: 10, sharpen: 45, assimilate: 25, fill: 20}
+    intro:
+      zh: "河边茶馆的老板娘，开了十几年。镇上的新鲜事，都要在茶桌上过一遍。"
+      en: "Keeper of the teahouse by the river for more than ten years. Every piece of news in town passes over the teahouse tables."
+    likes: [pastry, wine]
+    dislikes: [lantern_paper]
+    ask: {what: stall, item: front}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_teahouse}
@@ -309,6 +375,12 @@ people:
     work: p_school
     traits: {gossip: 70, conformity: 40, suspicion: 35, warmth: 55}
     ops: {level: 35, sharpen: 10, assimilate: 20, fill: 35}
+    intro:
+      zh: "私塾先生，教镇上的孩子识字，还办着《镇报》。报上登了的事，识字的人就当真。"
+      en: "The schoolmaster, who teaches the town's children to read and puts out the Town Gazette. What the Gazette prints, those who can read take as true."
+    likes: [tea, lantern_paper]
+    dislikes: [wine]
+    ask: {what: role, item: stage_words}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_school}
@@ -332,6 +404,12 @@ people:
     work: p_ferry
     traits: {gossip: 40, conformity: 45, suspicion: 55, warmth: 50}
     ops: {level: 30, sharpen: 20, assimilate: 20, fill: 30}
+    intro:
+      zh: "渡口的老船夫，摆了二十多年渡船，镇上谁都坐过。"
+      en: "The ferryman at the landing for more than twenty years, and everyone in town has crossed in the boat."
+    likes: [wine, tea]
+    dislikes: [pastry]
+    ask: {what: wage, amount: 10}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_he_home}
@@ -355,6 +433,12 @@ people:
     work: p_clan_hall
     traits: {gossip: 15, conformity: 85, suspicion: 50, warmth: 45}
     ops: {level: 50, sharpen: 5, assimilate: 35, fill: 10}
+    intro:
+      zh: "澄溪镇辈分最高的长辈，管祠堂和族里的规矩。请外乡人来当今年的灯会总管，是族长拍的板。"
+      en: "The most senior elder in Chengxi, keeper of the ancestral hall and the clan's rules. It was the elder who chose to bring in an outsider as this year's festival manager."
+    likes: [tea]
+    dislikes: [wine]
+    ask: {what: role, item: lead_lanterns}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_clan_hall}
@@ -369,7 +453,7 @@ people:
   - id: zhangfang
     zh: 账房
     en: "Accountant"
-    role: {zh: 账房先生, en: "Keeper of the town's accounts"}
+    role: {zh: 账房, en: "Keeper of the town's accounts"}
     token: {zh: 账, en: A}
     family: null
     tags: [gatekeeper]
@@ -377,6 +461,12 @@ people:
     work: p_market
     traits: {gossip: 10, conformity: 60, suspicion: 70, warmth: 35}
     ops: {level: 60, sharpen: 5, assimilate: 15, fill: 20}
+    intro:
+      zh: "账房管着全镇的公账。修桥修路、灯会的花销，一笔一笔都记在账本上。"
+      en: "Keeper of the town's common accounts. Every coin spent on bridges, roads and the festival goes into the ledger."
+    likes: [tea]
+    dislikes: [lantern_paper]
+    ask: {what: stall, item: back}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_accountant_home}
@@ -397,6 +487,12 @@ people:
     work: p_temple
     traits: {gossip: 20, conformity: 70, suspicion: 40, warmth: 60}
     ops: {level: 40, sharpen: 10, assimilate: 30, fill: 20}
+    intro:
+      zh: "小庙的庙祝，守了大半辈子香火。庙后那条夹道平时锁着，钥匙在庙祝手里。"
+      en: "Keeper of the small temple, tending the incense for most of a lifetime. The lane behind the temple is kept locked, and the key stays with the keeper."
+    likes: [tea, lantern_paper]
+    dislikes: [wine]
+    ask: {what: stall, item: back}
     holdings: []
     routine:
       - {hour: 6, act: pray, place: p_temple}
@@ -411,7 +507,7 @@ people:
   - id: xiao_man
     zh: 小满
     en: "Xiaoman"
-    role: {zh: 夜里爱钓鱼的孩子, en: "A child who likes to fish at night"}
+    role: {zh: 河边人家的孩子, en: "A child from a riverside house"}
     token: {zh: 满, en: X}
     family: null
     tags: [witness]
@@ -420,6 +516,12 @@ people:
     work: p_riverbank
     traits: {gossip: 60, conformity: 25, suspicion: 20, warmth: 70}
     ops: {level: 45, sharpen: 25, assimilate: 10, fill: 20}
+    intro:
+      zh: "家在河边的孩子，最爱钓鱼，夜里常蹲在河滩上。"
+      en: "A child who lives by the river and loves fishing, often crouched on the bank at night."
+    likes: [pastry]
+    dislikes: [tea]
+    ask: {what: slot}
     holdings: []
     routine:
       - {hour: 6, act: sleep, place: p_xiaoman_home}
@@ -435,7 +537,7 @@ people:
   - id: gengfu
     zh: 更夫
     en: "Night Watchman"
-    role: {zh: 爱喝酒的更夫, en: "Night watchman, fond of a drink"}
+    role: {zh: 更夫, en: "Night watchman"}
     token: {zh: 更, en: W}
     family: null
     tags: [witness]
@@ -444,6 +546,12 @@ people:
     work: p_bridge
     traits: {gossip: 50, conformity: 40, suspicion: 55, warmth: 40}
     ops: {level: 30, sharpen: 30, assimilate: 15, fill: 25}
+    intro:
+      zh: "打了十几年更的更夫，镇上的人都认得这面锣的声音。"
+      en: "The night watchman, more than ten years on the rounds. Everyone in town knows the sound of the gong."
+    likes: [wine]
+    dislikes: [tea]
+    ask: {what: wage, amount: 10}
     holdings: []
     routine:
       - {hour: 6, act: sleep, place: p_watch_post}
@@ -469,6 +577,12 @@ people:
     work: p_workshop
     traits: {gossip: 35, conformity: 50, suspicion: 40, warmth: 55}
     ops: {level: 35, sharpen: 15, assimilate: 25, fill: 25}
+    intro:
+      zh: "木匠，在扎灯坊有一张工台。镇上门窗桌椅坏了都找木匠，修桥动木头也少不了这双手。"
+      en: "The carpenter, with a bench at the lantern workshop. The town brings every broken door, window and chair here, and a bridge repair in timber will need these hands."
+    likes: [wine]
+    dislikes: [pastry]
+    ask: {what: wage, amount: 20}
     holdings:
       - {item: tools, qty: 3, at: p_workshop}
     routine:
@@ -491,6 +605,12 @@ people:
     work: p_workshop
     traits: {gossip: 30, conformity: 45, suspicion: 30, warmth: 60}
     ops: {level: 35, sharpen: 15, assimilate: 20, fill: 30}
+    intro:
+      zh: "扎灯师傅，扎了三十年灯，每年游灯打头的主灯都出自这双手。今年的灯扎了一半，就等游灯那一夜。"
+      en: "The lantern maker, thirty years at the craft. The great lantern at the head of every lantern parade is the maker's work, and this year's lanterns are half made, waiting for the night."
+    likes: [lantern_paper, tea]
+    dislikes: [wine]
+    ask: {what: role, item: lead_lanterns}
     holdings: []
     routine:
       - {hour: 6, act: meal, place: p_workshop}

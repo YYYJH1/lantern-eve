@@ -9,6 +9,7 @@ what each of them says.
 
 import copy
 import json
+import re
 
 import bridge_driver
 import pytest
@@ -18,7 +19,7 @@ from voice_helpers import VOICED, bubble, claim_wordings
 
 from lantern_core.api import Game
 from lantern_core.cognition.lines import frame_key
-from lantern_core.world.bridge import phrases, player, social, voices
+from lantern_core.world.bridge import phrases, player, prompts, social, voices
 from lantern_core.world.bridge.lore import lore
 from lantern_core.world.bridge.voice_data import VOICES
 
@@ -50,7 +51,8 @@ def pointing(who: str) -> str:
 def ways(who: str, code: str) -> list[dict[str, str]]:
     """The ways a person says a fixed line, with the hub named in the lines that point to her."""
     found = voices.variants(who, code)
-    return [phrases.named(w, lore().names[HUB]) for w in found] if code == "point_hub" else found
+    named = voices.called(who, HUB)  # as the one who points names her
+    return [phrases.named(w, named) for w in found] if code == "point_hub" else found
 
 
 # ------------------------------------------------------------------------------ the choice
@@ -292,6 +294,9 @@ def answers(outputs: list[dict]) -> list[tuple[str, dict[str, str]]]:
 
 
 def test_the_state_does_not_know_there_are_voices(monkeypatch):
+    # a request holds the names the asked person uses for others (``prompts.calls_note``): that is
+    # held by test_bridge_calls, and what is compared here is the words and the world
+    monkeypatch.setattr(prompts, "calls_note", lambda person: "")
     with monkeypatch.context() as patch:
         patch.setattr(voices, "VOICES", {})  # everyone speaks the plain words again
         voices.claim_words.cache_clear()
@@ -339,6 +344,108 @@ def test_the_words_come_from_the_state_so_a_restored_game_says_the_same_things()
     after = bubble(step(restored), "zhou_niangzi")
     pointing_to = phrases.named(
         voices.phrase("zhou_niangzi", "point_hub", me(game)["talk"]["until"]),
-        lore().names["cha_laoban"],
+        voices.called("zhou_niangzi", "cha_laoban"),
     )  # she knows nothing of it, and sends the manager to the teahouse
     assert after == before == pointing_to
+
+
+# ---------------------------------------------------------------- the composed answers, read whole
+
+PROPS = dict(lore().book.props.items())
+GUESSES = ("speculate",)
+TELLERS = ("cha_laoban", "zhou_niangzi")  # someone who told the speaker, never the speaker
+
+
+def every_wording(prop_id: str, speaker: str) -> list[dict[str, str]]:
+    """Every way ``speaker`` can word the prop: each frame, told, seen, worked out and guessed, each
+    hedge, and the rival account."""
+    prop = PROPS[prop_id]
+    teller = TELLERS[0] if speaker != TELLERS[0] else TELLERS[1]
+    out = []
+    for modality, sources in (
+        ("assert", ("self_seen", "unknown", speaker, teller)),
+        ("speculate", ("self_seen", "unknown", teller)),
+    ):
+        for source in sources:
+            for pick in (0, 1):
+                out += claim_wordings(prop, modality, source, speaker, pick=pick)
+    for variant in VOICES[speaker]["frames"]["rival"]:
+        out.append(
+            lore().lines.rival(
+                prop, voices.names_for(speaker), teller=teller, speaker=speaker, frame=variant
+            )
+        )
+    return out
+
+
+@pytest.mark.parametrize("speaker", VOICED)
+def test_a_sentence_with_its_own_shi_says_shi_once(speaker):
+    """渡船是老何的 and 栏杆是秋汛冲坏的 are never said after 说是 or a hedge in 是."""
+    for prop_id in ("pr_he_owns_boat", "pr_flood_damaged"):
+        for said in every_wording(prop_id, speaker):
+            assert not re.search(r"是(渡船|栏杆)是", said["zh"]), (speaker, said["zh"])
+
+
+@pytest.mark.parametrize("speaker", VOICED)
+def test_a_guessed_motive_does_not_say_the_hedge_of_its_line_again(speaker):
+    """The motive of a guess the speaker hedges is said in their other hedge, and a person's two
+    hedges are two words (not 兴许是 and 许是)."""
+    one, other = (h.removesuffix("是") for h in VOICES[speaker]["hedges"]["zh"][:2])
+    assert one not in other and other not in one, (speaker, one, other)
+    prop = PROPS["pr_li_damaged_jealous"]
+    for pick, (line_hedge, motive_hedge) in enumerate(((one, other), (other, one))):
+        for said in claim_wordings(prop, "speculate", "self_seen", speaker, pick=pick):
+            motive = said["zh"].rstrip("。").rpartition("。")[2]
+            assert motive.startswith(motive_hedge) and line_hedge in said["zh"], (speaker, said)
+
+
+@pytest.mark.parametrize("speaker", VOICED)
+def test_a_person_says_the_bridge_and_the_water_as_people_do(speaker):
+    for prop_id in ("pr_liner_at_bridge", "pr_he_under_bridge", "pr_flooded", "pr_gengfu_round"):
+        for said in every_wording(prop_id, speaker):
+            assert "在石桥" not in said["zh"] and "桥下的水面" not in said["zh"], said["zh"]
+            assert "Water Beneath" not in said["en"] and "Stone Bridge" not in said["en"], said
+    flood = lore().lines.statement(PROPS["pr_flooded"], lore().names)
+    assert flood == {
+        "zh": "这几天桥下的水涨了",
+        "en": "the river under the bridge rose over the past few days",
+    }
+
+
+def test_the_one_who_told_it_is_themself_in_what_they_told():
+    for speaker in VOICED:
+        if speaker == "zhou_dalang":
+            continue
+        for said in claim_wordings(PROPS["pr_dalang_at_home"], "assert", "zhou_dalang", speaker):
+            assert "自己" in said["zh"] and said["zh"].count("大郎") <= 1, (speaker, said["zh"])
+            assert "they were at home" in said["en"], (speaker, said["en"])
+
+
+def test_a_family_says_we_the_boatman_is_old_he_and_the_lantern_maker_says_li_er():
+    for speaker in ("li_laotai", "li_da", "li_er", "shitou", "li_xiaomei"):
+        said = voices.claim_words(PROPS["pr_li_damaged"], "assert", "cha_laoban", speaker, 0, 0)
+        assert "我们家昨晚把栏杆弄坏了" in said["zh"] and "our family" in said["en"], said
+    for speaker in VOICED:
+        if speaker == "old_he":
+            continue
+        said = voices.claim_words(PROPS["pr_boat_damaged"], "assert", "unknown", speaker, 0, 0)
+        assert "船夫老何" not in said["zh"] and "老何" in said["zh"], (speaker, said["zh"])
+    said = voices.claim_words(
+        PROPS["pr_liner_at_bridge"], "assert", "unknown", "zhadeng_shifu", 0, 0
+    )
+    assert "李二昨晚在桥边" in said["zh"] and "二郎" not in said["zh"]
+
+
+def test_what_was_set_straight_is_said_in_two_sentences_what_was_seen_first():
+    said = voices.claim_words(PROPS["pr_set_straight"], "assert", "cha_laoban", "zuzhang", 1, 0)
+    assert "周家伙计只看见李二在桥边找掉进水里的灯笼。这事当众说清了。" in said["zh"]
+    for speaker in VOICED:
+        for wording in every_wording("pr_set_straight", speaker):
+            assert "it it" not in wording["en"] and "made clear in public that" not in wording["en"]
+
+
+def test_what_the_whole_town_knows_is_said_as_that():
+    for speaker in VOICED:
+        said = voices.claim_words(PROPS["pr_he_owns_boat"], "assert", "self_seen", speaker, 0, 0)
+        assert said in claim_wordings(PROPS["pr_he_owns_boat"], "assert", "self_seen", speaker)
+        assert "亲眼" not in said["zh"], (speaker, said["zh"])

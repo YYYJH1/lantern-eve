@@ -7,7 +7,6 @@ import type { Scene } from "../scene.ts";
 import type { StatementCard, StatementOption, StatementPartCard } from "../slice.ts";
 import { elderText, truthLastText } from "./board-text.ts";
 import { readPref, writePref } from "../storage.ts";
-import { Cost } from "./common.tsx";
 import { count } from "./paper-text.ts";
 import { chosenOption, marksOf, partName, partsOf, stateButton, wrongLine } from "./statement-text.ts";
 import { InkAct, Struck, Tally, Underline } from "./ink.tsx";
@@ -74,11 +73,17 @@ function OptionRow({ part, option, entries, lang, play, onUse }: { part: Stateme
 /** One of the three parts: its name, a way to take the choice back, a line where nothing held bears on it, and its options. */
 function PartView({ part, entries, lang, play, onUse }: { part: StatementPartCard; entries: readonly NotebookEntry[]; lang: Lang; play: Play; onUse: () => void }) {
   const name = partName(part, lang);
+  const filled = chosenOption(part);
   return (
     <section class="stmt-part" data-testid="statement-part" data-part={part.part} data-chosen={part.chosen ?? ""} data-gap={part.gap} aria-label={name}>
       <header class="stmt-part-head">
+        {/* One line of the statement with a blank in it: the question, and what was chosen to fill it. */}
         <h4 class="stmt-part-title" data-testid="statement-part-title">
-          {name}
+          <span class="stmt-ask">{name}</span>
+          <span class="stmt-colon">{lang === "zh" ? "：" : ": "}</span>
+          <span class={`stmt-blank${filled === undefined ? "" : " is-filled"}`} data-testid="statement-blank" data-filled={filled !== undefined}>
+            {filled === undefined ? "" : pick(filled.text, lang)}
+          </span>
         </h4>
         {part.chosen === null ? null : (
           <InkAct seed={`clear-${part.part}`} class="stmt-clear" data-testid="statement-clear" aria-label={t("statement.clear.part", { part: name })} onClick={() => play.flows.clearPart(part.part)}>
@@ -112,11 +117,10 @@ interface BarProps {
   card: StatementCard;
   lang: Lang;
   play: Play;
-  speakCost: number | null;
 }
 
 /** The button that makes the full statement, what is said under it when it cannot be pressed, and the question that comes first when it can. */
-function StateBar({ card, lang, play, speakCost }: BarProps) {
+function StateBar({ card, lang, play }: BarProps) {
   const flow = play.flows.state.statement;
   const waiting = flow.waiting !== null;
   const button = stateButton(card, waiting, lang);
@@ -141,7 +145,6 @@ function StateBar({ card, lang, play, speakCost }: BarProps) {
           <div class="stmt-buttons">
             <button type="button" class="ink-frame" data-testid="statement-confirm" onClick={() => play.flows.makeStatement()}>
               <span>{t("statement.confirm.yes")}</span>
-              <Cost minutes={speakCost} id="statement-confirm" />
             </button>
             <button type="button" class="ink-act" ref={notYet} data-testid="statement-cancel" onClick={() => play.flows.cancelStatement()}>
               {t("statement.confirm.no")}
@@ -153,7 +156,6 @@ function StateBar({ card, lang, play, speakCost }: BarProps) {
         <>
           <button type="button" class="ink-frame" data-testid="statement-state" data-state={button.state} disabled={!button.enabled} aria-describedby={button.why === null ? undefined : "statement-why"} onClick={() => play.flows.askToState()}>
             <span>{waiting ? t("statement.sending") : t("statement.state")}</span>
-            {waiting ? null : <Cost minutes={speakCost} id="statement" />}
           </button>
           {button.why === null ? null : (
             <p class="stmt-why" id="statement-why" data-testid="statement-why" data-state={button.state}>
@@ -205,7 +207,6 @@ export interface StatementCardProps {
   lang: Lang;
   play: Play;
   /** The game minutes of speaking in public (`player.costs.speak`), written on the button that makes the statement. */
-  speakCost: number | null;
 }
 
 /**
@@ -213,7 +214,7 @@ export interface StatementCardProps {
  * where there is not. Each lists what could be said, with the notes for and against it, and the manager chooses one; under them the
  * button that makes the full statement, which can be pressed when the core says so, and the statement made last.
  */
-export function StatementCardView({ card, entries, scene, lang, play, speakCost }: StatementCardProps) {
+export function StatementCardView({ card, entries, scene, lang, play }: StatementCardProps) {
   // The line that says what the strokes count is there until the player has used the card once.
   const [legend, setLegend] = useState(() => readPref("statement-legend") !== "seen");
   const used = (): void => {
@@ -228,7 +229,7 @@ export function StatementCardView({ card, entries, scene, lang, play, speakCost 
           <PartView key={part.part} part={part} entries={entries} lang={lang} play={play} onUse={used} />
         ))}
       </div>
-      <StateBar card={card} lang={lang} play={play} speakCost={speakCost} />
+      <StateBar card={card} lang={lang} play={play} />
       <LastView card={card} scene={scene} lang={lang} />
       {legend ? (
         <p class="stmt-legend" data-testid="statement-intro" title={t("statement.intro")}>

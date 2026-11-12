@@ -295,24 +295,26 @@ def test_a_part_that_did_not_hold_comes_before_the_proof_and_the_goal_and_names_
     assert assembly.missed(state_of(game)) == "parts"
     why = made(game, at(4, 19))["truth"]["last"]["why"]
     assert why == {
-        "zh": "成因：没有人亲眼看见。误会缘由：这和更夫亲眼所见矛盾。",
-        "en": "Cause: nobody has seen this with their own eyes. "
-        "How the rumour began: this contradicts what Night Watchman saw with their own eyes.",
+        "zh": "「桥是怎么坏的」这一条，没有人亲眼看见。"
+        "「大家为什么会误会」这一条，和更夫亲眼看见的不一样。",
+        "en": "The part “How the bridge broke” rests on nothing anyone saw. "
+        "The part “Why people got it wrong” goes against what the Night Watchman saw "
+        "with their own eyes.",
     }
     speech(game, statement(9, 8, 2, 1, 0, fails=[["course", "unsourced", ""]]))
     assert made(game, at(4, 19))["truth"]["last"]["why"] == {
-        "zh": "经过：来源对不上。",
-        "en": "Course: the sources do not line up.",
+        "zh": "「那晚的经过」这一条，话传走样了。",
+        "en": "The part “What happened that night” rests on talk that changed as it was passed on.",
     }
     speech(game, statement(9, 8, 2, 1, 1))  # the last one told it
     assert made(game, at(4, 19))["truth"]["last"]["why"] is None
 
 
 def test_the_words_of_a_shortfall_are_in_both_languages_and_name_the_numbers_of_the_goal():
-    assert board.SHORT["named"]["en"] == "Fewer than 5 named people were there"
-    assert board.SHORT["named"]["zh"] == "在场有名有姓的人不到五位"
-    assert board.SHORT["accepted"]["en"] == "Fewer than 60% of those there accepted"
-    assert board.SHORT["accepted"]["zh"] == "在场的人里接受的不到六成"
+    assert board.SHORT["named"]["en"] == "Fewer than 5 familiar faces were there"
+    assert board.SHORT["named"]["zh"] == "在场的熟面孔不到五个"
+    assert board.SHORT["accepted"]["en"] == "Fewer than 60% of those there believed it"
+    assert board.SHORT["accepted"]["zh"] == "在场的人里信的不到六成"
     assert set(board.SHORT) == set(assembly.MISSED) - {"parts", "proof"}  # those have their own
     for words in board.SHORT.values():
         assert set(words) == {"zh", "en"} and words["zh"] and words["en"]

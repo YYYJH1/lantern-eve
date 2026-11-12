@@ -1,152 +1,167 @@
-# The Carpenter, who works at the bench in the lantern workshop and mends what the town breaks.
-# Practical and slow, measures things by the eye and the joint, trusts timber more than talk.
+# The Carpenter, who works at a bench in the lantern workshop and mends what the town breaks.
+# Practical and slow, reaches for timber and joints to say a thing, and trusts work done by hand
+# over words.
 person: mujiang
 voice:
-  zh: 木匠。实在、慢，凡事用尺寸和榫头打比方，信木头不信嘴。
-  en: The carpenter. Practical and slow, measures everything in joints and lengths, trusts timber more than talk.
+  zh: 木匠。实在，说话慢，爱拿木头、榫头打比方，信手上的活，不信嘴上的话。在乎修桥的木头够不够、好不好。不想说就说「我只管木头」。对总管说「你」。叫船夫老何「老何」。
+  en: The carpenter. Practical and slow of speech, reaches for timber and joints to make a point, trusts work done by hand and not what people say. Cares whether there is enough good timber to mend the bridge. When unwilling to say, answers "I only deal in timber".
+call:
+  old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
     - {zh: "呼……墨线……弹歪了……（睡熟了）", en: "Zzz... the ink line... snapped crooked... (fast asleep)"}
-    - {zh: "唔……这块料……还得再刨……（睡熟了）", en: "Mm... this board... needs more planing... (fast asleep)"}
+    - {zh: "唔……这块料……还得刨……（睡熟了）", en: "Mm... this board... needs more planing... (fast asleep)"}
   busy:
-    - {zh: "手里的活没完。回头再说。", en: "My work isn't done. Later."}
-    - {zh: "刨子正顺手。别打断我。", en: "The plane is running true. Don't interrupt."}
+    - {zh: "手上的活没完，回头再说。", en: "My hands are full. Later."}
+    - {zh: "刨子正顺手，别打断我。", en: "The plane is running nicely. Don't stop me now."}
   timeout:
-    - {zh: "木料还等着下锯。得回去了。", en: "There's timber waiting to be cut. I have to get back."}
-    - {zh: "尺寸还没量完。我先忙去了。", en: "I haven't finished measuring. I'll get on with it."}
+    - {zh: "木料还等着下锯，得回去了。", en: "There's timber waiting for the saw. I have to get back."}
+    - {zh: "尺寸还没量完，我先忙去了。", en: "I haven't finished measuring. I'll get on with it."}
   unknown:
-    - {zh: "这事我没经手。不清楚。", en: "Never handled it. I can't say."}
-    - {zh: "木头我懂。这事我不懂。", en: "I know timber. This I don't know."}
+    - {zh: "这事我没经手，不清楚。", en: "I never had a hand in it, so I don't know."}
+    - {zh: "木头我懂，这个我不懂。", en: "I know timber. This I don't know."}
   evade:
-    - {zh: "这话还是不说为好。", en: "Better left unsaid."}
-    - {zh: "嘴上得有个把门的。不提了。", en: "A mouth needs a latch. Let's drop it."}
+    - {zh: "我只管木头。", en: "I only deal in timber."}
+    - {zh: "这话不说为好。", en: "Better left unsaid."}
   not_said:
-    - {zh: "这话我没讲过。凭良心说。", en: "I never said that. On my honour."}
-    - {zh: "话不是我的。别安在我头上。", en: "The words aren't mine. Don't pin them on me."}
+    - {zh: "这话我没讲过，凭良心说。", en: "I never said that, on my conscience."}
+    - {zh: "话不是我的，别安到我头上。", en: "Those aren't my words. Don't pin them on me."}
   not_so:
-    - {zh: "不对。尺寸不是这样。", en: "No. That's not the measure of it."}
-    - {zh: "差得远。事情不是这样。", en: "Far off. It wasn't like that."}
+    - {zh: "不对，没那么回事。", en: "No. Nothing of the kind."}
+    - {zh: "差得远，事情不是这样。", en: "Way off. It wasn't like that."}
   keeper_no:
-    - {zh: "咱们还不熟。下回再说。", en: "We don't know each other yet. Next time."}
-    - {zh: "这东西不能给生人。", en: "This isn't for strangers."}
+    - {zh: "咱们还不熟，下回再说。", en: "We don't know each other yet. Next time."}
+    - {zh: "这东西不给生人。", en: "This isn't for strangers."}
   took_in:
-    - {zh: "嗯，我心里有尺了。", en: "Mm. I have the measure of it now."}
-    - {zh: "好，这话我收着。", en: "Good, I'll hold on to that."}
+    - {zh: "好，这话我收着。", en: "Right, I'll keep that."}
+    - {zh: "知道了，我记着。", en: "I see. I'll remember."}
   knew:
-    - {zh: "这事我早就量过了。", en: "I had already measured that up."}
-    - {zh: "不用说。我心里有数。", en: "No need to say. I've a good idea already."}
+    - {zh: "这事我早晓得了。", en: "Heard that one already."}
+    - {zh: "这个早有人跟我说过了。", en: "Somebody told me that a while back."}
   doubted:
-    - {zh: "尺寸对不上。我听到的不是这样。", en: "The measure doesn't fit. It's not what I heard."}
+    - {zh: "不对，我听来的不是这样。", en: "No. What I heard was different."}
     - {zh: "听着不对路。", en: "That doesn't sound right."}
   caught:
-    - {zh: "你糊弄我！往后你的话，我一句不信！", en: "You fooled me! I won't believe a word you say from now on!"}
-    - {zh: "木头都不骗人，你却骗我！", en: "Even timber doesn't lie, and you lied to me!"}
+    - {zh: "你糊弄我。往后你的话，我一句不信。", en: "You fooled me. I won't believe a word you say from now on."}
+    - {zh: "木头都不骗人，你倒骗我。", en: "Even timber doesn't lie, and you lied to me."}
   deal:
-    - {zh: "行，就这么钉死了。", en: "Fine, that's nailed down."}
-    - {zh: "好，一锤定音。", en: "Good. The hammer has fallen."}
+    - {zh: "行，就这么钉死了。", en: "Right, that's nailed down."}
+    - {zh: "好，一锤定音。", en: "Good. That's hammered home."}
   empty:
-    - {zh: "没有实料的话，我不信。", en: "Words without substance, I don't believe."}
+    - {zh: "没有实料的话，我不信。", en: "Talk with nothing solid in it, I don't believe."}
     - {zh: "空架子立不住。", en: "An empty frame won't stand."}
   kept_thanks:
-    - {zh: "总管说话作数。这份情我记着。", en: "The Manager's word holds. I'll remember the favour."}
-    - {zh: "你办得牢靠。以后有活尽管开口。", en: "You've done it solid. Call on me if you ever need work done."}
+    - {zh: "你说话作数，我记着。", en: "Your word holds. I'll remember that."}
+    - {zh: "你这事办得牢靠。往后有活尽管开口。", en: "You did that solidly. If you ever need work done, just ask."}
   will_do:
     - {zh: "好，这活我接了。", en: "Good, I'll take the job."}
-    - {zh: "行，我来动手。", en: "Right, I'll set my hand to it."}
+    - {zh: "行，我来动手。", en: "Right, I'll get my hands on it."}
   cannot:
-    - {zh: "这活我干不了。", en: "I can't take that job."}
-    - {zh: "手艺不到。帮不上。", en: "Beyond my craft. I can't help."}
+    - {zh: "这活我干不了。", en: "I can't do that job."}
+    - {zh: "手艺不到，帮不上。", en: "That's past my craft. I can't help."}
   turned_down:
     - {zh: "对不住，这活我不能接。", en: "Sorry, I can't take this job."}
-    - {zh: "这事不成。请别为难我。", en: "This won't work. Please don't press me."}
+    - {zh: "这事不成，别为难我。", en: "That won't work. Don't press me."}
   said_already:
-    - {zh: "话说过一遍就够了。", en: "Once is enough for the telling."}
-    - {zh: "刚才讲过。别让我重复。", en: "I told you just now. Don't make me repeat."}
+    - {zh: "话说一遍就够了。", en: "Once is enough."}
+    - {zh: "刚才讲过了，别让我重复。", en: "I told you just now. Don't make me repeat it."}
   closed:
-    - {zh: "这会儿手上有活。过一阵来。", en: "I've work in hand just now. Come in a while."}
-    - {zh: "现在不行。换个时辰。", en: "Not at this hour. Try another."}
+    - {zh: "这会儿手上有活，过一阵再来。", en: "I've work in hand just now. Come back in a while."}
+    - {zh: "现在不行，换个时辰。", en: "Not now. Try another hour."}
   needs_nod:
-    - {zh: "这得族长点了头才行。", en: "The elder must nod before this goes ahead."}
-    - {zh: "没有东家点头，我不敢动手。", en: "My patron hasn't agreed, so I won't set to work."}
+    - {zh: "这得族长点了头才行。", en: "The elder has to nod first."}
+    - {zh: "没人点头，我不敢动手。", en: "Nobody has said yes, so I won't start."}
   nothing_to_say:
-    - {zh: "这件事我没什么要说的。", en: "I've nothing to say on this."}
-    - {zh: "没话。手上有活。", en: "No words. My hands are full."}
+    - {zh: "这事跟木头不沾边，我没话说。", en: "That's got nothing to do with timber. I've nothing to say."}
+    - {zh: "我没看见，说不上。", en: "I didn't see it, so I can't say."}
   testified:
-    - {zh: "我讲的都是亲眼量过的。", en: "What I tell you, I measured with my own eyes."}
+    - {zh: "我讲的都是亲眼看见的。", en: "What I tell you, I saw myself."}
     - {zh: "没见过的东西，我不说。", en: "I don't speak of what I haven't seen."}
   too_late:
-    - {zh: "天黑了。收工了。明早来吧。", en: "It's dark. Work is done. Come in the morning."}
-    - {zh: "这个时辰不动刀锯。明天吧。", en: "No saw or chisel at this hour. Tomorrow."}
+    - {zh: "天黑了，收工了。明早来吧。", en: "It's dark and the work's done for the day. Come in the morning."}
+    - {zh: "这时辰不动刀锯了，明天吧。", en: "No saw or chisel at this hour. Tomorrow."}
   will_ask:
-    - {zh: "好，我去捎话。", en: "Right, I'll carry the message."}
-    - {zh: "我下回碰面时问问。", en: "I'll ask when next I see them."}
+    - {zh: "好，我去捎个话。", en: "Right, I'll carry the message."}
+    - {zh: "我下回碰上就问问。", en: "I'll ask next time I run into them."}
   will_call:
-    - {zh: "好，我去敲门叫大伙儿。", en: "Right, I'll knock on doors and call everybody."}
-    - {zh: "我这就去叫人。祠堂汇合。", en: "I'll go and call them now. Meet at the hall."}
+    - {zh: "好，我挨家敲门去叫。", en: "Right. I'll knock on every door."}
+    - {zh: "我这就去叫人，祠堂碰头。", en: "I'll go and call them now. We'll meet at the hall."}
   hard_hc_li_bamboo:
-    - {zh: "谣言不当众说清，这事就没法接榫。", en: "While the slander stands, this joint can't be made."}
-    - {zh: "先把谣言说清楚。再谈用料。", en: "Clear the slander first. Then we'll talk materials."}
+    - {zh: "那些闲话不当众说清楚，这活我没法接。", en: "Until the rumour is cleared up in public, I can't take this on."}
+    - {zh: "先把那些闲话说清楚，再谈用料。", en: "Clear up the rumour first. Then we'll talk materials."}
   hard_hc_li_bamboo_rumour:
-    - {zh: "镇上都在传谣言，总管一声不吭。这榫头对不上，我不应。", en: "The whole town's talking, and the Manager says nothing. The joint doesn't fit. I won't agree."}
-    - {zh: "谣言不除，总管又不吭声。木头再好，我也不借。", en: "The slander stands, and the Manager keeps quiet. Good timber or not, I won't lend it."}
+    - {zh: "镇上都在传那些闲话，总管一声不吭。这事我不应。", en: "The whole town is passing the rumour round and you say nothing, Manager. I won't agree."}
+    - {zh: "闲话还在传，总管又不吭声。木头再好，我也不借。", en: "The rumour stands and you keep quiet, Manager. Good timber or not, I won't lend it."}
   hard_other:
-    - {zh: "这个不行。没法商量。", en: "This won't do. No way to bargain."}
-    - {zh: "榫头对不上。不成。", en: "The joint doesn't fit. No."}
+    - {zh: "这个不行，没法商量。", en: "That won't do. There's no bargaining."}
+    - {zh: "这个办不成。", en: "That can't be done."}
   elder_yes:
-    - {zh: "话说得实在。我认了。", en: "That's honest talk. I accept it."}
-    - {zh: "有理有据。行。", en: "Sound and reasoned. Fine."}
+    - {zh: "话说得实在，我认了。", en: "That's honest talk. I accept it."}
+    - {zh: "这话立得住，我认。", en: "That holds up. I'll go with it."}
   elder_no:
-    - {zh: "光这些，榫头还没合上。", en: "On this alone, the joint hasn't closed."}
-    - {zh: "分量不够。我不能点头。", en: "It lacks weight. I can't nod."}
+    - {zh: "光这些还不够，立不住。", en: "This alone isn't enough. It won't stand up."}
+    - {zh: "分量不够，我不能点头。", en: "It doesn't carry enough weight. I can't nod."}
   objection_withdrawn:
-    - {zh: "话摆明了。这道榫口我不堵了。", en: "It's laid out plainly. I won't block this joint any more."}
-    - {zh: "说清楚就好。我不卡着你了。", en: "As long as it's said plainly. I won't jam it for you any more."}
+    - {zh: "话摆明了，我不再拦着。", en: "It's laid out plainly. I won't block it any more."}
+    - {zh: "说清楚就好，我不卡着你了。", en: "As long as it's said plainly. I won't hold you up."}
   witness_in_public:
-    - {zh: "我只讲量过看过的。多一寸我不添。", en: "I only tell what I've measured and seen. I won't add an inch."}
-    - {zh: "看见多长，就说多长。", en: "I cut my words to the length of what I saw."}
+    - {zh: "看见的我说，没看见的不说。", en: "What I saw, I'll say. What I didn't, I won't."}
+    - {zh: "看见多少说多少。", en: "I'll tell as much as I saw."}
   batch_promised:
-    - {zh: "成。明早料到桥边，尺寸不差。", en: "Done. The materials will be at the bridge in the morning, no length off."}
-    - {zh: "明早送到，一根不少。", en: "Delivered in the morning, not one short."}
+    - {zh: "成，明早料到桥边。", en: "Done. The materials will be at the bridge in the morning."}
+    - {zh: "明早送到，一根不少。", en: "It'll be there in the morning, not one short."}
   bamboo_arrived:
-    - {zh: "竹料到桥边了。我先量一量。", en: "The bamboo's at the bridge. Let me measure it first."}
-    - {zh: "好料。长短正合榫口。", en: "Good stock. The lengths suit the joints."}
+    - {zh: "竹料到桥边了，我先去量一量。", en: "The bamboo's at the bridge. I'll go and measure it first."}
+    - {zh: "好料，长短正合用。", en: "Good stock. The lengths are just right."}
   promise_open:
-    - {zh: "应下了，尺寸不差。{when}送{amount}根{item}到桥边。", en: "Agreed, and the lengths will be right: {amount} poles of {item} at the bridge {when}."}
-    - {zh: "说好的数，一根不少。{amount}根{item}，{when}。", en: "The count is agreed, not one short: {amount} poles of {item}, {when}."}
+    - {zh: "应下了。{when}送{amount}根{item}到桥边，尺寸不差。", en: "Agreed, and I'll have {amount} poles of {item} at the bridge {when}, cut true."}
+    - {zh: "说好的数，一根不少。{amount}根{item}，{when}送到。", en: "The count is agreed, not one short. It's {amount} poles of {item}, delivered {when}."}
   goods_enough:
-    - {zh: "{item}够量了。榫口都够用。", en: "The {item} is enough. Every joint is covered."}
-    - {zh: "桥边的{item}量过了，不缺。", en: "I measured the {item} at the bridge, and none is lacking."}
+    - {zh: "{item}够量了，榫口都够用。", en: "There's enough {item}. Every joint is covered."}
+    - {zh: "桥边的{item}我量过了，不缺。", en: "I've measured the {item} at the bridge, and none is short."}
   point_heard:
-    - {zh: "这事我没经手。不过听{name}说过，你去问问。", en: "Never handled it. But I heard {name} say something, so ask them."}
-    - {zh: "木头我懂，这事我不懂。{name}好像提过，去问问。", en: "I know timber, not this. Heard {name} mention it, though. Go ask."}
+    - {zh: "这事我没经手。不过听{name}说过，你去问问。", en: "I never handled it. But I heard {name} talk about it, so go and ask."}
+    - {zh: "木头我懂，这个不懂。{name}好像提过，去问问吧。", en: "Timber I know, not this. I think {name} mentioned it, so ask."}
   point_hub:
-    - {zh: "我不清楚。镇上的事，找{name}最快。", en: "Can't say. For town news, going to {name} is the quickest."}
-    - {zh: "这个我不懂。去找{name}，见的人多。", en: "Beyond me. Ask {name}, who sees plenty of folk."}
+    - {zh: "我不清楚。镇上的事，找{name}最快。", en: "I'm not sure. For town news, going to {name} is quickest."}
+    - {zh: "这个我不懂。你去问{name}，茶馆里人来人往。", en: "That's beyond me. Ask {name}. People come and go at that teahouse all day."}
+  gift_like:
+    - {zh: "{item}，好。干完活喝两口。", en: "Some {item}. Good. A drop after work."}
+    - {zh: "{item}啊，正合我意。", en: "Ah, {item}. Just right."}
+  gift_neutral:
+    - {zh: "{item}？收下了。", en: "Some {item}? All right, thanks."}
+    - {zh: "{item}，搁工台上吧。", en: "Some {item}. Leave that on the bench."}
+  gift_dislike:
+    - {zh: "{item}我不吃。放着吧。", en: "I don't eat {item}. Just leave them."}
+    - {zh: "{item}……我不沾这个。谢了。", en: "Some {item}... not for me. Thanks."}
 frames:
   seen:
-    - {zh: "我亲眼看见的，不掺假：{line}。", en: "I saw it myself, with nothing added: {line}."}
-    - {zh: "我就在跟前：{line}。", en: "I was close by: {line}."}
+    - {zh: "我亲眼看见的，不掺假。{line}。", en: "I saw with my own eyes, nothing added, that {line}."}
+    - {zh: "{line}。我就在跟前看着。", en: "{line}. I was right there and saw it."}
   heard:
-    - {zh: "{teller}给我递过话：{line}。", en: "{teller} passed word to me: {line}."}
-    - {zh: "{teller}当面讲的：{line}。", en: "{teller} said it to my face: {line}."}
+    - {zh: "{teller}给我递过话。说{line}。", en: "{teller} passed the word to me, that {line}."}
+    - {zh: "{teller}当面跟我讲的。说是{line}。", en: "{teller} told me to my face that {line}."}
   unknown:
-    - {zh: "镇上有人说：{line}。", en: "Someone in town says {line}."}
-    - {zh: "听人念叨：{line}。", en: "Heard folk muttering that {line}."}
+    - {zh: "镇上有人这么讲。说{line}。", en: "Some in town say {line}."}
+    - {zh: "听人念叨的，谁说的我没问。说是{line}。", en: "I heard people going on about it and didn't ask who. The story is that {line}."}
   own:
-    - {zh: "我掂量着：{line}。", en: "Weighing it up, {line}."}
-    - {zh: "凭我的眼力：{line}。", en: "By my own eye, {line}."}
+    - {zh: "我掂量着，{line}。", en: "Weighing it up, I'd say {line}."}
+    - {zh: "凭我这双眼，{line}。", en: "By my own eye, {line}."}
   guess_own:
-    - {zh: "还没量准。{hedge}{line}。", en: "Not measured true yet. {hedge} {line}."}
-    - {zh: "只是目测。{hedge}{line}。", en: "Only by eye. {hedge} {line}."}
+    - {zh: "没凭没据，瞎猜的。{hedge}{line}。", en: "No proof, just a guess. {hedge} {line}."}
+    - {zh: "这话你听听就好。{hedge}{line}。", en: "Take this for what it's worth. {hedge} {line}."}
   guess_heard:
-    - {zh: "{teller}提了个头。{hedge}{line}。", en: "{teller} gave me the start of it. {hedge} {line}."}
-    - {zh: "掂量{teller}的话，{hedge}{line}。", en: "Weighing {teller}'s words, {hedge} {line}."}
+    - {zh: "{teller}起了个头。{hedge}{line}。", en: "{teller} gave me the start of it. {hedge} {line}."}
+    - {zh: "{teller}的话我掂量过。{hedge}{line}。", en: "I've weighed {teller}'s words. {hedge} {line}."}
   guess_unknown:
     - {zh: "不知谁起的头。{hedge}{line}。", en: "No idea who started it. {hedge} {line}."}
-    - {zh: "风里传来的。{hedge}{line}。", en: "It blew in from somewhere. {hedge} {line}."}
+    - {zh: "风里刮来的。{hedge}{line}。", en: "It blew in from somewhere. {hedge} {line}."}
   rival:
-    - {zh: "榫头对不上，{teller}说的不是这样：{line}。", en: "The joint doesn't fit, since {teller} told me otherwise: {line}."}
-    - {zh: "但{teller}当面说的，是另一个样：{line}。", en: "But what {teller} said to my face was another shape: {line}."}
+    - {zh: "可{teller}说的不是这样。说{line}。", en: "Only {teller} told it otherwise, that {line}."}
+    - {zh: "{teller}当面讲的是另一个样。说{line}。", en: "{teller} told me to my face it was different, that {line}."}
+  known:
+    - {zh: "{line}。这事镇上都知道。", en: "{line}. The town knows that."}
+    - {zh: "{line}，明摆着的。", en: "{line}. It's plain to see."}
 hedges:
-  - {zh: 看样子, en: I'd reckon}
-  - {zh: 约莫, en: I'd judge}
+  - {zh: 看样子, en: I'd judge}
+  - {zh: 约莫, en: I judge}

@@ -647,12 +647,12 @@ wheels = [
 
 [[package]]
 name = "lantern-core"
-version = "0.1.1"
+version = "0.2.0"
 source = { editable = "core" }
 
 [[package]]
 name = "lantern-eve"
-version = "0.1.1"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },

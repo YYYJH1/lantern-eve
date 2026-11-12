@@ -175,7 +175,7 @@ def test_the_bamboo_is_promised_in_the_evening_and_brought_in_the_morning(cpytho
     delivery, withdrawn, made = lines
     assert delivery["events"] == [made["events"][0], delivery["events"][-1]]
     assert len(made["events"]) == 1 and made["events"][0] < delivery["events"][-1]
-    assert withdrawn["text"]["en"] == "Granny Li no longer stands in the way."
+    assert withdrawn["text"]["en"] == "Granny Li has given way."
     assert len(withdrawn["events"]) == 1 and withdrawn["events"][0] < made["events"][0]
 
 
@@ -204,12 +204,13 @@ def test_the_next_batch_is_turned_down_then_promised_and_the_same_request_names_
     events = summary["events"]
     assert events["pledged"] == events["pledge_kept"] == 1  # the small promise, kept at once
     # asked again while the promise is open, he says what it is, in his own words: the amount, the
-    # item, and the day and the hour (the second promise falls due at noon of the second day)
+    # item, and the day and the hour as a person says them on the day it is asked (the second
+    # promise falls due at noon of the second day, which is the day of the question)
     ((tick, said),) = summary["answers"]
     assert tick > 2300
     (words,) = said
-    assert "四根竹料" in words["zh"] and "第二日12:00前" in words["zh"]
-    assert "4 poles of bamboo" in words["en"] and "by 12:00 on day 2" in words["en"]
+    assert "四根竹料" in words["zh"] and "今天中午十二点前" in words["zh"]
+    assert "4 poles of bamboo" in words["en"] and "by noon today" in words["en"]
     assert "{" not in words["zh"] + words["en"]
 
 

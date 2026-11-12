@@ -46,7 +46,7 @@ from lantern_core.world.bridge.lore import lore
 
 HOW = {
     "told": {"zh": "亲口告诉你的", "en": "They told you themselves"},
-    "overheard": {"zh": "你听到他们说的", "en": "You overheard them"},
+    "overheard": {"zh": "你在旁边听到的", "en": "You overheard them"},
 }
 NEXT_ENTRIES = 3  # the routine entry in force and the ones after it that a card shows
 

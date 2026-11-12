@@ -4,6 +4,7 @@ import { type Lang, pick, t } from "../../i18n/index.ts";
 import type { ViewFrame } from "../frame.ts";
 import type { Play } from "../play.ts";
 import type { Scene } from "../scene.ts";
+import { MeetingNote, useFirstMeeting } from "./meeting.tsx";
 import { TalkBadge } from "./stage.tsx";
 
 export interface TalkStripProps {
@@ -32,7 +33,8 @@ function nameOf(scene: Scene | null, id: string, lang: Lang): string {
  */
 export function currentLine(props: Omit<TalkStripProps, "person" | "children">, partner: string | null): string | null {
   const { scene, frame, tick, selectedId, lang } = props;
-  const live = (frame?.bubbles ?? []).filter((b) => tick < b.until);
+  // What the page has somebody say over the map (a verse, a rumour) is a line of the town for a reader who cannot see it, outside a talk.
+  const live = [...(frame?.bubbles ?? []), ...(partner === null ? props.play.eggs.lines : [])].filter((b) => tick < b.until);
   if (partner !== null) {
     const name = nameOf(scene, partner, lang);
     const mine = [...live].reverse().find((b) => b.npc === partner);
@@ -48,7 +50,7 @@ export function currentLine(props: Omit<TalkStripProps, "person" | "children">, 
  * things that can be said as words with a stroke under them. It is there while the player talks. The note of a picked person lies beside it.
  */
 export function TalkStrip(props: TalkStripProps) {
-  const { lang, scene, play, person, children } = props;
+  const { lang, scene, play, person, children, frame } = props;
   const talk = play.state.talk;
   const partner = talk?.npc ?? null;
   // Nothing has been said yet: the strip has the line that says the person is listening, and not the log.
@@ -57,6 +59,8 @@ export function TalkStrip(props: TalkStripProps) {
   const thinking = partner !== null && play.state.thinking?.npc === partner;
   const who = partner === null ? undefined : scene?.cast.find((p) => p.id === partner);
   const talking = partner !== null;
+  // The first time the player talks with somebody, who they are is written beside the seal.
+  const met = useFirstMeeting(frame, frame?.player?.talk?.npc ?? null).meeting;
   // The strip is there while the player talks.
   const open = talking;
   const line = thinking && partner !== null ? t("talk.thinking", { name: nameOf(scene, partner, lang) }) : currentLine(props, partner);
@@ -68,9 +72,9 @@ export function TalkStrip(props: TalkStripProps) {
     const stage = element?.offsetParent ?? null;
     if (element === null || strip === null || stage === null) return;
     const top = strip.getBoundingClientRect().top;
-    // The lists stop under the placard and the slip (its note too, when it is open).
+    // The lists stop under the placard, the clock and the slip (its note too, when it is open).
     const bottomOf = (selector: string): number => document.querySelector(selector)?.getBoundingClientRect().bottom ?? 0;
-    const ceiling = Math.max(stage.getBoundingClientRect().top, bottomOf(".placard") + 8, bottomOf(".slip") + 8);
+    const ceiling = Math.max(stage.getBoundingClientRect().top, bottomOf(".placard") + 8, bottomOf(".slip") + 8, bottomOf('[data-testid="hud-time"]') + 8);
     element.style.setProperty("--slips-room", `${Math.max(120, Math.floor(top - ceiling - 24))}px`);
     // The strip of the acts around the manager lies where the note of a picked person does: the note stands over it.
     const side = document.querySelector<HTMLElement>("aside.side");
@@ -95,6 +99,7 @@ export function TalkStrip(props: TalkStripProps) {
               {who?.token[lang] ?? "?"}
             </span>
             <TalkBadge play={play} scene={scene} lang={lang} />
+            {met !== null && who !== undefined && met === who.id ? <MeetingNote person={who} lang={lang} /> : null}
             <p class="dialogue-line" data-testid="dialogue-line" data-thinking={thinking} aria-live="polite">
               {line}
             </p>

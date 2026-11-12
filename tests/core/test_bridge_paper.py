@@ -64,8 +64,8 @@ def words_ok(words: dict) -> bool:
 
 def test_every_line_of_the_paper_is_in_both_languages_and_names_no_person_he_or_she():
     paper = SCRIPT["paper"]
-    assert set(paper) == {"when", "street", "news", "talk"}
-    for group in ("when", "news", "talk"):
+    assert set(paper) == {"when", "manager", "progress", "street", "news", "talk"}
+    for group in ("when", "manager", "progress", "news", "talk"):
         for name, words in paper[group].items():
             assert words_ok(words), (group, name)
             assert not re.search("[他她]", words["zh"]), (group, name)
@@ -80,18 +80,24 @@ def test_every_line_of_the_paper_is_in_both_languages_and_names_no_person_he_or_
         "peace", "talked_out", "li_more", "zhou_more", "li_side", "zhou_side", "split",
         "walk_look", "walk_call", "walk_hand",
     }  # fmt: skip
+    # the paper of the morning is the schoolmaster's, for the town: the Manager; the night is yours
+    assert paper["manager"] == {
+        "morning": {"zh": "总管", "en": "The Manager"},
+        "night": {"zh": "你", "en": "You"},
+    }
+    assert set(paper["progress"]) == {"start", "under_half", "half", "over_half"}
 
 
 def test_the_slots_of_a_line_are_the_ones_the_core_fills():
     slots = {
-        "statement": {"place", "named", "accepted"},
-        "statement_refused": {"place", "named"},
-        "evidence": {"place", "named", "accepted"},
-        "evidence_refused": {"place", "named"},
-        "stopped": {"who"},
+        "statement": {"manager", "place"},
+        "statement_refused": {"manager", "place"},
+        "evidence": {"manager", "place"},
+        "evidence_refused": {"manager", "place"},
+        "stopped": {"who", "other"},
         "helpers": {"n"},
         "work_stopped": {"why"},
-        "work": {"hours", "left"},
+        "work": {"progress"},  # how far it has got, in words: the hours are on the board
         "rain_heavy": {"when"},
         "rain_light": {"when"},
         "quiet": {"when"},
@@ -265,17 +271,19 @@ def test_a_statement_that_moved_people_is_news_and_one_that_moved_nobody_comes_a
     speeches.append([at(2, 18), "p_teahouse", 8, 3, 1, 0, 0, []])
     (item,) = items_of(game, at(2, 7), at(3, 7))
     assert item.kind == "statement"
-    assert item.text == {
-        "zh": "你在茶馆当众陈述，八位有名有姓的人在场，三位接受。",
-        "en": "You made your statement in public at the Teahouse. 3 of the 8 named people there "
-        "accepted it.",
+    assert item.text == {  # the paper of the morning names the Manager
+        "zh": "总管在茶馆当众讲了桥是怎么坏的。有人点了头。",
+        "en": "The Manager told the town at the Teahouse how the bridge broke. Some people nodded.",
     }
+    (item,) = items_of(game, at(2, 7), at(2, 21), which="night")  # the summary of the night: you
+    assert item.text["zh"] == "你在茶馆当众讲了桥是怎么坏的。有人点了头。"
+    assert item.text["en"].startswith("You told the town at the Teahouse")
     speeches[-1] = [at(2, 18), "p_clan_hall", 8, 0, 1, 0, 0, []]
     (item,) = items_of(game, at(2, 7), at(3, 7))
     assert item.kind == "statement_refused"
-    assert item.text["zh"] == "你在祠堂当众陈述，八位有名有姓的人在场，没有人接受。"
+    assert item.text["zh"] == "总管在祠堂当众讲了桥是怎么坏的。没一个人点头。"
     assert item.text["en"].startswith(
-        "You made your statement in public at the Ancestral Hall, and none"
+        "The Manager told the town at the Ancestral Hall how the bridge broke. Nobody"
     )
     state_of(game)["goals"]["flags"]["bridge_fixed"] = at(2, 11)
     state_of(game)["goals"]["flags"]["truth_told"] = at(2, 12)  # a milestone, and the refusal after
@@ -294,14 +302,16 @@ def test_a_showing_of_evidence_is_news_too_and_one_that_moved_nobody_comes_after
     (item,) = items_of(game, at(2, 7), at(3, 7))
     assert item.kind == "evidence"
     assert item.text == {
-        "zh": "你在祠堂当众出示了手里的证据，八位有名有姓的人在场，三位接受。",
-        "en": "You showed what you hold in public at the Ancestral Hall. 3 of the 8 named people "
-        "there took it in.",
+        "zh": "总管在祠堂当众拿出了凭据。有人信了。",
+        "en": "The Manager showed the proof in public at the Ancestral Hall. "
+        "Some people believed it.",
     }
     speeches[-1] = [at(2, 18), "p_teahouse", 8, 0, 1, 0, 0]
     (item,) = items_of(game, at(2, 7), at(3, 7))
     assert item.kind == "evidence_refused"
-    assert item.text["zh"] == "你在茶馆当众出示了手里的证据，八位有名有姓的人在场，没有人接受。"
+    assert item.text["zh"] == "总管在茶馆当众拿出了凭据。没一个人信。"
+    (item,) = items_of(game, at(2, 7), at(2, 21), which="night")
+    assert item.text["zh"] == "你在茶馆当众拿出了凭据。没一个人信。"
     # a full statement and a showing in the same stretch are two items, the statement first
     speeches.append([at(2, 19), "p_teahouse", 8, 5, 2, 1, 0, []])
     assert kinds_of(game, at(2, 7), at(3, 7)) == ["statement", "evidence_refused"]
@@ -318,9 +328,9 @@ def test_the_deeds_of_the_peace_are_news_a_head_who_stops_accusing_and_the_helpe
     items = items_of(game, at(2, 7), at(3, 7), journal)
     assert [item.kind for item in items] == ["stopped", "side_by_side"]
     assert items[0].events == (11,) and items[1].events == (12,)
-    assert items[0].text == {
-        "zh": "周掌柜当着众人，不再说对方家的不是了。",
-        "en": "Shopkeeper Zhou has stopped speaking ill of the other family in public.",
+    assert items[0].text == {  # the other family by its name
+        "zh": "周掌柜当着大家的面，不再说李家的不是了。",
+        "en": "Shopkeeper Zhou has stopped speaking ill of the Li family in public.",
     }
     assert items[1].text["en"] == "People of both families worked at the bridge together."
     # the peace itself comes before them, and the meal that was seen is no more than the deeds
@@ -340,8 +350,8 @@ def test_the_helpers_who_joined_in_the_stretch_are_counted(third):
     assert (item.kind, item.text) == (
         "helpers",
         {
-            "zh": "两位乡亲答应来桥边帮手。",
-            "en": "2 more of the town agreed to help at the bridge.",
+            "zh": "两个乡亲答应来桥边帮忙。",
+            "en": "2 more people agreed to help at the bridge.",
         },
     )
 
@@ -351,20 +361,27 @@ def test_the_work_at_the_bridge_is_news_when_it_stopped_and_when_it_has_got_on(l
     state_of(game)["social"].pop("aloud", None)  # what the street says is not what this is about
     stopped = next(i for i in items_of(game, at(3, 7), at(4, 7)) if i.kind == "work_stopped")
     assert stopped.text["en"].startswith("Work at the bridge stopped. ")
-    assert stopped.text["zh"].startswith("桥边的活停了。")
+    assert stopped.text["zh"].startswith("桥上的活停了。")
     assert board.NO_HANDS["zh"] in stopped.text["zh"]  # the words of the board, the same reason
     assert board.NO_HANDS["en"] in stopped.text["en"]
     monkeypatch.setattr(
         board, "wire", lambda world, ws, tick: {"stop": None, "hours": {"done": 4, "need": 10}}
     )
     (work,) = items_of(game, at(3, 7), at(4, 7))
-    assert (work.kind, work.text) == (
+    assert (work.kind, work.text) == (  # how far, in words: the hours are on the board
         "work",
         {
-            "zh": "桥边已经干了四个钟头，还差六个。",
-            "en": "4 hours of work are done at the bridge, and 6 more are needed.",
+            "zh": "桥上的活干了不到一半。",
+            "en": "The work at the bridge is not yet half done.",
         },
     )
+    for done, zh in ((2, "刚开了个头"), (5, "干了一半"), (7, "干了一大半")):
+        hours = {"done": done, "need": 10}
+        monkeypatch.setattr(
+            board, "wire", lambda world, ws, tick, h=hours: {"stop": None, "hours": h}
+        )
+        (work,) = items_of(game, at(3, 7), at(4, 7))
+        assert work.text["zh"] == f"桥上的活{zh}。"
     monkeypatch.setattr(
         board, "wire", lambda world, ws, tick: {"stop": None, "hours": {"done": 10, "need": 10}}
     )
@@ -391,8 +408,8 @@ def test_the_sky_of_the_day_before_is_news_when_it_rained_and_of_today_at_night(
     plan[1] = weather.HEAVY_RAIN
     (rain,) = items_of(game, at(2, 7), at(3, 7))
     assert rain.kind == "rain" and rain.text == {
-        "zh": "昨天落了一场大雨，街上行人稀少。",
-        "en": "Heavy rain fell yesterday, and the streets emptied.",
+        "zh": "昨天下了一场大雨。街上没什么人。",
+        "en": "Heavy rain fell yesterday. The streets emptied.",
     }
     plan[1] = weather.LIGHT_RAIN
     (rain,) = items_of(game, at(2, 7), at(3, 7))

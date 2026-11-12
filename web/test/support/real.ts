@@ -123,6 +123,32 @@ export async function untilSettled(page: Page, timeout = 30_000): Promise<void> 
   );
 }
 
+/**
+ * Has the preview of a request of the talk up, as a player does: the request on the button when it is that one, else the one in the list of
+ * the others (`entrust-more`, or the list the button opens where the town puts no request forward). A preview of another request is put away first.
+ */
+export async function openRequest(page: Page, id: string): Promise<void> {
+  const card = page.getByTestId("request-card");
+  const ready = async (): Promise<boolean> => (await card.count()) > 0 && (await card.getAttribute("data-offer")) === id;
+  if (await ready()) return;
+  if ((await card.count()) > 0 && (await page.getByTestId("request-cancel").count()) > 0) {
+    await page.getByTestId("request-cancel").click();
+    await expect(card).toHaveCount(0);
+  }
+  if ((await page.getByTestId("picker-entrust").count()) === 0) {
+    await page.getByTestId("verb-entrust").click();
+    // The request on the button has its preview up at once, and where the town puts none forward the list is what opens.
+    await expect.poll(async () => (await card.count()) + (await page.getByTestId("picker-entrust").count()), { timeout: 10_000 }).toBeGreaterThan(0);
+    if (await ready()) return;
+    if ((await card.count()) > 0) {
+      await page.getByTestId("request-cancel").click();
+      await expect(card).toHaveCount(0);
+      await page.getByTestId("entrust-more").click();
+    }
+  }
+  await page.locator(`[data-testid="picker-entrust"] [data-testid="picker-option"][data-id="${id}"]`).click();
+}
+
 /** Whether the player is in a talk with this person. */
 export const talkingTo = (page: Page, npc: string): Promise<boolean> => page.evaluate((id) => window.__lantern.play.state.talk?.npc === id, npc);
 
@@ -141,7 +167,21 @@ export async function leaveTalk(page: Page): Promise<void> {
 }
 
 /**
- * Asks about a topic with its tag in the talk area, and waits until the answer is in and what the act set going is over. The talk
+ * Opens the list of questions of a talk, as a player does, and shows the others when the topic is not among the three that lead it. Returns
+ * whether the tag of the topic is there to press.
+ */
+export async function openTopic(page: Page, topic: string): Promise<boolean> {
+  const chip = page.locator(`[data-testid="topic-chip"][data-id="${topic}"]`);
+  if ((await page.getByTestId("topic-chips").count()) === 0) {
+    if ((await page.getByTestId("verb-ask").count()) === 0) return false;
+    await page.getByTestId("verb-ask").click({ timeout: 8000 });
+  }
+  if ((await chip.count()) === 0 && (await page.getByTestId("ask-more").count()) > 0 && (await page.getByTestId("ask-more").getAttribute("aria-expanded")) !== "true") await page.getByTestId("ask-more").click();
+  return (await chip.count()) > 0;
+}
+
+/**
+ * Asks about a topic with its tag in the list of questions, and waits until the answer is in and what the act set going is over. The talk
  * may end as the act is said (the person had to go), and then the answer is in the notebook and the talk is gone. Returns false,
  * and asks nothing, when the tag is not there to press: the talk is over, or the person has nothing to say of the topic.
  */
@@ -149,6 +189,7 @@ export async function askByTag(page: Page, topic: string): Promise<boolean> {
   await closeElder(page);
   const before = await page.evaluate(() => window.__lantern.play.state.talk?.lines.length ?? 0);
   try {
+    if (!(await openTopic(page, topic))) return false;
     await page.locator(`[data-testid="topic-chip"][data-id="${topic}"]`).click({ timeout: 8000 });
   } catch {
     return false;

@@ -261,7 +261,7 @@ def test_a_broken_word_reads_as_a_fact_about_the_manager_in_both_languages():
     game = room()
     prop = repute.prop(state_of(game)["social"], repute.BROKE)
     said = LO.lines.statement(prop, LO.names)
-    assert said == {"zh": "总管说话不算数", "en": "the Festival Manager broke a promise"}
+    assert said == {"zh": "总管说话不算数", "en": "the Festival Manager broke their word"}
 
 
 # ------------------------------------------------------------------------------ the ledger

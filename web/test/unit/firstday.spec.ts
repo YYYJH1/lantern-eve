@@ -136,7 +136,7 @@ const tasksOf = (states: Record<string, string>, tracked: string | null = null):
 
 test.describe("what the page says when no task is open", () => {
   test("is that nothing is open now, or that the festival is over, and nothing where there is something to follow", () => {
-    // Nothing open is idle, whether or not the first bamboo is done, and over once the festival has come.
+    // Nothing open is idle, whether or not the first load of bamboo is done, and over once the festival has come.
     expect(restOf(tasksOf(DONE_ALL), false)).toBe("idle");
     expect(restOf(tasksOf({ ...DONE_ALL, t_bamboo_first: "stale" }), false)).toBe("idle");
     expect(restOf({ tracked: null, list: [] }, false)).toBe("idle");
@@ -150,10 +150,10 @@ test.describe("what the page says when no task is open", () => {
 
   test("has its own words for the bar and the card, and a line of the elder for each of the three", () => {
     const words = (lang: "zh" | "en", rest: keyof typeof REST_WORDS) => [translate(lang, REST_WORDS[rest].bar), translate(lang, REST_WORDS[rest].card)];
-    expect(words("zh", "idle")).toEqual(["眼下没有要追的事", "事项都办完了，可以四处走走，等第五天晚上的灯会。"]);
-    expect(words("en", "idle")).toEqual(["Nothing to follow right now", "Everything on the list is done. Look around if you like, and wait for the festival on the night of the fifth day."]);
+    expect(words("zh", "idle")).toEqual(["眼下没有要办的事", "事都办完了。四处走走，等第五天晚上的灯会。"]);
+    expect(words("en", "idle")).toEqual(["Nothing to do right now", "Everything is done. Look around if you like, and wait for the festival on the night of the fifth day."]);
     expect(words("zh", "over")).toEqual(["灯会已过", "灯会办完了。"]);
-    expect(words("zh", "pick")).toEqual(["挑一件事来追", "还没有追哪一件。从下面挑一件。"]);
+    expect(words("zh", "pick")).toEqual(["挑一件事来办", "还没选要办的事，从下面挑一件。"]);
     for (const rest of ["idle", "over"] as const) {
       expect(REST_WORDS[rest].elder1, rest).not.toBeNull();
       expect(REST_WORDS[rest].elder3, rest).not.toBeNull();

@@ -690,3 +690,27 @@ def test_the_plain_words_of_a_pointer_name_the_person_in_both_languages():
             and "Granny Li" in said["en"]
             and "{" not in said["zh"] + said["en"]
         )
+
+
+# ------------------------------------------------------------------------------ the plain answers
+
+
+def test_the_answer_that_the_entry_does_not_carry_the_claim_is_unsupported_with_the_claim_second():
+    """A page that asks in plain words puts the entry shown first and the claim second: what the
+    clerk saw (n2) does not carry that Li Er did it on purpose (n1), and not the other way."""
+    game = clerk_notes()
+    wrong_way = act(game, "judge", a="n1", b="n2", relation="unsupported")
+    assert acks(wrong_way) == [("rejected", "not_shown")]
+    assert me(game)["judgments"] == []  # a pair that is turned down is kept nowhere
+    held = act(game, "judge", a="n2", b="n1", relation="unsupported")
+    assert acks(held) == [("applied", None)]
+    (row,) = held["frame"]["judgments"]
+    assert (row["a"], row["b"], row["relation"]) == ("n2", "n1", "unsupported")
+
+
+def test_the_three_relations_are_all_the_core_takes_whatever_the_words_of_the_page():
+    game = clerk_notes()
+    for relation in ("unsupported", "contradicts", "mismatch"):
+        assert relation in judge.RELATIONS
+    with pytest.raises(InputError):
+        act(game, "judge", a="n2", b="n1", relation="looks_odd")

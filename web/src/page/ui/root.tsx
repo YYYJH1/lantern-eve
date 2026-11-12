@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
-import { type Lang, type MessageKey, t } from "../../i18n/index.ts";
+import { getLang, type Lang, type MessageKey, t } from "../../i18n/index.ts";
 import { HostClient } from "../client.ts";
 import { serverUrlFor } from "../ws-source.ts";
+import { sessionOf, type Soundscape } from "../audio/index.ts";
 import type { MapView } from "../map/map-view.ts";
 import type { NotebookEntry } from "../notebook.ts";
 import { newestSave } from "../autosave.ts";
@@ -12,8 +13,10 @@ import { type GalleryEntry, loadReplay, parseReplayHash, type ReplayLink, Replay
 import type { ThemeChoice } from "../prefs.ts";
 import type { Remembered } from "../storage.ts";
 import { App } from "./app.tsx";
+import { tickText } from "./format.ts";
 import { GalleryView } from "./gallery.tsx";
 import { OpeningPage } from "./opening.tsx";
+import { PeopleGate } from "./opening-people.tsx";
 import { useClientState, useLang, useTheme } from "./hooks.ts";
 
 /** The live game: the host client, the map and the player's side of it. */
@@ -29,6 +32,8 @@ export interface OpenReplay {
   client: HostClient;
   view: MapView;
   play: Play;
+  /** For a save of this browser, its name (empty where it has none) and the tick it was saved at. */
+  saved?: { name: string; tick: number } | null;
 }
 
 export interface RootProps {
@@ -48,6 +53,8 @@ export interface RootProps {
   onBegin?: () => void;
   /** Called with the recording that is open, or null, for the test build to reach it. */
   onOpen?: (open: OpenReplay | null) => void;
+  /** The sound of the page: it hears the session that is on the screen, the game or the recording that is open over it. */
+  sound?: Soundscape;
 }
 
 /** What the player is told when a recording cannot be opened, as the key of the sentence. */
@@ -59,10 +66,11 @@ function failureKey(err: unknown): MessageKey {
   return "gallery.error.network";
 }
 
+/** What the recording is called over the page: a save of this browser by its name, or by the day and the hour it was saved at, as the gallery calls it. */
 function titleOf(open: OpenReplay, status: { seed: number } | null): string {
-  const ref = refOf(open.id);
-  if (ref?.source === "browser") return `#${ref.save}`;
-  return status === null ? open.id : t("gallery.seed", { seed: status.seed });
+  const saved = open.saved ?? null;
+  if (refOf(open.id)?.source === "browser" && saved !== null) return saved.name !== "" ? saved.name : tickText(getLang(), saved.tick);
+  return status === null ? open.id : t("gallery.game");
 }
 
 /**
@@ -109,7 +117,7 @@ function OpeningGate({ client, lang, theme, failed, onStart, onContinue, onAnoth
  * recording that they watch. The live game is held for as long as either is on, and goes on after.
  * A recording has a client, a worker and a map of its own, so that the game under it is not touched.
  */
-export function Root({ live, remembered, sampleNotebook, spawnWorker, makeView, startLive, liveStarted, intro: introFirst = false, onBegin, onOpen }: RootProps) {
+export function Root({ live, remembered, sampleNotebook, spawnWorker, makeView, startLive, liveStarted, intro: introFirst = false, onBegin, onOpen, sound }: RootProps) {
   const lang = useLang();
   const theme = useTheme();
   const [gallery, setGallery] = useState(false);
@@ -120,12 +128,34 @@ export function Root({ live, remembered, sampleNotebook, spawnWorker, makeView, 
   // The opening page is the first thing the player sees, and the world waits behind it.
   const [intro, setIntro] = useState(introFirst);
   const [continueFailed, setContinueFailed] = useState<LoadFailure | null>(null);
+  // The page of the first six people stands between Start and the first day, with the world still held behind it.
+  const [people, setPeople] = useState(false);
   const started = useRef(liveStarted);
   const heldByUs = useRef(false);
   const openNow = useRef<OpenReplay | null>(null);
+  const introNow = useRef(introFirst);
   const liveRoot = useRef<HTMLDivElement>(null);
   const galleryRoot = useRef<HTMLDivElement>(null);
   openNow.current = open;
+  introNow.current = intro;
+
+  /**
+   * What is on the screen is what is heard: a recording that opens is heard from the press that opens it, and when it is shut the game is heard again,
+   * once it has begun. Behind the opening page nothing has begun, and the sound goes quiet.
+   */
+  const hear = useCallback(
+    (session: OpenReplay | null): void => {
+      if (sound === undefined) return;
+      if (session !== null) {
+        sound.follow(sessionOf(session.client, session.view));
+        sound.begin();
+        return;
+      }
+      sound.follow(sessionOf(live.client, live.view));
+      if (introNow.current) sound.end();
+    },
+    [sound, live],
+  );
 
   const away = gallery || open !== null || opening !== null;
 
@@ -150,13 +180,21 @@ export function Root({ live, remembered, sampleNotebook, spawnWorker, makeView, 
     if (liveRoot.current !== null) liveRoot.current.inert = away || intro;
   }, [away, intro]);
 
-  /** Start: a first game of the named game, with the tutorial for a player who has not been through it. */
-  const start = useCallback((): void => {
+  /** The first day begins: the world is let go, and the tutorial starts for a player who has not been through it. */
+  const begin = useCallback((): void => {
+    setPeople(false);
     setIntro(false);
     live.play.guide.refreshPrefs();
     if (live.client.state.preset !== null && live.play.guide.tutorialWanted) live.play.guide.startTutorial();
     onBegin?.();
   }, [live, onBegin]);
+
+  /** Start: a first game of the named game. A player who is to have the tutorial meets the first six people on a page of their own before its first card. */
+  const start = useCallback((): void => {
+    live.play.guide.refreshPrefs();
+    if (live.client.state.preset !== null && live.play.guide.tutorialWanted) setPeople(true);
+    else begin();
+  }, [live, begin]);
 
   /** Another truth: a game of the rules of the first, at a seed and with a story of its own, not the story the viewer last saw told. */
   const another = useCallback((): void => {
@@ -198,9 +236,10 @@ export function Root({ live, remembered, sampleNotebook, spawnWorker, makeView, 
     if (session === null) return;
     openNow.current = null;
     setOpen(null);
+    hear(null);
     dispose(session);
     onOpen?.(null);
-  }, [dispose, onOpen]);
+  }, [dispose, hear, onOpen]);
 
   /** Opens a recording: reads it, and starts a host that plays it. A recording that cannot be read says why. */
   const openReplay = useCallback(
@@ -209,10 +248,11 @@ export function Root({ live, remembered, sampleNotebook, spawnWorker, makeView, 
       setOpening(id);
       setFailure(null);
       try {
-        const replay = await loadReplay(id);
+        const { replay, saved } = await loadReplay(id);
         closeReplay();
         const client = new HostClient(spawnWorker(), { allowServer: false });
         const play = new Play(client, true);
+        play.director.enabled = true; // a recording plays its moments, and sends nothing
         const view = makeView();
         const header = (replay as { header?: { seed?: unknown; scenario?: unknown } } | null)?.header;
         client.start({
@@ -223,21 +263,23 @@ export function Root({ live, remembered, sampleNotebook, spawnWorker, makeView, 
         });
         // A link to a moment holds the recording there. A link to a recording, or a click in the gallery, plays it.
         client.openReplay(replay, { tick: tick ?? undefined, play: tick === null });
-        const session: OpenReplay = { id, client, view, play };
+        const session: OpenReplay = { id, client, view, play, saved: saved === null ? null : { name: saved.name, tick: saved.tick } };
         openNow.current = session;
         setOpen(session);
+        hear(session);
         onOpen?.(session);
         if (pushed) history.pushState(null, "", replayHash(id, tick));
       } catch (err) {
         setFailure(failureKey(err));
         setGallery(true);
+        hear(openNow.current); // the sound that began with the press goes back to what is on the screen
         // A link that names nothing is not kept in the address.
         if (parseReplayHash(location.hash)?.id === id) history.replaceState(null, "", location.pathname + location.search);
       } finally {
         setOpening(null);
       }
     },
-    [closeReplay, makeView, onOpen, spawnWorker],
+    [closeReplay, hear, makeView, onOpen, spawnWorker],
   );
 
   // A page that is opened on a link to a recording shows it, and one whose address changes follows the address.
@@ -272,7 +314,14 @@ export function Root({ live, remembered, sampleNotebook, spawnWorker, makeView, 
     if (parseReplayHash(location.hash) !== null) history.replaceState(null, "", location.pathname + location.search);
   }, [closeReplay]);
 
-  const watch = useCallback((entry: GalleryEntry): void => void openReplay(entry.id, null, true), [openReplay]);
+  // The press that opens a recording begins its sound, inside the press, which is when a browser lets the sound start.
+  const watch = useCallback(
+    (entry: GalleryEntry): void => {
+      sound?.begin();
+      void openReplay(entry.id, null, true);
+    },
+    [openReplay, sound],
+  );
   const leaveGallery = useCallback((): void => {
     setGallery(false);
     setFailure(null);
@@ -280,9 +329,10 @@ export function Root({ live, remembered, sampleNotebook, spawnWorker, makeView, 
 
   return (
     <>
-      {intro ? (
+      {intro && !people ? (
         <OpeningGate client={live.client} lang={lang} theme={theme} failed={continueFailed} onStart={start} onContinue={() => void pickUp()} onAnother={another} onGallery={() => setGallery(true)} />
       ) : null}
+      {intro && people ? <PeopleGate client={live.client} lang={lang} theme={theme} sprites={live.view.drawn} onEnter={begin} /> : null}
       <div class="live-root" ref={liveRoot}>
         <App client={live.client} view={live.view} play={live.play} remembered={remembered} sampleNotebook={sampleNotebook} onGallery={() => setGallery(true)} covered={away} />
       </div>

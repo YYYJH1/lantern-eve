@@ -59,8 +59,8 @@ def test_every_entry_of_the_notebook_has_the_whole_chain_the_game_never_showed()
         "pr_liner_at_bridge",
     ]
     assert data["texts"]["pr_liner_at_bridge"] == {
-        "zh": "李二昨夜在石桥。",
-        "en": "Li Er was at the Stone Bridge last night.",
+        "zh": "李二昨晚在桥边。",
+        "en": "Li Er was at the bridge last night.",
     }
     assert {h["prop"] for h in entry["chain"]} <= set(data["texts"])
     # the game showed the manager none of this until they had asked
@@ -196,7 +196,7 @@ def test_the_reveal_also_has_the_promises_the_trust_the_stars_and_the_words_for_
         "stars",
         "texts",
     }
-    assert data["texts"]["pr_boat_scratched"]["en"] == "The Ferry Boat has fresh scratches."
+    assert data["texts"]["pr_boat_scratched"]["en"] == "The boat has fresh scratches."
     plain(data)
     assert json.loads(json.dumps(data)) == data
 

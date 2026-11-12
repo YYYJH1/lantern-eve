@@ -9,7 +9,10 @@ called by ``check_content.validate`` and adds two outputs to what that function 
   checked for staleness like the JSON, and a test holds it equal to the JSON.
 
 What is checked, in short: every predicate of the table has a line and a denial in both
-languages and nothing else has; every motive has a phrase; a line names only the slots of its
+languages and nothing else has; every motive has a phrase, and the three sentences that say a
+motive of its own have the slot for it (and the guessed one the hedge); a place or a thing said
+in a sentence by a form of its own (or by the form one predicate gives it, of a predicate of the
+table) is one of ``entities.yaml``; a line names only the slots of its
 predicate and the time of the span; every required slot is written in the open and every
 optional one inside square brackets, so that leaving it out leaves no trace; a frame has the
 places its words need; the Chinese is Chinese and the English is not; the people who take "the"
@@ -41,6 +44,7 @@ FRAME_SLOTS = {
     "guess_heard": ({"line", "teller", "hedge"}, {"line", "teller"}),
     "guess_unknown": ({"line", "hedge"}, {"line"}),
     "rival": ({"line", "teller"}, {"line", "teller"}),
+    "known": ({"line"}, {"line"}),
 }
 
 
@@ -71,12 +75,19 @@ class Frames(Strict):
     guess_heard: Pair
     guess_unknown: Pair
     rival: Pair
+    known: Pair
 
 
 class Whens(Strict):
     last_night: Pair
     lately: Pair
     this_morning: Pair
+
+
+class MotiveSaid(Strict):
+    told: Pair
+    own: Pair
+    guess: Pair
 
 
 class Hedges(Strict):
@@ -87,9 +98,15 @@ class Hedges(Strict):
 class SentenceFile(Strict):
     predicates: dict[str, Line]
     motives: dict[str, Pair]
+    motive_said: MotiveSaid
+    forms: dict[str, Pair] = {}  # how a place or thing is said in a sentence, where not by its name
+    # the form a predicate says a place or a thing by, over ``forms`` (located: 桥上)
+    predicate_forms: dict[str, dict[str, Pair]] = {}
     when: Whens
     frames: Frames
+    known: list[str] = []  # the predicates whose facts the whole town knows (the frame ``known``)
     hedges: Hedges
+    bare_hedges: dict[str, str] = {}  # a hedge 怕是 as said before a sentence with its own 是
     the: list[str]
 
 
@@ -182,8 +199,41 @@ def check(raw: Any, tables: Any, ents: Any, errors: list[str]) -> SentenceFile |
                     errors.append(f"{at} ({lang}): the optional slot {{{name}}} needs brackets")
     for motive_id, pair in sf.motives.items():
         errors += _language_problems(f"{where}: motive {motive_id}", pair)
+    for key, pair in sf.motive_said:
+        at = f"{where}: motive_said {key}"
+        # a guessed motive is said in the speaker's other hedge, which in Chinese is the whole of
+        # the sentence before the phrase (我猜是眼红人家出风头): its words are the slots alone
+        slots = {"motive", "hedge"} if key == "guess" else {"motive"}
+        problems = _language_problems(at, pair)
+        if key == "guess" and not SLOT.sub("", pair.zh).strip():
+            problems = [e for e in problems if "the Chinese must be" not in e]
+        errors += problems
+        for lang in ("zh", "en"):
+            text = getattr(pair, lang)
+            errors += _template_problems(f"{at} ({lang})", text, slots, slots)
+            if "[" in text or "]" in text:
+                errors.append(f"{at} ({lang}): a sentence of a motive has no optional parts")
     for key, pair in sf.when:
         errors += _language_problems(f"{where}: when {key}", pair)
+    forms = [
+        (f"forms {entity_id}", entity_id, pair) for entity_id, pair in sorted(sf.forms.items())
+    ]
+    for pred_id, own in sorted(sf.predicate_forms.items()):
+        if pred_id not in sf.predicates:
+            errors.append(f"{where}: predicate_forms: '{pred_id}' is not a predicate of the table")
+        forms += [
+            (f"predicate_forms {pred_id} {entity_id}", entity_id, pair)
+            for entity_id, pair in sorted(own.items())
+        ]
+    for name, entity_id, pair in forms:
+        at = f"{where}: {name}"
+        if ents.kind.get(entity_id) not in ("place", "thing"):
+            errors.append(f"{at}: '{entity_id}' is not a place or a thing of entities.yaml")
+        errors += _language_problems(at, pair)
+        for lang in ("zh", "en"):
+            text = getattr(pair, lang)
+            if SLOT.search(text) or GROUP.search(text) or text != text.strip():
+                errors.append(f"{at} ({lang}): a form is bare words, got {text!r}")
     for key, pair in sf.frames:
         at = f"{where}: frame {key}"
         errors += _language_problems(at, pair)
@@ -202,6 +252,14 @@ def check(raw: Any, tables: Any, ents: Any, errors: list[str]) -> SentenceFile |
             errors.append(f"{where}: hedges.zh must be Chinese words")
         elif lang == "en" and any(CJK.search(h) for h in hedges):
             errors.append(f"{where}: hedges.en must be English words")
+    for hedge, bare in sorted(sf.bare_hedges.items()):
+        if not hedge.endswith("是") or not CJK.search(bare) or bare.endswith("是"):
+            errors.append(
+                f"{where}: bare_hedges: {hedge!r} → {bare!r} is not a hedge in 是 and one without"
+            )
+    for pred_id in sf.known:
+        if pred_id not in sf.predicates:
+            errors.append(f"{where}: known: '{pred_id}' is not a predicate of the table")
     for person_id in sf.the:
         if ents.kind.get(person_id) != "person":
             errors.append(f"{where}: the: '{person_id}' is not a person of entities.yaml")
@@ -216,9 +274,17 @@ def compile_sentences(sf: SentenceFile) -> dict[str, Any]:
             k: v.model_dump(exclude_none=True) for k, v in sorted(sf.predicates.items())
         },
         "motives": {k: v.model_dump() for k, v in sorted(sf.motives.items())},
+        "motive_said": sf.motive_said.model_dump(),
+        "forms": {k: v.model_dump() for k, v in sorted(sf.forms.items())},
+        "predicate_forms": {
+            pred: {k: v.model_dump() for k, v in sorted(own.items())}
+            for pred, own in sorted(sf.predicate_forms.items())
+        },
         "when": sf.when.model_dump(),
         "frames": sf.frames.model_dump(),
+        "known": sorted(sf.known),
         "hedges": sf.hedges.model_dump(),
+        "bare_hedges": dict(sorted(sf.bare_hedges.items())),
         "the": sorted(sf.the),
     }
 
@@ -231,7 +297,8 @@ def render_module(doc: dict[str, Any]) -> bytes:
         '"""The lines of the townsfolk as Python data.\n\n'
         "``SENTENCES`` is the compiled document that ``cognition.lines.Lines`` reads: a line\n"
         "and a denial in two languages for each predicate of the table, a phrase for each\n"
-        "motive, the words for the time of a span, the frames that mark how a thing is known,\n"
+        "motive and the sentences that say it apart, how a place or a thing is said in a\n"
+        "sentence, the words for the time of a span, the frames that mark how a thing is known,\n"
         "the words that hedge a guess, and the people who take an article in English.\n\n"
         "Generated by tools/check_content.py from content/tables/sentences.yaml. Do not edit it:\n"
         "change the YAML and run the tool. The core cannot read files, so the compiled content\n"

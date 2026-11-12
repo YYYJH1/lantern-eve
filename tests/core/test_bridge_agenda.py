@@ -192,8 +192,8 @@ def test_the_game_starts_following_the_first_task_and_says_nothing_about_it():
     # it has no window of its own, so its window is where and when to find the person its button
     # goes to: Granny Li is at home until she goes to the temple at seven
     assert task["window"] == {"day": 1, "from": 6, "to": 7, "place": "p_li_house"}
-    assert zh(task["text"]) == "取得李家的第一批竹料"
-    assert zh(task["why"]) == "修桥要竹料，竹料在李家。"
+    assert zh(task["text"]) == "借到李家的第一批竹料"
+    assert zh(task["why"]) == "修桥的竹料在李家。"
     assert zh(task["next"]) == "去李家，请李老太借竹料。"
     assert task["action"] == {"verb": "entrust", "npc": "li_laotai", "item": "bamboo"}
     assert state_of(game)["agenda"]["tracked"] == BAMBOO
@@ -217,21 +217,22 @@ def test_after_the_refusal_the_bamboo_is_blocked_with_her_reason_and_a_next_step
     bamboo = tasks_of(frame)[BAMBOO]
     assert zh(bamboo["blocker"]) == "李家不肯给竹料"
     assert bamboo["blocker"]["en"] == "The Li family will not give the bamboo"
-    assert zh(bamboo["why"]) == "李老太说镇上都传她家老二毁了桥，你却一声不吭。"
+    assert zh(bamboo["why"]) == "镇上都在传李二毁了桥。李老太怪你这个总管一声不吭。"
     assert (
         bamboo["why"]["en"]
-        == "Granny Li says the town blames her second son, and you said nothing."
+        == "The town is saying Li Er broke the bridge. Granny Li is angry that you, the manager, "
+        "have said nothing."
     )
-    assert zh(bamboo["next"]) == "问清这话是从哪里传出来的。"
-    assert bamboo["next"]["en"] == "Find out where that talk came from."
+    assert zh(bamboo["next"]) == "问清这话是谁先说的。"
+    assert bamboo["next"]["en"] == "Find out who started that talk."
     # nobody has been asked yet: the button asks her about the second son, on whom the rumour hangs
     assert bamboo["action"] == {"verb": "ask", "npc": "li_laotai", "item": "li_er"}
     assert frame["tracked"] == BAMBOO  # a task that is blocked is still the one followed
     assert changed(out) == []
     lead = tasks_of(frame)[WHO_SAID]
     assert lead["kind"] == "lead" and lead["job"] == "truth" and lead["blocker"] is None
-    assert zh(lead["text"]) == "李二毁桥这话是谁传的？"
-    assert zh(lead["next"]) == "问问周围的人，这话是听谁说的？"
+    assert zh(lead["text"]) == "是谁说李二毁了桥？"
+    assert zh(lead["next"]) == "问问镇上的人，这话是听谁说的。"
     assert "track" in frame["hud"]["verbs"]  # now there is something else to follow
 
 
@@ -247,7 +248,7 @@ def test_asking_about_the_rumour_points_the_way_back_along_the_trail():
     refuse(game)
     out = act(game, "ask", topic="li_er")
     tasks = tasks_of(out["frame"])
-    assert zh(tasks[WHO_SAID]["next"]) == "顺着传话的人往回问：你是听谁说的？"
+    assert zh(tasks[WHO_SAID]["next"]) == "一个个往回问「你是听谁说的」。"
     assert tasks[WHO_SAID]["action"] == {"verb": "ask_source", "npc": "cha_laoban"}
     assert tasks[BAMBOO]["action"] == {"verb": "ask_source", "npc": "cha_laoban"}
     run_on(game, at(1, 8, 0))
@@ -266,8 +267,8 @@ def test_following_a_task_is_a_choice_of_the_player_and_the_event_says_so():
     (event,) = changed(out)
     assert (event["from"], event["to"], event["cause"]) == (BAMBOO, WHO_SAID, "chosen")
     assert event["reason"] == {
-        "zh": "你改为追踪「李二毁桥这话是谁传的？」",
-        "en": "You now follow “Who started the talk that Li Er wrecked the bridge?”",
+        "zh": "你先办「是谁说李二毁了桥？」",
+        "en": "You do “Who said Li Er broke the bridge?” first",
     }
     again = act(game, "track", task=WHO_SAID)  # the one that is followed: nothing changes
     assert ack(again) == ("applied", None) and changed(again) == []
@@ -288,19 +289,18 @@ def test_when_the_clerk_says_what_he_saw_the_lead_is_done_and_the_next_one_is_fo
     assert states(out["frame"]) == {BAMBOO: "blocked", WHO_SAID: "done", PROVES: "open"}
     (event,) = changed(out)
     assert (event["from"], event["to"], event["cause"]) == (WHO_SAID, PROVES, "done")
-    assert (
-        event["reason"]["zh"] == "「李二毁桥这话是谁传的？」办成了，接着追踪「这些话能证明什么？」"
+    assert event["reason"]["zh"] == (
+        "「是谁说李二毁了桥？」办成了，接着办「周家伙计看见的，能说明什么？」"
     )
     assert event["reason"]["en"] == (
-        "“Who started the talk that Li Er wrecked the bridge?” is done. "
-        "Now following “What do these words prove?”"
+        "“Who said Li Er broke the bridge?” is done. Now on to “What does the clerk's word show?”"
     )
     assert out["frame"]["tracked"] == PROVES
     done = tasks_of(out["frame"])[WHO_SAID]  # a task that is done says nothing more
     assert (done["why"], done["next"], done["action"], done["blocker"]) == (None, None, None, None)
     proves = tasks_of(out["frame"])[PROVES]
-    assert zh(proves["next"]) == "把原话摆在一起比一比，看它们是什么关系。"
-    assert proves["why"]["en"].startswith("What the clerk saw himself")
+    assert zh(proves["next"]) == "把这两句话摆在一起比一比，看它们是什么关系。"
+    assert proves["why"]["en"].startswith("Zhou's Clerk only says Li Er was at the bridge")
     assert proves["action"] == {"verb": "judge"}  # the lines are set side by side in the notebook
     assert state_of(game)["agenda"]["tasks"][WHO_SAID]["since"] == out["tick"]
     assert not set(states(out["frame"])) & {"t_clear_rumour", "t_li_da_promise"}
@@ -336,7 +336,7 @@ def test_the_teahouse_comes_in_the_afternoon_with_its_window_and_the_people_expe
         "verb": "move",
         "place": "p_teahouse",
     }
-    assert zh(venue["text"]) == "今晚茶馆" and venue["text"]["en"] == "The teahouse tonight"
+    assert zh(venue["text"]) == "今晚去茶馆" and venue["text"]["en"] == "To the teahouse tonight"
     assert all(set(p) == {"id", "from", "to"} for p in venue["expected"])
     expected = {p["id"]: p for p in venue["expected"]}
     for who in ("zuzhang", "cha_laoban", "zhou_huoji", "li_laotai", "li_da"):  # the five
@@ -370,9 +370,10 @@ def test_a_followed_task_that_goes_stale_hands_over_to_the_most_urgent_open_one(
         seen += changed(idle(game))
     (event,) = seen
     assert (event["from"], event["to"], event["cause"]) == (TEAHOUSE, BAMBOO, "stale")
-    assert event["reason"]["zh"] == "「今晚茶馆」已经过期，改追踪「取得李家的第一批竹料」"
+    assert event["reason"]["zh"] == "「今晚去茶馆」过了时候，改办「借到李家的第一批竹料」"
     assert event["reason"]["en"] == (
-        "“The teahouse tonight” has lapsed. Now following “Get the first bamboo from the Li family”"
+        "“To the teahouse tonight” has lapsed. "
+        "Now on to “Get the first load of bamboo from the Li family”"
     )
     assert state_of(game)["agenda"]["tracked"] == BAMBOO
 
@@ -402,8 +403,8 @@ def test_nothing_is_followed_when_nothing_is_left_and_the_next_task_to_open_is(s
     (event,) = changed(out)
     assert (event["from"], event["to"], event["cause"]) == (None, TEAHOUSE, "new")
     assert event["reason"] == {
-        "zh": "有了新的事项：「今晚茶馆」",
-        "en": "A new task: “The teahouse tonight”",
+        "zh": "添了一件事「今晚去茶馆」",
+        "en": "A new task: “To the teahouse tonight”",
     }
     assert out["frame"]["tracked"] == TEAHOUSE
     seen = []
@@ -412,8 +413,8 @@ def test_nothing_is_followed_when_nothing_is_left_and_the_next_task_to_open_is(s
     (event,) = seen
     assert (event["from"], event["to"], event["cause"]) == (TEAHOUSE, None, "stale")
     assert event["reason"] == {
-        "zh": "「今晚茶馆」已经过期，眼下没有别的事项",
-        "en": "“The teahouse tonight” has lapsed. There is nothing else to follow for now",
+        "zh": "「今晚去茶馆」过了时候，眼下没有别的事要办",
+        "en": "“To the teahouse tonight” has lapsed. There is nothing else to do for now",
     }
     out = idle(game)
     assert out["frame"]["tracked"] is None and state_of(game)["agenda"]["tracked"] == ""
@@ -783,7 +784,7 @@ def test_a_subsystem_that_says_what_its_term_reads_makes_the_tasks_react(monkeyp
         assert (event["from"], event["cause"]) == (PROVES, "done")
         assert event["to"] == "t_clear_rumour"
         clear = tasks_of(out["frame"])["t_clear_rumour"]
-        assert clear["kind"] == "obstacle" and zh(clear["next"]).startswith("用你判对了的两句话")
+        assert clear["kind"] == "obstacle" and zh(clear["next"]).startswith("拿着你比过的那两句话")
         # the card says the evening at the teahouse for its window, every day, and has no button yet
         assert clear["action"] is None
         assert clear["window"] == {"day": 1, "from": 17, "to": 19, "place": "p_teahouse"}

@@ -15,7 +15,7 @@ import { thingName } from "./names.ts";
 import { FestivalCard, PledgesCard, ReputationPart } from "./side.tsx";
 import { count } from "./paper-text.ts";
 import { TurnBar, useMoreBelow } from "./more-below.tsx";
-import { ledgerWhen } from "./slip-text.ts";
+import { crewShortfall, ledgerWhen, shortfallWords } from "./slip-text.ts";
 import { stitchPath } from "./stitch.ts";
 import { Commitments } from "./taskcard.tsx";
 
@@ -49,6 +49,7 @@ function BridgePart({ frame, scene, slice, lang, play, today }: { frame: ViewFra
   const total = helperTotal(board, hud.bridge?.done ?? null);
   const mended = (hud.bridge?.percent ?? 0) >= 100;
   const enough = total !== null && need !== null && total >= need && board?.both !== false;
+  const lack = mended ? null : crewShortfall(hud.bridge);
   return (
     <section class="board-part" data-testid="board-bridge" data-state={mended ? "done" : "open"}>
       <div class="lrows">
@@ -117,6 +118,11 @@ function BridgePart({ frame, scene, slice, lang, play, today }: { frame: ViewFra
                     ))}
               </span>
             </>
+          )}
+          {lack === null ? null : (
+            <p class="board-short" data-testid="board-short" data-short={lack.short} data-families={lack.families.join(" ")} role="note">
+              {shortfallWords(lang, scene, lack)}
+            </p>
           )}
         </Row>
         {board?.both === false ? (
@@ -343,7 +349,7 @@ export interface BoardProps {
   onStatement?: () => void;
 }
 
-/** The date at the head of a page: "第四日 辰时". */
+/** The date at the head of a page: "第四天 辰时". */
 function Dated({ frame, lang }: { frame: ViewFrame | null; lang: Lang }) {
   const time = frame?.time;
   return (

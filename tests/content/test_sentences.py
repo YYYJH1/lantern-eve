@@ -93,8 +93,8 @@ def test_the_generated_module_is_the_one_the_bridge_world_reads():
         speaker="zhou_zhanggui",
     )
     assert said == {
-        "zh": "听周家伙计说，李二昨夜在石桥。",
-        "en": "Zhou's Clerk told me that Li Er was at the Stone Bridge last night.",
+        "zh": "周家伙计跟我说，李二昨晚在桥边。",
+        "en": "Zhou's Clerk told me that Li Er was at the bridge last night.",
     }
 
 
@@ -238,6 +238,30 @@ def test_a_frame_needs_its_line_and_its_teller_and_has_no_optional_parts():
         check(lambda s: s["frames"]["seen"].update(zh="{teller}看见，{line}。")),
         "frame seen (zh)",
         "{teller} is not a slot",
+    )
+
+
+def test_a_form_is_bare_words_of_a_place_or_a_thing_and_a_predicate_form_is_of_a_predicate():
+    def own(s, pred, entity, pair):
+        s.setdefault("predicate_forms", {}).setdefault(pred, {})[entity] = pair
+
+    assert has(check(lambda s: s["forms"].update(li_er={"zh": "老二", "en": "Er"})), "not a place")
+    assert has(
+        check(lambda s: s["forms"].update(p_bridge={"zh": "{where}边", "en": "the bridge"})),
+        "a form is bare words",
+    )
+    assert has(
+        check(lambda s: own(s, "sing", "p_bridge", {"zh": "桥上", "en": "the bridge"})),
+        "predicate_forms: 'sing' is not a predicate",
+    )
+    assert has(
+        check(lambda s: own(s, "located", "li_er", {"zh": "老二", "en": "Er"})),
+        "predicate_forms located li_er",
+        "not a place or a thing",
+    )
+    assert has(
+        check(lambda s: own(s, "located", "p_bridge", {"zh": "the bridge", "en": "the bridge"})),
+        "predicate_forms located p_bridge",
     )
 
 

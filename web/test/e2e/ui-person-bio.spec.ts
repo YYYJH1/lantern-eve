@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { Page } from "@playwright/test";
 import { expect, REPO_DIR, test } from "../support/fixtures.ts";
-import { mapDrawn, pickAtSpot } from "../support/play.ts";
+import { mapAtRest, mapDrawn, pickAtSpot } from "../support/play.ts";
 import * as fake from "../support/slice.ts";
 
 // This spec looks at the page with the map on it.
@@ -22,7 +22,7 @@ const TITLE = { en: "What the town says", zh: "镇上人说" } as const;
 
 /** Picks a person by clicking their piece on the map, on the body: the feet of a person can lie under the body of the one next to them once the sprites are drawn. */
 async function pickOnMap(page: Page, id: string): Promise<void> {
-  await mapDrawn(page);
+  await mapAtRest(page);
   const spot = await page.evaluate((who) => window.__lantern.view.bodyPositionOf(who), id);
   if (spot === null) throw new Error(`there is no ${id} on the map`);
   await pickAtSpot(page, spot, id);
@@ -68,8 +68,8 @@ test.describe("what the town says of a person", () => {
     await fake.openFirstDay(lantern);
     const card = page.getByTestId("person-card");
     const cast = await page.evaluate(() => (window.__lantern.play.scene?.cast ?? []).map((p) => ({ id: p.id, name: p.name, role: p.role })));
-    // Five of the twenty are called by what they do, so their role is their name, and it is said once.
-    expect(cast.filter((p) => p.role.zh === p.name.zh).map((p) => p.id).sort()).toEqual(["cha_laoban", "miaozhu", "mujiang", "zhadeng_shifu", "zuzhang"]);
+    // Seven of the twenty are called by what they do (the accountant is 账房 by name and by role), so their role is their name, and it is said once.
+    expect(cast.filter((p) => p.role.zh === p.name.zh).map((p) => p.id).sort()).toEqual(["cha_laoban", "gengfu", "miaozhu", "mujiang", "zhadeng_shifu", "zhangfang", "zuzhang"]);
     for (const lang of ["en", "zh"] as const) {
       await lantern.setLang(lang);
       for (const id of ["li_laotai", "zuzhang"]) {

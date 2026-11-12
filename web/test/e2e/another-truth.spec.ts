@@ -7,7 +7,7 @@ import { fitsWidth } from "../support/slice.ts";
 
 // A new game is a case of its own. The opening page starts the first game (seed 492, the boatman as the truth) and keeps its Start for it.
 // Every game after it, from the menu or from the ending, is the same rules at a seed and with a story true that the page picks at
-// random and does not say, and once a game has been played to its end the opening page offers the same: "Another truth". The game that
+// random and does not say, and once a game has been played to its end the opening page offers the same: "New game, another truth". The game that
 // reached its end here is the follower's, made by the core under CPython and loaded as a save, so that the ending is the real one.
 
 const SHOTS = process.env.LANTERN_SHOTS_DIR ?? "";
@@ -121,7 +121,7 @@ test.describe("another truth", () => {
     await continueToTheEnd(page);
     // The game that was played is the boatman's, and the page says so before it offers another.
     await expect(page.getByTestId("reveal-truth")).toHaveAttribute("data-variant", "v_boat");
-    await expect(page.getByTestId("ending-new")).toHaveText("Another truth");
+    await expect(page.getByTestId("ending-new")).toHaveText("New game, another truth");
     expect(await page.evaluate(() => localStorage.getItem("lantern.finished"))).toBe("v_boat");
     await page.getByTestId("ending-new").click();
     await expect(page.getByTestId("ending")).toHaveCount(0);
@@ -137,7 +137,7 @@ test.describe("another truth", () => {
     await lantern.waitReady();
     await expect(page.getByTestId("opening-start")).toBeEnabled({ timeout: 60_000 });
     await expect(page.getByTestId("opening-another")).toBeEnabled();
-    await expect(page.getByTestId("opening-another")).toHaveText("Another truth");
+    await expect(page.getByTestId("opening-another")).toHaveText("New game, another truth");
     expect(await fitsWidth(page)).toBe(true);
     await page.getByTestId("opening-another").click();
     await expect(page.getByTestId("opening")).toHaveCount(0);
@@ -169,7 +169,7 @@ test.describe("another truth", () => {
     await page.getByTestId("btn-tutorial").click();
     await expect.poll(async () => (await caseOf(page)).seed, { timeout: 30_000 }).toBe(492);
     expect(await caseOf(page)).toMatchObject({ variant: "v_boat" });
-    await expect(page.getByTestId("tutorial-card")).toHaveAttribute("data-step", "goal");
+    await expect(page.getByTestId("tutorial-card")).toHaveAttribute("data-step", "granny");
     expect(lantern.pageErrors).toEqual([]);
   });
 });
@@ -189,7 +189,7 @@ for (const [locale, scheme, tag] of [
       const page = lantern.page;
       await openPage(lantern);
       await continueToTheEnd(page);
-      await expect(page.getByTestId("ending-new")).toHaveText(locale === "zh-CN" ? "换一种真相再来" : "Another truth");
+      await expect(page.getByTestId("ending-new")).toHaveText(locale === "zh-CN" ? "换一种真相再玩" : "New game, another truth");
       await snap(page, "ending", tag, "ending-new");
       await page.reload();
       await lantern.waitReady();

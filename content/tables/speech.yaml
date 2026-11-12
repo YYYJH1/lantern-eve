@@ -23,16 +23,15 @@
 
 moods:
   plain: {zh: "", en: ""}
-  warm: {zh: "呵呵。", en: "Ha."}
+  warm: {zh: "好啊。", en: "Good."}
   wary: {zh: "嗯。", en: "Hm."}
-  sad: {zh: "唉。", en: "Alas."}
+  sad: {zh: "唉。", en: "Oh dear."}
   curt: {zh: "哼。", en: "Hmph."}
   eager: {zh: "哎呀！", en: "Oh!"}
 
 addresses:
   none: {zh: "", en: ""}
   manager: {zh: "总管", en: "Manager"}
-  friend: {zh: "朋友", en: "friend"}
 
 words:
   # Causal, consequence and sequence links, the agent of "it was X who did it", and purpose.
@@ -330,10 +329,10 @@ aliases:
     zh: ["货郎"]
     en: ["peddler"]
   t_rail:
-    zh: ["栏杆", "桥栏", "石栏"]
+    zh: ["石桥栏杆", "桥栏", "石栏"]
     en: ["railing", "rail", "bridge railing", "handrail"]
   t_he_boat:
-    zh: ["船", "小船"]
+    zh: ["船", "小船", "老何的船"]
     en: ["boat", "skiff"]
   t_li_er_lantern:
     zh: ["李二的灯笼"]

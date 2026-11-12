@@ -67,6 +67,8 @@ nothing about the town). Its line is held to three more steps, each in both lang
 
 2. Every name of a person, a place, a thing and every word that says an act or a motive must be
    one that an act (or the talk itself: the speaker, the listeners, the sources named) covers.
+   The names a speaker has of their own for people (``Speaker.calls``) are names of those people
+   for that speaker, and are covered in the same way.
 3. Every word of the classes of ``lexicon`` (connective, negation, hedge, certain, hearsay, seen)
    needs an act that carries it. A connective is carried by a causal act, a negation by a
    negative one, a hedge by a modal one, hearsay by an act whose source is someone else's word,
@@ -92,7 +94,7 @@ import json
 import re
 from collections import ChainMap
 from collections.abc import Callable, Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 from lantern_core.cognition._fields import ShapeError
@@ -490,7 +492,9 @@ class Speaker:
     on the way. ``relation`` answers whether they stand in a relation (a grudge) toward a person.
     ``guards`` says whether they keep a prop back. ``settle`` gives a structured prop (a draft with
     the id ``DRAFT``) the id of the prop of the book that says the same, or a new one. ``voice``
-    words what they say.
+    words what they say. ``calls`` are the names they use for other people, ``{entity id: {"zh",
+    "en"}}``: in a line of the model's, such a name is a name of that person, as the labels and the
+    aliases are, and needs an act that covers them.
     """
 
     id: str
@@ -503,6 +507,7 @@ class Speaker:
     guards: Callable[[Prop], bool]
     settle: Callable[[Prop], Prop]
     voice: Voice
+    calls: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
 
 
 # ----------------------------------------------------------------------------- what an act is
@@ -696,6 +701,11 @@ class _Cover:
     words: frozenset[tuple[str, bool]]
 
 
+def _vocabulary(speaker: Speaker, script: Script) -> Vocabulary:
+    """The names and words of the script as ``speaker`` has them (with their own names)."""
+    return script.vocabulary.calling(speaker.calls)
+
+
 def _cover(resolved: Sequence[_Resolved], speaker: Speaker, script: Script) -> _Cover:
     entities = {speaker.id, *speaker.listeners}
     preds: set[str] = set()
@@ -708,7 +718,7 @@ def _cover(resolved: Sequence[_Resolved], speaker: Speaker, script: Script) -> _
             preds.add(r.prop.pred)
             if r.prop.motive is not None:
                 motives.add(r.prop.motive)
-    vocab = script.vocabulary
+    vocab = _vocabulary(speaker, script)
     words: set[tuple[str, bool]] = set()
     for kind, idents in ((NAME, entities), (EVENT, preds), (MOTIVE, motives)):
         for ident in sorted(idents):
@@ -716,8 +726,7 @@ def _cover(resolved: Sequence[_Resolved], speaker: Speaker, script: Script) -> _
     return _Cover(frozenset(entities), frozenset(preds), frozenset(motives), frozenset(words))
 
 
-def _prop_words(prop: Prop, script: Script) -> set[tuple[str, bool]]:
-    vocab = script.vocabulary
+def _prop_words(prop: Prop, vocab: Vocabulary) -> set[tuple[str, bool]]:
     words: set[tuple[str, bool]] = set()
     for _, entity in prop.args:
         words.update(vocab.words_of(NAME, entity))
@@ -735,13 +744,14 @@ def _private_terms(speaker: Speaker, script: Script, cover: _Cover) -> TermSet:
         for word in secrets.get(lang, []):
             terms[(normalise(word), lang == "en")] = "secret"
     known = set(cover.words)
+    vocab = _vocabulary(speaker, script)
     for pid in script.public:
         if pid in speaker.book:
-            known |= _prop_words(speaker.book[pid], script)
+            known |= _prop_words(speaker.book[pid], vocab)
     for pid in sorted(speaker.book):
         prop = speaker.book[pid]
         if speaker.guards(prop):
-            for form in sorted(_prop_words(prop, script) - known):
+            for form in sorted(_prop_words(prop, vocab) - known):
                 terms.setdefault(form, "guarded")
     return TermSet([(form, code, whole) for (form, whole), code in sorted(terms.items())])
 
@@ -764,7 +774,7 @@ def _scan_line(
             Error("private", where, code, f"{_quote(form)} is something {speaker.id} keeps back")
         )
     text = blank(text, hits)
-    vocab, lexicon = script.vocabulary, script.lexicon
+    vocab, lexicon = _vocabulary(speaker, script), script.lexicon
     seen: set[tuple[str, str]] = set()
     for _, form, (kind, ident) in scan(text, vocab.terms):
         if kind == NAME:

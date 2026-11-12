@@ -237,11 +237,11 @@ def test_the_morning_paper_says_the_street_has_two_stories_and_names_them():
     assert "two_accounts" in kinds(paper)
     item = item_of(paper)
     assert item["text"]["zh"] == (
-        "街上有两种说法：一说李二昨夜弄坏了石桥栏杆，一说船夫老何昨夜弄坏了石桥栏杆，是不小心的。"
+        "街上有两种说法。有人说李二昨晚把栏杆弄坏了。也有人说船夫老何昨晚把栏杆弄坏了，是不小心的。"
     )
     assert item["text"]["en"] == (
-        "The street has two stories. Some say that Li Er damaged the Stone Bridge Railing last"
-        " night, and others say that Boatman He damaged the Stone Bridge Railing last night, by"
+        "The street has two stories. Some say that Li Er broke the bridge railing last"
+        " night. Others say that Boatman He broke the bridge railing last night, by"
         " accident."
     )
 

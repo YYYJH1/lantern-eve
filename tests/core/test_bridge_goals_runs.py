@@ -115,7 +115,7 @@ def test_with_no_way_through_the_families_light_their_lamps_apart_whatever_else_
     event = ending(h)
     assert event["ending"] == "ending_split" and event["passage"] == "none"
     assert event["inputs"]["truth_told"] and event["inputs"]["reconciled"]
-    assert event["label"]["zh"] == "散场：两家分开办灯"
+    assert event["label"]["zh"] == "两家各点各的灯"
     assert h.frame["hud"]["bridge"]["state"] == "broken"
 
 

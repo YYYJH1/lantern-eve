@@ -211,10 +211,10 @@ test.describe("the paper of the morning, on a recording of the follower", () => 
     await page.waitForFunction((tick) => window.__lantern.client.state.simTick >= tick, recording.tick, { timeout: 60_000 });
     await page.getByTestId("btn-pause").click();
     // A line over the map says that the game was saved, for a few seconds.
-    await expect(page.getByTestId("autosave-note")).toHaveText("已自动存档：第三日 07:00", { timeout: 120_000 });
+    await expect(page.getByTestId("autosave-note")).toHaveText("已自动存档，第三天 07:00", { timeout: 120_000 });
     const made = (await savesOf(page)).find((save) => autoOf(save)?.day === 3);
     // The recording that was put in the browser is the player's own save, and is the older of the two.
-    expect((await savesOf(page)).map((save) => save.name)).toEqual(["自动存档，第三日 07:00", "third morning"]);
+    expect((await savesOf(page)).map((save) => save.name)).toEqual(["自动存档，第三天 07:00", "third morning"]);
     // The paper of the morning is on show, and the player has not put it away: it is in the notes of the save.
     await expect(page.getByTestId("gazette")).toBeVisible();
     const head = await page.getByTestId("gazette-head").innerText();

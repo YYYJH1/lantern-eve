@@ -4,23 +4,29 @@ import "pixi.js/unsafe-eval";
 import { Application, Container, Rectangle, Sprite, type Texture } from "pixi.js";
 import { getLang, type Lang, pick, subscribeLang, translate } from "../../i18n/index.ts";
 import type { HostClient } from "../client.ts";
-import { type ViewFrame, readFrame } from "../frame.ts";
+import { type Bubble, type ViewFrame, readFrame } from "../frame.ts";
+import { firstClause } from "../people.ts";
 import { parseScene, type Scene } from "../scene.ts";
 import { readSite } from "../slice.ts";
 import { Sheet, loadSheetData } from "./atlas.ts";
 import { paintBuildings } from "./buildings.ts";
-import { Camera } from "./camera.ts";
+import { Camera, type CameraPort } from "./camera.ts";
+import { type Box, boxesOver, OVER_THE_MAP, stampOf } from "./clear.ts";
+import type { Deck } from "./people.ts";
 import { Rain, RumourDots, rainLevel, Shimmer } from "./effects.ts";
 import { CELL, CELL_DEPTH, DEPTH_RATIO, faster, LIVELY, type Motion, STILL } from "./geometry.ts";
 import { Lights, lightState } from "./light.ts";
 import { DestinationMarker } from "./marker.ts";
+import { type HeadItem, HeadLabels } from "./headlabels.ts";
 import { NameTags } from "./nametag.ts";
 import { Bubbles, PlaceLabels, TalkMarks } from "./overlay.ts";
-import { pieceColour } from "./palette.ts";
+import { familyColour, pieceColour } from "./palette.ts";
 import { MIN_SCREEN_R, People, PLAYER_ID } from "./people.ts";
 import { type Pickable, pickFront } from "./pick.ts";
 import { Places } from "./places.ts";
 import { cellAtWorld } from "./projection.ts";
+import { RiddleLantern } from "./riddle.ts";
+import { StageCamera } from "./stage-camera.ts";
 import { Silhouettes } from "./silhouette-layer.ts";
 import { bridgeIsWhole } from "./sprites.ts";
 import { cellsOf, paintBackdrop, paintBarriers, paintGround, paintPlainBlocks, paintTrees } from "./terrain.ts";
@@ -83,6 +89,22 @@ export interface MapEvents {
   ground?(hit: GroundHit): void;
   /** The camera moved, or the map was resized. */
   camera?(): void;
+  /** The riddle lantern at the door of the workshop was clicked. Returns whether the page took the click: where it did not, the click is a click on the ground. */
+  riddle?(): boolean;
+}
+
+/**
+ * What a show that draws on the map needs of it (`festival/stage.ts`): where to put what it draws, the atlas the town's figures come from, the deck of the
+ * bridge, and a way to put away what the town draws of its own (its people, the plates with the names of places, the speech bubbles) while the show plays.
+ */
+export interface StageHost {
+  /** The container that everything standing on the ground is sorted in, by the line of the ground it stands on. */
+  readonly actors: Container;
+  /** The container over the town where lights are added: it is not under the tint of the night. */
+  readonly lights: Container;
+  readonly sheet: Sheet | null;
+  readonly deck: Deck | null;
+  setStaged(on: boolean): void;
 }
 
 /** The numbers the tests read from the map, without looking at pixels. */
@@ -158,6 +180,8 @@ export class MapView {
   private unsubscribe: (() => void) | null = null;
   private unsubscribeLang: (() => void) | null = null;
   private lang: Lang = getLang();
+  /** Whether the tags over the heads of the people are drawn (the names and the roles). On unless the page turns them off. */
+  headTags = true;
   private scene: Scene | null = null;
   private frame: ViewFrame | null = null;
   private sceneVersion = -1;
@@ -165,6 +189,11 @@ export class MapView {
   private frameTick = 0;
   private labelsStamp = "";
   private canvasStamp = "";
+  /** The boxes of the page that lie over the map, in the pixels of its canvas, the stamp of them and when they were read. */
+  private over: Box[] = [];
+  private overStamp = "";
+  private overAt = Number.NEGATIVE_INFINITY;
+  private overTimer: number | null = null;
   private selectedId: string | null = null;
 
   private readonly world = new Container();
@@ -178,6 +207,7 @@ export class MapView {
   private readonly places = new Places(this.actors, this.glows);
   private readonly silhouettes = new Silhouettes(this.actors);
   private readonly nameTags = new NameTags();
+  private readonly headLabels = new HeadLabels();
   private readonly groundHost = new Container();
   /** The still parts of the town, as a picture, and as the shapes they were drawn from (hidden while the picture serves). */
   private picture: Sprite | null = null;
@@ -185,6 +215,11 @@ export class MapView {
   private pictureResolution = 1;
   private readonly labels = new PlaceLabels();
   private readonly bubbles = new Bubbles();
+  /** What the page itself has people say over the map (`eggs.ts`): drawn like the lines of the game, on a layer of their own, and counted apart from them. */
+  private readonly pageBubbles = new Bubbles();
+  private pageLines: readonly Bubble[] = [];
+  private readonly riddle = new RiddleLantern();
+  private halo: Texture | null = null;
   private readonly talkMarks = new TalkMarks();
   private readonly marker = new DestinationMarker();
   private lights: Lights | null = null;
@@ -205,6 +240,7 @@ export class MapView {
   /** The page is hidden: nothing is drawn until it is not. */
   private hidden = false;
   private nightLabels = false;
+  private showing = false;
   /** Whether the picture is multisampled: not on a machine with a software renderer (see `softwareRenderer`). */
   private multisampled = true;
 
@@ -219,6 +255,71 @@ export class MapView {
   /** Whether the map draws at all: it does not on a page opened with `?map=off`. */
   get drawn(): boolean {
     return this.options.off !== true;
+  }
+
+  /** Whether the map draws and has the town on it, which is when a show can move its camera. */
+  get staged(): boolean {
+    return this.app !== null && this.scene !== null;
+  }
+
+  /** Asks for the frame that shows where the camera is now. */
+  redraw(): void {
+    this.events.camera?.();
+    this.request(true);
+  }
+
+  /** The camera as a show moves it (`director.ts`). */
+  stageCamera(): CameraPort {
+    return new StageCamera(this);
+  }
+
+  /** What a show draws on, or null where the map is not up or has no town yet. */
+  stageHost(): StageHost | null {
+    if (this.app === null || this.scene === null) return null;
+    return { actors: this.actors, lights: this.bright, sheet: this.sheet, deck: this.places.deck(), setStaged: (on) => this.setStaged(on) };
+  }
+
+  /** Puts away what the game draws on the map of its own, or brings it back, for a show that tells the town's story in its own pictures. */
+  private setStaged(on: boolean): void {
+    this.people.setAway(on);
+    for (const layer of [this.labels.layer, this.nameTags.layer, this.bubbles.layer, this.pageBubbles.layer, this.talkMarks.layer, this.marker.layer, this.dots?.layer ?? null]) {
+      if (layer !== null) layer.visible = !on;
+    }
+    this.people.link.visible = !on;
+    this.refresh();
+  }
+
+  /**
+   * A small picture of what the map shows: the middle of it, `width` pixels across, as a JPEG data URL of the best of the `qualities` that is no longer
+   * than `maxChars`, or null where there is none to be had (no map, a browser that will not give the pixels, or no quality small enough). The picture is of the
+   * map and not of what the page lays over it.
+   */
+  pictureOf(width: number, qualities: readonly number[], maxChars: number): string | null {
+    const app = this.app;
+    if (app === null) return null;
+    try {
+      // The camera may have moved since the map last drew (a show moves it and the map draws at the next refresh of the display), so the map is brought up
+      // to date first, and what is drawn is what the player sees: the stage has the backdrop of the town as well, which reaches far past the screen.
+      this.step(0);
+      const source = app.renderer.extract.canvas({ target: app.stage, frame: new Rectangle(0, 0, app.screen.width, app.screen.height), clearColor: BACKGROUND }) as HTMLCanvasElement;
+      const wide = Math.min(source.width, Math.round(source.height * 1.6 * 0.82));
+      const high = Math.round(wide / 1.6);
+      const out = document.createElement("canvas");
+      out.width = Math.round(width);
+      out.height = Math.round(width / 1.6);
+      const context = out.getContext("2d");
+      if (context === null) return null;
+      context.drawImage(source, Math.round((source.width - wide) / 2), Math.round((source.height - high) / 2), wide, high, 0, 0, out.width, out.height);
+      // The best picture that is small enough, by the qualities in the order they are given.
+      for (const quality of qualities) {
+        const url = out.toDataURL("image/jpeg", quality);
+        if (!url.startsWith("data:image/jpeg")) return null;
+        if (url.length <= maxChars) return url;
+      }
+      return null;
+    } catch {
+      return null;
+    }
   }
 
   get canvas(): HTMLCanvasElement | null {
@@ -270,6 +371,7 @@ export class MapView {
     parent.appendChild(canvas);
 
     const glow = glowTexture();
+    this.halo = glow;
     const glint = glintTexture();
     const farRain = rainTexture(7);
     const nearRain = rainTexture(19);
@@ -283,7 +385,7 @@ export class MapView {
     this.actors.sortableChildren = true;
     this.bright.addChild(this.marker.layer, this.dots.layer, this.lights.layer, this.glows, this.people.link);
     this.world.addChild(this.tinted, this.actors, this.bright);
-    this.overlay.addChild(this.rain.layer, this.labels.layer, this.nameTags.layer, this.bubbles.layer, this.talkMarks.layer);
+    this.overlay.addChild(this.rain.layer, this.labels.layer, this.headLabels.layer, this.nameTags.layer, this.bubbles.layer, this.pageBubbles.layer, this.talkMarks.layer);
     app.stage.addChild(this.world, this.overlay);
     this.app = app;
 
@@ -305,6 +407,10 @@ export class MapView {
     this.calmQuery.addEventListener("change", this.onCalm);
     this.setCalm(this.calmQuery.matches);
     this.setLang(this.lang);
+    // A sheet that opens over the map is no event of the map: the boxes are looked at a few times a second, and a picture is asked for when they moved.
+    this.overTimer = window.setInterval(() => {
+      if (this.app !== null && !this.gone && !this.hidden && this.sampleOver(this.app.canvas, true)) this.request(true);
+    }, 300);
     this.request(true);
   }
 
@@ -352,6 +458,13 @@ export class MapView {
   /** Puts a halo round the person the player is talking to. */
   setTalking(id: string | null): void {
     this.people.talking = id;
+    this.refresh();
+  }
+
+  /** A show is on the map (a moment of the festival, the festival night): the tags over the heads, which the game keeps over the map, are put away for it. */
+  setShowing(on: boolean): void {
+    if (this.showing === on) return;
+    this.showing = on;
     this.refresh();
   }
 
@@ -436,10 +549,11 @@ export class MapView {
   drawing(): ReturnType<Places["describe"]> & {
     people: ReturnType<People["describe"]>;
     nameTags: ReturnType<NameTags["describe"]>;
+    headLabels: ReturnType<HeadLabels["describe"]>;
     silhouettes: ReturnType<Silhouettes["describe"]>;
     occluders: ReturnType<Places["describeOccluders"]>;
   } {
-    return { ...this.places.describe(), people: this.people.describe(), nameTags: this.nameTags.describe(), silhouettes: this.silhouettes.describe(), occluders: this.places.describeOccluders() };
+    return { ...this.places.describe(), people: this.people.describe(), nameTags: this.nameTags.describe(), headLabels: this.headLabels.describe(), silhouettes: this.silhouettes.describe(), occluders: this.places.describeOccluders() };
   }
 
   /** The colour of one pixel of the rendered map, `[r, g, b, a]`, at a point of the map's own element. For the tests. */
@@ -468,6 +582,33 @@ export class MapView {
   /** The words on the map as they are showing: the place plates by id, and the speech bubbles. */
   texts(): { labels: Record<string, string>; bubbles: string[] } {
     return { labels: this.labels.texts(), bubbles: this.bubbles.texts() };
+  }
+
+  /** The words the page has people say over the map of its own, as they are showing (`eggs.ts`). */
+  pageTexts(): string[] {
+    return this.pageBubbles.texts();
+  }
+
+  /** What the page has people say over the map of its own: the lines of the secrets of the town. They are read at each frame of the map and go by their ticks like the lines of the game. */
+  setPageLines(lines: readonly Bubble[]): void {
+    if (lines === this.pageLines) return;
+    this.pageLines = lines;
+    this.refresh();
+  }
+
+  /** How many riddles were guessed right, which is how bright the riddle lantern burns. */
+  setRiddleLevel(level: number): void {
+    if (this.riddle.brightness === level) return;
+    this.riddle.setLevel(level);
+    this.refresh();
+  }
+
+  /** The riddle lantern as the map has it, for the tests and for a click on it: where its paper is on the screen, how bright it burns, and whether it is lit. Null where the town has none. */
+  riddleLantern(): { x: number; y: number; level: number; lit: boolean; glow: number } | null {
+    const at = this.riddle.middle();
+    if (at === null) return null;
+    const p = this.camera.project(at.x, at.y);
+    return { x: p.x, y: p.y, level: this.riddle.brightness, lit: this.riddle.lighting.lit, glow: this.riddle.lighting.glow };
   }
 
   stats(): MapStats {
@@ -624,12 +765,14 @@ export class MapView {
     motion = faster(motion, this.rain?.update(dt, rainLevel(this.frame?.weather ?? "clear"), calm) ?? STILL);
     motion = faster(motion, this.lights?.update(this.lastGlow, seconds, this.camera.zoom, calm) ?? STILL);
     motion = faster(motion, this.places.update(this.lastGlow, seconds, calm));
+    motion = faster(motion, this.riddle.update(this.lastGlow, seconds, calm));
     motion = faster(motion, this.dots?.update(this.frame?.dots ?? [], this.people, this.camera.zoom, seconds, calm) ?? STILL);
 
-    const stamp = `${this.camera.x.toFixed(1)},${this.camera.y.toFixed(1)},${this.camera.zoom.toFixed(4)},${app.screen.width},${app.screen.height},${this.lang},${this.labels.version}`;
+    this.sampleOver(app.canvas);
+    const stamp = `${this.camera.x.toFixed(1)},${this.camera.y.toFixed(1)},${this.camera.zoom.toFixed(4)},${app.screen.width},${app.screen.height},${this.lang},${this.labels.version},${this.overStamp}`;
     if (stamp !== this.labelsStamp) {
       this.labelsStamp = stamp;
-      this.labels.layout(this.camera, app.screen.width, app.screen.height);
+      this.labels.layout(this.camera, app.screen.width, app.screen.height, this.over);
       this.rain?.resize(app.screen.width, app.screen.height);
       this.events.camera?.();
     }
@@ -637,10 +780,34 @@ export class MapView {
     const youAt = you === null ? null : this.camera.project(you.x, you.y - you.mid);
     this.labels.dodge(youAt === null ? null : youAt.x, youAt === null ? 0 : youAt.y, you === null ? 0 : Math.max(you.radius, you.mid) * this.camera.zoom);
     this.bubbles.update(this.frame?.bubbles ?? [], this.frameTick, this.lang, this.people, this.camera, app.screen.width, app.screen.height);
+    // The lines of the page keep clear of the lines of the game and of the acts that hang over the manager's piece (the chips), which are boxes of the page.
+    this.pageBubbles.update(this.pageLines, this.frameTick, this.lang, this.people, this.camera, app.screen.width, app.screen.height, this.pageLines.length === 0 ? [] : [...this.bubbles.boxes, ...this.chipBoxes(app.canvas)]);
     this.talkMarks.update(this.frame?.talkers ?? [], this.people, this.camera, app.screen.width, app.screen.height);
     this.nameTags.update(this.tagItems(scene), this.nightLabels, app.screen.width, app.screen.height);
+    this.headLabels.update(this.headItems(), this.nightLabels, app.screen.width, app.screen.height, this.over, this.labels.boxes());
     this.publish(app.canvas);
     return motion;
+  }
+
+  /**
+   * Reads the boxes of the page that lie over the map, a few times a second, since they change with the window and with the sheets that come and
+   * go. The names of the places and the tags over the heads keep clear of them.
+   */
+  private sampleOver(canvas: HTMLCanvasElement, force = false): boolean {
+    const now = performance.now();
+    if (!force && now - this.overAt < 200) return false;
+    this.overAt = now;
+    const boxes = boxesOver(canvas.getBoundingClientRect(), Array.from(document.querySelectorAll(OVER_THE_MAP), (element) => element.getBoundingClientRect()));
+    const stamp = stampOf(boxes);
+    if (stamp === this.overStamp) return false;
+    this.overStamp = stamp;
+    this.over = boxes;
+    return true;
+  }
+
+  /** The boxes of the acts that hang over the map (`.map-chip`), in the pixels of the canvas. */
+  private chipBoxes(canvas: HTMLCanvasElement): Box[] {
+    return boxesOver(canvas.getBoundingClientRect(), Array.from(document.querySelectorAll(".map-chip"), (element) => element.getBoundingClientRect()));
   }
 
   /** What the name tags say: the people who are picked or under the pointer, with their names and the badges of their families. */
@@ -659,6 +826,40 @@ export class MapView {
         picked: m.picked,
       };
     });
+  }
+
+  /**
+   * What the tags over the heads say: the name of each person the player has talked with and the role of everyone else, with the colour of the family
+   * and the dot of the red slip. A person who is speaking has their words over their head, and one who is picked or under the pointer has the tag under
+   * their feet, so neither has this one.
+   */
+  private headItems(): HeadItem[] {
+    const frame = this.frame;
+    if (frame === null || !this.headTags || this.showing) return [];
+    const quiet = new Set<string>(frame.talkers);
+    for (const bubble of frame.bubbles) if (this.frameTick < bubble.until) quiet.add(bubble.npc);
+    for (const line of this.pageLines) if (this.frameTick < line.until) quiet.add(line.npc);
+    for (const marked of this.people.marked()) quiet.add(marked.id);
+    const out: HeadItem[] = [];
+    for (const head of this.people.heads()) {
+      if (quiet.has(head.id)) continue;
+      const known = frame.acquainted.has(head.id);
+      const role = pick(firstClause(head.person.role), this.lang);
+      const text = known || role === "" ? pick(head.person.name, this.lang) : role;
+      const at = this.camera.project(head.x, head.y);
+      const edge = familyColour(head.person.family);
+      out.push({
+        id: head.id,
+        key: `${head.id}|${this.lang}|${text}|${known}|${edge ?? ""}`,
+        text,
+        known,
+        edge,
+        dot: frame.pointed === head.id && this.people.talking !== head.id,
+        x: at.x,
+        y: at.y,
+      });
+    }
+    return out;
   }
 
   private applyScene(scene: Scene): void {
@@ -700,6 +901,7 @@ export class MapView {
     this.bake(town);
 
     this.places.build(scene);
+    if (this.halo !== null) this.riddle.build(scene, this.actors, this.glows, this.halo);
     this.people.setDeck(this.places.deck());
     const tops = new Map<string, number>();
     for (const item of plans) {
@@ -757,6 +959,7 @@ export class MapView {
     this.tinted.tint = light.tint;
     this.people.setTint(light.peopleTint);
     this.places.setTint(light.tint);
+    this.riddle.setTint(light.tint);
     this.lastGlow = light.glow;
     this.lastDaylight = light.daylight;
     this.lastRain = rainLevel(frame.weather);
@@ -823,6 +1026,13 @@ export class MapView {
 
   // --- The pointer ------------------------------------------------------------------------------
 
+  /** Whether a point of the map's own element is on the riddle lantern, which nothing but the town is over: not while a show is on the map. */
+  private onRiddle(at: { x: number; y: number }, reach: number): boolean {
+    if (this.showing || this.app === null) return false;
+    const w = this.camera.unproject(at.x, at.y);
+    return this.riddle.hits(w.x, w.y, reach / this.camera.zoom);
+  }
+
   private attachInput(canvas: HTMLCanvasElement): void {
     const pointers = new Map<number, { x: number; y: number }>();
     let moved = false;
@@ -870,7 +1080,7 @@ export class MapView {
         const id = personAt(p);
         if (id !== this.people.hover) this.request(true);
         this.people.hover = id;
-        canvas.style.cursor = id === null ? "" : "pointer";
+        canvas.style.cursor = id === null && !this.onRiddle(p, reach) ? "" : "pointer";
         this.events.hover?.(id, p.x, p.y);
         return;
       }
@@ -907,9 +1117,11 @@ export class MapView {
       if (wasDown && pointers.size === 0 && !moved && event.type === "pointerup") {
         const hit = this.pickAt(p.x, p.y, reach);
         const id = hit !== null && hit.kind === "person" && hit.id !== PLAYER_ID ? hit.id : null;
-        this.select(id);
-        this.events.select?.(id);
-        if (id === null) {
+        // The riddle lantern hangs in front of the workshop. A person who stands in front of it is the one who is picked, and the page says whether the lantern opens.
+        const lantern = id === null && this.onRiddle(p, reach) && this.events.riddle?.() === true;
+        if (!lantern) this.select(id);
+        if (!lantern) this.events.select?.(id);
+        if (id === null && !lantern) {
           // A click on the player's own figure is a click on the ground where they stand.
           const own = hit !== null && hit.id === PLAYER_ID ? this.people.playerCell : null;
           const cell = own ?? this.cellAt(p.x, p.y);
@@ -994,6 +1206,8 @@ export class MapView {
   destroy(): void {
     this.gone = true;
     this.cancelFrame();
+    if (this.overTimer !== null) window.clearInterval(this.overTimer);
+    this.overTimer = null;
     this.unsubscribe?.();
     this.unsubscribe = null;
     this.unsubscribeLang?.();
@@ -1003,6 +1217,7 @@ export class MapView {
     this.calmQuery = null;
     this.observer?.disconnect();
     this.observer = null;
+    this.riddle.destroy();
     for (const texture of this.textures) texture.destroy(true);
     this.textures = [];
     this.people.clear();
@@ -1010,6 +1225,7 @@ export class MapView {
     this.silhouettes.destroy();
     this.places.destroy();
     this.nameTags.destroy();
+    this.headLabels.destroy();
     this.app?.destroy({ removeView: true }, { children: true });
     this.app = null;
     this.sheet?.destroy();

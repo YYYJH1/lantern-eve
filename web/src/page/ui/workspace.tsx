@@ -1,18 +1,22 @@
 import { useEffect, useRef } from "preact/hooks";
 import { type Lang, pick, t } from "../../i18n/index.ts";
 import { refusalKey } from "../deals.ts";
-import type { MarkId, NoteSource, NotebookEntry } from "../notebook.ts";
+import type { MarkId, NotebookEntry } from "../notebook.ts";
 import type { Play } from "../play.ts";
+import type { Relation } from "../relations.ts";
 import type { Scene } from "../scene.ts";
-import { type Judgment, RELATIONS, type SliceFrame } from "../slice.ts";
-import { Cost } from "./common.tsx";
-import { bare, ordinal } from "./format.ts";
+import type { Judgment, SliceFrame } from "../slice.ts";
+import { bare } from "./format.ts";
 import { TurnBar, useMoreBelow } from "./more-below.tsx";
 import { count } from "./paper-text.ts";
-import { signalClass } from "./guide.tsx";
+import { PeopleBook } from "./people-book.tsx";
+import { stampWords } from "./people-text.ts";
+import { sourceWords } from "./source-text.ts";
 import { StatementCardView } from "./statement.tsx";
 import { pick as markPick, RULES, VERTICAL_RULES } from "./marks.ts";
-import { Brush, CloseCorner, Circle, InkAct } from "./ink.tsx";
+import { Brush, CloseCorner, InkAct } from "./ink.tsx";
+import { PairButton, Pairing } from "./pairing.tsx";
+import { ANSWER_KEY } from "./pairing-text.ts";
 import { chosenCount, PART_TOTAL } from "./statement-text.ts";
 
 /** The four marks of the notebook: what the manager has found out about a line, written after its source in a heavier hand. The hover says what it means. */
@@ -25,36 +29,39 @@ export function Seal({ mark, lang }: { mark: MarkId; lang: Lang }) {
   );
 }
 
-/** Where a line came from, in a few words: seen first hand, heard from someone and at which hand, or not known. */
-function Badge({ source, lang }: { source: NoteSource; lang: Lang }) {
+/** Where a line came from, in a few words: seen with one's own eyes, or who told it and what they said of how they know it. The hover has when and where it was learned. */
+function Badge({ entry, scene, lang }: { entry: NotebookEntry; scene: Scene | null; lang: Lang }) {
+  const source = entry.source;
+  const when = entry.at === null ? undefined : stampWords(scene, lang, entry.at);
   if (source.kind === "seen") {
     return (
-      <span class="note-from from-seen" data-testid="source-badge" data-source="seen">
-        {t("source.seen")}
+      <span class="note-from from-seen" data-testid="source-badge" data-source="seen" title={when}>
+        {sourceWords(source, lang)}
       </span>
     );
   }
   if (source.kind === "heard") {
     return (
-      <span class="note-from from-heard" data-testid="source-badge" data-source="heard" data-hand={source.hand}>
-        {t("source.heard", { who: pick(source.who, lang), hand: ordinal(lang, source.hand) })}
+      <span class="note-from from-heard" data-testid="source-badge" data-source="heard" data-how={source.how} title={when}>
+        {sourceWords(source, lang)}
       </span>
     );
   }
   return (
     <span class="note-from from-unknown" data-testid="source-badge" data-source="unknown">
-      {t("source.unknown")}
+      {sourceWords(source, lang)}
     </span>
   );
 }
 
 interface NoteProps {
   entry: NotebookEntry;
+  scene: Scene | null;
   lang: Lang;
   fresh: boolean;
   play: Play;
   talking: boolean;
-  /** 1 for the first line of the pair, 2 for the second, 0 for neither. */
+  /** 1 for the line shown against the claim, 2 for the claim, 0 for neither. */
   slot: 0 | 1 | 2;
   hinted: boolean;
   /** Whether there are two lines to put side by side. */
@@ -64,7 +71,7 @@ interface NoteProps {
 }
 
 /** One line of the notebook: the words as they were said on the left, where they came from on the right. */
-function Note({ entry, lang, fresh, play, talking, slot, hinted, canPair, pointed }: NoteProps) {
+function Note({ entry, scene, lang, fresh, play, talking, slot, hinted, canPair, pointed }: NoteProps) {
   const article = useRef<HTMLElement>(null);
   // A new entry is brought into view when the sheet shows it.
   useEffect(() => {
@@ -77,7 +84,7 @@ function Note({ entry, lang, fresh, play, talking, slot, hinted, canPair, pointe
   const heard = entry.source.kind === "heard" || entry.chain.length > 0;
   return (
     <article ref={article} class={`note${fresh ? " is-fresh" : ""}${pointed ? " is-pointed" : ""}${hinted ? " is-hinted" : ""}${slot > 0 ? " is-picked" : ""}`} data-testid="note" data-id={entry.id} data-marks={entry.marks.join(" ")} data-fresh={fresh} data-pointed={pointed} data-slot={slot} data-hinted={hinted}>
-      <div class="note-cols">
+      <div class={canPair ? "note-cols is-pairable" : "note-cols"}>
         <div class="note-words" data-testid="note-words">
           <span class="col-label">{t("notebook.words")}</span>
           <p class="note-text">
@@ -87,7 +94,7 @@ function Note({ entry, lang, fresh, play, talking, slot, hinted, canPair, pointe
         </div>
         <div class="note-source" data-testid="note-source">
           <span class="col-label">{t("notebook.source")}</span>
-          <Badge source={entry.source} lang={lang} />
+          <Badge entry={entry} scene={scene} lang={lang} />
           {entry.marks.length === 0 ? null : (
             <span class="seals">
               {entry.marks.map((mark) => (
@@ -109,14 +116,12 @@ function Note({ entry, lang, fresh, play, talking, slot, hinted, canPair, pointe
             </details>
           )}
         </div>
+        {canPair ? (
+          <div class="note-meta">
+            <PairButton entry={entry} play={play} />
+          </div>
+        ) : null}
       </div>
-      {canPair ? (
-        <div class="note-meta">
-          <InkAct seed={`pick-${entry.id}`} class={`note-pick${slot > 0 ? " is-on" : ""}`} data-testid="note-pick" aria-pressed={slot > 0} onClick={() => play.flows.pick(entry.id)}>
-            {slot === 1 ? t("pair.first") : slot === 2 ? t("pair.second") : t("pair.compare")}
-          </InkAct>
-        </div>
-      ) : null}
       {talking ? (
         <div class="note-ask">
           <InkAct seed={`ask-${entry.id}`} data-testid="note-ask" disabled={play.owing} onClick={() => play.ask(entry.id, entry.text)}>
@@ -133,75 +138,8 @@ function Note({ entry, lang, fresh, play, talking, slot, hinted, canPair, pointe
   );
 }
 
-const REL_KEY = { unsupported: "rel.unsupported", contradicts: "rel.contradicts", mismatch: "rel.mismatch" } as const;
-
-/** The two lines picked, the relation to choose, and what the core made of it. Shown only where the frame lists `judge`. */
-function Pairing({ entries, play, lang, open }: { entries: readonly NotebookEntry[]; play: Play; lang: Lang; open: boolean }) {
-  const { pair } = play.flows.state;
-  const section = useRef<HTMLElement>(null);
-  // The tutorial lights the pair and how they stand: the sheet is scrolled to it. The entries that are new scroll themselves into view as
-  // the sheet opens, so this waits for the next frame, which is after they have.
-  const lit = open && play.guide.signal("pairing");
-  useEffect(() => {
-    if (!lit) return;
-    const frame = requestAnimationFrame(() => section.current?.scrollIntoView?.({ block: "nearest" }));
-    return () => cancelAnimationFrame(frame);
-  }, [lit]);
-  const find = (id: string | null): NotebookEntry | undefined => (id === null ? undefined : entries.find((e) => e.id === id));
-  const a = find(pair.a);
-  const b = find(pair.b);
-  const ready = a !== undefined && b !== undefined;
-  const outcome = pair.outcome;
-  return (
-    <section ref={section} class={`pairing${signalClass(play, "pairing")}`} data-sig="pairing" data-testid="pairing" data-ready={ready} data-waiting={pair.waiting !== null}>
-      <h3 class="pairing-title">{t("pair.title")}</h3>
-      {a === undefined && b === undefined ? (
-        <p class="pairing-hint" data-testid="pairing-hint">
-          {t("pair.hint")}
-        </p>
-      ) : (
-        <ol class="pairing-cards">
-          <li data-testid="pair-first" data-id={a?.id ?? ""}>
-            <span class="slot">{t("pair.first")}</span>
-            <span class="slot-text">{a === undefined ? t("pair.empty") : pick(a.text, lang)}</span>
-          </li>
-          <li data-testid="pair-second" data-id={b?.id ?? ""}>
-            <span class="slot">{t("pair.second")}</span>
-            <span class="slot-text">{b === undefined ? t("pair.empty") : pick(b.text, lang)}</span>
-          </li>
-        </ol>
-      )}
-      {ready ? (
-        <>
-          <div class="relations" role="radiogroup" aria-label={t("pair.relation")} data-testid="relations">
-            {RELATIONS.map((relation) => (
-              <button key={relation} type="button" role="radio" aria-checked={pair.relation === relation} class={`relation${pair.relation === relation ? " is-on" : ""}`} data-testid={`rel-${relation}`} onClick={() => play.flows.setRelation(relation)}>
-                <span>{t(REL_KEY[relation])}</span>
-                {pair.relation === relation ? <Circle kind="wide" /> : null}
-              </button>
-            ))}
-          </div>
-          <div class="pairing-buttons">
-            <button type="button" class={`ink-frame${signalClass(play, "pair-judge")}`} data-sig="pair-judge" data-testid="pair-judge" disabled={pair.relation === null || pair.waiting !== null} onClick={() => play.flows.judge()}>
-              {t("pair.judge")}
-            </button>
-            <InkAct seed="pair-hold" data-testid="pair-hold" onClick={() => play.flows.clear()}>
-              {t("pair.hold")}
-            </InkAct>
-          </div>
-        </>
-      ) : null}
-      {outcome === null || outcome.a !== pair.a || outcome.b !== pair.b ? null : (
-        <p class={`pairing-outcome ${outcome.ok ? "is-ok" : "is-no"}`} data-testid="pair-outcome" data-ok={outcome.ok} data-reason={outcome.reason ?? ""} role="status">
-          {outcome.ok ? t("pair.ok") : t(refusalKey("judge", outcome.reason ?? "unknown"), { reason: outcome.reason ?? "" })}
-        </p>
-      )}
-    </section>
-  );
-}
-
 /** What the player judged right, each with a button to use it when speaking in public. */
-function Judgments({ slice, entries, play, lang, canSpeak, talking, speakCost }: { slice: SliceFrame; entries: readonly NotebookEntry[]; play: Play; lang: Lang; canSpeak: boolean; talking: boolean; speakCost: number | null }) {
+function Judgments({ slice, entries, play, lang, canSpeak, talking }: { slice: SliceFrame; entries: readonly NotebookEntry[]; play: Play; lang: Lang; canSpeak: boolean; talking: boolean }) {
   const list = slice.judgments;
   if (list === null || list.length === 0) return null;
   const text = (id: string): string => {
@@ -219,11 +157,10 @@ function Judgments({ slice, entries, play, lang, canSpeak, talking, speakCost }:
           const waiting = here !== null && here.waiting !== null;
           return (
             <li key={`${j.a}>${j.b}>${j.relation}`} data-testid="judgment" data-a={j.a} data-b={j.b} data-relation={j.relation}>
-              <span class="judgment-relation">{t(REL_KEY[j.relation])}</span>
+              <span class="judgment-relation">{t(ANSWER_KEY[j.relation])}</span>
               <span class="judgment-pair">{t("judged.pair", { a: bare(text(j.a)), b: bare(text(j.b)) })}</span>
               <InkAct seed={`${j.a}-${j.b}`} data-testid="judgment-clarify" disabled={!canSpeak || waiting || play.owing} title={canSpeak ? undefined : t(talking ? "ack.talking" : "clarify.where")} onClick={() => play.flows.clarify(j.b, [j.a], j.relation)}>
                 <span>{t("clarify.use")}</span>
-                <Cost minutes={speakCost} id="clarify" />
               </InkAct>
               {canSpeak ? null : (
                 <span class="judgment-where" data-testid="judgment-where">
@@ -262,8 +199,8 @@ function HintLine({ slice, entries, lang, play }: { slice: SliceFrame; entries: 
   const set = pair.a === hint.a && pair.b === hint.b;
   return (
     <p class="hint-line" data-testid="hint-line" data-a={hint.a} data-b={hint.b}>
-      {t("hint.pair", { a: text(hint.a), b: text(hint.b) })}
-      {hint.relation === null ? null : <strong data-testid="hint-relation"> {t(REL_KEY[hint.relation])}</strong>}{" "}
+      {t("hint.pair", { a: bare(text(hint.a)), b: bare(text(hint.b)) })}
+      {hint.relation === null ? null : <strong data-testid="hint-relation"> {t(ANSWER_KEY[hint.relation])}</strong>}{" "}
       {set ? null : (
         <InkAct seed="hint-use" data-testid="hint-use" onClick={() => play.flows.useHint()}>
           {t("hint.use")}
@@ -273,13 +210,17 @@ function HintLine({ slice, entries, lang, play }: { slice: SliceFrame; entries: 
   );
 }
 
-/** The two pages of the notebook: the notes with the pairing, and the statement card. */
-export type WorkspacePart = "notes" | "statement";
+/** The pages of the notebook: the notes with the pairing, the statement card, and the book of the people. */
+export type WorkspacePart = "notes" | "statement" | "people";
 
 export interface WorkspaceProps {
   open: boolean;
   /** Which page is turned to. The statement card is shown only where the frame has one. */
   part?: WorkspacePart;
+  /** The people of the frame, for the book of the people. */
+  people?: readonly Relation[] | null;
+  /** Whether the page has the sprites to cut the portraits of the people from. */
+  sprites?: boolean;
   /** Turns the page, from the tabs of the sheet. */
   onPart: (part: WorkspacePart) => void;
   scene?: Scene | null;
@@ -295,7 +236,6 @@ export interface WorkspaceProps {
   /** Whether the player is in a talk, when each entry can be asked about. */
   talking: boolean;
   /** The game minutes of speaking in public (`player.costs.speak`), written on the button that clarifies. */
-  speakCost: number | null;
   onClose: () => void;
 }
 
@@ -303,7 +243,7 @@ export interface WorkspaceProps {
  * The notebook as a workspace on a sheet of paper: each line with its words and its source side by side, two
  * lines to pair and a relation to judge, a way to ask for help, and what was judged right, to use in public.
  */
-export function NotebookWorkspace({ open, part = "notes", onPart, scene = null, entries, sample, lang, fresh, play, slice, verbs, talking, speakCost, onClose }: WorkspaceProps) {
+export function NotebookWorkspace({ open, part = "notes", people = null, sprites = false, onPart, scene = null, entries, sample, lang, fresh, play, slice, verbs, talking, onClose }: WorkspaceProps) {
   const sheet = useRef<HTMLElement>(null);
   useEffect(() => {
     // A closed sheet takes no focus and is not read out.
@@ -315,15 +255,18 @@ export function NotebookWorkspace({ open, part = "notes", onPart, scene = null, 
   const canHint = verbs.has("hint");
   const canSpeak = verbs.has("speak") || verbs.has("speak_publicly");
   const card = slice.statement;
-  const showing: WorkspacePart = part === "statement" && card !== null ? "statement" : "notes";
+  const showing: WorkspacePart = part === "people" ? "people" : part === "statement" && card !== null ? "statement" : "notes";
   const pointed = play.flows.state.pointed;
-  // The book is open at both pages when there is a card to put on the right one.
-  const spread = card !== null;
-  const notesLeaf = spread || showing === "notes";
-  const cardLeaf = card !== null && (spread || showing === "statement");
+  // The book is open at both pages when there is a card to put on the right one, and at the people alone when they are turned to.
+  const spread = card !== null && showing !== "people";
+  const notesLeaf = showing !== "people" && (spread || showing === "notes");
+  const cardLeaf = showing !== "people" && card !== null && (spread || showing === "statement");
+  const peopleLeaf = showing === "people";
+  const peopleKnown = (people ?? []).filter((row) => row.known).length;
   // Where a page of the book runs past its foot, a phrase there turns it.
   const notesTurn = useMoreBelow<HTMLElement>(`${showing}-${spread}`);
   const cardTurn = useMoreBelow<HTMLElement>(`${showing}-${spread}-${card !== null}`);
+  const peopleTurn = useMoreBelow<HTMLElement>(`${showing}-${peopleKnown}`);
   const notes = (
     <section ref={notesTurn.leaf} class="leaf leaf-notes" data-testid="notes-leaf" aria-label={t("notebook.title")}>
       {showing === "statement" && !spread ? null : (
@@ -353,11 +296,11 @@ export function NotebookWorkspace({ open, part = "notes", onPart, scene = null, 
                   <HintLine slice={slice} entries={entries} lang={lang} play={play} />
                 </div>
               ) : null}
-              <Judgments slice={slice} entries={entries} play={play} lang={lang} canSpeak={canSpeak} talking={talking} speakCost={speakCost} />
+              <Judgments slice={slice} entries={entries} play={play} lang={lang} canSpeak={canSpeak} talking={talking} />
             </div>
           ) : null}
           {entries.map((entry) => (
-            <Note key={entry.id} entry={entry} lang={lang} fresh={fresh.includes(entry.id)} play={play} talking={talking} slot={pair.a === entry.id ? 1 : pair.b === entry.id ? 2 : 0} hinted={hint !== null && (hint.a === entry.id || hint.b === entry.id)} canPair={canJudge && entries.length > 1} pointed={pointed === entry.id} />
+            <Note key={entry.id} entry={entry} scene={scene} lang={lang} fresh={fresh.includes(entry.id)} play={play} talking={talking} slot={pair.a === entry.id ? 1 : pair.b === entry.id ? 2 : 0} hinted={hint !== null && (hint.a === entry.id || hint.b === entry.id)} canPair={canJudge && entries.length > 1} pointed={pointed === entry.id} />
           ))}
         </div>
       )}
@@ -368,31 +311,40 @@ export function NotebookWorkspace({ open, part = "notes", onPart, scene = null, 
     <aside class="notebook" id="notebook" ref={sheet} data-testid="notebook" data-open={open} data-part={showing} data-spread={spread} aria-hidden={!open} aria-label={t("notebook.title")}>
       <div class="book paper-page">
         <CloseCorner label={t("notebook.close")} testid="notebook-close" onClose={onClose} />
-        {spread ? (
-          <header class="book-head">
-            <div class="workspace-tabs" role="tablist" aria-label={t("workspace.tabs")} data-testid="workspace-tabs">
-              <button type="button" role="tab" class={`workspace-tab${showing === "notes" ? " is-on" : ""}`} aria-selected={showing === "notes"} data-testid="workspace-tab-notes" onClick={() => onPart("notes")}>
-                <span class="paper-title">{t("workspace.notes")}</span>
-                <span class="count">{entries.length}</span>
-              </button>
+        <header class="book-head">
+          <div class="workspace-tabs" role="tablist" aria-label={t("workspace.tabs")} data-testid="workspace-tabs" data-tabs={card !== null ? 2 : 1}>
+            <button type="button" role="tab" class={`workspace-tab${showing === "notes" ? " is-on" : ""}`} aria-selected={showing === "notes"} data-testid="workspace-tab-notes" onClick={() => onPart("notes")}>
+              <span class="paper-title">{t("workspace.notes")}</span>
+              <span class="count">{entries.length}</span>
+            </button>
+            {card !== null ? (
               <button type="button" role="tab" class={`workspace-tab${showing === "statement" ? " is-on" : ""}`} aria-selected={showing === "statement"} data-testid="workspace-tab-statement" onClick={() => onPart("statement")}>
                 <span class="paper-title">{t("workspace.statement")}</span>
                 <span class="count" data-testid="workspace-statement-count">
                   {chosenCount(card)}/{PART_TOTAL}
                 </span>
               </button>
-            </div>
-          </header>
-        ) : (
-          <header class="book-head">
-            <h2 class="paper-title">{t(showing === "statement" ? "statement.title" : "notebook.title")}</h2>
-          </header>
-        )}
+            ) : null}
+            {/* The tab of the people stands at the right of the head of the book, out of the columns of the other two (people.css). */}
+            <button type="button" role="tab" class={`workspace-tab workspace-tab-people${peopleLeaf ? " is-on" : ""}`} aria-selected={peopleLeaf} data-testid="workspace-tab-people" onClick={() => onPart("people")}>
+              <span class="paper-title">{t("people.tab")}</span>
+              <span class="count" data-testid="workspace-people-count">
+                {peopleKnown}
+              </span>
+            </button>
+          </div>
+        </header>
         <div class="leaves">
           {notesLeaf ? notes : null}
+          {peopleLeaf ? (
+            <section ref={peopleTurn.leaf} class="leaf leaf-people" role="tabpanel" data-testid="people-leaf" aria-label={t("people.title")}>
+              <PeopleBook rows={people} play={play} scene={scene} entries={entries} lang={lang} sprites={sprites} />
+              {peopleTurn.more ? <TurnBar leaf={peopleTurn.leaf} word={t("notebook.turn")} testId="people-turn" /> : null}
+            </section>
+          ) : null}
           {cardLeaf && card !== null ? (
             <section ref={cardTurn.leaf} class="leaf leaf-statement" role="tabpanel" data-testid="workspace-statement">
-              <StatementCardView card={card} entries={entries} scene={scene} lang={lang} play={play} speakCost={speakCost} />
+              <StatementCardView card={card} entries={entries} scene={scene} lang={lang} play={play} />
               {cardTurn.more ? <TurnBar leaf={cardTurn.leaf} word={t("notebook.turn")} testId="statement-turn" /> : null}
             </section>
           ) : null}

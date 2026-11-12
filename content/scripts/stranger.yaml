@@ -125,8 +125,8 @@ evidence:
     supports: [pr_from_cloud, pr_made_sample, pr_pedlar_in_town]
     acquire: {from: huolang, gatekeeper: null, min_trust: 20, daily: [840, 1140], minutes: 30, until: 6480}
   - id: e_walkout
-    label: 周掌柜的说法：他被讨价还价后拂袖而去
-    label_en: "Shopkeeper Zhou's account: after the haggling the stranger stormed out"
+    label: 周掌柜的说法：价钱没谈拢，外乡人甩手就走了
+    label_en: "Shopkeeper Zhou's account: the price was not agreed, and the stranger walked out"
     supports: [pr_refused]
     acquire: {from: zhou_zhanggui, gatekeeper: null, min_trust: 30, daily: [480, 1080], minutes: 30}
   - id: e_pedlar_seen

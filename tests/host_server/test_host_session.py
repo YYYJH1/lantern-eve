@@ -333,7 +333,8 @@ def test_the_state_message_of_a_game_that_is_over_has_the_whole_ending_and_the_f
     canon.check(state)
     # what a client is sent for each frame of a game that is over is much less than it was
     whole = len(json.dumps({**later[-1], "frame": {**later[-1]["frame"], "ending": event}}))
-    assert len(json.dumps(later[-1])) < whole - 0.9 * len(json.dumps(event))
+    left_out = {key: event[key] for key in ("reveal", "epilogue")}  # what the light form drops
+    assert len(json.dumps(later[-1])) < whole - 0.9 * len(json.dumps(left_out))
     # a new game has none
     session.new_game(4, "bridge")
     assert session.state_message()["ending"] is None and session.ending() is None

@@ -1,0 +1,161 @@
+/* The hearts: five, drawn with the brush. A whole heart is the rouge of the manager's own pen, an empty one is only its outline, a half is
+   the outline with its left side filled. The card that says what they are made of lies on the sheet of the map like the other cards.
+   Nothing here has a shadow, a radius or an entrance. */
+
+.hearts {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+}
+
+.hearts.is-button {
+  cursor: pointer;
+}
+
+.hearts.is-button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.hearts svg.heart {
+  display: block;
+  flex: none;
+  overflow: visible;
+}
+
+.hearts-s svg.heart {
+  width: 14px;
+  height: 13px;
+}
+
+.hearts-m svg.heart {
+  width: 21px;
+  height: 19px;
+}
+
+.hearts.is-button:hover svg.heart .heart-line {
+  stroke-width: 2.4;
+}
+
+svg.heart .heart-line {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1.7;
+  stroke-linejoin: round;
+}
+
+svg.heart.is-full .heart-line,
+svg.heart.is-half .heart-line {
+  stroke: var(--rouge);
+}
+
+svg.heart .heart-fill {
+  fill: var(--rouge);
+  stroke: none;
+}
+
+/* A heart that has just moved: the heart, the sign and the reason, for a few seconds. */
+
+.heart-pop {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+  align-items: center;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.heart-pop svg.heart {
+  width: 14px;
+  height: 13px;
+}
+
+.heart-pop-sign {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.person-hearts {
+  margin-top: 4px;
+}
+
+/* The card. */
+
+.sheet-hearts {
+  width: min(460px, calc(100% - 24px));
+}
+
+.hearts-card {
+  display: grid;
+  gap: 6px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.hearts-card p {
+  margin: 0;
+}
+
+.hearts-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  align-items: center;
+}
+
+.hearts-title {
+  margin: 0 0 2px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.hearts-block {
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+}
+
+.hearts-block ul {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hearts-block li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+  align-items: baseline;
+}
+
+.hearts-delta {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.hearts-when,
+.hearts-state {
+  font-size: 14px;
+}
+
+.hearts-gift {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  align-items: baseline;
+  margin-top: 4px;
+}
+
+.hearts-gift .ink-act.is-off {
+  opacity: 0.55;
+}

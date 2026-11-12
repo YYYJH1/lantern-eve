@@ -59,10 +59,10 @@ def test_the_run_covers_five_days_of_weather_errands_and_restores(cpython):
     assert set(summary["weather"]) == {"clear", "light_rain", "heavy_rain"}
     acks = summary["acks"]
     assert (acks["duplicate"], acks["no_plan"], acks["refused"]) == (1, 1, 1)  # the keeper's no
-    # (two talks were asked of someone in the middle of telling a neighbour, who is busy; the
+    # (three talks were asked of someone in the middle of telling a neighbour, who is busy; the
     # refusal is in test_bridge_player) and one look is turned away as out of its time: the table
     # of the evidence has days, and the bot looks at what it stands by without knowing them
-    assert (acks["busy"], acks["closed"]) == (2, 1)
+    assert (acks["busy"], acks["closed"]) == (3, 1)
     assert acks["applied"] > 100
     assert set(acks) == {"applied", "busy", "closed", "duplicate", "no_plan", "refused"}
     assert sorted(summary["errands"].values()) == ["done"] * 7 + ["no_stock"]

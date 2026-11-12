@@ -1,0 +1,278 @@
+/* The people: the page of the first six between Start and the first day, the portrait of a person, the hearts, the note of a first meeting at the side of the
+   talk, and the book of the people, which is a page of the notebook. Paper and ink as everywhere else: no card in a card, nothing round, the lesser
+   words set smaller and lighter in weight and never in the grey of the lines. */
+
+/* The portrait: the head and shoulders of a figure of the map on a square of the paper, or the seal of the surname where there is no figure to cut it from. */
+
+.portrait {
+  position: relative;
+  display: inline-grid;
+  width: var(--portrait-w, var(--size));
+  height: var(--portrait-h, var(--size));
+  flex: none;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--structure);
+  background: color-mix(in srgb, var(--structure) 12%, var(--paper));
+}
+
+.portrait canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.portrait .portrait-seal {
+  width: 100%;
+  height: 100%;
+  background: none;
+  clip-path: none;
+  color: var(--ink);
+  outline: 0;
+  transform: none;
+}
+
+/* The page of the first six. It is the opening page's sheet, wider, with the six people in two columns. */
+
+.opening-people .people-opening-card {
+  gap: 12px;
+  width: min(940px, 100%);
+  padding: 10px clamp(10px, 3vw, 34px) 12px;
+  text-align: left;
+}
+
+.people-opening-title {
+  margin: 0;
+  font-family: var(--brush);
+  font-size: clamp(38px, 6vw, 54px);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.people-opening-title[data-lang="en"] {
+  font-size: clamp(34px, 5vw, 46px);
+  letter-spacing: 0.04em;
+}
+
+.people-six {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(14px, 3vw, 36px);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.people-six-person {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-top: 1px solid var(--structure);
+}
+
+.people-six-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+}
+
+.people-six-intro {
+  margin: 2px 0 0;
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+
+.people-more {
+  width: 100%;
+  margin: 0;
+  padding-top: 8px;
+  border-top: 2px solid var(--ink);
+  font-size: 17px;
+  text-align: center;
+}
+
+.people-opening-card .opening-start {
+  align-self: center;
+}
+
+/* A window of the least height: the sheet is made smaller, and starts under the two switches at the corner. */
+
+@media (max-height: 700px) {
+  .opening-people {
+    padding-top: 54px;
+  }
+
+  .opening-people .people-opening-card {
+    gap: 6px;
+    padding-top: 6px;
+    padding-bottom: 8px;
+  }
+
+  .people-opening-title {
+    font-size: 36px;
+  }
+
+  .people-six .portrait {
+    --portrait-w: 60px;
+    --portrait-h: 60px;
+  }
+
+  .people-six-person {
+    gap: 12px;
+    padding: 7px 0;
+  }
+
+  .people-six-name {
+    font-size: 18px;
+  }
+
+  .people-six-intro {
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+
+  .people-more {
+    padding-top: 6px;
+    font-size: 16px;
+  }
+
+  .people-opening-card .opening-start {
+    min-height: 42px;
+    padding: 4px 26px;
+  }
+}
+
+/* The note of a first meeting, at the side of the talk: who the person is, and that the book of the people has them now. */
+
+.meeting-note {
+  margin: 0 0 4px;
+  padding: 2px 0 4px;
+  border-bottom: 1px solid var(--structure);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.meeting-line {
+  margin: 0;
+}
+
+.meeting-name {
+  margin-right: 0.6em;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.meeting-added {
+  margin-left: 0.6em;
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+
+/* The book of the people: a page of the notebook, a line for each person. The tab for it stands at the right of the head of the book, to the left of the corner that puts the book away. */
+
+.notebook .workspace-tabs[data-tabs="1"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.notebook .workspace-tabs[data-tabs="1"] .workspace-tab {
+  width: max-content;
+}
+
+.workspace-tab-people {
+  position: absolute;
+  top: 2px;
+  right: 46px;
+  padding: 0 14px;
+}
+
+.leaf-people {
+  padding-right: 30px;
+}
+
+.people-lines {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.people-line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 4px 14px;
+  align-items: start;
+  padding: 10px 4px 10px 6px;
+  border-bottom: 1px solid var(--structure);
+}
+
+.people-main {
+  min-width: 0;
+}
+
+.people-name {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+  align-items: baseline;
+  margin: 0;
+  font-size: 17.5px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.people-name strong {
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.people-role,
+.people-family {
+  font-size: 14.5px;
+}
+
+.people-facts {
+  display: grid;
+  gap: 1px;
+  margin: 2px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.people-facts > div {
+  display: grid;
+  grid-template-columns: 5.2em minmax(0, 1fr);
+  gap: 0 10px;
+}
+
+.people-facts dt {
+  font-weight: 500;
+}
+
+.people-facts dd {
+  margin: 0;
+}
+
+.people-facts ul {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.people-facts small {
+  display: block;
+  font-size: 13.5px;
+}
+
+.people-hearts {
+  padding-top: 2px;
+}

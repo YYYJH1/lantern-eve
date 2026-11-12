@@ -754,6 +754,12 @@
   min-width: 0;
 }
 
+/* The words of the skip are a phrase of a button: the text beside them gives way, and they are not broken inside themselves. */
+.tut-chip > .ink-act {
+  flex: none;
+  white-space: nowrap;
+}
+
 .hint-pill {
   position: absolute;
   top: 64px;
@@ -769,8 +775,33 @@
   line-height: 1.5;
 }
 
-.hint-pill-text {
+/* The menu has the list of hints in it: a hint that is lit waits behind the menu while it is open. */
+.shell[data-menu="true"] .hint-pill {
+  display: none;
+}
+
+.hint-pill-body {
+  display: grid;
   flex: 1 1 auto;
+  min-width: 0;
+  gap: 1px;
+}
+
+/* The seal of the clan elder at the head of what he says, the same seal as on the tutorial card at a smaller size: the hint is his word. */
+.hint-pill .tut-token {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  font-size: 19px;
+  outline-offset: -3px;
+}
+
+.hint-pill-title {
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.hint-pill-text {
   min-width: 0;
 }
 
@@ -779,23 +810,6 @@
   right: -4px;
   width: 28px;
   height: 28px;
-}
-
-.hint-log {
-  position: fixed;
-  right: 30px;
-  bottom: 140px;
-  z-index: 25;
-  width: min(440px, calc(100vw - 42px)); /* 30 from the right edge and 12 from the left */
-  max-height: min(60vh, 420px);
-  padding: 4px 10px;
-  overflow-y: auto;
-}
-
-.hint-log-title {
-  margin: 4px 0 6px;
-  font-size: 18px;
-  font-weight: 500;
 }
 
 .hint-log-off,
@@ -816,6 +830,11 @@
   gap: 2px;
   padding: 8px 0;
   border-top: 1px solid var(--rule);
+}
+
+.hint-log-text strong {
+  display: block;
+  font-weight: 500;
 }
 
 .hint-log-list li:first-child {

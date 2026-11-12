@@ -29,7 +29,7 @@ test.describe("the line of the morning that says what to do today", () => {
     setLang("en");
     expect(todayLine(slice, SCENE, "en")).toBe("Today: Ask Li Da for another batch of bamboo, Li Family House, Day 2 08:00 to 17:00");
     setLang("zh");
-    expect(todayLine(slice, SCENE, "zh")).toBe("今天：再请李大送一批竹料，李家宅，第二日 辰时 08:00 到 17:00");
+    expect(todayLine(slice, SCENE, "zh")).toBe("今天：再请李大送一批竹料，李家宅，第二天 辰时 08:00 到 17:00");
   });
 
   test("names the most urgent task that is open when none is followed, or the one that is followed has been done", () => {

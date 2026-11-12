@@ -89,6 +89,7 @@ from lantern_core.world.bridge import (
     assembly,
     bonds,
     commitments,
+    context,
     converse,
     evidence,
     goals,
@@ -131,6 +132,9 @@ LENDER, CARRIER, BAMBOO = "li_laotai", "li_da", "bamboo"
 TAINT_WINDOW = 600
 PENDING_TICKS = 240
 WATCH_STRIDE = 10
+# why a person said no, as ``said_no`` keeps it: the score fell short, a gate shut for want of trust
+# (a testimony), else the reason the action was turned down for
+SCORE_SHORT, TRUST_GATE = "short", "trust"
 
 
 @dataclass(frozen=True, slots=True)
@@ -194,6 +198,45 @@ class Deal:
             row["sign"],
             row["before"],
         )
+
+
+# ---------------------------------------------------------------------------- what was turned down
+
+
+def detail_of(person: str, body: dict[str, Any]) -> str:
+    """What a request is about, as ``Ask`` keeps it: the item of the goods, the bamboo lent, the
+    person to talk round, else nothing."""
+    kind = body["kind"]
+    if kind == "material":
+        return goals_work.SUPPLIERS.get(person, ("",))[0]
+    if kind == "lend":
+        return BAMBOO
+    if kind == "persuade":
+        return str(body.get("target", ""))
+    return ""
+
+
+def key_of(person: str, kind: str, detail: str) -> str:
+    """The key a request is kept under in ``asked`` and ``said_no``: ``person|kind|detail``."""
+    return f"{person}|{kind}|{detail}"
+
+
+def remember_no(section: dict[str, Any], key: str, day: int, why: str, sign: str = "") -> None:
+    """Keep that a person said no to a request today, and why (``SCORE_SHORT``, ``TRUST_GATE``
+    or the reason an action was turned down for), with the situation it was weighed in (``sign``,
+    which has no citations) if it was. The row is ``[day, why, sign, number]``: the number counts
+    the refusals that are kept, so that the newest has the greatest (a row from a game from before
+    the number was kept has none, and counts as the oldest). ``context`` reads it; no rule does."""
+    rows = section.setdefault("said_no", {})
+    newest = max((row[3] if len(row) > 3 else 0 for row in rows.values()), default=0)
+    rows[key] = [day, why, sign, newest + 1]
+
+
+def forget_no(section: dict[str, Any], key: str) -> None:
+    """A person said yes to a request: it was not turned down after all."""
+    rows = section.get("said_no")
+    if rows is not None and rows.pop(key, None) is not None and not rows:
+        del section["said_no"]
 
 
 # ---------------------------------------------------------------------------- validating
@@ -510,12 +553,23 @@ def apply(sim: Sim, body: dict[str, Any]) -> None:
     if isinstance(ask, str):
         if ask in STANDING:
             return answer_standing(sim, body, person)
+        if ask not in ("said_already", "cannot"):
+            asked = key_of(person, body["kind"], detail_of(person, body))
+            remember_no(section, asked, sim.now.day, ask)
         converse.reply(sim, SAYS.get(ask, "cannot"))
         return converse.ack(sim, body, ask)
     items: list[dict[str, Any]] = []
     if ask.kind == "testify":
         blocked, items = _gates(sim, ask)
         if blocked is not None:
+            trust = repute.trust(section, lo.index[person])
+            remember_no(
+                section,
+                ask.key,
+                sim.now.day,
+                TRUST_GATE if blocked == "refused" else blocked,
+                f"t{trust}" if blocked == "refused" else "",
+            )
             converse.reply(sim, "closed" if blocked == "closed" else "turned_down")
             return converse.ack(sim, body, blocked)
     weighed, hard_id, way, closed, sign = weigh_request(
@@ -540,6 +594,7 @@ def apply(sim: Sim, body: dict[str, Any]) -> None:
     before = section["asked"].get(ask.key)
     section["asked"][ask.key] = sign
     if closed:
+        remember_no(section, ask.key, sim.now.day, "hard")
         code = persuade.refusal(sim.state, hard_id)
         converse.reply(sim, code if code in phrases.PHRASES else "hard_other")
         sim.emit("entrusted", result="hard", pending=False, **fields)
@@ -577,6 +632,9 @@ def finish(sim: Sim, body: dict[str, Any], deal: Deal, wording: int, judged: boo
     if judged:
         fields["wording"] = dict(weighed.parts)["wording"]
     if not weighed.agrees:
+        short = weigh_request(sim.world, sim.state, person, ask.kind, ask.detail).sign
+        remember_no(section, ask.key, sim.now.day, SCORE_SHORT, short)
+        context.note_ask(sim.world, sim.state, person, ask.kind, ask.detail, sim.now.day, tick)
         converse.reply(sim, "turned_down")
         sim.emit("entrusted", result="refused", pending=False, **fields)
         return converse.ack(sim, body, "refused")
@@ -589,6 +647,7 @@ def finish(sim: Sim, body: dict[str, Any], deal: Deal, wording: int, judged: boo
         else:
             failed = commit(sim, ask, strong)
             if failed is not None:
+                remember_no(section, ask.key, sim.now.day, failed)
                 converse.reply(sim, SAYS.get(failed, "cannot"))
                 sim.emit("entrusted", result=failed, pending=False, **fields)
                 return converse.ack(sim, body, failed)
@@ -599,6 +658,7 @@ def finish(sim: Sim, body: dict[str, Any], deal: Deal, wording: int, judged: boo
         row = {"id": section["rseq"], "npc": person, "kind": ask.kind, "detail": ask.detail}
         row |= {"strong": strong, "due": tick + PENDING_TICKS, "via": via}
         section["pending"].append(row)
+    forget_no(section, ask.key)
     pledges.add_deed(section, f"asked:{ask.key}", person, DEED_SIZE[ask.kind], -1, tick)
     batch = commitments.thanks(sim) if ask.kind == "material" and not via else ""
     converse.reply(sim, batch or _thanks(ask.kind))

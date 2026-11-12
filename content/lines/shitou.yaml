@@ -1,152 +1,171 @@
-# Shitou, a child of the Li family. Plain and loud, the shortest words he knows, says no before
-# he thinks, and loves a pinky promise.
+# Shitou, Li Da's young son. Blunt and loud, the simplest words he knows, short sentences; his mind
+# is on play, and grown-ups quarrelling frighten him.
 person: shitou
 voice:
-  zh: 李家的孩子。话直、嗓门大，只用最简单的词，爱拉钩，不高兴就说不。
-  en: A child of the Li family. Plain and loud, the shortest words he knows, says no before he thinks, loves a pinky promise.
+  zh: "李大的儿子，还是个孩子。话直，句子短，嗓门大，只用最简单的词，爱说「真的」「骗你是小狗」。心思都在玩上：河滩，竹马，有没有人陪着玩。大人一吵架就害怕。不想说就一句「我不说」。"
+  en: "Li Da's son, still a child. Blunt and loud, in short sentences and the simplest words, fond of saying really and cross my heart. His mind is on play: the riverbank, his bamboo horse, whether anyone will play with him. Grown-ups quarrelling frighten him. When he won't tell, he says so: I'm not telling."
+call:
+  fam_li: {zh: 我们家, en: our family}
+  li_da: {zh: 爹, en: Dad}
+  li_er: {zh: 二叔, en: Uncle Er}
+  li_laotai: {zh: 奶奶, en: Granny}
+  li_xiaomei: {zh: 姐, en: my sister}
+  old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "呼噜……再玩一会儿……（睡熟了）", en: "Snore... five more minutes of play... (fast asleep)"}
+    - {zh: "呼……再玩一会儿……（睡熟了）", en: "Zzz... five more minutes... (fast asleep)"}
     - {zh: "唔……竹马……跑快点……（睡熟了）", en: "Mm... horsey... run faster... (fast asleep)"}
   busy:
-    - {zh: "我在忙呢！等会儿再来！", en: "I'm busy! Come back later!"}
-    - {zh: "别烦我啦。我正玩着呢。", en: "Don't bother me. I'm playing."}
+    - {zh: "我在忙呢，等会儿。", en: "I'm busy. In a bit."}
+    - {zh: "别烦我，我正玩着呢。", en: "Don't bother me. I'm playing."}
   timeout:
-    - {zh: "我要回去了！娘叫我吃饭啦！", en: "I have to go! Mum's calling me for dinner!"}
-    - {zh: "先生等着我背书呢！我走啦！", en: "Teacher's waiting for me to recite! I'm off!"}
+    - {zh: "我要回家吃饭了。", en: "I have to go home for dinner."}
+    - {zh: "先生等着我背书呢，我走啦。", en: "Teacher's waiting for me to recite. I'm off."}
   unknown:
-    - {zh: "我不知道啦。", en: "I dunno."}
-    - {zh: "没听说过。真的！", en: "Never heard of it. Really!"}
+    - {zh: "我不知道呀。", en: "Dunno."}
+    - {zh: "没听过，真的。", en: "Never heard it. Really."}
   evade:
-    - {zh: "我才不说呢！", en: "I'm not telling!"}
-    - {zh: "不告诉你！", en: "Won't say!"}
+    - {zh: "我不说。", en: "I'm not telling."}
+    - {zh: "不告诉你！", en: "Won't tell you!"}
   not_said:
-    - {zh: "我才没说过那种话！", en: "I never said anything like that!"}
-    - {zh: "不是我说的！", en: "It wasn't me who said it!"}
+    - {zh: "我才没说过！", en: "I never said any such thing!"}
+    - {zh: "不是我说的。", en: "It wasn't me who said it."}
   not_so:
-    - {zh: "不对不对！不是这样的！", en: "No, no! It's not like that!"}
-    - {zh: "你弄错啦！", en: "You got it wrong!"}
+    - {zh: "不对不对，不是这样。", en: "No, no. It's not like that."}
+    - {zh: "你弄错啦。", en: "You got it wrong."}
   keeper_no:
-    - {zh: "我不认识你呢。不给你看！", en: "I don't know you. I won't show you!"}
-    - {zh: "娘说不能给生人看。", en: "Mum says not to show strangers."}
+    - {zh: "我不认识你，不给你看。", en: "I don't know you. I won't show you."}
+    - {zh: "奶奶说不能给生人看。", en: "Granny says not to show strangers."}
   took_in:
-    - {zh: "哦！我记住啦！", en: "Oh! I'll remember!"}
-    - {zh: "嗯嗯，知道了！", en: "Uh-huh, got it!"}
+    - {zh: "哦，记住了。", en: "Oh. Got it."}
+    - {zh: "嗯，知道啦。", en: "Uh-huh, I know now."}
   knew:
-    - {zh: "这个我早就知道啦！", en: "I knew that ages ago!"}
-    - {zh: "嘿，我也知道这个！", en: "Hey, I know that too!"}
+    - {zh: "这个我早知道啦。", en: "I knew that ages ago."}
+    - {zh: "我也知道这个。", en: "I know that too."}
   doubted:
-    - {zh: "不对吧！我听到的不是这样！", en: "That's not right! It's not what I heard!"}
-    - {zh: "咦？跟我听说的不一样！", en: "Huh? That's not what they told me!"}
+    - {zh: "不对，我听的不是这样。", en: "Nope. That's not what I heard."}
+    - {zh: "跟我听的不一样。", en: "That's not what they told me."}
   caught:
-    - {zh: "你骗人！你是大骗子！我再也不信你啦！", en: "You lied! You big liar! I'll never believe you again!"}
-    - {zh: "你撒谎！我不理你了！", en: "You're lying! I'm not talking to you anymore!"}
+    - {zh: "你骗人！我不理你了。", en: "You lied! I'm not talking to you anymore."}
+    - {zh: "大骗子，我再也不信你了。", en: "Big liar. I'll never believe you again."}
   deal:
-    - {zh: "好！说定啦！", en: "Okay! It's a deal!"}
-    - {zh: "行！拉钩！", en: "Okay! Pinky promise!"}
+    - {zh: "好，说定啦。", en: "Okay. It's a deal."}
+    - {zh: "拉钩，说话算话！", en: "Pinky promise, no backing out!"}
   empty:
-    - {zh: "你什么都没给我。骗人！", en: "You haven't given me anything. Fibber!"}
-    - {zh: "光会说！我才不信！", en: "All you do is talk! I don't believe it!"}
+    - {zh: "你什么都没给我，骗人。", en: "You haven't given me anything. Fibber."}
+    - {zh: "光会说，我才不信。", en: "All you do is talk. I don't believe it."}
   kept_thanks:
-    - {zh: "总管说话算话！谢谢你！", en: "The Manager keeps promises! Thank you!"}
-    - {zh: "你真的做到啦！我记住你啦！", en: "You really did it! I'll remember you!"}
+    - {zh: "你说话算话，谢谢你。", en: "You kept your promise. Thank you."}
+    - {zh: "你真的做到啦！", en: "You really did it!"}
   will_do:
-    - {zh: "好！我去！", en: "Okay! I'll do it!"}
-    - {zh: "行行行，交给我！", en: "Sure, sure, leave it to me!"}
+    - {zh: "好，我去。", en: "Okay, I'll go."}
+    - {zh: "行，我来。", en: "Okay, I'll do it."}
   cannot:
-    - {zh: "这个我不会。帮不了你。", en: "I can't do that. Can't help you."}
-    - {zh: "我办不到啦。", en: "I can't do it."}
+    - {zh: "这个我做不来。", en: "I can't do that."}
+    - {zh: "我办不到啦。", en: "I can't."}
   turned_down:
-    - {zh: "不行不行！我不答应！", en: "No, no! I won't agree!"}
+    - {zh: "不行，我才不答应。", en: "No way. I won't."}
     - {zh: "对不起，这个不行。", en: "Sorry, that's not allowed."}
   said_already:
     - {zh: "我说过啦！", en: "I already told you!"}
-    - {zh: "刚刚说过了呀！", en: "I just said it!"}
+    - {zh: "刚刚说过了呀。", en: "I just said it."}
   closed:
-    - {zh: "现在不行！等一会儿再来！", en: "Not now! Come back in a bit!"}
-    - {zh: "不是现在啦。你过会儿再来。", en: "Not now. Come back after a while."}
+    - {zh: "现在不行，等一会儿。", en: "Not now. Wait a bit."}
+    - {zh: "不是现在啦，过会儿再来。", en: "Not now. Come back after a while."}
   needs_nod:
-    - {zh: "要先问过奶奶才行！", en: "I have to ask Granny first!"}
-    - {zh: "奶奶要是不点头，我不能答应。", en: "I can't say yes unless Granny nods."}
+    - {zh: "要先问奶奶。", en: "I have to ask Granny first."}
+    - {zh: "爹不点头，我不能答应。", en: "If Dad doesn't nod, I can't say yes."}
   nothing_to_say:
-    - {zh: "我没什么要说的。", en: "I've got nothing to say."}
-    - {zh: "没有啦！什么都没有！", en: "Nope! Nothing at all!"}
+    - {zh: "我什么都没看见。", en: "I never saw a thing."}
+    - {zh: "那晚我睡着了，真的。", en: "I was asleep that night. Really."}
   testified:
-    - {zh: "我真的看见了！骗你是小狗！", en: "I really saw it! If I'm lying I'm a puppy!"}
-    - {zh: "我是亲眼看到的！", en: "I saw it with my own eyes!"}
+    - {zh: "我真的看见了，骗你是小狗。", en: "I really saw it. Cross my heart."}
+    - {zh: "我是亲眼看到的。", en: "I saw it with my own eyes."}
   too_late:
-    - {zh: "天黑啦。明天早上再来！", en: "It's dark. Come in the morning!"}
-    - {zh: "太晚了！我要睡觉啦！", en: "It's too late! I'm going to bed!"}
+    - {zh: "天黑啦，明天再来。", en: "It's dark. Come tomorrow."}
+    - {zh: "太晚了，我要睡觉了。", en: "It's too late. I'm going to bed."}
   will_ask:
-    - {zh: "好！我去跟那个人说！", en: "Okay! I'll go tell them!"}
-    - {zh: "行，我去问问看！", en: "Okay, I'll go ask them!"}
+    - {zh: "好，我去跟人说。", en: "Okay, I'll go and tell them."}
+    - {zh: "行，我去问问。", en: "Okay, I'll go and ask."}
   will_call:
-    - {zh: "我去喊大家来祠堂！", en: "I'll go call everyone to the hall!"}
-    - {zh: "好！我跑着去叫人！", en: "Okay! I'll run and call everybody!"}
+    - {zh: "我去喊大家来祠堂。", en: "I'll go call everyone to the hall."}
+    - {zh: "好，我跑着去叫人。", en: "Okay, I'll run and get people."}
   hard_hc_li_bamboo:
-    - {zh: "奶奶说了。谣言不说清楚，竹子一根都不借！", en: "Granny says so. Until the rumour is cleared up, no bamboo at all!"}
-    - {zh: "谣言要当着大家说清楚！不然没有竹子！", en: "The rumour has to be cleared up in front of everybody! Or no bamboo!"}
+    - {zh: "奶奶说了。那些话不说清楚，竹子一根都不借。", en: "Granny said so. Until that talk is cleared up, no bamboo at all."}
+    - {zh: "要当着大家说清楚，不然没有竹子。", en: "It has to be cleared up in front of everybody, or no bamboo."}
   hard_hc_li_bamboo_rumour:
-    - {zh: "都说我二叔弄坏桥！你不吭声！不借！", en: "Everybody says my uncle broke the bridge! You don't say anything! No!"}
-    - {zh: "谣言到处都是！你怎么不说话！", en: "The rumour is everywhere! Why don't you say anything!"}
+    - {zh: "大家都说我二叔弄坏了桥，你也不说话。不借！", en: "Everybody says my uncle broke the bridge, and you don't say a thing. Not lending!"}
+    - {zh: "二叔才没弄坏桥！你为什么不说话？", en: "Uncle Er didn't break the bridge! Why don't you say anything?"}
   hard_other:
-    - {zh: "不行就是不行！", en: "No means no!"}
+    - {zh: "不行就是不行。", en: "No means no."}
     - {zh: "说了不行啦！", en: "I said no!"}
   elder_yes:
-    - {zh: "我听懂啦！就这样！", en: "I get it now! That's that!"}
-    - {zh: "你说的对！我信！", en: "You're right! I believe you!"}
+    - {zh: "我听懂啦，就这样。", en: "I get it now. That's that."}
+    - {zh: "你说的对，我信。", en: "You're right. I believe you."}
   elder_no:
-    - {zh: "还是不够！我不信！", en: "Still not enough! I don't believe it!"}
-    - {zh: "你说得不够多！", en: "You didn't say enough!"}
+    - {zh: "还是不够，我不信。", en: "Still not enough. I don't believe it."}
+    - {zh: "我没听懂。", en: "I didn't get it."}
   objection_withdrawn:
-    - {zh: "说清楚啦！我不拦了！", en: "It's all cleared up! I won't stop you!"}
-    - {zh: "奶奶不拦了，我也不拦！", en: "Granny doesn't stop you, so I don't either!"}
+    - {zh: "说清楚啦，那我不拦了。", en: "It's all cleared up. I won't stop you now."}
+    - {zh: "奶奶不拦了，我也不拦。", en: "Granny isn't stopping you, so I won't either."}
   witness_in_public:
-    - {zh: "我就看见这些！别的没看到！", en: "That's all I saw! I didn't see anything else!"}
-    - {zh: "我没骗人！看见啥说啥！", en: "I'm not lying! I say what I saw!"}
+    - {zh: "我就看见这些，别的没看到。", en: "That's all I saw. I didn't see anything else."}
+    - {zh: "看见啥说啥，我没骗人。", en: "I say what I saw. I'm not lying."}
   batch_promised:
-    - {zh: "好！明天早上送到桥边！", en: "Okay! I'll bring it to the bridge tomorrow morning!"}
-    - {zh: "拉钩！明早一定到！", en: "Pinky promise! It'll be there tomorrow morning!"}
+    - {zh: "好，明早送到桥边。", en: "Okay. It'll be at the bridge tomorrow morning."}
+    - {zh: "拉钩，明早一定到。", en: "Pinky promise. It'll be there tomorrow morning."}
   bamboo_arrived:
-    - {zh: "竹子到啦！在桥边！", en: "The bamboo's here! At the bridge!"}
-    - {zh: "好多竹子！桥能修啦！", en: "Lots of bamboo! The bridge can be fixed!"}
+    - {zh: "竹子到啦，在桥边！", en: "The bamboo's here, at the bridge!"}
+    - {zh: "好多竹子，桥能修啦。", en: "Lots of bamboo. The bridge can be fixed now."}
   promise_open:
-    - {zh: "我答应啦！{when}送{amount}根{item}！", en: "I said yes already! I'll bring {amount} poles of {item} {when}!"}
-    - {zh: "拉过钩啦！{amount}根{item}，{when}到桥边！", en: "We pinky-promised already! It's {amount} poles of {item}, at the bridge {when}!"}
+    - {zh: "我答应啦，{when}送{amount}根{item}。", en: "I said yes already. I'll bring {amount} poles of {item} {when}."}
+    - {zh: "拉过钩啦。{amount}根{item}，{when}到桥边。", en: "We pinky-promised already. It's {amount} poles of {item}, at the bridge {when}."}
   goods_enough:
-    - {zh: "桥边的{item}好多啦！够啦！", en: "There's so much {item} at the bridge! Enough!"}
-    - {zh: "不要了不要了，{item}够啦！", en: "No more, no more! That's enough {item}!"}
+    - {zh: "桥边的{item}好多啦，够啦。", en: "There's so much {item} at the bridge. Enough."}
+    - {zh: "不要了，{item}够啦。", en: "No more. That's enough {item}."}
   point_heard:
-    - {zh: "我不知道啦！我听{name}说过，你去问！", en: "I dunno! I heard {name} say something, so go ask!"}
-    - {zh: "没听说过！不过{name}好像讲过。你去问，真的！", en: "Never heard of it! But {name} said something, go ask, really!"}
+    - {zh: "我不知道。我听{name}说过，你去问。", en: "I dunno. I heard {name} say something, so go ask."}
+    - {zh: "没听过。{name}好像讲过，你去问吧。", en: "Never heard it. I think {name} talked about it, so go ask."}
   point_hub:
-    - {zh: "不知道啦！你去问{name}，什么都知道！", en: "I dunno! Go ask {name}, who knows everything!"}
-    - {zh: "我不知道！大人的事去问{name}！", en: "Don't know! For grown-up stuff, ask {name}!"}
+    - {zh: "不知道。你去问{name}，什么都知道。", en: "Dunno. Go ask {name}, who knows everything."}
+    - {zh: "大人的事，去问{name}。", en: "For grown-up stuff, ask {name}."}
+  gift_like:
+    - {zh: "{item}！给我的？真的？", en: "Some {item}! For me? Really?"}
+    - {zh: "{item}，我最爱吃这个了。", en: "Some {item}, my favourite."}
+  gift_neutral:
+    - {zh: "{item}？我拿回去给爹。", en: "Some {item}? I'll take it home to my dad."}
+    - {zh: "{item}？那我带回家。", en: "Some {item}? I'll take it home, then."}
+  gift_dislike:
+    - {zh: "{item}苦苦的，我不要。", en: "Some {item}... they taste bitter. I don't want them."}
+    - {zh: "{item}是大人喝的。给奶奶吧。", en: "Those {item} are for grown-ups. Give them to Granny."}
 frames:
   seen:
-    - {zh: "我看到啦！真的：{line}！", en: "I saw it! Really: {line}!"}
-    - {zh: "我亲眼看见的：{line}！", en: "My eyes saw it: {line}!"}
+    - {zh: "{line}。我看见的，真的。", en: "{line}. I saw it, really."}
+    - {zh: "真的，{line}。", en: "Really and truly, {line}."}
   heard:
-    - {zh: "{teller}告诉我的：{line}！", en: "{teller} told me: {line}!"}
-    - {zh: "我听{teller}说的：{line}。", en: "I heard it off {teller}: {line}."}
+    - {zh: "{teller}告诉我的，说{line}。", en: "{teller} told me {line}."}
+    - {zh: "我听{teller}说，{line}。", en: "I heard {teller} say {line}."}
   unknown:
-    - {zh: "我听大人说：{line}。", en: "I heard the grown-ups say {line}."}
-    - {zh: "大家都在说：{line}！", en: "Everybody's saying {line}!"}
+    - {zh: "我听大人说，{line}。", en: "I heard the grown-ups say {line}."}
+    - {zh: "大家都在说，{line}。", en: "Everybody's saying {line}."}
   own:
-    - {zh: "我觉得吧：{line}。", en: "I think {line}."}
-    - {zh: "我想的是：{line}。", en: "What I think is {line}."}
+    - {zh: "我心里想，{line}。", en: "I think {line}."}
+    - {zh: "我想的是，{line}。", en: "What I think is {line}."}
   guess_own:
-    - {zh: "我随口说说的哦。{hedge}{line}。", en: "Just thinking out loud, okay. {hedge} {line}."}
-    - {zh: "不一定对啦。{hedge}{line}。", en: "Might be wrong. {hedge} {line}."}
+    - {zh: "我随便说的哦，{hedge}{line}。", en: "I'm just saying, okay. {hedge} {line}."}
+    - {zh: "不一定对，{hedge}{line}。", en: "Might be wrong. {hedge} {line}."}
   guess_heard:
-    - {zh: "{teller}说过。{hedge}{line}。", en: "{teller} said something. {hedge} {line}."}
+    - {zh: "{teller}说过，{hedge}{line}。", en: "{teller} said something like it. {hedge} {line}."}
     - {zh: "听{teller}讲的，{hedge}{line}。", en: "{teller} said it, so {hedge} {line}."}
   guess_unknown:
-    - {zh: "好像有人说过。{hedge}{line}。", en: "Somebody said something. {hedge} {line}."}
-    - {zh: "我忘了谁说的。{hedge}{line}。", en: "I forgot who said it. {hedge} {line}."}
+    - {zh: "有人这么说过，{hedge}{line}。", en: "Somebody said so. {hedge} {line}."}
+    - {zh: "我忘了谁说的，{hedge}{line}。", en: "I forgot who said it. {hedge} {line}."}
   rival:
-    - {zh: "可是{teller}说不是！是这样：{line}！", en: "But {teller} said no! It's like this: {line}!"}
-    - {zh: "{teller}还告诉我别的啦：{line}！", en: "{teller} told me something else too: {line}!"}
+    - {zh: "可是{teller}说不是这样，{line}。", en: "But {teller} says it's not like that, that {line}."}
+    - {zh: "{teller}说的跟这个不一样，说{line}。", en: "{teller} said something different, that {line}."}
+  known:
+    - {zh: "{line}，大家都知道！", en: "{line}. Everybody knows that!"}
+    - {zh: "{line}。这个我早就知道了。", en: "{line}. I knew that ages ago."}
 hedges:
   - {zh: 我猜, en: I guess}
   - {zh: 好像是, en: I think}

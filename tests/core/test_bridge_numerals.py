@@ -122,8 +122,8 @@ def test_the_filler_of_the_recap_says_a_count_in_characters_and_a_text_as_it_is(
         (2, 2, 7, "今天07:00前", "by 7:00 today"),
         (1, 2, 7, "明早07:00前", "by 7 tomorrow morning"),
         (1, 2, 15, "明天15:00前", "by 15:00 tomorrow"),
-        (1, 3, 7, "第三日07:00前", "by 07:00 on day 3"),
-        (1, 4, 18, "第四日18:00前", "by 18:00 on day 4"),
+        (1, 3, 7, "第三天07:00前", "by 07:00 on day 3"),
+        (1, 4, 18, "第四天18:00前", "by 18:00 on day 4"),
     ],
 )
 def test_the_hour_of_a_request_is_a_clock_time_in_chinese_in_the_form_of_a_promise(
@@ -175,11 +175,11 @@ def test_the_words_of_a_promise_to_a_model_keep_their_digits_and_those_for_the_p
 def test_the_offers_to_promise_say_the_coins_and_the_place_in_characters():
     game = talking("li_da")
     labels = {o["id"]: o["label"] for o in step(game)["frame"]["player"]["offers"]["promise"]}
-    assert labels["wage:10"] == {"zh": "许对方十文工钱", "en": "Promise 10 coins in wages"}
-    assert labels["wage:20"] == {"zh": "许对方二十文工钱", "en": "Promise 20 coins in wages"}
+    assert labels["wage:10"] == {"zh": "许李大十文工钱", "en": "Promise Li Da 10 coins in wages"}
+    assert labels["wage:20"] == {"zh": "许李大二十文工钱", "en": "Promise Li Da 20 coins in wages"}
     assert labels["slot:1"] == {
-        "zh": "许对方节目单上第一位",
-        "en": "Promise slot 1 of the programme",
+        "zh": "许李大节目单上第一位",
+        "en": "Promise Li Da slot 1 of the programme",
     }
 
 
@@ -187,14 +187,16 @@ def test_the_offers_to_promise_say_the_coins_and_the_place_in_characters():
 
 
 def test_the_words_of_the_board_say_the_town_in_characters_and_the_scores_in_digits():
-    assert board.SHORT["named"]["zh"] == "在场有名有姓的人不到五位"
-    assert board.SHORT["accepted"]["zh"] == "在场的人里接受的不到六成"
-    assert board.SHORT["named"]["en"] == f"Fewer than {assembly.MIN_NAMED} named people were there"
+    assert board.SHORT["named"]["zh"] == "在场的熟面孔不到五个"
+    assert board.SHORT["accepted"]["zh"] == "在场的人里信的不到六成"
+    assert board.SHORT["named"]["en"] == (
+        f"Fewer than {assembly.MIN_NAMED} familiar faces were there"
+    )
     assert f"{assembly.ACCEPT_PERCENT}%" in board.SHORT["accepted"]["en"]
     by_id = {act["id"]: act["text"] for act in board.ACTS}
-    assert by_id[peace.WORK]["zh"].endswith("最多两个早上")  # a count of mornings
-    assert f"各放下{peace.WORK_DROP}点积怨" in by_id[peace.WORK]["zh"]  # a score
-    assert f"各放下{peace.STOP_DROP}点积怨" in by_id[peace.STOP]["zh"]
+    assert by_id[peace.WORK]["zh"].endswith("最多算两个早上")  # a count of mornings
+    assert f"积怨各降{peace.WORK_DROP}点" in by_id[peace.WORK]["zh"]  # a score
+    assert f"积怨各降{peace.STOP_DROP}点" in by_id[peace.STOP]["zh"]
     assert f"积怨降{assembly.MEAL_DROP}点" in by_id[peace.MEAL]["zh"]
 
 
@@ -213,7 +215,7 @@ def test_the_hours_of_the_work_are_clock_times_in_both_languages():
 def test_the_sweep_knows_a_bad_line_from_a_good_one():
     bad = {"a": ["把4根竹料送到石桥", {"b": "5位乡亲"}], "requests": ["把4根竹料"], "c": 4}
     assert digits_before_a_measure_word(bad) == ["把4根竹料送到石桥", "5位乡亲"]
-    good = ["把四根竹料送到石桥", "积怨还有39点", "第四日07:00前", "接受的不到60%", "Bring 4 poles"]
+    good = ["把四根竹料送到石桥", "积怨还有39点", "第四天07:00前", "接受的不到60%", "Bring 4 poles"]
     assert digits_before_a_measure_word(good) == []
 
 

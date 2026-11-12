@@ -9,7 +9,7 @@ test.describe("a preview as the core sends it", () => {
   test("is read with its version, cost, what it asks and gives, the blockers, the odds and the reasons", () => {
     const preview = readPreview(PREVIEW);
     expect(preview).toMatchObject({ version: 42, cost: 20, odds: "mid" });
-    expect(preview?.asks.en).toBe("Ask Li Da to bring the first bamboo to the bridge");
+    expect(preview?.asks.en).toBe("Ask Li Da to bring the bamboo to the bridge");
     expect(preview?.gives).toBeNull();
     expect(preview?.blockers).toHaveLength(1);
     expect(preview?.reasons.map((r) => r.sign)).toEqual([1, -1]);

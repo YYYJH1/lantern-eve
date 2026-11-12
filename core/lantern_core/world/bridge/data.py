@@ -80,7 +80,7 @@ _TOWN = r"""
       "kind": "house",
       "rect": [17, 9, 4, 4],
       "stands": [[19, 12]],
-      "zh": "账房先生家"
+      "zh": "账房家"
     },
     {
       "cells": [],
@@ -300,7 +300,7 @@ _TOWN = r"""
       "kind": "water",
       "rect": [25, 17, 4, 3],
       "stands": [],
-      "zh": "桥下水面"
+      "zh": "桥下的水面"
     }
   ],
   "rows": [
@@ -353,27 +353,27 @@ _CAST = r"""
 {
   "activities": [
     {"en": "Sleeping", "id": "sleep", "system": false, "zh": "睡觉"},
-    {"en": "Having a meal", "id": "meal", "system": false, "zh": "用饭"},
+    {"en": "Having a meal", "id": "meal", "system": false, "zh": "吃饭"},
     {"en": "Working", "id": "work", "system": false, "zh": "干活"},
     {"en": "Having tea", "id": "tea", "system": false, "zh": "喝茶"},
     {"en": "Drinking", "id": "drink", "system": false, "zh": "喝酒"},
-    {"en": "Chatting", "id": "chat", "system": false, "zh": "闲谈"},
+    {"en": "Chatting", "id": "chat", "system": false, "zh": "闲聊"},
     {"en": "Praying", "id": "pray", "system": false, "zh": "上香"},
     {"en": "Teaching", "id": "teach", "system": false, "zh": "教书"},
     {"en": "Studying", "id": "study", "system": false, "zh": "读书"},
     {"en": "Playing", "id": "play", "system": false, "zh": "玩耍"},
     {"en": "Fishing", "id": "fish", "system": false, "zh": "钓鱼"},
     {"en": "Ferrying", "id": "ferry", "system": false, "zh": "摆渡"},
-    {"en": "On the night round", "id": "patrol", "system": false, "zh": "巡夜"},
+    {"en": "On the night round", "id": "patrol", "system": false, "zh": "打更"},
     {"en": "In council", "id": "council", "system": false, "zh": "议事"},
-    {"en": "Resting", "id": "rest", "system": false, "zh": "歇息"},
+    {"en": "Resting", "id": "rest", "system": false, "zh": "歇着"},
     {"en": "Walking", "id": "walk", "system": true, "zh": "赶路"},
-    {"en": "Carrying a load", "id": "carry", "system": true, "zh": "搬运"},
+    {"en": "Carrying a load", "id": "carry", "system": true, "zh": "搬东西"},
     {"en": "Sheltering from the rain", "id": "shelter", "system": true, "zh": "躲雨"}
   ],
   "families": [
-    {"en": "Li Family", "id": "fam_li", "zh": "李家"},
-    {"en": "Zhou Family", "id": "fam_zhou", "zh": "周家"}
+    {"en": "Li family", "id": "fam_li", "zh": "李家"},
+    {"en": "Zhou family", "id": "fam_zhou", "zh": "周家"}
   ],
   "id": "bridge_v0",
   "items": [
@@ -383,15 +383,22 @@ _CAST = r"""
   ],
   "people": [
     {
+      "ask": {"item": "t_honor_light", "what": "role"},
       "bio": {
         "en": "Granny Li has been a widow for many years and raised her two sons, Li Da and Li Er, on her own, and now has her grandchildren about her. Nothing large is decided in the Li house until she nods.",
         "zh": "李老太守寡多年，一手把李大、李二两个儿子拉扯大，如今孙女孙子都在跟前。李家的大事，最后都要她点头。"
       },
+      "dislikes": ["wine"],
       "en": "Granny Li",
       "family": "fam_li",
       "holdings": [],
       "home": "p_li_house",
       "id": "li_laotai",
+      "intro": {
+        "en": "Mother of Li Da and Li Er. In the Li house, the old lady has the last word on anything big.",
+        "zh": "李大、李二的娘。李家的大事，最后都是老太太拿主意。"
+      },
+      "likes": ["pastry"],
       "night_shift": false,
       "ops": {"assimilate": 40, "fill": 15, "level": 20, "sharpen": 25},
       "role": {"en": "Matriarch of the Li family", "zh": "李家老太太"},
@@ -412,15 +419,22 @@ _CAST = r"""
       "zh": "李老太"
     },
     {
+      "ask": {"amount": 20, "what": "wage"},
       "bio": {
         "en": "Li Da is Granny Li's elder son and has charge of the family's bamboo grove and its bamboo. He is steady, and on anything big he waits for his mother's word.",
         "zh": "李大是李老太的长子，家里的竹林和竹料归他管。他做事稳当，可大事向来要等娘发话。"
       },
+      "dislikes": ["pastry"],
       "en": "Li Da",
       "family": "fam_li",
       "holdings": [{"at": "p_li_house", "item": "bamboo", "qty": 30}],
       "home": "p_li_house",
       "id": "li_da",
+      "intro": {
+        "en": "Eldest Li son, in charge of the family bamboo grove. Steady at the work, and waits for Granny Li's word on anything big.",
+        "zh": "李家长子，管着家里的竹林和竹料。做事稳当，大事要等老太太发话。"
+      },
+      "likes": ["tea", "wine"],
       "night_shift": false,
       "ops": {"assimilate": 35, "fill": 15, "level": 25, "sharpen": 25},
       "role": {"en": "Eldest Li son, keeper of the bamboo", "zh": "李家长子，管竹料"},
@@ -441,15 +455,22 @@ _CAST = r"""
       "zh": "李大"
     },
     {
+      "ask": {"item": "back", "what": "stall"},
       "bio": {
         "en": "Li Er is Granny Li's younger son and works at the lantern workshop, where the lanterns he pastes come out round and bright. He is easygoing and has a word for everyone in town, young or old.",
         "zh": "李二是李老太的小儿子，在扎灯坊帮工，糊出来的灯又圆又亮。他脾气随和，镇上老老少少都和他说得上话。"
       },
+      "dislikes": [],
       "en": "Li Er",
       "family": "fam_li",
       "holdings": [],
       "home": "p_li_house",
       "id": "li_er",
+      "intro": {
+        "en": "Second Li son. Pastes lanterns at the lantern workshop, round and bright. Has a word for everyone in town, young or old.",
+        "zh": "李家次子，在扎灯坊帮工，糊的灯又圆又亮。镇上老老少少，都和李二说得上话。"
+      },
+      "likes": ["lantern_paper"],
       "night_shift": false,
       "ops": {"assimilate": 25, "fill": 25, "level": 30, "sharpen": 20},
       "role": {"en": "Second Li son", "zh": "李家次子"},
@@ -470,18 +491,25 @@ _CAST = r"""
       "zh": "李二"
     },
     {
+      "ask": {"what": "slot"},
       "bio": {
         "en": "Shitou is Li Da's young son. He spends the day at the school and runs to the riverbank the moment lessons end. He is loud and cannot keep anything to himself.",
         "zh": "石头是李大的小儿子，白天在私塾念书，一下学就往河滩跑。他嗓门大，心里藏不住话。"
       },
+      "dislikes": ["tea"],
       "en": "Shitou",
       "family": "fam_li",
       "holdings": [],
       "home": "p_li_house",
       "id": "shitou",
+      "intro": {
+        "en": "Li Da's young son. At the school by day, down on the riverbank the moment lessons end. Loud, and bad at keeping a secret.",
+        "zh": "李大的小儿子，白天在私塾念书，一下学就往河滩跑。嗓门大，藏不住话。"
+      },
+      "likes": ["pastry"],
       "night_shift": false,
       "ops": {"assimilate": 15, "fill": 20, "level": 40, "sharpen": 25},
-      "role": {"en": "Child of the Li family", "zh": "李家的孩子"},
+      "role": {"en": "Son of Li Da", "zh": "李大的儿子"},
       "routine": [
         {"act": "meal", "hour": 6, "place": "p_li_house"},
         {"act": "study", "hour": 8, "place": "p_school"},
@@ -499,18 +527,25 @@ _CAST = r"""
       "zh": "石头"
     },
     {
+      "ask": {"what": "slot"},
       "bio": {
         "en": "Li Xiaomei is Li Da's daughter and often helps at the lantern workshop, cutting paper and pasting shades. She is deft and sweet-tongued, and the neighbours are fond of her.",
         "zh": "李家小妹是李大的女儿，常去扎灯坊帮着裁纸、糊灯面。她手巧嘴甜，街坊都喜欢她。"
       },
+      "dislikes": ["wine"],
       "en": "Li Xiaomei",
       "family": "fam_li",
       "holdings": [],
       "home": "p_li_house",
       "id": "li_xiaomei",
+      "intro": {
+        "en": "Li Da's daughter, often at the lantern workshop cutting paper and pasting shades. Deft, sweet-tongued, liked all along the street.",
+        "zh": "李大的女儿，常去扎灯坊裁纸、糊灯面。手巧嘴甜，街坊都喜欢。"
+      },
+      "likes": ["lantern_paper", "pastry"],
       "night_shift": false,
       "ops": {"assimilate": 20, "fill": 40, "level": 30, "sharpen": 10},
-      "role": {"en": "Youngest daughter of the Li family", "zh": "李家小女儿"},
+      "role": {"en": "Daughter of Li Da", "zh": "李大的女儿"},
       "routine": [
         {"act": "meal", "hour": 6, "place": "p_li_house"},
         {"act": "work", "hour": 7, "place": "p_workshop"},
@@ -527,15 +562,22 @@ _CAST = r"""
       "zh": "李家小妹"
     },
     {
+      "ask": {"item": "front", "what": "stall"},
       "bio": {
         "en": "Shopkeeper Zhou has traded in timber for half his life, and most of the timber a repair would need sits in his store. To him, favours and business are kept in two separate ledgers.",
         "zh": "周掌柜做了半辈子木料生意，修桥要的木料大半在他家库里。在他那里，人情和买卖是两本账。"
       },
+      "dislikes": ["pastry"],
       "en": "Shopkeeper Zhou",
       "family": "fam_zhou",
       "holdings": [{"at": "p_zhou_house", "item": "timber", "qty": 24}],
       "home": "p_zhou_house",
       "id": "zhou_zhanggui",
+      "intro": {
+        "en": "Head of the Zhou shop, a timber dealer for half a lifetime. Most of the timber a bridge repair needs sits in the Zhou store.",
+        "zh": "周家的掌柜，做了半辈子木料生意。修桥要的木料，大半在周家库里。"
+      },
+      "likes": ["tea"],
       "night_shift": false,
       "ops": {"assimilate": 40, "fill": 20, "level": 15, "sharpen": 25},
       "role": {"en": "Head of the Zhou shop, keeper of the timber", "zh": "周家掌柜，管木料"},
@@ -556,15 +598,22 @@ _CAST = r"""
       "zh": "周掌柜"
     },
     {
+      "ask": {"item": "back", "what": "stall"},
       "bio": {
         "en": "Madam Zhou is the Shopkeeper's wife and is out at the market every day. When anything happens in any house on the street, she is the first to hear of it and the first to tell it.",
-        "zh": "周娘子是周掌柜的妻子，天天在集市上走动。街坊谁家有点事，她总是头一个知道，也头一个说出去。"
+        "zh": "周娘子是周掌柜的媳妇，天天在集市上走动。街坊谁家有点事，她总是头一个知道，也头一个说出去。"
       },
+      "dislikes": ["wine"],
       "en": "Madam Zhou",
       "family": "fam_zhou",
       "holdings": [],
       "home": "p_zhou_house",
       "id": "zhou_niangzi",
+      "intro": {
+        "en": "The Shopkeeper's wife, out at the market every day. When something happens in a house on the street, Madam Zhou is usually the first to hear.",
+        "zh": "周掌柜的媳妇，天天在集市上转。街坊谁家有点事，周娘子总是头一个知道。"
+      },
+      "likes": ["pastry", "tea"],
       "night_shift": false,
       "ops": {"assimilate": 30, "fill": 20, "level": 20, "sharpen": 30},
       "role": {"en": "Mistress of the Zhou household", "zh": "周家主妇"},
@@ -585,15 +634,22 @@ _CAST = r"""
       "zh": "周娘子"
     },
     {
+      "ask": {"amount": 10, "what": "wage"},
       "bio": {
         "en": "Zhou Dalang is the Shopkeeper's elder son and carries timber and runs errands for the family trade. He is strong and short-tempered, and spends his free hours at the tavern.",
         "zh": "周家大郎是周掌柜的长子，帮家里扛木料、跑买卖。他力气大，脾气也大，闲下来就往酒肆跑。"
       },
+      "dislikes": ["tea"],
       "en": "Zhou Dalang",
       "family": "fam_zhou",
       "holdings": [],
       "home": "p_zhou_house",
       "id": "zhou_dalang",
+      "intro": {
+        "en": "The Shopkeeper's elder son, who carries timber and runs errands for the trade. Strong, and short-tempered.",
+        "zh": "周掌柜的长子，帮家里扛木料、跑买卖。力气大，脾气也大。"
+      },
+      "likes": ["wine"],
       "night_shift": false,
       "ops": {"assimilate": 25, "fill": 20, "level": 10, "sharpen": 45},
       "role": {"en": "Eldest Zhou son, quick to anger", "zh": "周家长子，脾气爆"},
@@ -614,15 +670,22 @@ _CAST = r"""
       "zh": "周家大郎"
     },
     {
+      "ask": {"what": "slot"},
       "bio": {
         "en": "Zhou Erlang is the Shopkeeper's younger son, mild by nature, and often sent to the market and the river on family errands. However hard the two families quarrel, he still greets the Li family when he meets them.",
         "zh": "周家二郎是周掌柜的次子，性子温和，常替家里去集市、河边办事。两家吵得再凶，他见了李家人也照样问好。"
       },
+      "dislikes": ["wine"],
       "en": "Zhou Erlang",
       "family": "fam_zhou",
       "holdings": [],
       "home": "p_zhou_house",
       "id": "zhou_erlang",
+      "intro": {
+        "en": "The Shopkeeper's younger son, mild by nature, often sent to the market and the river. Still greets the Li family whenever they meet.",
+        "zh": "周掌柜的次子，性子温和，常替家里去集市和河边办事。见了李家人也照样问好。"
+      },
+      "likes": ["tea", "lantern_paper"],
       "night_shift": false,
       "ops": {"assimilate": 20, "fill": 40, "level": 30, "sharpen": 10},
       "role": {"en": "Second Zhou son", "zh": "周家次子"},
@@ -642,15 +705,22 @@ _CAST = r"""
       "zh": "周家二郎"
     },
     {
+      "ask": {"amount": 10, "what": "wage"},
       "bio": {
-        "en": "Zhou's Clerk has worked for the Zhou family for years, with a good memory and quick hands. Whatever comes up, his first words are that the Shopkeeper decides.",
-        "zh": "伙计在周家帮工好些年，记性好，手脚勤快。遇上什么事，他一开口总是「掌柜的说了算」。"
+        "en": "Zhou's Clerk has worked for the Zhou family for years, with a good memory and quick hands. Whatever comes up, the clerk's first words are that the Shopkeeper decides.",
+        "zh": "周家伙计在周家帮工好些年，记性好，手脚勤快。遇上什么事，开口总是「掌柜的说了算」。"
       },
+      "dislikes": ["lantern_paper"],
       "en": "Zhou's Clerk",
       "family": "fam_zhou",
       "holdings": [],
       "home": "p_zhou_house",
       "id": "zhou_huoji",
+      "intro": {
+        "en": "Has worked for the Zhou family for years, with quick hands. Whatever comes up, the answer is that the Shopkeeper decides.",
+        "zh": "在周家帮工好些年，手脚勤快。遇上什么事，总说「掌柜的说了算」。"
+      },
+      "likes": ["pastry"],
       "night_shift": false,
       "ops": {"assimilate": 30, "fill": 20, "level": 30, "sharpen": 20},
       "role": {"en": "Works for the Zhou family", "zh": "在周家帮工"},
@@ -671,15 +741,22 @@ _CAST = r"""
       "zh": "周家伙计"
     },
     {
+      "ask": {"item": "front", "what": "stall"},
       "bio": {
         "en": "The Teahouse Keeper has kept the teahouse by the river for more than ten years, and every piece of news in town passes over her tables. What leaves her teahouse has usually gained some colour on the way.",
         "zh": "老板娘在河边守着茶馆十几年，镇上的新鲜事都要在她的茶桌上过一遍。话从她这里传出去，往往又多了几分颜色。"
       },
+      "dislikes": ["lantern_paper"],
       "en": "Teahouse Keeper",
       "family": null,
       "holdings": [],
       "home": "p_teahouse",
       "id": "cha_laoban",
+      "intro": {
+        "en": "Keeper of the teahouse by the river for more than ten years. Every piece of news in town passes over the teahouse tables.",
+        "zh": "河边茶馆的老板娘，开了十几年。镇上的新鲜事，都要在茶桌上过一遍。"
+      },
+      "likes": ["pastry", "wine"],
       "night_shift": false,
       "ops": {"assimilate": 25, "fill": 20, "level": 10, "sharpen": 45},
       "role": {"en": "Keeper of the teahouse", "zh": "茶馆老板娘"},
@@ -697,15 +774,22 @@ _CAST = r"""
       "zh": "茶馆老板娘"
     },
     {
+      "ask": {"item": "stage_words", "what": "role"},
       "bio": {
         "en": "The Schoolmaster teaches the town's children to read and write, and puts out the Town Gazette. Once a thing is in the Gazette, those who can read take it as true.",
         "zh": "私塾先生教镇上的孩子读书识字，还办着一份《镇报》。镇上的事一上了《镇报》，识字的人就当了真。"
       },
+      "dislikes": ["wine"],
       "en": "Schoolmaster",
       "family": null,
       "holdings": [],
       "home": "p_school",
       "id": "sishu_xiansheng",
+      "intro": {
+        "en": "The schoolmaster, who teaches the town's children to read and puts out the Town Gazette. What the Gazette prints, those who can read take as true.",
+        "zh": "私塾先生，教镇上的孩子识字，还办着《镇报》。报上登了的事，识字的人就当真。"
+      },
+      "likes": ["tea", "lantern_paper"],
       "night_shift": false,
       "ops": {"assimilate": 20, "fill": 35, "level": 35, "sharpen": 10},
       "role": {"en": "Schoolmaster, editor of the Town Gazette", "zh": "私塾先生，办《镇报》"},
@@ -726,15 +810,22 @@ _CAST = r"""
       "zh": "私塾先生"
     },
     {
+      "ask": {"amount": 10, "what": "wage"},
       "bio": {
-        "en": "Boatman He has run the ferry for more than twenty years, and everyone in town has crossed in his boat. The boatman sees a great deal of what happens on the river and says little of it.",
-        "zh": "老何在渡口摆了二十多年渡船，镇上的人谁都坐过他的船。河上的事他看得多，说得少。"
+        "en": "Boatman He has run the ferry for more than twenty years, and everyone in town has crossed in that boat. The boatman sees a great deal of what happens on the river and says little of it.",
+        "zh": "老何在渡口摆了二十多年渡船，镇上的人谁都坐过这条船。河上的事，老何看得多，说得少。"
       },
+      "dislikes": ["pastry"],
       "en": "Boatman He",
       "family": null,
       "holdings": [],
       "home": "p_he_home",
       "id": "old_he",
+      "intro": {
+        "en": "The ferryman at the landing for more than twenty years, and everyone in town has crossed in the boat.",
+        "zh": "渡口的老船夫，摆了二十多年渡船，镇上谁都坐过。"
+      },
+      "likes": ["wine", "tea"],
       "night_shift": false,
       "ops": {"assimilate": 20, "fill": 30, "level": 30, "sharpen": 20},
       "role": {"en": "Ferryman", "zh": "摆渡船夫"},
@@ -755,15 +846,22 @@ _CAST = r"""
       "zh": "船夫老何"
     },
     {
+      "ask": {"item": "lead_lanterns", "what": "role"},
       "bio": {
         "en": "The Clan Elder is the most senior elder in Chengxi, and the ancestral hall and the clan's rules are his to keep. Bringing in an outsider to manage this year's festival was his decision.",
         "zh": "族长是澄溪镇辈分最高的长辈，祠堂的事和族里的规矩都由他定。这回请外乡人来当灯会总管，也是他拍的板。"
       },
+      "dislikes": ["wine"],
       "en": "Clan Elder",
       "family": null,
       "holdings": [],
       "home": "p_clan_hall",
       "id": "zuzhang",
+      "intro": {
+        "en": "The most senior elder in Chengxi, keeper of the ancestral hall and the clan's rules. It was the elder who chose to bring in an outsider as this year's festival manager.",
+        "zh": "澄溪镇辈分最高的长辈，管祠堂和族里的规矩。请外乡人来当今年的灯会总管，是族长拍的板。"
+      },
+      "likes": ["tea"],
       "night_shift": false,
       "ops": {"assimilate": 35, "fill": 10, "level": 50, "sharpen": 5},
       "role": {"en": "Elder of the clan", "zh": "族长"},
@@ -784,18 +882,25 @@ _CAST = r"""
       "zh": "族长"
     },
     {
+      "ask": {"item": "back", "what": "stall"},
       "bio": {
-        "en": "The Accountant keeps the town's common accounts. Every coin spent on bridges, roads and the festival is written down in his ledger.",
-        "zh": "账房先生管着全镇的公账。修桥修路、灯会的花销，一笔一笔都记在他的账本上。"
+        "en": "The Accountant keeps the town's common accounts. Every coin spent on bridges, roads and the festival is written down in the ledger.",
+        "zh": "账房管着全镇的公账。修桥修路、灯会的花销，一笔一笔都记在账本上。"
       },
+      "dislikes": ["lantern_paper"],
       "en": "Accountant",
       "family": null,
       "holdings": [],
       "home": "p_accountant_home",
       "id": "zhangfang",
+      "intro": {
+        "en": "Keeper of the town's common accounts. Every coin spent on bridges, roads and the festival goes into the ledger.",
+        "zh": "账房管着全镇的公账。修桥修路、灯会的花销，一笔一笔都记在账本上。"
+      },
+      "likes": ["tea"],
       "night_shift": false,
       "ops": {"assimilate": 15, "fill": 20, "level": 60, "sharpen": 5},
-      "role": {"en": "Keeper of the town's accounts", "zh": "账房先生"},
+      "role": {"en": "Keeper of the town's accounts", "zh": "账房"},
       "routine": [
         {"act": "meal", "hour": 6, "place": "p_accountant_home"},
         {"act": "work", "hour": 8, "place": "p_market"},
@@ -811,15 +916,22 @@ _CAST = r"""
       "zh": "账房"
     },
     {
+      "ask": {"item": "back", "what": "stall"},
       "bio": {
         "en": "The Temple Keeper has tended the incense of the town's small temple for most of her life. The lane behind the temple is usually locked, and she keeps the key.",
         "zh": "庙祝在镇上的小庙里守了大半辈子香火。庙后那条夹道平日锁着，钥匙由她收着。"
       },
+      "dislikes": ["wine"],
       "en": "Temple Keeper",
       "family": null,
       "holdings": [],
       "home": "p_temple",
       "id": "miaozhu",
+      "intro": {
+        "en": "Keeper of the small temple, tending the incense for most of a lifetime. The lane behind the temple is kept locked, and the key stays with the keeper.",
+        "zh": "小庙的庙祝，守了大半辈子香火。庙后那条夹道平时锁着，钥匙在庙祝手里。"
+      },
+      "likes": ["tea", "lantern_paper"],
       "night_shift": false,
       "ops": {"assimilate": 30, "fill": 20, "level": 40, "sharpen": 10},
       "role": {"en": "Keeper of the temple", "zh": "庙祝"},
@@ -839,18 +951,25 @@ _CAST = r"""
       "zh": "庙祝"
     },
     {
+      "ask": {"what": "slot"},
       "bio": {
         "en": "Xiaoman lives by the river, often fishes alone on the bank at night, and dozes through the day. The grown-ups mostly hear what Xiaoman says as a child's talk.",
         "zh": "小满家就在河边，夜里常一个人蹲在河滩钓鱼，白天就犯困。小满说的话，大人们多半当孩子话听。"
       },
+      "dislikes": ["tea"],
       "en": "Xiaoman",
       "family": null,
       "holdings": [],
       "home": "p_xiaoman_home",
       "id": "xiao_man",
+      "intro": {
+        "en": "A child who lives by the river and loves fishing, often crouched on the bank at night.",
+        "zh": "家在河边的孩子，最爱钓鱼，夜里常蹲在河滩上。"
+      },
+      "likes": ["pastry"],
       "night_shift": true,
       "ops": {"assimilate": 10, "fill": 20, "level": 45, "sharpen": 25},
-      "role": {"en": "A child who likes to fish at night", "zh": "夜里爱钓鱼的孩子"},
+      "role": {"en": "A child from a riverside house", "zh": "河边人家的孩子"},
       "routine": [
         {"act": "sleep", "hour": 6, "place": "p_xiaoman_home"},
         {"act": "meal", "hour": 9, "place": "p_xiaoman_home"},
@@ -869,18 +988,25 @@ _CAST = r"""
       "zh": "小满"
     },
     {
+      "ask": {"amount": 10, "what": "wage"},
       "bio": {
-        "en": "The Night Watchman has walked his rounds for more than ten years, along the river and over the stone bridge, calling the hours on his gong. He likes a drink, and the town says that what he sees at night should be taken with some doubt.",
-        "zh": "更夫打了十几年更，每夜提着锣沿河岸、过石桥报时。他爱喝两口，镇上人都说他夜里看见的事要打个折扣。"
+        "en": "The Night Watchman has walked the rounds for more than ten years, along the river and over the stone bridge, calling the hours on the gong. The watchman likes a drink, and the town says that what the watchman sees at night should be taken with some doubt.",
+        "zh": "更夫打了十几年更，每夜提着锣沿河岸、过石桥报时。平日爱喝两口，镇上人都说，打更的夜里看见的事得打个折扣。"
       },
+      "dislikes": ["tea"],
       "en": "Night Watchman",
       "family": null,
       "holdings": [],
       "home": "p_watch_post",
       "id": "gengfu",
+      "intro": {
+        "en": "The night watchman, more than ten years on the rounds. Everyone in town knows the sound of the gong.",
+        "zh": "打了十几年更的更夫，镇上的人都认得这面锣的声音。"
+      },
+      "likes": ["wine"],
       "night_shift": true,
       "ops": {"assimilate": 15, "fill": 25, "level": 30, "sharpen": 30},
-      "role": {"en": "Night watchman, fond of a drink", "zh": "爱喝酒的更夫"},
+      "role": {"en": "Night watchman", "zh": "更夫"},
       "routine": [
         {"act": "sleep", "hour": 6, "place": "p_watch_post"},
         {"act": "meal", "hour": 14, "place": "p_watch_post"},
@@ -900,15 +1026,22 @@ _CAST = r"""
       "zh": "更夫"
     },
     {
+      "ask": {"amount": 20, "what": "wage"},
       "bio": {
-        "en": "The Carpenter keeps a bench in the lantern workshop, and the town brings him every broken door, window and chair. Any repair to the bridge that needs timber will need his hands.",
-        "zh": "木匠在扎灯坊里有一张工台，镇上门窗桌椅坏了都找他。修桥要动木头，少不了他的手艺。"
+        "en": "The Carpenter keeps a bench in the lantern workshop, and the town brings every broken door, window and chair there. Any repair to the bridge that needs timber will need that craft.",
+        "zh": "木匠在扎灯坊里有一张工台，镇上门窗桌椅坏了都找木匠。修桥要动木头，少不了这门手艺。"
       },
+      "dislikes": ["pastry"],
       "en": "Carpenter",
       "family": null,
       "holdings": [{"at": "p_workshop", "item": "tools", "qty": 3}],
       "home": "p_carpenter_home",
       "id": "mujiang",
+      "intro": {
+        "en": "The carpenter, with a bench at the lantern workshop. The town brings every broken door, window and chair here, and a bridge repair in timber will need these hands.",
+        "zh": "木匠，在扎灯坊有一张工台。镇上门窗桌椅坏了都找木匠，修桥动木头也少不了这双手。"
+      },
+      "likes": ["wine"],
       "night_shift": false,
       "ops": {"assimilate": 25, "fill": 25, "level": 35, "sharpen": 15},
       "role": {"en": "Carpenter", "zh": "木匠"},
@@ -928,15 +1061,22 @@ _CAST = r"""
       "zh": "木匠"
     },
     {
+      "ask": {"item": "lead_lanterns", "what": "role"},
       "bio": {
         "en": "The Lantern Maker has made lanterns for thirty years, and the great lantern at the head of every parade is her work. This year's lanterns are half made, waiting for the night of the parade.",
         "zh": "扎灯师傅扎了三十年灯，每年游灯打头的那盏主灯都出自她手。今年的灯已经扎了一半，就等游灯那一夜。"
       },
+      "dislikes": ["wine"],
       "en": "Lantern Maker",
       "family": null,
       "holdings": [],
       "home": "p_workshop",
       "id": "zhadeng_shifu",
+      "intro": {
+        "en": "The lantern maker, thirty years at the craft. The great lantern at the head of every lantern parade is the maker's work, and this year's lanterns are half made, waiting for the night.",
+        "zh": "扎灯师傅，扎了三十年灯，每年游灯打头的主灯都出自这双手。今年的灯扎了一半，就等游灯那一夜。"
+      },
+      "likes": ["lantern_paper", "tea"],
       "night_shift": false,
       "ops": {"assimilate": 20, "fill": 30, "level": 35, "sharpen": 15},
       "role": {"en": "Master of the lantern workshop", "zh": "扎灯师傅"},
@@ -1263,7 +1403,7 @@ _SCRIPT = r"""
         }
       ],
       "id": "ch_li_er_rumor",
-      "label": "从「李二在桥边找灯笼」传成「李家故意毁桥，不想让周家出风头」"
+      "label": "从「李二在桥边找灯笼」传成「李家眼红周家出风头，故意毁了桥」"
     }
   ],
   "commitments": {
@@ -1275,14 +1415,14 @@ _SCRIPT = r"""
         "en": "Something went wrong and the goods did not get there",
         "zh": "路上出了岔子，货没能送到"
       },
-      "late": {"en": "It did not arrive in time", "zh": "没能赶在期限前送到"},
+      "late": {"en": "It did not arrive in time", "zh": "没赶在约好的时间前送到"},
       "rain": {"en": "The heavy rain kept the goods off the road", "zh": "下大雨，货运不出来"},
-      "taken_back": {"en": "They took the promise back", "zh": "对方把应承收了回去"}
+      "taken_back": {"en": "Word is they changed their mind", "zh": "说是改了主意"}
     },
     "recap": {
       "clarified": {
-        "en": "You said in public that the claim went too far, and {names} changed their minds.",
-        "zh": "你当众指出那句话说过了头，{names}听后改了口。"
+        "en": "{manager} told everyone the talk had gone too far. {names} changed their minds.",
+        "zh": "{manager}当众讲明，那话传过了头。{names}听了，改了口。"
       },
       "delivery": {
         "en": "The {amount} poles of {item} that {who} promised have reached the {place}.",
@@ -1292,14 +1432,8 @@ _SCRIPT = r"""
         "en": "{who} promised to bring {amount} poles of {item}.",
         "zh": "{who}答应送来{amount}根{item}。"
       },
-      "withdrawn": {
-        "en": "{who} no longer stands in the way: {what}",
-        "zh": "{who}撤回了阻拦：{what}"
-      },
-      "withdrawn_plain": {
-        "en": "{who} no longer stands in the way.",
-        "zh": "{who}撤回了阻拦。"
-      }
+      "withdrawn": {"en": "{who} has given way on {what}.", "zh": "{who}松口了，答应{what}。"},
+      "withdrawn_plain": {"en": "{who} has given way.", "zh": "{who}松口了。"}
     },
     "recap_hour": 7,
     "start": 6,
@@ -1330,12 +1464,12 @@ _SCRIPT = r"""
         "label": "勉强",
         "when": {"all": ["passable", {"not": "all_three"}]}
       },
-      {"id": "ending_split", "label": "散场：两家分开办灯", "when": {"not": "passable"}}
+      {"id": "ending_split", "label": "两家各点各的灯", "when": {"not": "passable"}}
     ]
   },
   "entities": [
-    {"id": "fam_li", "label": "李家", "label_en": "Li Family", "type": "family"},
-    {"id": "fam_zhou", "label": "周家", "label_en": "Zhou Family", "type": "family"},
+    {"id": "fam_li", "label": "李家", "label_en": "Li family", "type": "family"},
+    {"id": "fam_zhou", "label": "周家", "label_en": "Zhou family", "type": "family"},
     {
       "family": "fam_li",
       "id": "li_laotai",
@@ -1469,13 +1603,8 @@ _SCRIPT = r"""
       "label_en": "Schoolmaster",
       "type": "person"
     },
-    {
-      "id": "t_rail",
-      "label": "石桥栏杆",
-      "label_en": "Stone Bridge Railing",
-      "type": "thing"
-    },
-    {"id": "t_he_boat", "label": "老何的船", "label_en": "The Ferry Boat", "type": "thing"},
+    {"id": "t_rail", "label": "栏杆", "label_en": "Stone Bridge Railing", "type": "thing"},
+    {"id": "t_he_boat", "label": "渡船", "label_en": "The Ferry Boat", "type": "thing"},
     {
       "id": "t_li_er_lantern",
       "label": "掉进水里的灯笼",
@@ -1497,7 +1626,7 @@ _SCRIPT = r"""
     {"id": "p_bridge", "label": "石桥", "label_en": "Stone Bridge", "type": "place"},
     {
       "id": "p_under_bridge",
-      "label": "桥下水面",
+      "label": "桥下的水面",
       "label_en": "Water Beneath the Bridge",
       "type": "place"
     },
@@ -1551,8 +1680,8 @@ _SCRIPT = r"""
         "until": null
       },
       "id": "e_xiaoman_testimony",
-      "label": "小满的证词：那晚看见船撞上了栏杆",
-      "label_en": "Xiaoman's word: a boat struck the rail that night",
+      "label": "小满说，那晚看见船撞上了栏杆",
+      "label_en": "Xiaoman's word: a boat struck the railing that night",
       "real_in": ["v_boat"],
       "refutes": ["pr_liner_damaged", "pr_dalang_damaged"],
       "supports": ["pr_boat_damaged", "pr_he_under_bridge", "pr_xiaoman_riverbank"]
@@ -1605,7 +1734,7 @@ _SCRIPT = r"""
         "until": null
       },
       "id": "e_gengfu_flood",
-      "label": "更夫的证词：水头打在桥上，桥边没有人",
+      "label": "更夫说，水头打上桥那会儿桥边没有人",
       "label_en": "The night watchman's word: a surge of water hit the bridge and nobody was by it",
       "real_in": ["v_flood"],
       "refutes": ["pr_dalang_at_bridge", "pr_liner_damaged"],
@@ -1623,7 +1752,7 @@ _SCRIPT = r"""
         "until": null
       },
       "id": "e_gengfu_boat",
-      "label": "更夫的证词：桥下有个撑船的黑影",
+      "label": "更夫说，桥下有个撑船的黑影",
       "label_en": "The night watchman's word: a dark shape poling a boat under the bridge",
       "real_in": ["v_boat"],
       "refutes": ["pr_dalang_at_bridge"],
@@ -1641,7 +1770,7 @@ _SCRIPT = r"""
         "until": null
       },
       "id": "e_he_lamp",
-      "label": "庙祝的证词：老何家那晚灯一直亮到半夜",
+      "label": "庙祝说，老何家那晚的灯一直亮到半夜",
       "label_en": "The temple keeper's word: a lamp burned at Boatman He's house until midnight",
       "real_in": ["v_drunk", "v_flood"],
       "refutes": ["pr_he_under_bridge"],
@@ -1659,7 +1788,7 @@ _SCRIPT = r"""
         "until": null
       },
       "id": "e_dalang_home",
-      "label": "周家伙计的证词：大郎回家后睡到天亮",
+      "label": "周家伙计说，周家大郎那晚一回家就睡到了天亮",
       "label_en": "The clerk's word: Zhou Dalang went home and slept until dawn",
       "real_in": ["v_boat", "v_flood"],
       "refutes": ["pr_dalang_at_bridge"],
@@ -1677,7 +1806,7 @@ _SCRIPT = r"""
         "until": null
       },
       "id": "e_gengfu_dalang",
-      "label": "更夫的证词：看见大郎醉醺醺地走到桥上",
+      "label": "更夫说，看见周家大郎醉醺醺地上了桥",
       "label_en": "The night watchman's word: Zhou Dalang, drunk, walked onto the bridge",
       "real_in": ["v_drunk"],
       "refutes": ["pr_he_under_bridge"],
@@ -1695,7 +1824,7 @@ _SCRIPT = r"""
       },
       "id": "e_footprint",
       "label": "断栏边带酒气的鞋印",
-      "label_en": "A shoeprint smelling of wine by the broken rail",
+      "label_en": "A shoeprint smelling of wine by the broken railing",
       "real_in": ["v_drunk"],
       "refutes": [],
       "supports": ["pr_dalang_at_bridge", "pr_dalang_damaged"]
@@ -1711,7 +1840,7 @@ _SCRIPT = r"""
         "until": null
       },
       "id": "e_huoji_testimony",
-      "label": "周家伙计的证词：我只说过看见李二在桥边",
+      "label": "周家伙计说，自己只讲过看见李二在桥边",
       "label_en": "The clerk's word: I only said I saw Li Er by the bridge",
       "real_in": ["v_boat", "v_drunk", "v_flood"],
       "refutes": ["pr_liner_damaged", "pr_li_damaged"],
@@ -1728,7 +1857,7 @@ _SCRIPT = r"""
         "until": null
       },
       "id": "e_liner_testimony",
-      "label": "李二的证词：我在找掉进水里的灯笼",
+      "label": "李二说，那晚是在找掉进水里的灯笼",
       "label_en": "Li Er's word: I was looking for the lantern I dropped in the water",
       "real_in": ["v_boat", "v_drunk", "v_flood"],
       "refutes": ["pr_liner_damaged", "pr_li_damaged"],
@@ -1841,6 +1970,12 @@ _SCRIPT = r"""
     {"id": "reconciled", "label": "两家和解"},
     {"id": "reconcile_seen", "label": "有人看见了和解事件"},
     {"id": "elder_accepts", "label": "族长接受了当众说清的真相"}
+  ],
+  "gifts": [
+    {"en": "tea leaves", "gain": 8, "id": "tea", "zh": "茶叶"},
+    {"en": "pastries", "gain": 8, "id": "pastry", "zh": "点心"},
+    {"en": "lantern paper", "gain": 8, "id": "lantern_paper", "zh": "灯纸"},
+    {"en": "wine", "gain": 8, "id": "wine", "zh": "酒"}
   ],
   "goals": [
     {
@@ -2172,69 +2307,76 @@ _SCRIPT = r"""
     }
   ],
   "paper": {
+    "manager": {
+      "morning": {"en": "The Manager", "zh": "总管"},
+      "night": {"en": "You", "zh": "你"}
+    },
     "news": {
       "bridge_mended": {
         "en": "The Stone Bridge is mended, and the two banks are joined again.",
         "zh": "石桥修好了，两岸又通了。"
       },
       "evidence": {
-        "en": "You showed what you hold in public at the {place}. {accepted} of the {named} named people there took it in.",
-        "zh": "你在{place}当众出示了手里的证据，{named}位有名有姓的人在场，{accepted}位接受。"
+        "en": "{manager} showed the proof in public at the {place}. Some people believed it.",
+        "zh": "{manager}在{place}当众拿出了凭据。有人信了。"
       },
       "evidence_refused": {
-        "en": "You showed what you hold in public at the {place}, and none of the {named} named people there took it in.",
-        "zh": "你在{place}当众出示了手里的证据，{named}位有名有姓的人在场，没有人接受。"
+        "en": "{manager} showed the proof in public at the {place}. Nobody believed it.",
+        "zh": "{manager}在{place}当众拿出了凭据。没一个人信。"
       },
       "helpers": {
-        "en": "{n} more of the town agreed to help at the bridge.",
-        "zh": "{n}位乡亲答应来桥边帮手。"
+        "en": "{n} more people agreed to help at the bridge.",
+        "zh": "{n}个乡亲答应来桥边帮忙。"
       },
       "meal": {
-        "en": "The heads of the two families shared a meal, and others saw it.",
-        "zh": "两家的当家人同席吃了饭，旁人都看见了。"
+        "en": "The heads of the two families shared a meal. Others saw it.",
+        "zh": "两家当家坐在一张桌上吃了顿饭。旁人都看见了。"
       },
       "quiet": {"en": "Nothing much happened in town {when}.", "zh": "{when}镇上没有什么大事。"},
       "rain_heavy": {
-        "en": "Heavy rain fell {when}, and the streets emptied.",
-        "zh": "{when}落了一场大雨，街上行人稀少。"
+        "en": "Heavy rain fell {when}. The streets emptied.",
+        "zh": "{when}下了一场大雨。街上没什么人。"
       },
       "rain_light": {"en": "It drizzled {when}.", "zh": "{when}飘了一阵小雨。"},
       "reconciled": {
-        "en": "The heads of the Li and Zhou families sat at one table, and the two families have made peace.",
-        "zh": "李周两家的当家人同了席，两家和好了。"
+        "en": "The heads of the Li and Zhou families sat at one table. The two families have made peace.",
+        "zh": "李、周两家的当家坐到了一张桌上。两家和好了。"
       },
       "side_by_side": {
         "en": "People of both families worked at the bridge together.",
-        "zh": "两家的人一同在桥边干活。"
+        "zh": "两家的人一起在桥边干了活。"
       },
       "statement": {
-        "en": "You made your statement in public at the {place}. {accepted} of the {named} named people there accepted it.",
-        "zh": "你在{place}当众陈述，{named}位有名有姓的人在场，{accepted}位接受。"
+        "en": "{manager} told the town at the {place} how the bridge broke. Some people nodded.",
+        "zh": "{manager}在{place}当众讲了桥是怎么坏的。有人点了头。"
       },
       "statement_refused": {
-        "en": "You made your statement in public at the {place}, and none of the {named} named people there accepted it.",
-        "zh": "你在{place}当众陈述，{named}位有名有姓的人在场，没有人接受。"
+        "en": "{manager} told the town at the {place} how the bridge broke. Nobody nodded.",
+        "zh": "{manager}在{place}当众讲了桥是怎么坏的。没一个人点头。"
       },
       "stopped": {
-        "en": "{who} has stopped speaking ill of the other family in public.",
-        "zh": "{who}当着众人，不再说对方家的不是了。"
+        "en": "{who} has stopped speaking ill of {other} in public.",
+        "zh": "{who}当着大家的面，不再说{other}的不是了。"
       },
       "truth_told": {
-        "en": "How the bridge broke has been told in public, and everyone there heard it.",
-        "zh": "桥是怎么坏的，已经当众说清，在场的人都听到了。"
+        "en": "How the bridge broke has been told in public.",
+        "zh": "桥是怎么坏的，已经当众说清楚了。"
       },
       "two_accounts": {
-        "en": "The street has two stories. Some say that {first}, and others say that {second}.",
-        "zh": "街上有两种说法：一说{first}，一说{second}。"
+        "en": "The street has two stories. Some say that {first}. Others say that {second}.",
+        "zh": "街上有两种说法。有人说{first}。也有人说{second}。"
       },
-      "work": {
-        "en": "{hours} hours of work are done at the bridge, and {left} more are needed.",
-        "zh": "桥边已经干了{hours}个钟头，还差{left}个。"
-      },
+      "work": {"en": "The work at the bridge {progress}.", "zh": "桥上的活{progress}。"},
       "work_stopped": {
         "en": "Work at the bridge stopped. {why}.",
-        "zh": "桥边的活停了。{why}。"
+        "zh": "桥上的活停了。{why}。"
       }
+    },
+    "progress": {
+      "half": {"en": "is half done", "zh": "干了一半"},
+      "over_half": {"en": "is more than half done", "zh": "干了一大半"},
+      "start": {"en": "has only just begun", "zh": "刚开了个头"},
+      "under_half": {"en": "is not yet half done", "zh": "干了不到一半"}
     },
     "street": {
       "camp": 30,
@@ -2248,24 +2390,24 @@ _SCRIPT = r"""
     },
     "talk": {
       "festival_cool": {
-        "en": "Hardly anyone on the street speaks of the festival, and people say there is little heart for it this year.",
-        "zh": "街上提起灯会的人不多，都说今年怕是没什么兴致。"
+        "en": "Hardly anyone on the street speaks of the festival. Some say there is little heart for it this year.",
+        "zh": "街上没几个人提灯会。有人说，今年怕是没什么兴致。"
       },
       "festival_down": {
-        "en": "Fewer people on the street look forward to the festival than yesterday, and the teahouse hardly mentions it.",
-        "zh": "街上盼灯会的人比昨天少了，茶馆里提起灯会的也不多。"
+        "en": "Fewer people on the street look forward to the festival than yesterday. The teahouse hardly mentions it.",
+        "zh": "街上盼灯会的人比昨天少了。茶馆里也没几个人提灯会。"
       },
       "festival_mixed": {
         "en": "Some on the street look forward to the festival, and others want to wait and see.",
         "zh": "街上有人盼着灯会，也有人说再看看。"
       },
       "festival_up": {
-        "en": "More people on the street look forward to the festival than yesterday, and the children keep asking when the lanterns go up.",
-        "zh": "街上盼灯会的人比昨天多了，孩子们追着问什么时候挂灯。"
+        "en": "More people on the street look forward to the festival than yesterday. The children keep asking when the lanterns go up.",
+        "zh": "街上盼灯会的人比昨天多了。孩子们追着问什么时候挂灯。"
       },
       "festival_warm": {
-        "en": "The street talks of little else than the festival, and people are already counting the lanterns at each door.",
-        "zh": "街上都在说灯会，哪家挂几盏灯，已经有人在数了。"
+        "en": "The street talks of little but the festival. People are already counting the lanterns at each door.",
+        "zh": "街上都在说灯会。哪家挂几盏灯，已经有人在数了。"
       },
       "li_more": {
         "en": "More people on the street than yesterday are speaking up for the Li family.",
@@ -2277,19 +2419,19 @@ _SCRIPT = r"""
       },
       "peace": {
         "en": "The street is saying that the heads of the Li and Zhou families have sat down at one table.",
-        "zh": "街上都在说，李周两家的当家人坐到一张桌上去了。"
+        "zh": "街上都在说，李、周两家的当家坐到一张桌上去了。"
       },
       "split": {
-        "en": "The street has split into two camps, one for the Li family and one for the Zhou family, and neither can win the other over.",
-        "zh": "街上分成了两拨，一拨向着李家，一拨向着周家，谁也说不服谁。"
+        "en": "The street has split into two camps, one for the Li family and one for the Zhou family. Neither can win the other over.",
+        "zh": "街上分成了两拨，一拨向着李家，一拨向着周家。谁也说不服谁。"
       },
       "talked_out": {
-        "en": "The street is still talking about what was set out in public, and the old stories are heard less.",
-        "zh": "街上的人还在议论当众说清的那件事，旧话少有人再提。"
+        "en": "The street is still talking about what was set out in public. The old stories are heard less.",
+        "zh": "街上还在说当众说清的那件事。旧话没什么人提了。"
       },
       "walk_call": {
-        "en": "There was more coming and going between neighbours yesterday, and some called on one another to talk.",
-        "zh": "昨天街坊之间走动得多些，有人专程登门说话。"
+        "en": "There was more coming and going between neighbours yesterday. Some called on one another to talk.",
+        "zh": "昨天街坊之间走动得多些。有人专程登门说话。"
       },
       "walk_hand": {
         "en": "Some people lent a hand at the bridge yesterday.",
@@ -2648,8 +2790,8 @@ _SCRIPT = r"""
               "pr_he_under_bridge"
             ],
             "text": {
-              "en": "Boatman He's boat struck the rail in the night",
-              "zh": "老何夜里撑船，船头撞断了栏杆"
+              "en": "Boatman He's boat struck the railing in the night",
+              "zh": "船夫老何夜里撑船，船头撞断了栏杆"
             }
           },
           {
@@ -2664,7 +2806,7 @@ _SCRIPT = r"""
             "right": ["v_flood"],
             "supports": ["pr_flood_damaged", "pr_flooded"],
             "text": {
-              "en": "The flood water loosened the old joints and the rail gave way by itself",
+              "en": "The flood water loosened the old joints and the railing gave way by itself",
               "zh": "秋汛的水头冲松了旧榫，栏杆自己断了"
             }
           },
@@ -2680,7 +2822,7 @@ _SCRIPT = r"""
             "right": ["v_drunk"],
             "supports": ["pr_dalang_damaged", "pr_dalang_at_bridge", "pr_dalang_drank"],
             "text": {
-              "en": "Zhou Dalang, drunk, kicked the rail down",
+              "en": "Zhou Dalang, drunk, kicked the railing down",
               "zh": "周家大郎喝醉了酒，一脚踢断了栏杆"
             }
           },
@@ -2704,10 +2846,10 @@ _SCRIPT = r"""
               "pr_li_damaged_jealous",
               "pr_liner_at_bridge"
             ],
-            "text": {"en": "Li Er broke the rail", "zh": "李二下手弄断了栏杆"}
+            "text": {"en": "Li Er broke the railing", "zh": "李二下手弄断了栏杆"}
           }
         ],
-        "title": {"en": "Cause", "zh": "成因"}
+        "title": {"en": "How the bridge broke", "zh": "桥是怎么坏的"}
       },
       {
         "id": "course",
@@ -2729,8 +2871,8 @@ _SCRIPT = r"""
               "pr_boat_scratched"
             ],
             "text": {
-              "en": "Boatman He poled under the bridge in the night, struck the rail, and quietly mended the boat afterwards",
-              "zh": "老何夜里撑船从桥下过，船头撞上栏杆，事后悄悄把船修好"
+              "en": "Boatman He poled under the bridge in the night and the bow struck the railing. Afterwards the boatman quietly mended the boat",
+              "zh": "船夫老何夜里撑船从桥下过，船头撞上了栏杆。事后老何悄悄把船修好了"
             }
           },
           {
@@ -2750,8 +2892,8 @@ _SCRIPT = r"""
               "pr_dalang_at_home"
             ],
             "text": {
-              "en": "The flood water hit the bridge in the night and loosened the old joints, and nobody was on the bridge or under it",
-              "zh": "夜里水头打上桥，把旧榫冲松，栏杆自己断了，桥上桥下都没有人"
+              "en": "The flood water hit the bridge in the night and loosened the old joints. The railing gave way by itself, with nobody on the bridge or under it",
+              "zh": "夜里水头打上桥，把旧榫冲松了。栏杆是自己断的，桥上桥下都没有人"
             }
           },
           {
@@ -2771,8 +2913,8 @@ _SCRIPT = r"""
               "pr_he_home"
             ],
             "text": {
-              "en": "Zhou Dalang drank at the tavern in the night, staggered onto the bridge and kicked the rail down",
-              "zh": "夜里大郎在酒肆喝醉了，晃到桥上，一脚踢断了栏杆"
+              "en": "Zhou Dalang got drunk at the tavern in the night, staggered onto the bridge and kicked the railing down",
+              "zh": "周家大郎夜里在酒肆喝醉了。晃到桥上，一脚踢断了栏杆"
             }
           },
           {
@@ -2788,12 +2930,12 @@ _SCRIPT = r"""
             "right": [],
             "supports": ["pr_liner_at_bridge", "pr_liner_damaged", "pr_li_damaged"],
             "text": {
-              "en": "Li Er went to the bridge in the night and broke the rail",
+              "en": "Li Er went to the bridge in the night and broke the railing",
               "zh": "夜里李二到桥边，下手弄断了栏杆"
             }
           }
         ],
-        "title": {"en": "Course", "zh": "经过"}
+        "title": {"en": "What happened that night", "zh": "那晚的经过"}
       },
       {
         "id": "rumour",
@@ -2805,8 +2947,8 @@ _SCRIPT = r"""
             "right": ["v_boat", "v_flood", "v_drunk"],
             "supports": ["pr_liner_at_bridge", "pr_liner_looking", "pr_set_straight"],
             "text": {
-              "en": "Zhou's Clerk only saw Li Er at the bridge looking for a lantern that fell in the water, Shopkeeper Zhou took an old grudge for proof that Li Er broke it, and the telling added “on purpose” and “jealous”",
-              "zh": "周家伙计只看见李二在桥边找掉进水里的灯笼，周掌柜凭旧怨猜成了是李二弄坏的，传来传去又添上了「故意」「嫉妒」"
+              "en": "Zhou's Clerk only saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou, holding an old grudge, guessed that Li Er broke the railing. The story grew as it went round and picked up “on purpose” and “envy”",
+              "zh": "周家伙计只看见李二在桥边找灯笼。周掌柜记着旧怨，猜是李二弄坏的。话越传越重，又添上了「故意」「眼红」"
             }
           },
           {
@@ -2829,7 +2971,7 @@ _SCRIPT = r"""
               "pr_li_damaged_jealous"
             ],
             "text": {
-              "en": "Li Er really did break the rail, and Zhou's Clerk saw it happen",
+              "en": "Li Er really did break the railing, and Zhou's Clerk saw it happen",
               "zh": "李二真的弄坏了栏杆，周家伙计亲眼看见了"
             }
           },
@@ -2856,11 +2998,11 @@ _SCRIPT = r"""
             ],
             "text": {
               "en": "The Zhou family spread it on purpose to ruin the name of the Li family",
-              "zh": "周家有意把话传出去，要败坏李家的名声"
+              "zh": "周家故意把话传出去，想坏了李家的名声"
             }
           }
         ],
-        "title": {"en": "How the rumour began", "zh": "误会缘由"}
+        "title": {"en": "Why people got it wrong", "zh": "大家为什么会误会"}
       }
     ]
   },
@@ -2961,11 +3103,7 @@ _SCRIPT = r"""
           ],
           "blocker": {"en": "The Li family will not give the bamboo", "zh": "李家不肯给竹料"},
           "next": [
-            {
-              "en": "Find out where that talk came from.",
-              "when": [],
-              "zh": "问清这话是从哪里传出来的。"
-            }
+            {"en": "Find out who started that talk.", "when": [], "zh": "问清这话是谁先说的。"}
           ],
           "when": [
             {
@@ -2992,9 +3130,9 @@ _SCRIPT = r"""
           ],
           "why": [
             {
-              "en": "Granny Li says the town blames her second son, and you said nothing.",
+              "en": "The town is saying Li Er broke the bridge. Granny Li is angry that you, the manager, have said nothing.",
               "when": [],
-              "zh": "李老太说镇上都传她家老二毁了桥，你却一声不吭。"
+              "zh": "镇上都在传李二毁了桥。李老太怪你这个总管一声不吭。"
             }
           ]
         },
@@ -3049,9 +3187,9 @@ _SCRIPT = r"""
           },
           "next": [
             {
-              "en": "Find where the slander came from, then set it straight in public.",
+              "en": "Find out who spread the rumour, then set it straight in public.",
               "when": [],
-              "zh": "查清谣言的来历，再当众说清。"
+              "zh": "先查清这句闲话是谁传的，再当众说清。"
             }
           ],
           "when": [
@@ -3075,9 +3213,9 @@ _SCRIPT = r"""
           ],
           "why": [
             {
-              "en": "She will not give way until the slander is cleared in public.",
+              "en": "Granny Li will not lend it until the talk about Li Er is set straight in public.",
               "when": [],
-              "zh": "她要谣言当众说清，才肯松口。"
+              "zh": "李老太要等李二的事当众说清了，才肯借。"
             }
           ]
         },
@@ -3094,13 +3232,13 @@ _SCRIPT = r"""
           ],
           "blocker": {
             "en": "Li Da has not heard that the talk was set straight",
-            "zh": "李大还不知道谣言已经说清了"
+            "zh": "李大还不知道那句闲话已经说清了"
           },
           "next": [
             {
               "en": "Tell Li Da the talk was set straight, then ask Li Da for the bamboo.",
               "when": [],
-              "zh": "告诉李大谣言已经说清了，再请李大送竹料。"
+              "zh": "先告诉李大那事已经当众说清了，再请李大送竹料。"
             }
           ],
           "when": [
@@ -3117,9 +3255,9 @@ _SCRIPT = r"""
           ],
           "why": [
             {
-              "en": "Li Da was not there when the talk was set straight, and nobody has told Li Da.",
+              "en": "Li Da was not there when it was set straight, and nobody has told Li Da since.",
               "when": [],
-              "zh": "谣言说清时李大不在场，也没人告诉过李大。"
+              "zh": "当众说清那会儿李大不在场，事后也没人跟李大提。"
             }
           ]
         },
@@ -3139,7 +3277,7 @@ _SCRIPT = r"""
             {
               "en": "Promise Li Da something, then ask again.",
               "when": [{"kind": "can_promise", "npc": "li_da"}],
-              "zh": "先许李大一件事，再请李大送。"
+              "zh": "先许李大一样东西，再请李大送。"
             },
             {
               "en": "Ask Li Da again when more of the town is with you.",
@@ -3150,9 +3288,9 @@ _SCRIPT = r"""
           "when": [{"kind": "turned_down", "npc": "li_da"}],
           "why": [
             {
-              "en": "Li Da feels you owe a favour already, or does not trust you enough yet.",
+              "en": "Li Da does not trust you yet, or feels you still owe a favour.",
               "when": [],
-              "zh": "李大觉得你已经欠着人情，或者还信不过你。"
+              "zh": "李大还信不过你，或者嫌你上回欠的人情没还。"
             }
           ]
         }
@@ -3183,7 +3321,7 @@ _SCRIPT = r"""
           "zh": "按约好的时间去桥边，看竹料送到没有。"
         },
         {
-          "en": "Ask Li Da to bring the first bamboo to the bridge.",
+          "en": "Ask Li Da to bring the first load of bamboo to the bridge.",
           "when": [
             {
               "any": [
@@ -3210,17 +3348,20 @@ _SCRIPT = r"""
       ],
       "priority": 10,
       "stale": [],
-      "text": {"en": "Get the first bamboo from the Li family", "zh": "取得李家的第一批竹料"},
+      "text": {
+        "en": "Get the first load of bamboo from the Li family",
+        "zh": "借到李家的第一批竹料"
+      },
       "why": [
         {
-          "en": "Li Da has promised {bamboo_open} poles of bamboo at the bridge.",
+          "en": "Li Da has promised to bring {bamboo_open} poles of bamboo to the bridge.",
           "when": [
             {"by": "li_da", "item": "bamboo", "kind": "commitment", "state": "promised"}
           ],
-          "zh": "李大答应了，把{bamboo_open}根竹料送到桥边。"
+          "zh": "李大答应把{bamboo_open}根竹料送到桥边。"
         },
         {
-          "en": "Granny Li no longer objects, and Li Da has the bamboo.",
+          "en": "Granny Li has given way. The bamboo is Li Da's to bring.",
           "when": [
             {
               "any": [
@@ -3237,12 +3378,12 @@ _SCRIPT = r"""
               ]
             }
           ],
-          "zh": "李老太不再拦着了，竹料在李大手里。"
+          "zh": "李老太松口了。竹料归李大管。"
         },
         {
-          "en": "The bridge needs bamboo, and the Li family has it.",
+          "en": "The bamboo for the bridge is with the Li family.",
           "when": [],
-          "zh": "修桥要竹料，竹料在李家。"
+          "zh": "修桥的竹料在李家。"
         }
       ],
       "window": null
@@ -3323,7 +3464,7 @@ _SCRIPT = r"""
       "kind": "lead",
       "next": [
         {
-          "en": "Follow the telling back: who did you hear it from?",
+          "en": "Trace the talk back one person at a time, asking each who told them.",
           "when": [
             {
               "kind": "note",
@@ -3337,25 +3478,22 @@ _SCRIPT = r"""
               ]
             }
           ],
-          "zh": "顺着传话的人往回问：你是听谁说的？"
+          "zh": "一个个往回问「你是听谁说的」。"
         },
         {
-          "en": "Ask around: who did you hear it from?",
+          "en": "Ask around who they heard it from.",
           "when": [],
-          "zh": "问问周围的人，这话是听谁说的？"
+          "zh": "问问镇上的人，这话是听谁说的。"
         }
       ],
       "priority": 20,
       "stale": [],
-      "text": {
-        "en": "Who started the talk that Li Er wrecked the bridge?",
-        "zh": "李二毁桥这话是谁传的？"
-      },
+      "text": {"en": "Who said Li Er broke the bridge?", "zh": "是谁说李二毁了桥？"},
       "why": [
         {
-          "en": "The Li family will not give bamboo because of that talk.",
+          "en": "Because of that talk, the Li family will not give the bamboo.",
           "when": [],
-          "zh": "李家为这句话不肯给竹料。"
+          "zh": "就因为这句话，李家不肯给竹料。"
         }
       ],
       "window": null
@@ -3397,19 +3535,19 @@ _SCRIPT = r"""
       "kind": "lead",
       "next": [
         {
-          "en": "Set the words side by side and judge how they stand.",
+          "en": "Put the two lines side by side and see how they relate.",
           "when": [],
-          "zh": "把原话摆在一起比一比，看它们是什么关系。"
+          "zh": "把这两句话摆在一起比一比，看它们是什么关系。"
         }
       ],
       "priority": 30,
       "stale": [{"kind": "clarified"}],
-      "text": {"en": "What do these words prove?", "zh": "这些话能证明什么？"},
+      "text": {"en": "What does the clerk's word show?", "zh": "周家伙计看见的，能说明什么？"},
       "why": [
         {
-          "en": "What the clerk saw himself and what went round are not necessarily the same.",
+          "en": "Zhou's Clerk only says Li Er was at the bridge. The town says Li Er broke it.",
           "when": [],
-          "zh": "伙计亲眼看见的，和传开的话，不一定是一回事。"
+          "zh": "周家伙计只说看见李二在桥边。镇上传的却是李二毁了桥。"
         }
       ],
       "window": null
@@ -3449,22 +3587,19 @@ _SCRIPT = r"""
       "kind": "obstacle",
       "next": [
         {
-          "en": "Set it straight in public with the two lines you judged.",
+          "en": "Take the two lines you compared and set it straight in public.",
           "when": [],
-          "zh": "用你判对了的两句话，当众说清。"
+          "zh": "拿着你比过的那两句话，去当众说清。"
         }
       ],
       "priority": 35,
       "stale": [],
-      "text": {
-        "en": "The talk that Li Er wrecked the bridge has not been set straight in public",
-        "zh": "「李二毁桥」这话还没有当众说清"
-      },
+      "text": {"en": "Set the talk about Li Er straight in public", "zh": "把李二的事当众说清"},
       "why": [
         {
-          "en": "Granny Li takes your silence for consent, so she lends no bamboo.",
+          "en": "You have kept quiet, and Granny Li takes that to mean you agree. So the bamboo stays where it is.",
           "when": [],
-          "zh": "李老太认定你默认了这话，不肯借竹料。"
+          "zh": "你一直不吭声，李老太就当你认了这话。竹料也就不借了。"
         }
       ],
       "window": {"day": null, "from": 17, "place": "p_teahouse", "to": 19}
@@ -3496,19 +3631,19 @@ _SCRIPT = r"""
       "kind": "venue",
       "next": [
         {
-          "en": "Go to the teahouse in the evening and speak up.",
+          "en": "Go to the teahouse in the evening and speak in front of everyone.",
           "when": [],
-          "zh": "傍晚去茶馆，当众说话。"
+          "zh": "傍晚去茶馆，当着大家的面说。"
         }
       ],
       "priority": 40,
       "stale": [{"day": 1, "hour": 19, "kind": "after"}],
-      "text": {"en": "The teahouse tonight", "zh": "今晚茶馆"},
+      "text": {"en": "To the teahouse tonight", "zh": "今晚去茶馆"},
       "why": [
         {
-          "en": "The teahouse fills in the evening, and everyone there hears what you say.",
+          "en": "The teahouse fills up in the evening, and everyone there will hear you.",
           "when": [],
-          "zh": "傍晚茶馆里人多，在场的人都会听到你的话。"
+          "zh": "傍晚茶馆里人多，你说的话大家都听得到。"
         }
       ],
       "window": {"day": 1, "from": 17, "place": "p_teahouse", "to": 19}
@@ -3572,7 +3707,7 @@ _SCRIPT = r"""
         {
           "en": "Li Da agreed to bring it to the bridge at the agreed time.",
           "when": [],
-          "zh": "李大答应了，按约好的时间送到桥边。"
+          "zh": "李大答应按约好的时间送到桥边。"
         }
       ],
       "window": null
@@ -3617,7 +3752,7 @@ _SCRIPT = r"""
             {
               "en": "Promise Li Da something, then ask again.",
               "when": [{"kind": "can_promise", "npc": "li_da"}],
-              "zh": "先许李大一件事，再请李大送。"
+              "zh": "先许李大一样东西，再请李大送。"
             },
             {
               "en": "Ask Li Da again when more of the town is with you.",
@@ -3628,9 +3763,9 @@ _SCRIPT = r"""
           "when": [{"kind": "turned_down", "npc": "li_da"}],
           "why": [
             {
-              "en": "Li Da feels you owe a favour already, or does not trust you enough yet.",
+              "en": "Li Da does not trust you yet, or feels you still owe a favour.",
               "when": [],
-              "zh": "李大觉得你已经欠着人情，或者还信不过你。"
+              "zh": "李大还信不过你，或者嫌你上回欠的人情没还。"
             }
           ]
         }
@@ -3655,11 +3790,11 @@ _SCRIPT = r"""
       "text": {"en": "The rest of the bamboo", "zh": "凑齐竹料"},
       "why": [
         {
-          "en": "The bridge needs {bamboo_need} poles of bamboo and has {bamboo_site}, and Li Da has promised {bamboo_open} more.",
+          "en": "The bridge needs {bamboo_need} poles of bamboo and has {bamboo_site}. Li Da has promised {bamboo_open} more.",
           "when": [
             {"by": "li_da", "item": "bamboo", "kind": "commitment", "state": "promised"}
           ],
-          "zh": "桥要{bamboo_need}根竹料，到了{bamboo_site}根，李大又答应送{bamboo_open}根。"
+          "zh": "桥要{bamboo_need}根竹料，已经到了{bamboo_site}根。李大又答应送{bamboo_open}根。"
         },
         {
           "en": "The bridge needs {bamboo_need} poles of bamboo and only {bamboo_site} lie there.",
@@ -3721,9 +3856,9 @@ _SCRIPT = r"""
           "when": [{"kind": "turned_down", "npc": "zhou_zhanggui"}],
           "why": [
             {
-              "en": "The timber is the Zhou trade, and Shopkeeper Zhou gives no favour for nothing.",
+              "en": "Timber is the Zhou trade, and Shopkeeper Zhou does not give it away.",
               "when": [],
-              "zh": "木料是周家的生意，周掌柜不白送人情。"
+              "zh": "木料是周家的买卖，周掌柜不会白给。"
             }
           ]
         }
@@ -3754,10 +3889,10 @@ _SCRIPT = r"""
       ],
       "priority": 13,
       "stale": [],
-      "text": {"en": "Get the timber from the Zhou family", "zh": "取得周家的木料"},
+      "text": {"en": "Get the timber from the Zhou family", "zh": "请周家出木料"},
       "why": [
         {
-          "en": "Shopkeeper Zhou has promised {timber_open} poles of timber at the bridge.",
+          "en": "Shopkeeper Zhou has promised to bring {timber_open} poles of timber to the bridge.",
           "when": [
             {
               "by": "zhou_zhanggui",
@@ -3766,12 +3901,12 @@ _SCRIPT = r"""
               "state": "promised"
             }
           ],
-          "zh": "周掌柜答应了，把{timber_open}根木料送到桥边。"
+          "zh": "周掌柜答应把{timber_open}根木料送到桥边。"
         },
         {
-          "en": "Mending the bridge takes {timber_need} poles of timber, and the Zhou family keeps it.",
+          "en": "The bridge needs {timber_need} poles of timber, and they have to come from the Zhou store.",
           "when": [],
-          "zh": "修桥要{timber_need}根木料，木料在周家。"
+          "zh": "修桥要{timber_need}根木料，得从周家库里出。"
         }
       ],
       "window": null
@@ -3821,20 +3956,23 @@ _SCRIPT = r"""
               "when": []
             }
           ],
-          "blocker": {"en": "{helper} has not joined yet", "zh": "{helper}还没有加入"},
+          "blocker": {
+            "en": "{helper} has not agreed to come yet",
+            "zh": "{helper}还没答应来"
+          },
           "next": [
             {
               "en": "Promise {helper} something, then ask again.",
               "when": [],
-              "zh": "先许{helper}一件事，再请{helper}加入。"
+              "zh": "先许{helper}一件事，再请{helper}来帮忙。"
             }
           ],
           "when": [{"kind": "helper_waits"}],
           "why": [
             {
-              "en": "{helper} wants to see more from you before joining.",
+              "en": "{helper} wants something in return before joining.",
               "when": [],
-              "zh": "{helper}要先看到你的诚意，才肯加入。"
+              "zh": "{helper}想先得点好处，才肯来帮忙。"
             }
           ]
         }
@@ -3846,9 +3984,9 @@ _SCRIPT = r"""
       "kind": "need",
       "next": [
         {
-          "en": "Call the town for helpers first, and those who are willing will come.",
+          "en": "Call for helpers first, and those who are willing will come.",
           "when": [{"not": {"event": "rally", "kind": "event"}}],
-          "zh": "先号召一下，愿意的人会自己来。"
+          "zh": "先召集帮手，愿意的人会自己来。"
         },
         {
           "en": "Ask someone from {needy} to help.",
@@ -3860,9 +3998,9 @@ _SCRIPT = r"""
               ]
             }
           ],
-          "zh": "请{needy}的人答应帮忙。"
+          "zh": "请{needy}的人来帮忙。"
         },
-        {"en": "Ask one more person to help.", "when": [], "zh": "再请一个人答应。"}
+        {"en": "Ask one more person to help.", "when": [], "zh": "再请一个人来帮忙。"}
       ],
       "priority": 14,
       "stale": [],
@@ -3871,7 +4009,7 @@ _SCRIPT = r"""
         {
           "en": "The bridge takes {crew} helpers, at least one from each family.",
           "when": [],
-          "zh": "修桥要{crew}个帮手，李、周两家各至少一人。"
+          "zh": "修桥要{crew}个帮手，李家、周家至少各出一个。"
         }
       ],
       "window": null
@@ -3900,7 +4038,7 @@ _SCRIPT = r"""
           "action": [],
           "blocker": {
             "en": "Heavy rain today, so there is no work on the bridge",
-            "zh": "今天下大雨，桥上不能施工"
+            "zh": "今天下大雨，桥上开不了工"
           },
           "next": [
             {
@@ -3915,9 +4053,9 @@ _SCRIPT = r"""
           ],
           "why": [
             {
-              "en": "There is no work in heavy rain, and {hours_left} hours are still to do.",
+              "en": "No work is done in heavy rain. What is left has to wait for tomorrow morning.",
               "when": [],
-              "zh": "大雨天不开工，桥还差{hours_left}个钟头。"
+              "zh": "下大雨不开工。剩下的活只能等明早再干。"
             }
           ]
         }
@@ -3936,12 +4074,17 @@ _SCRIPT = r"""
       ],
       "priority": 15,
       "stale": [{"day": 3, "hour": 13, "kind": "after"}],
-      "text": {"en": "Work on the bridge, the third morning", "zh": "第三天早上施工"},
+      "text": {"en": "Work on the bridge, the third morning", "zh": "第三天早上开工"},
       "why": [
         {
-          "en": "{helpers} helpers give {morning} hours in a morning, and {hours_left} are still to do.",
+          "en": "With the helpers you have, the bridge will not be done in time.",
+          "when": [{"kind": "work_short"}],
+          "zh": "照眼下这几个帮手，期限前桥修不完。"
+        },
+        {
+          "en": "With these helpers, {work_mornings} and the bridge is done.",
           "when": [],
-          "zh": "{helpers}个帮手一早上能做{morning}个钟头，桥还差{hours_left}个钟头。"
+          "zh": "照这几个帮手，再干{work_mornings}桥就修完了。"
         }
       ],
       "window": {
@@ -3977,13 +4120,13 @@ _SCRIPT = r"""
           "action": [],
           "blocker": {
             "en": "Heavy rain today, so there is no work on the bridge",
-            "zh": "今天下大雨，桥上不能施工"
+            "zh": "今天下大雨，桥上开不了工"
           },
           "next": [
             {
-              "en": "No work can start today, so the bridge will not be done in time and only the detour is left.",
+              "en": "The bridge cannot be finished. Only the detour is left.",
               "when": [],
-              "zh": "今天开不了工，桥来不及修了，只能走绕路。"
+              "zh": "桥修不完了，只能走绕路。"
             }
           ],
           "when": [
@@ -3992,9 +4135,9 @@ _SCRIPT = r"""
           ],
           "why": [
             {
-              "en": "There is no work in heavy rain, and {hours_left} hours are still to do.",
+              "en": "No work is done in heavy rain, and this is the last morning.",
               "when": [],
-              "zh": "大雨天不开工，桥还差{hours_left}个钟头。"
+              "zh": "下大雨不开工。今天又是最后一个早上。"
             }
           ]
         }
@@ -4013,12 +4156,30 @@ _SCRIPT = r"""
       ],
       "priority": 16,
       "stale": [{"day": 4, "hour": 13, "kind": "after"}],
-      "text": {"en": "Work on the bridge, the fourth morning", "zh": "第四天早上施工"},
+      "text": {"en": "Work on the bridge, the fourth morning", "zh": "第四天早上开工"},
       "why": [
         {
-          "en": "The last morning: the helpers give {morning} hours, and {hours_left} are still to do.",
+          "en": "Tomorrow morning is the last one. With these helpers, the work will not be done by then.",
+          "when": [
+            {"kind": "work_short"},
+            {"not": {"day": 3, "hour": 24, "kind": "after"}}
+          ],
+          "zh": "明早是最后一个早上。照这几个帮手，明早干不完。"
+        },
+        {
+          "en": "This is the last morning. With these helpers, the work will not be done today.",
+          "when": [{"kind": "work_short"}],
+          "zh": "今天是最后一个早上。照这几个帮手，今天干不完。"
+        },
+        {
+          "en": "Tomorrow morning is the last one. With these helpers, the bridge will be done by then.",
+          "when": [{"not": {"day": 3, "hour": 24, "kind": "after"}}],
+          "zh": "明早是最后一个早上。照这几个帮手，明早就能把桥修完。"
+        },
+        {
+          "en": "This is the last morning. With these helpers, the bridge will be done today.",
           "when": [],
-          "zh": "这是最后一个早上，帮手能做{morning}个钟头，桥还差{hours_left}个钟头。"
+          "zh": "今天是最后一个早上。照这几个帮手，今天就能把桥修完。"
         }
       ],
       "window": {
@@ -4126,9 +4287,9 @@ _SCRIPT = r"""
           "when": [{"kind": "turned_down", "npc": "miaozhu", "request": "lane"}],
           "why": [
             {
-              "en": "The lane is kept shut, and the temple keeper does not open it for just anyone.",
+              "en": "The lane is kept locked, and the temple keeper does not open it for just anyone.",
               "when": [],
-              "zh": "夹道平时堵着，庙祝不轻易开。"
+              "zh": "夹道平时锁着，庙祝不轻易开。"
             }
           ]
         }
@@ -4152,17 +4313,17 @@ _SCRIPT = r"""
           "zh": "等一会儿，夹道就开了。"
         },
         {
-          "en": "Ask more people to help, and they will hang the lamps in the afternoon.",
+          "en": "Ask a few more people to help. The helpers hang the lanterns in the afternoon.",
           "when": [
             {"flag": "lane_opened", "kind": "flag"},
             {"not": {"at_least": 3, "kind": "helpers"}}
           ],
-          "zh": "再请人答应帮忙，下午帮手会去夹道挂灯。"
+          "zh": "再请几个人来帮忙。下午帮手会去夹道挂灯。"
         },
         {
-          "en": "The helpers hang lamps along the lane from 13:00 to 17:00, so go and see at the temple.",
+          "en": "The helpers hang lanterns along the lane from 13:00 to 17:00. Go and look at the temple.",
           "when": [{"flag": "lane_opened", "kind": "flag"}],
-          "zh": "帮手 13:00 到 17:00 沿夹道挂灯，去庙边看看。"
+          "zh": "帮手们 13:00 到 17:00 沿夹道挂灯。去庙那边看看。"
         },
         {
           "en": "Ask the temple keeper to open the lane behind the temple.",
@@ -4182,7 +4343,7 @@ _SCRIPT = r"""
       "text": {"en": "Get a detour ready", "zh": "备一条绕路"},
       "why": [
         {
-          "en": "The keeper will open the lane and three people must hang lamps along it, but the detour caps the night at “Just enough”.",
+          "en": "The temple keeper has agreed to open the lane, and three people still have to hang lanterns along it. The festival can go on by the detour, but the night cannot be perfect.",
           "when": [
             {
               "event": "agreed",
@@ -4191,17 +4352,17 @@ _SCRIPT = r"""
             },
             {"not": {"flag": "lane_opened", "kind": "flag"}}
           ],
-          "zh": "庙祝答应开夹道了，还要三个人沿路挂灯，走绕路这一夜最多是「勉强」。"
+          "zh": "庙祝答应开夹道了。还得有三个人沿路挂灯。走绕路也能办灯会，只是算不上圆满。"
         },
         {
-          "en": "The lane is open and three people must hang lamps along it, but the detour caps the night at “Just enough”.",
+          "en": "The lane is open, and three people still have to hang lanterns along it. The festival can go on by the detour, but the night cannot be perfect.",
           "when": [{"flag": "lane_opened", "kind": "flag"}],
-          "zh": "夹道已经开了，还要三个人沿路挂灯，走绕路这一夜最多是「勉强」。"
+          "zh": "夹道开了。还得有三个人沿路挂灯。走绕路也能办灯会，只是算不上圆满。"
         },
         {
-          "en": "The bridge may not be mended in time, and with the detour the night is “Just enough” at best.",
+          "en": "The bridge may not be mended in time. The festival can go on by the detour, but the night cannot be perfect.",
           "when": [],
-          "zh": "桥怕是来不及修好了，走绕路这一夜最多是「勉强」。"
+          "zh": "桥怕是来不及修好了。走绕路也能办灯会，只是算不上圆满。"
         }
       ],
       "window": null
@@ -4459,13 +4620,13 @@ _SCRIPT = r"""
       "kind": "lead",
       "next": [
         {
-          "en": "By day, go and look at what the broken rail left behind, before the marks are trodden out after the second day.",
+          "en": "Go to the bridge by day and see what was left by the broken railing. After the second day the marks are trodden out.",
           "when": [
             {"from": 7, "kind": "hours", "to": 17},
             {"not": {"items": ["e_footprint"], "kind": "looked"}},
             {"not": {"day": 3, "hour": 6, "kind": "after"}}
           ],
-          "zh": "白天去桥上，看断栏边留下了什么，过了第二天痕迹就被踩没了。"
+          "zh": "白天去桥上看看断栏边留下了什么。过了第二天，印子就被踩没了。"
         },
         {
           "en": "The water under the bridge has dropped, so go and look at what shows on the pier.",
@@ -4477,33 +4638,33 @@ _SCRIPT = r"""
           "zh": "桥墩下的水落下去了，去看看露出了什么。"
         },
         {
-          "en": "The boat's owner will not let you look yet, so talk with the owner first.",
+          "en": "The boat's owner will not let you look yet. Go and talk first.",
           "when": [
             {"from": 8, "kind": "hours", "to": 16},
             {"not": {"items": ["e_boat_scratches"], "kind": "looked"}},
             {"kind": "turned_down", "npc": "old_he", "request": "look"},
             {"not": {"kind": "talked_today", "npc": "old_he"}}
           ],
-          "zh": "船主还不让你看船，先去和船主聊几句。"
+          "zh": "船主还不让你看船。先去聊几句。"
         },
         {
-          "en": "The boat's owner will not let you look yet, so promise the owner something and come back.",
+          "en": "The boat's owner will not let you look yet. Promise something and come back.",
           "when": [
             {"from": 8, "kind": "hours", "to": 16},
             {"not": {"items": ["e_boat_scratches"], "kind": "looked"}},
             {"kind": "turned_down", "npc": "old_he", "request": "look"},
             {"kind": "can_promise", "npc": "old_he"}
           ],
-          "zh": "船主还不让你看船，许船主一点好处再来。"
+          "zh": "船主还不让你看船。许点好处再来。"
         },
         {
-          "en": "The boat's owner does not trust you yet, so talk again tomorrow.",
+          "en": "The boat's owner does not trust you yet. Talk again tomorrow.",
           "when": [
             {"from": 8, "kind": "hours", "to": 16},
             {"not": {"items": ["e_boat_scratches"], "kind": "looked"}},
             {"kind": "turned_down", "npc": "old_he", "request": "look"}
           ],
-          "zh": "船主还信不过你，明天再去聊聊。"
+          "zh": "船主还信不过你。明天再去聊聊。"
         },
         {
           "en": "Go to the ferry and look at the boat.",
@@ -4511,10 +4672,10 @@ _SCRIPT = r"""
             {"from": 8, "kind": "hours", "to": 16},
             {"not": {"items": ["e_boat_scratches"], "kind": "looked"}}
           ],
-          "zh": "去渡口，看看那条船。"
+          "zh": "去渡口看看那条船。"
         },
         {
-          "en": "The night watchman will not speak yet, so talk with the watchman first.",
+          "en": "The night watchman will not speak yet. Go and talk first.",
           "when": [
             {"from": 15, "kind": "hours", "to": 22},
             {"day": 4, "hour": 6, "kind": "after"},
@@ -4528,10 +4689,10 @@ _SCRIPT = r"""
             {"kind": "turned_down", "npc": "gengfu", "request": "testify"},
             {"not": {"kind": "talked_today", "npc": "gengfu"}}
           ],
-          "zh": "更夫还不肯开口，先去和更夫聊几句。"
+          "zh": "更夫还不肯开口。先去聊几句。"
         },
         {
-          "en": "The night watchman will not speak yet, so promise the watchman something and ask again.",
+          "en": "The night watchman will not speak yet. Promise something and ask again.",
           "when": [
             {"from": 15, "kind": "hours", "to": 22},
             {"day": 4, "hour": 6, "kind": "after"},
@@ -4545,10 +4706,10 @@ _SCRIPT = r"""
             {"kind": "turned_down", "npc": "gengfu", "request": "testify"},
             {"kind": "can_promise", "npc": "gengfu"}
           ],
-          "zh": "更夫还不肯开口，许更夫一点好处再来问。"
+          "zh": "更夫还不肯开口。许点好处再来问。"
         },
         {
-          "en": "The night watchman does not trust you yet, so talk again tomorrow afternoon.",
+          "en": "The night watchman does not trust you yet. Talk again tomorrow afternoon.",
           "when": [
             {"from": 15, "kind": "hours", "to": 22},
             {"day": 4, "hour": 6, "kind": "after"},
@@ -4561,10 +4722,10 @@ _SCRIPT = r"""
             },
             {"kind": "turned_down", "npc": "gengfu", "request": "testify"}
           ],
-          "zh": "更夫还信不过你，明天下午再去聊聊。"
+          "zh": "更夫还信不过你。明天下午再去聊聊。"
         },
         {
-          "en": "The night watchman is at the watch post from the afternoon, so ask what was seen that night.",
+          "en": "The night watchman is at the watch post in the afternoon. Ask what was seen that night.",
           "when": [
             {"from": 15, "kind": "hours", "to": 22},
             {"day": 4, "hour": 6, "kind": "after"},
@@ -4576,10 +4737,10 @@ _SCRIPT = r"""
               }
             }
           ],
-          "zh": "下午更夫在更铺里，去问问那一夜看见了什么。"
+          "zh": "下午更夫在更铺里。去问问那晚看见了什么。"
         },
         {
-          "en": "Xiaoman will not speak yet, so talk with Xiaoman first.",
+          "en": "Xiaoman will not speak yet. Go and talk first.",
           "when": [
             {"from": 17, "kind": "hours", "to": 20},
             {"day": 3, "hour": 6, "kind": "after"},
@@ -4608,10 +4769,10 @@ _SCRIPT = r"""
             {"kind": "turned_down", "npc": "xiao_man", "request": "testify"},
             {"not": {"kind": "talked_today", "npc": "xiao_man"}}
           ],
-          "zh": "小满还不肯开口，先去和小满聊几句。"
+          "zh": "小满还不肯开口。先去聊几句。"
         },
         {
-          "en": "Xiaoman will not speak yet, so promise Xiaoman something and ask again.",
+          "en": "Xiaoman will not speak yet. Promise something and ask again.",
           "when": [
             {"from": 17, "kind": "hours", "to": 20},
             {"day": 3, "hour": 6, "kind": "after"},
@@ -4640,10 +4801,10 @@ _SCRIPT = r"""
             {"kind": "turned_down", "npc": "xiao_man", "request": "testify"},
             {"kind": "can_promise", "npc": "xiao_man"}
           ],
-          "zh": "小满还不肯开口，许小满一点好处再来问。"
+          "zh": "小满还不肯开口。许点好处再来问。"
         },
         {
-          "en": "Xiaoman does not trust you yet, so talk again tomorrow evening.",
+          "en": "Xiaoman does not trust you yet. Talk again tomorrow evening.",
           "when": [
             {"from": 17, "kind": "hours", "to": 20},
             {"day": 3, "hour": 6, "kind": "after"},
@@ -4671,10 +4832,10 @@ _SCRIPT = r"""
             },
             {"kind": "turned_down", "npc": "xiao_man", "request": "testify"}
           ],
-          "zh": "小满还信不过你，明天傍晚再去聊聊。"
+          "zh": "小满还信不过你。明天傍晚再去聊聊。"
         },
         {
-          "en": "Xiaoman fishes by the river at night and is home in the evening, so ask what was seen that night.",
+          "en": "Xiaoman fishes by the river at night and is home in the evening. Ask what was seen that night.",
           "when": [
             {"from": 17, "kind": "hours", "to": 20},
             {"day": 3, "hour": 6, "kind": "after"},
@@ -4701,20 +4862,20 @@ _SCRIPT = r"""
               ]
             }
           ],
-          "zh": "小满夜里常在河边钓鱼，傍晚在家，去问问那一夜看见了什么。"
+          "zh": "小满夜里常在河边钓鱼，傍晚在家。去问问那晚看见了什么。"
         },
         {
-          "en": "There is nothing more to see today, and on the third morning the water drops and the pier can be looked at.",
+          "en": "There is nothing more to see today. On the third morning the water drops and the pier can be seen.",
           "when": [{"not": {"day": 3, "hour": 6, "kind": "after"}}],
-          "zh": "今天能看的都看了，等第三天早上水落下去，再看桥墩。"
+          "zh": "今天能看的都看了。第三天早上水落下去，再去看桥墩。"
         },
         {
-          "en": "The water has dropped, so look at the pier by day and see Xiaoman in the evening.",
+          "en": "The water has dropped. Look at the pier by day and see Xiaoman in the evening.",
           "when": [
             {"not": {"day": 4, "hour": 6, "kind": "after"}},
             {"not": {"items": ["e_flood_debris"], "kind": "looked"}}
           ],
-          "zh": "水落下去了，白天去看桥墩，傍晚找小满。"
+          "zh": "水落下去了。白天去看桥墩，傍晚去找小满。"
         },
         {
           "en": "See Xiaoman in the evening and ask what was seen that night.",
@@ -4743,12 +4904,12 @@ _SCRIPT = r"""
               ]
             }
           ],
-          "zh": "傍晚去找小满，问问那一夜看见了什么。"
+          "zh": "傍晚去找小满，问问那晚看见了什么。"
         },
         {
-          "en": "You have done what can be done today, and the night watchman will not speak before the afternoon of the fourth day.",
+          "en": "You have done all you can today. The night watchman will not speak before the afternoon of the fourth day.",
           "when": [{"not": {"day": 4, "hour": 6, "kind": "after"}}],
-          "zh": "今天能查的都查了，更夫要第四天下午才肯开口。"
+          "zh": "今天能查的都查了。更夫要到第四天下午才肯开口。"
         },
         {
           "en": "Find the night watchman at the watch post in the afternoon and ask what was seen that night.",
@@ -4761,12 +4922,12 @@ _SCRIPT = r"""
               }
             }
           ],
-          "zh": "下午去更铺找更夫，问问那一夜看见了什么。"
+          "zh": "下午去更铺找更夫，问问那晚看见了什么。"
         },
         {
           "en": "By day go to the bridge and the ferry, in the evening see Xiaoman, and on the fourth afternoon the night watchman.",
           "when": [],
-          "zh": "白天去桥上和渡口，傍晚找小满，第四天下午找更夫。"
+          "zh": "白天去桥上和渡口看看，傍晚找小满。第四天下午再找更夫。"
         }
       ],
       "priority": 55,
@@ -4774,9 +4935,9 @@ _SCRIPT = r"""
       "text": {"en": "How did the bridge really break?", "zh": "桥到底是怎么坏的？"},
       "why": [
         {
-          "en": "Nobody in town can say for certain how the rail broke, and it takes what someone saw and what was left behind.",
+          "en": "Nobody in town knows for sure how the railing broke. Find the people who saw it, and look at what was left behind.",
           "when": [],
-          "zh": "栏杆怎么断的，镇上还没有定论，要靠亲眼见过的人和留下的凭据。"
+          "zh": "栏杆是怎么断的，镇上谁也说不准。得找亲眼看见的人问问，再去看看留下了什么。"
         }
       ],
       "window": null
@@ -4910,73 +5071,73 @@ _SCRIPT = r"""
       "kind": "obstacle",
       "next": [
         {
-          "en": "Go back to the marked part of the card, look and ask more or choose another account, and state it again next time.",
+          "en": "Open the card at the marked part. Look and ask more, or choose another account, and speak again next time.",
           "when": [{"kind": "told", "missed": "parts"}],
-          "zh": "回到陈述卡，看标出的那一栏，再查再问或换个说法，下回再陈述。"
+          "zh": "翻开讲稿，看标出的那一条。再去查、去问，或者换个说法。下回再去说。"
         },
         {
-          "en": "Look and ask in more places until your proof can tell the stories apart, then state it again next time.",
+          "en": "Your proof is not enough yet. Look and ask in more places. Once it can tell the stories apart, speak again next time.",
           "when": [{"kind": "told", "missed": "proof"}],
-          "zh": "凭据还不够，再看再问几处，凑到能分出说法，下回再陈述。"
+          "zh": "凭据还不够。再去几处看看、问问。等凭据分得出是哪种说法，下回再去说。"
         },
         {
-          "en": "Speak when more people are there: at the teahouse after 18:00, or at the hall once you have asked the elder in the morning to call the clan.",
+          "en": "Speak when more people are there. The teahouse is fullest from 17:00 to 19:00. You can also ask the elder in the morning to call the clan to the hall.",
           "when": [{"kind": "told", "missed": "named"}],
-          "zh": "人多的时候再说，18:00 以后去茶馆，或请族长上午召集族人去祠堂。"
+          "zh": "等人多的时候再说。傍晚 17:00 到 19:00 茶馆里人最多。也可以上午请族长把族人召集到祠堂。"
         },
         {
           "en": "Bring more proof by looking and asking in more places, then speak again.",
           "when": [{"kind": "told", "missed": "accepted"}],
-          "zh": "拿出更多凭据，再看再问几处，补齐了再当众说一次。"
+          "zh": "再去几处看看、问问。凭据多了，再当众说一次。"
         },
         {
-          "en": "The elder is at the teahouse in the evening, or have the clan called to the hall, and the elder must be there.",
+          "en": "It only counts with the elder there. The elder is at the teahouse in the evening. You can also ask the elder to call the clan to the hall.",
           "when": [{"kind": "told", "missed": "elder_absent"}],
-          "zh": "族长傍晚在茶馆，也可请族长召集族人去祠堂，族长要在场才算数。"
+          "zh": "族长要在场才算数。族长傍晚在茶馆。也可以请族长把族人召集到祠堂。"
         },
         {
-          "en": "Talk with the elder and keep your word to win trust, then speak again with the proof that refutes the other account.",
+          "en": "Talk with the elder until the elder trusts you. Keep the promises you made. Then speak again with the proof that rules out the other account.",
           "when": [{"kind": "told", "missed": "elder_refused"}],
-          "zh": "先和族长聊聊，兑现许下的事，赢得信任，再拿驳倒另一种说法的凭据当众说一次。"
+          "zh": "先去跟族长聊聊，让族长信得过你。许过的事要兑现。再拿着能驳倒另一种说法的凭据，当众说一次。"
         },
         {
-          "en": "The elder has called the clan and the hall is open, so make the statement there.",
+          "en": "The elder has called the clan to the hall. Go and speak there.",
           "when": [
             {"day": 4, "hour": 17, "kind": "after"},
             {"kind": "card_filled"},
             {"not": {"kind": "stated_today"}},
             {"kind": "meeting"}
           ],
-          "zh": "族长召集了族人，祠堂开着，去祠堂当众陈述。"
+          "zh": "族长把族人召集到祠堂了。去祠堂当众说清楚。"
         },
         {
-          "en": "Make the statement at the teahouse after 18:00, or at the hall once you have asked the elder in the morning to call the clan.",
+          "en": "Speak at the teahouse. It is fullest from 17:00 to 19:00. You can also ask the elder in the morning to call the clan to the hall.",
           "when": [
             {"day": 4, "hour": 17, "kind": "after"},
             {"kind": "card_filled"},
             {"not": {"kind": "stated_today"}}
           ],
-          "zh": "18:00 以后去茶馆当众陈述，或请族长上午召集族人去祠堂。"
+          "zh": "去茶馆当众说清楚。傍晚 17:00 到 19:00 那儿人最多。也可以上午请族长把族人召集到祠堂。"
         },
         {
-          "en": "A statement has been made today, so come again next time.",
+          "en": "You have spoken in public today. Come again next time.",
           "when": [{"day": 4, "hour": 17, "kind": "after"}, {"kind": "card_filled"}],
-          "zh": "今天已经陈述过一次，下回再来。"
+          "zh": "今天已经当众说过了，下回再来。"
         },
         {
-          "en": "Find the clues that are missing, fill in the card, then go and state it.",
+          "en": "The card is not complete yet. Find out what is missing first, then go and speak.",
           "when": [{"day": 4, "hour": 17, "kind": "after"}],
-          "zh": "把缺的线索查出来，填满陈述卡再去陈述。"
+          "zh": "讲稿还没写全。先把缺的那几条查清楚，再去说。"
         },
         {
-          "en": "The card is filled in, and the full statement waits for the public meeting on the evening of the fourth day.",
+          "en": "The card is filled in. You can speak at the public meeting on the evening of the fourth day.",
           "when": [{"kind": "card_filled"}],
-          "zh": "陈述卡填好了，完整陈述要等第四天傍晚的公议。"
+          "zh": "讲稿写好了。要等第四天傍晚的公议，才能当众说。"
         },
         {
-          "en": "Look and ask until the clues fill in the card, then state it at the public meeting on the evening of the fourth day.",
+          "en": "Look and ask until the card is complete. Then speak at the public meeting on the evening of the fourth day.",
           "when": [],
-          "zh": "先查先问，攒够线索填满陈述卡，第四天傍晚的公议上陈述。"
+          "zh": "先去查、去问，把讲稿写全。第四天傍晚到公议上当众说清楚。"
         }
       ],
       "priority": 57,
@@ -4984,39 +5145,39 @@ _SCRIPT = r"""
       "text": {"en": "Tell the town how the bridge broke", "zh": "当众把桥的事说清楚"},
       "why": [
         {
-          "en": "A part did not hold last time, and the card marks which one.",
+          "en": "A part did not hold last time. The card marks which one.",
           "when": [{"kind": "told", "missed": "parts"}],
-          "zh": "上回有一栏没站住，陈述卡上标出了是哪一栏。"
+          "zh": "上回有一条没站住。讲稿上标出了是哪一条。"
         },
         {
-          "en": "Every part held last time, but your proof cannot tell the stories apart, so the words carried no weight.",
+          "en": "Every part held last time, but your proof cannot tell the stories apart. People were not convinced.",
           "when": [{"kind": "told", "missed": "proof"}],
-          "zh": "上回每一栏都对得上，可凭据还分不出是哪种说法，话没有分量。"
+          "zh": "上回每一条都对，可你的凭据分不出是哪种说法。大家不服。"
         },
         {
-          "en": "Fewer than five named people were there last time, so the word did not carry.",
+          "en": "Too few people were there last time, and the word did not carry.",
           "when": [{"kind": "told", "missed": "named"}],
-          "zh": "上回在场有名有姓的人不到五位，话传不开。"
+          "zh": "上回在场的人太少，话传不开。"
         },
         {
-          "en": "Last time fewer than six in ten of those there accepted it.",
+          "en": "Last time too few of those there were convinced.",
           "when": [{"kind": "told", "missed": "accepted"}],
-          "zh": "上回在场的人里，接受的不到六成。"
+          "zh": "上回在场的人，点头的不够多。"
         },
         {
-          "en": "The elder was not there last time, and without the elder's nod it does not count.",
+          "en": "The elder was not there last time. Without the elder's nod it does not count.",
           "when": [{"kind": "told", "missed": "elder_absent"}],
-          "zh": "上回族长不在场，没有族长点头，说清不算数。"
+          "zh": "上回族长不在场。族长不点头，说了也不算数。"
         },
         {
-          "en": "The proof held last time, but the elder did not nod, holding another account or not trusting you enough yet.",
+          "en": "The proof held last time, and the elder was there. But the elder did not nod, either still holding to another account or not trusting you yet.",
           "when": [{"kind": "told", "missed": "elder_refused"}],
-          "zh": "上回凭据够了，族长在场却没点头，心里还信着另一种说法，或是信不过你。"
+          "zh": "上回凭据够了，族长也在场。可族长没点头，要么还信着另一种说法，要么还信不过你。"
         },
         {
           "en": "How the bridge broke has to be said in public, part by part, before the families and the town will believe it.",
           "when": [],
-          "zh": "桥是怎么坏的，要在公议上一栏一栏说清，两家和镇上的人才会信。"
+          "zh": "桥是怎么坏的，得在公议上一条一条说清楚。这样两家和镇上的人才会信。"
         }
       ],
       "window": {
@@ -5114,64 +5275,64 @@ _SCRIPT = r"""
         {
           "en": "Seat both heads together at the teahouse in the evening, with at least three others there to see it.",
           "when": [{"below": 30, "kind": "grudge"}],
-          "zh": "傍晚去茶馆，请两位当家同席，再请三位以上的人在场见证。"
+          "zh": "傍晚去茶馆摆一桌，请两家当家坐到一起。旁边得有三个以上的人看着。"
         },
         {
-          "en": "Lay another table on another evening, with both heads seated and at least three others there as witnesses.",
+          "en": "Lay another table on another evening and seat both heads together, with at least three others there to see it.",
           "when": [
             {"flag": "reconcile_seen", "kind": "flag"},
             {"flag": "truth_told", "kind": "flag"}
           ],
-          "zh": "换一天傍晚再摆一桌，两位当家同席，三位以上的人在场见证。"
+          "zh": "改天傍晚再摆一桌，请两家当家坐到一起。旁边得有三个以上的人看着。"
         },
         {
           "en": "Tell the town how the bridge broke first, then lay another table on another day.",
           "when": [{"flag": "reconcile_seen", "kind": "flag"}],
-          "zh": "先把桥的事当众说清，再换一天摆一桌。"
+          "zh": "先把桥的事当众说清楚，改天再摆一桌。"
         },
         {
-          "en": "Lay a table at the teahouse in the evening, with both heads seated and at least three others as witnesses.",
+          "en": "Lay a table at the teahouse in the evening and seat both heads together, with at least three others there to see it.",
           "when": [{"flag": "truth_told", "kind": "flag"}],
-          "zh": "傍晚去茶馆，请两位当家同席，三位以上的人在场见证。"
+          "zh": "傍晚去茶馆摆一桌，请两家当家坐到一起。旁边得有三个以上的人看着。"
         },
         {
-          "en": "Be at the bridge from 08:00 to 12:00, where helpers of both families working together ease both heads' grudge.",
+          "en": "Be at the bridge from 08:00 to 12:00. When helpers of both families work side by side, the two heads cool down a little.",
           "when": [
             {"not": {"act": "work_together", "kind": "eased"}},
             {"kind": "crew"},
             {"not": {"kind": "work", "percent": 100}}
           ],
-          "zh": "08:00 到 12:00 去桥边，两家帮手一起干活，两位当家的积怨就各降一截。"
+          "zh": "08:00 到 12:00 去桥边。两家的帮手一起干活，两家当家的气就能消一些。"
         },
         {
-          "en": "First tell the town how the bridge broke, then lay a table at the teahouse: both heads seated, three more to witness.",
+          "en": "First tell the town how the bridge broke. Then lay a table at the teahouse and seat both heads together. At least three others have to be there to see it.",
           "when": [],
-          "zh": "先把桥的事当众说清，再去茶馆摆一桌，请两位当家同席，三位以上的人在场见证。"
+          "zh": "先把桥的事当众说清楚。再去茶馆摆一桌，请两家当家坐到一起。旁边得有三个以上的人看着。"
         }
       ],
       "priority": 59,
       "stale": [{"day": 5, "hour": 21, "kind": "after"}],
-      "text": {"en": "Make peace between the families", "zh": "两家和解"},
+      "text": {"en": "Make peace between the families", "zh": "让两家和好"},
       "why": [
         {
-          "en": "The grudge has come down, but nobody has seen the two families make peace.",
+          "en": "The bad blood has eased, but nobody has yet seen the two families make peace.",
           "when": [{"below": 30, "kind": "grudge"}],
-          "zh": "积怨降下来了，可还没有人当面看见两家和解。"
+          "zh": "两家的气消了不少，可还没人亲眼看见两家和好。"
         },
         {
-          "en": "A reconciliation was seen, but the grudge between the two heads is still too high to count.",
+          "en": "People saw the families make peace, but the two heads are still angry.",
           "when": [{"flag": "reconcile_seen", "kind": "flag"}],
-          "zh": "有人看见了和解，可两家家长的积怨还没低到能算数。"
+          "zh": "有人看见两家和好了，可两家当家心里的气还没消。"
         },
         {
-          "en": "The truth is out and the grudge between the two heads stands at {grudge}, so a meal now lowers it the most.",
+          "en": "The truth about the bridge is out. A meal now does the most to ease the bad blood between the two heads.",
           "when": [{"flag": "truth_told", "kind": "flag"}],
-          "zh": "桥的事说清了，两家家长的积怨还有{grudge}点，这时摆一桌降得最多。"
+          "zh": "桥的事说清了。这时候摆一桌，最能消两家当家的气。"
         },
         {
-          "en": "The grudge between the two heads stands at {grudge} and has to fall under thirty, which one meal will not do.",
+          "en": "The two heads are still angry with each other, and one meal will not settle it.",
           "when": [],
-          "zh": "两家家长的积怨还有{grudge}点，要降到三十以下，一顿饭压不下来。"
+          "zh": "两家当家的心里还憋着气，一顿饭解不开。"
         }
       ],
       "window": {
@@ -5204,7 +5365,7 @@ _SCRIPT = r"""
         {
           "en": "Finish what is left before dark, then be at the bridge.",
           "when": [],
-          "zh": "天黑前把没办完的办完，然后到桥边。"
+          "zh": "天黑前把没办完的事办完，再到桥边去。"
         }
       ],
       "priority": 80,
@@ -5212,9 +5373,9 @@ _SCRIPT = r"""
       "text": {"en": "Festival night", "zh": "灯会之夜"},
       "why": [
         {
-          "en": "Tonight the lanterns cross. The night is judged by whether the way is open and by how many of the three jobs are done.",
+          "en": "Tonight the lantern parade crosses. How the night goes depends on whether there is a way across, and on how many of the three jobs are done.",
           "when": [],
-          "zh": "今夜游灯过桥，先看路通不通，再看修桥、说清、说和成了几件。"
+          "zh": "今晚游灯的队伍要过桥。这一夜成不成，看路通不通，也看三件事办成了几件。"
         }
       ],
       "window": {"day": 5, "from": 18, "place": "p_bridge", "to": 21}
@@ -5239,8 +5400,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge1_what} to {pledge1_to} by the end of {pledge1_due}. {pledge1_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge1_due}之内兑现对{pledge1_to}的许诺（{pledge1_what}），{pledge1_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge1_to} {pledge1_what} by {pledge1_due} and did not keep it. {pledge1_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge1_due}给{pledge1_to}的{pledge1_what}，没给成。{pledge1_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5251,7 +5412,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge1_due}, go to {pledge1_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge1_due}当天去找{pledge1_to}当面兑现，早些也行。"
+          "zh": "{pledge1_due}去找{pledge1_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 1,
@@ -5260,14 +5421,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge1_to}", "zh": "兑现对{pledge1_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge1_to} {pledge1_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge1_to} {pledge1_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 1, "state": "open"}],
-          "zh": "你答应了{pledge1_to}：{pledge1_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge1_to}{pledge1_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge1_to} {pledge1_what}, to be kept in person by {pledge1_due}, or it costs you trust.",
+          "en": "You promised {pledge1_to} {pledge1_what}, to give in person by {pledge1_due}. If you do not, {pledge1_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge1_to}：{pledge1_what}，最迟{pledge1_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge1_to}{pledge1_what}，最迟{pledge1_due}要当面给。到时不给，{pledge1_to}就不信你了。"
         }
       ],
       "window": null
@@ -5292,8 +5453,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge2_what} to {pledge2_to} by the end of {pledge2_due}. {pledge2_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge2_due}之内兑现对{pledge2_to}的许诺（{pledge2_what}），{pledge2_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge2_to} {pledge2_what} by {pledge2_due} and did not keep it. {pledge2_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge2_due}给{pledge2_to}的{pledge2_what}，没给成。{pledge2_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5304,7 +5465,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge2_due}, go to {pledge2_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge2_due}当天去找{pledge2_to}当面兑现，早些也行。"
+          "zh": "{pledge2_due}去找{pledge2_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 2,
@@ -5313,14 +5474,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge2_to}", "zh": "兑现对{pledge2_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge2_to} {pledge2_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge2_to} {pledge2_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 2, "state": "open"}],
-          "zh": "你答应了{pledge2_to}：{pledge2_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge2_to}{pledge2_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge2_to} {pledge2_what}, to be kept in person by {pledge2_due}, or it costs you trust.",
+          "en": "You promised {pledge2_to} {pledge2_what}, to give in person by {pledge2_due}. If you do not, {pledge2_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge2_to}：{pledge2_what}，最迟{pledge2_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge2_to}{pledge2_what}，最迟{pledge2_due}要当面给。到时不给，{pledge2_to}就不信你了。"
         }
       ],
       "window": null
@@ -5345,8 +5506,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge3_what} to {pledge3_to} by the end of {pledge3_due}. {pledge3_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge3_due}之内兑现对{pledge3_to}的许诺（{pledge3_what}），{pledge3_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge3_to} {pledge3_what} by {pledge3_due} and did not keep it. {pledge3_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge3_due}给{pledge3_to}的{pledge3_what}，没给成。{pledge3_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5357,7 +5518,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge3_due}, go to {pledge3_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge3_due}当天去找{pledge3_to}当面兑现，早些也行。"
+          "zh": "{pledge3_due}去找{pledge3_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 3,
@@ -5366,14 +5527,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge3_to}", "zh": "兑现对{pledge3_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge3_to} {pledge3_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge3_to} {pledge3_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 3, "state": "open"}],
-          "zh": "你答应了{pledge3_to}：{pledge3_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge3_to}{pledge3_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge3_to} {pledge3_what}, to be kept in person by {pledge3_due}, or it costs you trust.",
+          "en": "You promised {pledge3_to} {pledge3_what}, to give in person by {pledge3_due}. If you do not, {pledge3_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge3_to}：{pledge3_what}，最迟{pledge3_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge3_to}{pledge3_what}，最迟{pledge3_due}要当面给。到时不给，{pledge3_to}就不信你了。"
         }
       ],
       "window": null
@@ -5398,8 +5559,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge4_what} to {pledge4_to} by the end of {pledge4_due}. {pledge4_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge4_due}之内兑现对{pledge4_to}的许诺（{pledge4_what}），{pledge4_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge4_to} {pledge4_what} by {pledge4_due} and did not keep it. {pledge4_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge4_due}给{pledge4_to}的{pledge4_what}，没给成。{pledge4_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5410,7 +5571,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge4_due}, go to {pledge4_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge4_due}当天去找{pledge4_to}当面兑现，早些也行。"
+          "zh": "{pledge4_due}去找{pledge4_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 4,
@@ -5419,14 +5580,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge4_to}", "zh": "兑现对{pledge4_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge4_to} {pledge4_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge4_to} {pledge4_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 4, "state": "open"}],
-          "zh": "你答应了{pledge4_to}：{pledge4_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge4_to}{pledge4_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge4_to} {pledge4_what}, to be kept in person by {pledge4_due}, or it costs you trust.",
+          "en": "You promised {pledge4_to} {pledge4_what}, to give in person by {pledge4_due}. If you do not, {pledge4_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge4_to}：{pledge4_what}，最迟{pledge4_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge4_to}{pledge4_what}，最迟{pledge4_due}要当面给。到时不给，{pledge4_to}就不信你了。"
         }
       ],
       "window": null
@@ -5451,8 +5612,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge5_what} to {pledge5_to} by the end of {pledge5_due}. {pledge5_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge5_due}之内兑现对{pledge5_to}的许诺（{pledge5_what}），{pledge5_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge5_to} {pledge5_what} by {pledge5_due} and did not keep it. {pledge5_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge5_due}给{pledge5_to}的{pledge5_what}，没给成。{pledge5_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5463,7 +5624,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge5_due}, go to {pledge5_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge5_due}当天去找{pledge5_to}当面兑现，早些也行。"
+          "zh": "{pledge5_due}去找{pledge5_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 5,
@@ -5472,14 +5633,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge5_to}", "zh": "兑现对{pledge5_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge5_to} {pledge5_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge5_to} {pledge5_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 5, "state": "open"}],
-          "zh": "你答应了{pledge5_to}：{pledge5_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge5_to}{pledge5_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge5_to} {pledge5_what}, to be kept in person by {pledge5_due}, or it costs you trust.",
+          "en": "You promised {pledge5_to} {pledge5_what}, to give in person by {pledge5_due}. If you do not, {pledge5_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge5_to}：{pledge5_what}，最迟{pledge5_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge5_to}{pledge5_what}，最迟{pledge5_due}要当面给。到时不给，{pledge5_to}就不信你了。"
         }
       ],
       "window": null
@@ -5504,8 +5665,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge6_what} to {pledge6_to} by the end of {pledge6_due}. {pledge6_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge6_due}之内兑现对{pledge6_to}的许诺（{pledge6_what}），{pledge6_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge6_to} {pledge6_what} by {pledge6_due} and did not keep it. {pledge6_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge6_due}给{pledge6_to}的{pledge6_what}，没给成。{pledge6_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5516,7 +5677,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge6_due}, go to {pledge6_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge6_due}当天去找{pledge6_to}当面兑现，早些也行。"
+          "zh": "{pledge6_due}去找{pledge6_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 6,
@@ -5525,14 +5686,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge6_to}", "zh": "兑现对{pledge6_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge6_to} {pledge6_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge6_to} {pledge6_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 6, "state": "open"}],
-          "zh": "你答应了{pledge6_to}：{pledge6_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge6_to}{pledge6_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge6_to} {pledge6_what}, to be kept in person by {pledge6_due}, or it costs you trust.",
+          "en": "You promised {pledge6_to} {pledge6_what}, to give in person by {pledge6_due}. If you do not, {pledge6_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge6_to}：{pledge6_what}，最迟{pledge6_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge6_to}{pledge6_what}，最迟{pledge6_due}要当面给。到时不给，{pledge6_to}就不信你了。"
         }
       ],
       "window": null
@@ -5557,8 +5718,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge7_what} to {pledge7_to} by the end of {pledge7_due}. {pledge7_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge7_due}之内兑现对{pledge7_to}的许诺（{pledge7_what}），{pledge7_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge7_to} {pledge7_what} by {pledge7_due} and did not keep it. {pledge7_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge7_due}给{pledge7_to}的{pledge7_what}，没给成。{pledge7_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5569,7 +5730,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge7_due}, go to {pledge7_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge7_due}当天去找{pledge7_to}当面兑现，早些也行。"
+          "zh": "{pledge7_due}去找{pledge7_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 7,
@@ -5578,14 +5739,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge7_to}", "zh": "兑现对{pledge7_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge7_to} {pledge7_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge7_to} {pledge7_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 7, "state": "open"}],
-          "zh": "你答应了{pledge7_to}：{pledge7_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge7_to}{pledge7_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge7_to} {pledge7_what}, to be kept in person by {pledge7_due}, or it costs you trust.",
+          "en": "You promised {pledge7_to} {pledge7_what}, to give in person by {pledge7_due}. If you do not, {pledge7_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge7_to}：{pledge7_what}，最迟{pledge7_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge7_to}{pledge7_what}，最迟{pledge7_due}要当面给。到时不给，{pledge7_to}就不信你了。"
         }
       ],
       "window": null
@@ -5610,8 +5771,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge8_what} to {pledge8_to} by the end of {pledge8_due}. {pledge8_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge8_due}之内兑现对{pledge8_to}的许诺（{pledge8_what}），{pledge8_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge8_to} {pledge8_what} by {pledge8_due} and did not keep it. {pledge8_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge8_due}给{pledge8_to}的{pledge8_what}，没给成。{pledge8_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5622,7 +5783,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge8_due}, go to {pledge8_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge8_due}当天去找{pledge8_to}当面兑现，早些也行。"
+          "zh": "{pledge8_due}去找{pledge8_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 8,
@@ -5631,14 +5792,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge8_to}", "zh": "兑现对{pledge8_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge8_to} {pledge8_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge8_to} {pledge8_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 8, "state": "open"}],
-          "zh": "你答应了{pledge8_to}：{pledge8_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge8_to}{pledge8_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge8_to} {pledge8_what}, to be kept in person by {pledge8_due}, or it costs you trust.",
+          "en": "You promised {pledge8_to} {pledge8_what}, to give in person by {pledge8_due}. If you do not, {pledge8_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge8_to}：{pledge8_what}，最迟{pledge8_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge8_to}{pledge8_what}，最迟{pledge8_due}要当面给。到时不给，{pledge8_to}就不信你了。"
         }
       ],
       "window": null
@@ -5663,8 +5824,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge9_what} to {pledge9_to} by the end of {pledge9_due}. {pledge9_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge9_due}之内兑现对{pledge9_to}的许诺（{pledge9_what}），{pledge9_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge9_to} {pledge9_what} by {pledge9_due} and did not keep it. {pledge9_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge9_due}给{pledge9_to}的{pledge9_what}，没给成。{pledge9_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5675,7 +5836,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge9_due}, go to {pledge9_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge9_due}当天去找{pledge9_to}当面兑现，早些也行。"
+          "zh": "{pledge9_due}去找{pledge9_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 9,
@@ -5684,14 +5845,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge9_to}", "zh": "兑现对{pledge9_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge9_to} {pledge9_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge9_to} {pledge9_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 9, "state": "open"}],
-          "zh": "你答应了{pledge9_to}：{pledge9_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge9_to}{pledge9_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge9_to} {pledge9_what}, to be kept in person by {pledge9_due}, or it costs you trust.",
+          "en": "You promised {pledge9_to} {pledge9_what}, to give in person by {pledge9_due}. If you do not, {pledge9_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge9_to}：{pledge9_what}，最迟{pledge9_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge9_to}{pledge9_what}，最迟{pledge9_due}要当面给。到时不给，{pledge9_to}就不信你了。"
         }
       ],
       "window": null
@@ -5716,8 +5877,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge10_what} to {pledge10_to} by the end of {pledge10_due}. {pledge10_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge10_due}之内兑现对{pledge10_to}的许诺（{pledge10_what}），{pledge10_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge10_to} {pledge10_what} by {pledge10_due} and did not keep it. {pledge10_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge10_due}给{pledge10_to}的{pledge10_what}，没给成。{pledge10_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5728,7 +5889,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge10_due}, go to {pledge10_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge10_due}当天去找{pledge10_to}当面兑现，早些也行。"
+          "zh": "{pledge10_due}去找{pledge10_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 10,
@@ -5737,14 +5898,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge10_to}", "zh": "兑现对{pledge10_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge10_to} {pledge10_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge10_to} {pledge10_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 10, "state": "open"}],
-          "zh": "你答应了{pledge10_to}：{pledge10_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge10_to}{pledge10_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge10_to} {pledge10_what}, to be kept in person by {pledge10_due}, or it costs you trust.",
+          "en": "You promised {pledge10_to} {pledge10_what}, to give in person by {pledge10_due}. If you do not, {pledge10_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge10_to}：{pledge10_what}，最迟{pledge10_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge10_to}{pledge10_what}，最迟{pledge10_due}要当面给。到时不给，{pledge10_to}就不信你了。"
         }
       ],
       "window": null
@@ -5769,8 +5930,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge11_what} to {pledge11_to} by the end of {pledge11_due}. {pledge11_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge11_due}之内兑现对{pledge11_to}的许诺（{pledge11_what}），{pledge11_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge11_to} {pledge11_what} by {pledge11_due} and did not keep it. {pledge11_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge11_due}给{pledge11_to}的{pledge11_what}，没给成。{pledge11_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5781,7 +5942,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge11_due}, go to {pledge11_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge11_due}当天去找{pledge11_to}当面兑现，早些也行。"
+          "zh": "{pledge11_due}去找{pledge11_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 11,
@@ -5790,14 +5951,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge11_to}", "zh": "兑现对{pledge11_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge11_to} {pledge11_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge11_to} {pledge11_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 11, "state": "open"}],
-          "zh": "你答应了{pledge11_to}：{pledge11_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge11_to}{pledge11_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge11_to} {pledge11_what}, to be kept in person by {pledge11_due}, or it costs you trust.",
+          "en": "You promised {pledge11_to} {pledge11_what}, to give in person by {pledge11_due}. If you do not, {pledge11_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge11_to}：{pledge11_what}，最迟{pledge11_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge11_to}{pledge11_what}，最迟{pledge11_due}要当面给。到时不给，{pledge11_to}就不信你了。"
         }
       ],
       "window": null
@@ -5822,8 +5983,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge12_what} to {pledge12_to} by the end of {pledge12_due}. {pledge12_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge12_due}之内兑现对{pledge12_to}的许诺（{pledge12_what}），{pledge12_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge12_to} {pledge12_what} by {pledge12_due} and did not keep it. {pledge12_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge12_due}给{pledge12_to}的{pledge12_what}，没给成。{pledge12_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5834,7 +5995,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge12_due}, go to {pledge12_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge12_due}当天去找{pledge12_to}当面兑现，早些也行。"
+          "zh": "{pledge12_due}去找{pledge12_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 12,
@@ -5843,14 +6004,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge12_to}", "zh": "兑现对{pledge12_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge12_to} {pledge12_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge12_to} {pledge12_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 12, "state": "open"}],
-          "zh": "你答应了{pledge12_to}：{pledge12_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge12_to}{pledge12_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge12_to} {pledge12_what}, to be kept in person by {pledge12_due}, or it costs you trust.",
+          "en": "You promised {pledge12_to} {pledge12_what}, to give in person by {pledge12_due}. If you do not, {pledge12_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge12_to}：{pledge12_what}，最迟{pledge12_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge12_to}{pledge12_what}，最迟{pledge12_due}要当面给。到时不给，{pledge12_to}就不信你了。"
         }
       ],
       "window": null
@@ -5875,8 +6036,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge13_what} to {pledge13_to} by the end of {pledge13_due}. {pledge13_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge13_due}之内兑现对{pledge13_to}的许诺（{pledge13_what}），{pledge13_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge13_to} {pledge13_what} by {pledge13_due} and did not keep it. {pledge13_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge13_due}给{pledge13_to}的{pledge13_what}，没给成。{pledge13_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5887,7 +6048,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge13_due}, go to {pledge13_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge13_due}当天去找{pledge13_to}当面兑现，早些也行。"
+          "zh": "{pledge13_due}去找{pledge13_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 13,
@@ -5896,14 +6057,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge13_to}", "zh": "兑现对{pledge13_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge13_to} {pledge13_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge13_to} {pledge13_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 13, "state": "open"}],
-          "zh": "你答应了{pledge13_to}：{pledge13_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge13_to}{pledge13_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge13_to} {pledge13_what}, to be kept in person by {pledge13_due}, or it costs you trust.",
+          "en": "You promised {pledge13_to} {pledge13_what}, to give in person by {pledge13_due}. If you do not, {pledge13_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge13_to}：{pledge13_what}，最迟{pledge13_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge13_to}{pledge13_what}，最迟{pledge13_due}要当面给。到时不给，{pledge13_to}就不信你了。"
         }
       ],
       "window": null
@@ -5928,8 +6089,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge14_what} to {pledge14_to} by the end of {pledge14_due}. {pledge14_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge14_due}之内兑现对{pledge14_to}的许诺（{pledge14_what}），{pledge14_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge14_to} {pledge14_what} by {pledge14_due} and did not keep it. {pledge14_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge14_due}给{pledge14_to}的{pledge14_what}，没给成。{pledge14_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5940,7 +6101,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge14_due}, go to {pledge14_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge14_due}当天去找{pledge14_to}当面兑现，早些也行。"
+          "zh": "{pledge14_due}去找{pledge14_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 14,
@@ -5949,14 +6110,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge14_to}", "zh": "兑现对{pledge14_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge14_to} {pledge14_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge14_to} {pledge14_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 14, "state": "open"}],
-          "zh": "你答应了{pledge14_to}：{pledge14_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge14_to}{pledge14_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge14_to} {pledge14_what}, to be kept in person by {pledge14_due}, or it costs you trust.",
+          "en": "You promised {pledge14_to} {pledge14_what}, to give in person by {pledge14_due}. If you do not, {pledge14_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge14_to}：{pledge14_what}，最迟{pledge14_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge14_to}{pledge14_what}，最迟{pledge14_due}要当面给。到时不给，{pledge14_to}就不信你了。"
         }
       ],
       "window": null
@@ -5981,8 +6142,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge15_what} to {pledge15_to} by the end of {pledge15_due}. {pledge15_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge15_due}之内兑现对{pledge15_to}的许诺（{pledge15_what}），{pledge15_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge15_to} {pledge15_what} by {pledge15_due} and did not keep it. {pledge15_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge15_due}给{pledge15_to}的{pledge15_what}，没给成。{pledge15_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -5993,7 +6154,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge15_due}, go to {pledge15_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge15_due}当天去找{pledge15_to}当面兑现，早些也行。"
+          "zh": "{pledge15_due}去找{pledge15_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 15,
@@ -6002,14 +6163,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge15_to}", "zh": "兑现对{pledge15_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge15_to} {pledge15_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge15_to} {pledge15_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 15, "state": "open"}],
-          "zh": "你答应了{pledge15_to}：{pledge15_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge15_to}{pledge15_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge15_to} {pledge15_what}, to be kept in person by {pledge15_due}, or it costs you trust.",
+          "en": "You promised {pledge15_to} {pledge15_what}, to give in person by {pledge15_due}. If you do not, {pledge15_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge15_to}：{pledge15_what}，最迟{pledge15_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge15_to}{pledge15_what}，最迟{pledge15_due}要当面给。到时不给，{pledge15_to}就不信你了。"
         }
       ],
       "window": null
@@ -6034,8 +6195,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge16_what} to {pledge16_to} by the end of {pledge16_due}. {pledge16_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge16_due}之内兑现对{pledge16_to}的许诺（{pledge16_what}），{pledge16_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge16_to} {pledge16_what} by {pledge16_due} and did not keep it. {pledge16_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge16_due}给{pledge16_to}的{pledge16_what}，没给成。{pledge16_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -6046,7 +6207,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge16_due}, go to {pledge16_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge16_due}当天去找{pledge16_to}当面兑现，早些也行。"
+          "zh": "{pledge16_due}去找{pledge16_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 16,
@@ -6055,14 +6216,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge16_to}", "zh": "兑现对{pledge16_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge16_to} {pledge16_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge16_to} {pledge16_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 16, "state": "open"}],
-          "zh": "你答应了{pledge16_to}：{pledge16_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge16_to}{pledge16_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge16_to} {pledge16_what}, to be kept in person by {pledge16_due}, or it costs you trust.",
+          "en": "You promised {pledge16_to} {pledge16_what}, to give in person by {pledge16_due}. If you do not, {pledge16_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge16_to}：{pledge16_what}，最迟{pledge16_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge16_to}{pledge16_what}，最迟{pledge16_due}要当面给。到时不给，{pledge16_to}就不信你了。"
         }
       ],
       "window": null
@@ -6087,8 +6248,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge17_what} to {pledge17_to} by the end of {pledge17_due}. {pledge17_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge17_due}之内兑现对{pledge17_to}的许诺（{pledge17_what}），{pledge17_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge17_to} {pledge17_what} by {pledge17_due} and did not keep it. {pledge17_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge17_due}给{pledge17_to}的{pledge17_what}，没给成。{pledge17_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -6099,7 +6260,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge17_due}, go to {pledge17_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge17_due}当天去找{pledge17_to}当面兑现，早些也行。"
+          "zh": "{pledge17_due}去找{pledge17_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 17,
@@ -6108,14 +6269,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge17_to}", "zh": "兑现对{pledge17_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge17_to} {pledge17_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge17_to} {pledge17_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 17, "state": "open"}],
-          "zh": "你答应了{pledge17_to}：{pledge17_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge17_to}{pledge17_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge17_to} {pledge17_what}, to be kept in person by {pledge17_due}, or it costs you trust.",
+          "en": "You promised {pledge17_to} {pledge17_what}, to give in person by {pledge17_due}. If you do not, {pledge17_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge17_to}：{pledge17_what}，最迟{pledge17_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge17_to}{pledge17_what}，最迟{pledge17_due}要当面给。到时不给，{pledge17_to}就不信你了。"
         }
       ],
       "window": null
@@ -6140,8 +6301,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge18_what} to {pledge18_to} by the end of {pledge18_due}. {pledge18_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge18_due}之内兑现对{pledge18_to}的许诺（{pledge18_what}），{pledge18_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge18_to} {pledge18_what} by {pledge18_due} and did not keep it. {pledge18_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge18_due}给{pledge18_to}的{pledge18_what}，没给成。{pledge18_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -6152,7 +6313,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge18_due}, go to {pledge18_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge18_due}当天去找{pledge18_to}当面兑现，早些也行。"
+          "zh": "{pledge18_due}去找{pledge18_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 18,
@@ -6161,14 +6322,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge18_to}", "zh": "兑现对{pledge18_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge18_to} {pledge18_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge18_to} {pledge18_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 18, "state": "open"}],
-          "zh": "你答应了{pledge18_to}：{pledge18_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge18_to}{pledge18_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge18_to} {pledge18_what}, to be kept in person by {pledge18_due}, or it costs you trust.",
+          "en": "You promised {pledge18_to} {pledge18_what}, to give in person by {pledge18_due}. If you do not, {pledge18_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge18_to}：{pledge18_what}，最迟{pledge18_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge18_to}{pledge18_what}，最迟{pledge18_due}要当面给。到时不给，{pledge18_to}就不信你了。"
         }
       ],
       "window": null
@@ -6193,8 +6354,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge19_what} to {pledge19_to} by the end of {pledge19_due}. {pledge19_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge19_due}之内兑现对{pledge19_to}的许诺（{pledge19_what}），{pledge19_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge19_to} {pledge19_what} by {pledge19_due} and did not keep it. {pledge19_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge19_due}给{pledge19_to}的{pledge19_what}，没给成。{pledge19_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -6205,7 +6366,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge19_due}, go to {pledge19_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge19_due}当天去找{pledge19_to}当面兑现，早些也行。"
+          "zh": "{pledge19_due}去找{pledge19_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 19,
@@ -6214,14 +6375,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge19_to}", "zh": "兑现对{pledge19_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge19_to} {pledge19_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge19_to} {pledge19_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 19, "state": "open"}],
-          "zh": "你答应了{pledge19_to}：{pledge19_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge19_to}{pledge19_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge19_to} {pledge19_what}, to be kept in person by {pledge19_due}, or it costs you trust.",
+          "en": "You promised {pledge19_to} {pledge19_what}, to give in person by {pledge19_due}. If you do not, {pledge19_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge19_to}：{pledge19_what}，最迟{pledge19_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge19_to}{pledge19_what}，最迟{pledge19_due}要当面给。到时不给，{pledge19_to}就不信你了。"
         }
       ],
       "window": null
@@ -6246,8 +6407,8 @@ _SCRIPT = r"""
       "job": null,
       "kind": "promise",
       "lapse": {
-        "en": "You did not keep your promise of {pledge20_what} to {pledge20_to} by the end of {pledge20_due}. {pledge20_to} trusts you less now, and word of it will go round the town.",
-        "zh": "你没有在{pledge20_due}之内兑现对{pledge20_to}的许诺（{pledge20_what}），{pledge20_to}更不信你了，这件事还会在镇上传开。"
+        "en": "You promised {pledge20_to} {pledge20_what} by {pledge20_due} and did not keep it. {pledge20_to} trusts you less now. Word of it will go round the town.",
+        "zh": "你答应最迟{pledge20_due}给{pledge20_to}的{pledge20_what}，没给成。{pledge20_to}更不信你了。这事还会在镇上传开。"
       },
       "next": [
         {
@@ -6258,7 +6419,7 @@ _SCRIPT = r"""
         {
           "en": "On {pledge20_due}, go to {pledge20_to} and keep it in person, or sooner.",
           "when": [],
-          "zh": "{pledge20_due}当天去找{pledge20_to}当面兑现，早些也行。"
+          "zh": "{pledge20_due}去找{pledge20_to}当面兑现，早点去也行。"
         }
       ],
       "pledge": 20,
@@ -6267,14 +6428,14 @@ _SCRIPT = r"""
       "text": {"en": "Keep the promise to {pledge20_to}", "zh": "兑现对{pledge20_to}的许诺"},
       "why": [
         {
-          "en": "You promised {pledge20_to} {pledge20_what}, and it falls due today: keep it in person.",
+          "en": "You promised {pledge20_to} {pledge20_what}. It is due today, in person.",
           "when": [{"due": "today", "kind": "pledge", "n": 20, "state": "open"}],
-          "zh": "你答应了{pledge20_to}：{pledge20_what}，今天到期，要当面兑现。"
+          "zh": "你答应给{pledge20_to}{pledge20_what}，今天就得当面给。"
         },
         {
-          "en": "You promised {pledge20_to} {pledge20_what}, to be kept in person by {pledge20_due}, or it costs you trust.",
+          "en": "You promised {pledge20_to} {pledge20_what}, to give in person by {pledge20_due}. If you do not, {pledge20_to} will trust you less.",
           "when": [],
-          "zh": "你答应了{pledge20_to}：{pledge20_what}，最迟{pledge20_due}要当面兑现，失信要折信用。"
+          "zh": "你答应给{pledge20_to}{pledge20_what}，最迟{pledge20_due}要当面给。到时不给，{pledge20_to}就不信你了。"
         }
       ],
       "window": null
@@ -6596,7 +6757,7 @@ _SCRIPT = r"""
       "kind": "obstacle",
       "next": [
         {
-          "en": "Go to Granny Li and tell her what was cleared in public.",
+          "en": "Go and tell Granny Li that the matter was set straight in public.",
           "when": [
             {"kind": "note", "props": ["pr_set_straight"]},
             {
@@ -6607,7 +6768,7 @@ _SCRIPT = r"""
               }
             }
           ],
-          "zh": "去找李老太，把当众说清的事告诉她。"
+          "zh": "去告诉李老太，桥的事已经当众说清了。"
         },
         {
           "en": "Ask Granny Li for the bamboo again.",
@@ -6615,13 +6776,13 @@ _SCRIPT = r"""
           "zh": "再请李老太借竹料。"
         },
         {
-          "en": "In daylight, go to the bridge and look at what the broken rail left behind.",
+          "en": "Go to the bridge by day and see what was left by the broken railing.",
           "when": [
             {"from": 7, "kind": "hours", "to": 17},
             {"not": {"items": ["e_footprint"], "kind": "looked"}},
             {"not": {"day": 3, "hour": 6, "kind": "after"}}
           ],
-          "zh": "白天去桥上，看断栏边留下了什么。"
+          "zh": "白天去桥上看看断栏边留下了什么。"
         },
         {
           "en": "Look at the water under the bridge.",
@@ -6633,7 +6794,7 @@ _SCRIPT = r"""
           "zh": "去看看桥墩下面的水面。"
         },
         {
-          "en": "Zhou's Clerk was about the bridge that night, so ask what was seen there.",
+          "en": "Zhou's Clerk passed the bridge that night. Ask what the clerk saw.",
           "when": [
             {
               "not": {
@@ -6642,36 +6803,36 @@ _SCRIPT = r"""
               }
             }
           ],
-          "zh": "周家伙计那晚在桥边走动过，去问问桥边看见了什么。"
+          "zh": "周家伙计那晚从桥边走过。去问问看见了什么。"
         },
         {
-          "en": "The boat's owner will not let you look yet, so talk with the owner first.",
+          "en": "The boat's owner will not let you look yet. Go and talk first.",
           "when": [
             {"from": 8, "kind": "hours", "to": 16},
             {"not": {"items": ["e_boat_scratches"], "kind": "looked"}},
             {"kind": "turned_down", "npc": "old_he", "request": "look"},
             {"not": {"kind": "talked_today", "npc": "old_he"}}
           ],
-          "zh": "船主还不让你看船，先去和船主聊几句。"
+          "zh": "船主还不让你看船。先去聊几句。"
         },
         {
-          "en": "The boat's owner will not let you look yet, so promise the owner something and come back.",
+          "en": "The boat's owner will not let you look yet. Promise something and come back.",
           "when": [
             {"from": 8, "kind": "hours", "to": 16},
             {"not": {"items": ["e_boat_scratches"], "kind": "looked"}},
             {"kind": "turned_down", "npc": "old_he", "request": "look"},
             {"kind": "can_promise", "npc": "old_he"}
           ],
-          "zh": "船主还不让你看船，许船主一点好处再来。"
+          "zh": "船主还不让你看船。许点好处再来。"
         },
         {
-          "en": "The boat's owner does not trust you yet, so talk again tomorrow.",
+          "en": "The boat's owner does not trust you yet. Talk again tomorrow.",
           "when": [
             {"from": 8, "kind": "hours", "to": 16},
             {"not": {"items": ["e_boat_scratches"], "kind": "looked"}},
             {"kind": "turned_down", "npc": "old_he", "request": "look"}
           ],
-          "zh": "船主还信不过你，明天再去聊聊。"
+          "zh": "船主还信不过你。明天再去聊聊。"
         },
         {
           "en": "Go to the ferry and look at the boat.",
@@ -6679,10 +6840,10 @@ _SCRIPT = r"""
             {"from": 8, "kind": "hours", "to": 16},
             {"not": {"items": ["e_boat_scratches"], "kind": "looked"}}
           ],
-          "zh": "去渡口，看看那条船。"
+          "zh": "去渡口看看那条船。"
         },
         {
-          "en": "Xiaoman will not speak yet, so talk with Xiaoman first.",
+          "en": "Xiaoman will not speak yet. Go and talk first.",
           "when": [
             {"from": 17, "kind": "hours", "to": 20},
             {"day": 3, "hour": 6, "kind": "after"},
@@ -6711,10 +6872,10 @@ _SCRIPT = r"""
             {"kind": "turned_down", "npc": "xiao_man", "request": "testify"},
             {"not": {"kind": "talked_today", "npc": "xiao_man"}}
           ],
-          "zh": "小满还不肯开口，先去和小满聊几句。"
+          "zh": "小满还不肯开口。先去聊几句。"
         },
         {
-          "en": "Xiaoman will not speak yet, so promise Xiaoman something and ask again.",
+          "en": "Xiaoman will not speak yet. Promise something and ask again.",
           "when": [
             {"from": 17, "kind": "hours", "to": 20},
             {"day": 3, "hour": 6, "kind": "after"},
@@ -6743,10 +6904,10 @@ _SCRIPT = r"""
             {"kind": "turned_down", "npc": "xiao_man", "request": "testify"},
             {"kind": "can_promise", "npc": "xiao_man"}
           ],
-          "zh": "小满还不肯开口，许小满一点好处再来问。"
+          "zh": "小满还不肯开口。许点好处再来问。"
         },
         {
-          "en": "Xiaoman does not trust you yet, so talk again tomorrow evening.",
+          "en": "Xiaoman does not trust you yet. Talk again tomorrow evening.",
           "when": [
             {"from": 17, "kind": "hours", "to": 20},
             {"day": 3, "hour": 6, "kind": "after"},
@@ -6774,10 +6935,10 @@ _SCRIPT = r"""
             },
             {"kind": "turned_down", "npc": "xiao_man", "request": "testify"}
           ],
-          "zh": "小满还信不过你，明天傍晚再去聊聊。"
+          "zh": "小满还信不过你。明天傍晚再去聊聊。"
         },
         {
-          "en": "Xiaoman fishes by the river at night and is home in the evening, so ask what was seen that night.",
+          "en": "Xiaoman fishes by the river at night and is home in the evening. Ask what was seen that night.",
           "when": [
             {"from": 17, "kind": "hours", "to": 20},
             {"day": 3, "hour": 6, "kind": "after"},
@@ -6804,10 +6965,10 @@ _SCRIPT = r"""
               ]
             }
           ],
-          "zh": "小满夜里常在河边钓鱼，傍晚在家，去问问那一夜看见了什么。"
+          "zh": "小满夜里常在河边钓鱼，傍晚在家。去问问那晚看见了什么。"
         },
         {
-          "en": "The night watchman will not speak yet, so talk with the watchman first.",
+          "en": "The night watchman will not speak yet. Go and talk first.",
           "when": [
             {"from": 15, "kind": "hours", "to": 22},
             {"day": 4, "hour": 6, "kind": "after"},
@@ -6821,10 +6982,10 @@ _SCRIPT = r"""
             {"kind": "turned_down", "npc": "gengfu", "request": "testify"},
             {"not": {"kind": "talked_today", "npc": "gengfu"}}
           ],
-          "zh": "更夫还不肯开口，先去和更夫聊几句。"
+          "zh": "更夫还不肯开口。先去聊几句。"
         },
         {
-          "en": "The night watchman will not speak yet, so promise the watchman something and ask again.",
+          "en": "The night watchman will not speak yet. Promise something and ask again.",
           "when": [
             {"from": 15, "kind": "hours", "to": 22},
             {"day": 4, "hour": 6, "kind": "after"},
@@ -6838,10 +6999,10 @@ _SCRIPT = r"""
             {"kind": "turned_down", "npc": "gengfu", "request": "testify"},
             {"kind": "can_promise", "npc": "gengfu"}
           ],
-          "zh": "更夫还不肯开口，许更夫一点好处再来问。"
+          "zh": "更夫还不肯开口。许点好处再来问。"
         },
         {
-          "en": "The night watchman does not trust you yet, so talk again tomorrow afternoon.",
+          "en": "The night watchman does not trust you yet. Talk again tomorrow afternoon.",
           "when": [
             {"from": 15, "kind": "hours", "to": 22},
             {"day": 4, "hour": 6, "kind": "after"},
@@ -6854,10 +7015,10 @@ _SCRIPT = r"""
             },
             {"kind": "turned_down", "npc": "gengfu", "request": "testify"}
           ],
-          "zh": "更夫还信不过你，明天下午再去聊聊。"
+          "zh": "更夫还信不过你。明天下午再去聊聊。"
         },
         {
-          "en": "The night watchman is at the watch post from the afternoon, so ask what was seen that night.",
+          "en": "The night watchman is at the watch post in the afternoon. Ask what was seen that night.",
           "when": [
             {"from": 15, "kind": "hours", "to": 22},
             {"day": 4, "hour": 6, "kind": "after"},
@@ -6869,12 +7030,12 @@ _SCRIPT = r"""
               }
             }
           ],
-          "zh": "下午更夫在更铺里，去问问那一夜看见了什么。"
+          "zh": "下午更夫在更铺里。去问问那晚看见了什么。"
         },
         {
-          "en": "By day see the bridge and the ferry, in the evening Xiaoman, on the afternoon of day 4 the watchman, and state it once the card is full.",
+          "en": "By day see the bridge and the ferry, in the evening Xiaoman, and on the fourth afternoon the night watchman. Once the card is complete, go and speak in public.",
           "when": [],
-          "zh": "白天去桥上和渡口，傍晚找小满，第四天下午找更夫，填好陈述卡就去陈述。"
+          "zh": "白天去桥上和渡口看看，傍晚找小满。第四天下午再找更夫。讲稿写全了，就去当众说清楚。"
         }
       ],
       "priority": 9,
@@ -6890,9 +7051,9 @@ _SCRIPT = r"""
           "zh": "桥的事当众说清了，李老太却还没松口。"
         },
         {
-          "en": "Granny Li lends no bamboo until the matter of the bridge is cleared up in public, and no talk leads anywhere, so look into it yourself.",
+          "en": "Granny Li lends no bamboo until the matter of the bridge is set straight in public. Nobody in town is talking about it, so look into it yourself.",
           "when": [],
-          "zh": "李老太要桥的事当众说清才肯借竹料，镇上没有传话可追，只能自己去查。"
+          "zh": "李老太要等桥的事当众说清，才肯借竹料。镇上没人在传这事，得你自己去查。"
         }
       ],
       "window": null
@@ -6982,12 +7143,12 @@ _SCRIPT = r"""
             {
               "en": "Talk with the elder first, so that the elder comes to trust you, then ask again.",
               "when": [{"not": {"kind": "talked_today", "npc": "zuzhang"}}],
-              "zh": "先和族长聊几句，让族长信得过你，再请族长召集。"
+              "zh": "先和族长聊几句，让族长信得过你。再请族长召集。"
             },
             {
               "en": "Promise the elder something, then ask again.",
               "when": [{"kind": "can_promise", "npc": "zuzhang"}],
-              "zh": "许族长一件事，再请族长召集。"
+              "zh": "先许族长一件事，再请族长召集。"
             },
             {
               "en": "Ask the elder again tomorrow, when more of the town is with you.",
@@ -7000,7 +7161,7 @@ _SCRIPT = r"""
             {
               "en": "The elder wants to know you better and to see part of the town behind you.",
               "when": [],
-              "zh": "族长要先对你有几分信任，也要看到镇上有人站在你这边。"
+              "zh": "族长要先信得过你，也要看到镇上有人站在你这边。"
             }
           ]
         }
@@ -7022,9 +7183,9 @@ _SCRIPT = r"""
       "text": {"en": "Have the elder call the clan", "zh": "请族长召集族人"},
       "why": [
         {
-          "en": "The elder will not call the clan without proof in your hands, some trust and part of the town behind you.",
+          "en": "The elder will not call the clan for nothing. You need proof in hand, and the elder has to trust you. Part of the town has to be behind you as well.",
           "when": [],
-          "zh": "族长不会无缘无故召集族人：要有凭据，有几分信任，还要有人站在你这边。"
+          "zh": "族长不会随便召集族人。你手里得有凭据，族长也得信得过你。镇上还得有人站在你这边。"
         }
       ],
       "window": null
@@ -7048,7 +7209,7 @@ _SCRIPT = r"""
   "variants": [
     {
       "id": "v_boat",
-      "label": "船夫老何夜里撑船撞的，他瞒着",
+      "label": "船夫老何夜里撑船撞的，瞒着没说",
       "true_negations": ["pr_dalang_not_bridge"],
       "true_props": [
         "pr_boat_damaged",
@@ -7134,7 +7295,7 @@ _SCRIPT = r"""
       "person": "li_da",
       "text": {
         "en": "Granny Li's nod before any bamboo leaves the store",
-        "zh": "李老太点了头，竹料才能出库"
+        "zh": "李老太点了头，竹料才能动"
       }
     },
     {
@@ -7142,7 +7303,7 @@ _SCRIPT = r"""
       "learned": [{"kind": "note", "props": ["pr_liner_looking", "pr_set_straight"]}],
       "person": "li_er",
       "text": {
-        "en": "To be rid of the talk about the broken rail, and to find the lantern lost in the river",
+        "en": "To be rid of the talk about the broken railing, and to find the lantern lost in the river",
         "zh": "洗掉毁桥的闲话，再找回掉进河里的灯笼"
       }
     },
@@ -7153,8 +7314,8 @@ _SCRIPT = r"""
       ],
       "person": "zhou_zhanggui",
       "text": {
-        "en": "A ledger that balances: someone to pay for the timber and someone to return the favours",
-        "zh": "铺子的账要平：木料有人付，人情有人还"
+        "en": "A ledger that balances, with someone paying for the timber and someone returning the favours",
+        "zh": "铺子的账要平，木料有人付钱，人情有人还"
       }
     },
     {

@@ -96,7 +96,7 @@ def catch(sim: Sim, person: str, prop_id: str) -> None:
     notes.forget_rivals(social, person, prop=prop_id)  # a lie that is found out is no rival account
     repute.learn(social, person, repute.LIED, tick)
     repute.mark(section, repute.LIED, person)
-    value = repute.nudge(section, index, -EXPOSED_DROP)
+    value = repute.nudge(section, index, -EXPOSED_DROP, "lie")
     sim.emit("lie_caught", npc=person, prop=prop_id, trust=value)
     talk = section["talk"]
     if talk and talk["npc"] == person:

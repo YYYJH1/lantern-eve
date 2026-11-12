@@ -48,17 +48,17 @@ test.describe("the budget in the side column", () => {
 
     await budget(page, { spent: 2_200_000, held: 0, cap: CAP, stage: 1, cloud: true, local: false });
     await expect(page.getByTestId("budget")).toHaveAttribute("data-stage", "1");
-    await expect(page.getByTestId("budget-notes")).toHaveText("The strong model is off: 70% of the budget is spent or held. The cheap model answers instead, and the cloud stops at 90%.");
+    await expect(page.getByTestId("budget-notes")).toHaveText("70% of the budget is spent or held, so the strong model is off. The cheap model answers instead. At 90%, every cloud model stops.");
     await expect(page.getByTestId("stat-cost")).toContainText("of ¥3.00, strong model off");
 
     await budget(page, { spent: 2_800_000, held: 0, cap: CAP, stage: 2, cloud: true, local: false });
     await expect(page.getByTestId("budget")).toHaveAttribute("data-stage", "2");
-    await expect(page.getByTestId("budget-notes")).toHaveText("Cloud models are off: 90% of the budget is spent or held.Lines from the script answer instead.");
+    await expect(page.getByTestId("budget-notes")).toHaveText("90% of the budget is spent or held, so the cloud models are off.Lines from the script answer instead.");
     await expect(page.getByTestId("stat-cost")).toContainText("cloud models off");
 
     // With a local model, it is the local model that answers.
     await budget(page, { spent: 2_800_000, held: 0, cap: CAP, stage: 2, cloud: true, local: true });
-    await expect(page.getByTestId("budget-notes")).toHaveText("Cloud models are off: 90% of the budget is spent or held.A local model answers instead.");
+    await expect(page.getByTestId("budget-notes")).toHaveText("90% of the budget is spent or held, so the cloud models are off.A local model answers instead.");
     await expect(page.getByTestId("budget")).toHaveAttribute("data-local", "true");
 
     // The cloud can be off with the budget untouched: the host said it cannot be reached.
@@ -88,9 +88,9 @@ test.describe("the budget in the side column", () => {
         ],
       });
     }, call);
-    await expect(page.getByTestId("budget-moved")).toHaveText("Calls moved down so far: 2 (1 answered from the script).");
+    await expect(page.getByTestId("budget-moved")).toHaveText("2 calls have moved down so far, and written lines answered 1 of them.");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("budget-moved")).toHaveText("到现在已降档的调用：2 次（其中 1 次由台词库回答）。");
+    await expect(page.getByTestId("budget-moved")).toHaveText("已有 2 次调用降了档，其中 1 次是台词库答的。");
   });
 
   test("says the same in Chinese", async ({ lantern }) => {
@@ -101,9 +101,9 @@ test.describe("the budget in the side column", () => {
     await budget(page, { spent: 750_000, held: 0, cap: CAP, stage: 0 });
     await expect(page.getByTestId("budget-notes")).toHaveText("所有模型都开着。");
     await budget(page, { spent: 2_200_000, held: 0, cap: CAP, stage: 1 });
-    await expect(page.getByTestId("budget-notes")).toHaveText("强档已停：预算用到或预留到了 70%。改由便宜档回答，到 90% 云端全停。");
+    await expect(page.getByTestId("budget-notes")).toHaveText("预算已用或已预留到 70%，强档停了。改由便宜档回答。用到 90% 时，云端模型全停。");
     await budget(page, { spent: 2_800_000, held: 0, cap: CAP, stage: 2, local: true });
-    await expect(page.getByTestId("budget-notes")).toHaveText("云端模型已停：预算用到或预留到了 90%。改由本机模型回答。");
+    await expect(page.getByTestId("budget-notes")).toHaveText("预算已用或已预留到 90%，云端模型都停了。改由本机模型回答。");
     await budget(page, { spent: 2_800_000, held: 0, cap: CAP, stage: 0, cloud: false });
     await expect(page.getByTestId("budget-notes")).toHaveText("连不上云端。改用台词库里的话回答。");
     await expect(page.getByTestId("budget-gauge")).toHaveAttribute("aria-label", "预算已用或已预留 93%");
@@ -125,11 +125,11 @@ test.describe("the budget in the side column", () => {
     await feedFrame([], { cap: CAP, spent: 100, stage: 0, cloud: true });
     await feedFrame([{ kind: "budget_stage", tick: 301, stage: 1, previous: 0, spent: 2_200_000, held: 0, cap: CAP }], { cap: CAP, spent: 2_200_000, stage: 1, cloud: true });
     const notes = page.getByTestId("game-note");
-    await expect(notes.last()).toContainText("The strong model is off: 70% of the budget is spent or held.");
+    await expect(notes.last()).toContainText("70% of the budget is spent or held, so the strong model is off.");
     await expect(notes.last()).toHaveAttribute("data-kind", "bad");
     await feedFrame([], { cap: CAP, spent: 2_200_000, stage: 1, cloud: false });
     await expect(notes.last()).toContainText("The cloud cannot be reached.");
-    await lantern.setLang("zh");
+    await lantern.switchLang("zh");
     await expect(notes.last()).toContainText("连不上云端。");
   });
 

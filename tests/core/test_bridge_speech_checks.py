@@ -82,10 +82,10 @@ def test_other_names_of_an_entity_count_as_its_name(game):
 
 
 def test_a_longer_name_is_read_once_and_does_not_hold_a_shorter_one(game):
-    # 石桥栏杆 is the rail; the bridge inside it is not named, nor is 桥下水面 the bridge
+    # 石桥栏杆 is the rail; the bridge inside it is not named, nor is 桥下的水面 the bridge
     got = free(game, "gengfu", "石桥栏杆坏了。", "The Stone Bridge Railing is broken.")
     assert got.ok, got.errors
-    got = free(game, "gengfu", "桥下水面涨水了。", "The water is up.")
+    got = free(game, "gengfu", "桥下的水面涨水了。", "The water is up.")
     assert got.ok, got.errors
 
 

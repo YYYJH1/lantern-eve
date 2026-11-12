@@ -227,11 +227,6 @@
   font-weight: 500;
 }
 
-.verb-cost {
-  font-size: 13px;
-  font-weight: 400;
-  white-space: nowrap;
-}
 
 .verb-late {
   flex-basis: 100%;
@@ -253,6 +248,23 @@
   color: inherit;
   cursor: default;
   opacity: 0.5;
+}
+
+/* An act of the strip around the manager that cannot be done now stays, grey, and says why when it is pointed at or pressed. */
+.verbs .verb.is-off {
+  border-bottom-style: dashed;
+  opacity: 0.55;
+  cursor: help;
+}
+
+.verbs .verb.is-off > svg.underline {
+  opacity: 0.4;
+}
+
+.around-why {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
 }
 
 /* The slips above the strip ----------------------------------------------------------------------------- */
@@ -292,6 +304,11 @@
 
 .chips {
   max-height: min(40vh, 320px);
+}
+
+/* A control of a list that is reached by the keyboard stops above the phrase that turns the list, as it does on the tags. */
+.picker {
+  scroll-padding-bottom: 52px;
 }
 
 /* With a request open under them the tags are a short list that scrolls, and the request has the room. */
@@ -429,12 +446,6 @@
   font-size: 14px;
 }
 
-/* The phrase that turns the page reaches up from the foot of the paper to the last row that is whole above it (--turn-h, which picker.tsx measures as the list is turned), so that no row is cut in half at the foot. */
-.picker .turn-bar {
-  align-items: flex-end;
-  height: var(--turn-h, 40px);
-}
-
 /* A request: what is asked, what stands in the way, how likely, and the words to send it. */
 
 .request-facts {
@@ -506,9 +517,6 @@
   font-size: 17px;
 }
 
-.request-buttons .verb-cost {
-  letter-spacing: 0;
-}
 
 .request-result {
   display: flex;
@@ -764,4 +772,141 @@
     order: 2;
     width: 100%;
   }
+}
+
+/* The talk: the hearts and the gift above the log, the acts, what the person waits for, and the lists they open. */
+
+.talk-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.gift-open {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.gift-open.is-off,
+.verbs .verb.is-off {
+  opacity: 0.5;
+}
+
+.verbs .verb.is-off {
+  border-style: none;
+  cursor: help;
+}
+
+.verb-more {
+  align-self: baseline;
+  font-size: 15px;
+}
+
+.talk-off {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.talk-follow {
+  margin-left: 10px;
+  font-size: 15px;
+}
+
+.talk-context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  align-items: baseline;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px solid var(--rule);
+}
+
+.talk-context .context-button {
+  font-size: 17px;
+}
+
+.context-more {
+  font-size: 15px;
+}
+
+.context-more.is-open > svg.underline {
+  opacity: 1;
+}
+
+.answer-line {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.answer-line p {
+  margin: 0;
+}
+
+.answer-offer {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.answer-for {
+  font-size: 14px;
+}
+
+.answer-buttons {
+  display: flex;
+  gap: 0 22px;
+  margin-top: 2px;
+  font-size: 18px;
+}
+
+.say-line {
+  margin: 4px 0 6px;
+}
+
+.say-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 22px;
+  font-size: 18px;
+}
+
+.say-risk {
+  margin: 4px 0 2px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ask-more {
+  display: block;
+  margin-top: 4px;
+  font-size: 16px;
+}
+
+.ask-more[aria-expanded="true"] > svg.underline {
+  opacity: 1;
+}
+
+.give-way-list {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.give-way-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+  align-items: baseline;
+}
+
+.gift-panel .picker-note {
+  margin-bottom: 2px;
 }

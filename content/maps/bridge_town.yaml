@@ -89,7 +89,7 @@ places:
     stands: [[16, 5], [17, 6], [19, 6], [20, 5], [21, 6]]
     footprints: [[16, 2, 6, 3]]
   - id: p_accountant_home
-    zh: 账房先生家
+    zh: 账房家
     en: Accountant's House
     kind: house
     indoor: true
@@ -232,7 +232,7 @@ places:
     door: [27, 15]
     stands: [[25, 16], [26, 15], [28, 16], [29, 15], [24, 16], [27, 16]]
   - id: p_under_bridge
-    zh: 桥下水面
+    zh: 桥下的水面
     en: Water Beneath the Bridge
     kind: water
     indoor: false

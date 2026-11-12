@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 import { expect, test } from "../support/fixtures.ts";
-import { mapDrawn, openTheNote, pickAtSpot } from "../support/play.ts";
+import { mapAtRest, openTheNote, pickAtSpot } from "../support/play.ts";
 import * as fake from "../support/slice.ts";
 
 // The buttons of the tasks of the days after the first: each request a task may ask of a person and each way of speaking in public has
@@ -23,8 +23,8 @@ const REQUESTS: Request[] = [
   { task: "t_lend", npc: "li_laotai", en: "Ask Granny Li to lend the bamboo", zh: "请李老太借出竹料", asked: { verb: "entrust", npc: "li_laotai", kind: "lend" } },
   { task: "t_helper_zhou", npc: "zhou_dalang", en: "Ask Zhou Dalang to help out", zh: "请周家大郎来帮忙", asked: { verb: "entrust", npc: "zhou_dalang", kind: "join" } },
   { task: "t_helper_chain", npc: "li_xiaomei", en: "Ask Li Xiaomei to talk Zhou Erlang round", zh: "请李家小妹去劝周家二郎", asked: { verb: "entrust", npc: "li_xiaomei", kind: "persuade", target: "zhou_erlang" } },
-  { task: "t_lane", npc: "miaozhu", en: "Ask Temple Keeper to open the lane behind the temple", zh: "请庙祝开庙后夹道", asked: { verb: "entrust", npc: "miaozhu", kind: "lane" } },
-  { task: "t_witness", npc: "gengfu", en: "Ask Night Watchman to say what they saw", zh: "请更夫说说看见了什么", asked: { verb: "entrust", npc: "gengfu", kind: "testify" } },
+  { task: "t_lane", npc: "miaozhu", en: "Ask Temple Keeper to open the lane behind the temple", zh: "请庙祝打开庙后的夹道", asked: { verb: "entrust", npc: "miaozhu", kind: "lane" } },
+  { task: "t_witness", npc: "gengfu", en: "Ask Night Watchman to say what they saw", zh: "请更夫说说亲眼看见了什么", asked: { verb: "entrust", npc: "gengfu", kind: "testify" } },
   { task: "t_convene", npc: "zuzhang", en: "Ask Clan Elder to call the clan", zh: "请族长召集族人", asked: { verb: "entrust", npc: "zuzhang", kind: "convene" } },
 ];
 
@@ -102,12 +102,13 @@ test.describe("the button of a task that asks a person for something", () => {
     await fake.startTalk(page, "zhou_dalang", {}, fake.TALK_VERBS, fake.entrustOffers("li_da"));
     await openTheNote(page);
     await page.getByTestId("task-do").click();
-    await expect(page.getByTestId("picker-entrust").getByTestId("picker-option")).toHaveText(["Ask them to bring the bamboo to the bridge"]);
+    // The list has everything that can be asked of the person, the request on the button of the talk too, and what can be promised.
+    await expect(page.getByTestId("picker-entrust").locator('[data-group="asks"] [data-testid="picker-option"]')).toHaveText(["Ask Li Da to bring the bamboo to the bridge"]);
     await expect(page.getByTestId("request-card")).toHaveCount(0);
   });
 
-  test("opens the list, as it always did, for a task that names only the thing it wants", async ({ lantern }) => {
-    await fake.openFirstDay(lantern, { tracked: "t_plain", tasks: [{ id: "t_plain", kind: "need", job: "bridge", text: { zh: "取得竹料", en: "Get the bamboo" }, state: "open", action: { verb: "entrust", npc: "li_laotai", item: "bamboo" } }] });
+  test("asks for the one request the town puts forward when the task names only the thing it wants, and opens the list where it puts none", async ({ lantern }) => {
+    await fake.openFirstDay(lantern, { tracked: "t_plain", tasks: [{ id: "t_plain", kind: "need", job: "bridge", text: { zh: "取得竹料", en: "Get the bamboo" }, state: "open", action: { verb: "entrust", npc: "li_laotai", item: "bamboo" }, window: null }] });
     const page = lantern.page;
     await fake.recordSent(page);
     await fake.answerPreview(page, fake.PREVIEW);
@@ -115,9 +116,17 @@ test.describe("the button of a task that asks a person for something", () => {
     await fake.startTalk(page, "li_laotai");
     await openTheNote(page);
     await page.getByTestId("task-do").click();
+    // The request on the button of the talk is the one the task asks for, and its preview is up: there is no list to pick it from.
+    await expect(page.getByTestId("picker-entrust")).toHaveCount(0);
+    await expect(page.getByTestId("request-card")).toHaveAttribute("data-phase", "preview");
+    expect(await fake.previewsAsked(page)).toEqual([{ verb: "entrust", npc: "li_laotai", kind: "material" }]);
+    // Where the town puts no request forward, the list is what opens.
+    await page.getByTestId("request-cancel").click();
+    await fake.startTalk(page, "li_laotai", {}, fake.TALK_VERBS, []);
+    await openTheNote(page);
+    await page.getByTestId("task-do").click();
     await expect(page.getByTestId("picker-entrust")).toBeVisible();
     await expect(page.getByTestId("request-card")).toHaveCount(0);
-    expect(await fake.previewsAsked(page)).toEqual([]);
   });
 });
 
@@ -209,14 +218,15 @@ test.describe("the button of a task that speaks in public", () => {
     const page = await atTheTeahouse(lantern, "t_statement", fake.SPEAK_OFFERS.filter((offer) => offer.body.kind === "meal"));
     await page.getByTestId("task-do").click();
     await expect(page.getByTestId("picker-speak")).toBeVisible();
-    await expect(page.getByTestId("picker-empty")).toHaveText("There is nothing to choose from yet.");
+    await expect(page.getByTestId("picker-empty")).toHaveText("There is nothing to choose yet.");
     await expect(page.getByTestId("picker-option")).toHaveCount(0);
   });
 
   test("waits for the manager to stand where they may speak, and then opens the list", async ({ lantern }) => {
     const page = await open(lantern, "t_meal");
     await page.getByTestId("task-do").click();
-    await expect(page.getByTestId("verb-speak")).toHaveCount(0);
+    // The act is there and grey while the manager is not where they may speak.
+    await expect(page.getByTestId("verb-speak")).toHaveAttribute("aria-disabled", "true");
     await expect(page.getByTestId("picker-speak")).toHaveCount(0);
     // The manager gets there: the town offers to speak, and the list that was asked for opens by itself.
     await fake.feedFrame(page, fake.speakingFrame(await fake.playerOf(page)));
@@ -225,9 +235,9 @@ test.describe("the button of a task that speaks in public", () => {
 
   test("clears a claim up from the notebook, where the lines the player judged are", async ({ lantern }) => {
     const page = await open(lantern, "t_clarify");
-    await expect(page.getByTestId("task-do")).toHaveText("Clear up the claim in public");
+    await expect(page.getByTestId("task-do")).toHaveText("Clear up the talk in public");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("task-do")).toHaveText("当众澄清");
+    await expect(page.getByTestId("task-do")).toHaveText("当众把这话说清");
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-open", "false");
     await page.getByTestId("task-do").click();
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-open", "true");
@@ -238,7 +248,7 @@ test.describe("the button of a task that speaks in public", () => {
 
 /** Picks a person by clicking their piece on the map. */
 async function pickOnMap(page: Page, id: string): Promise<void> {
-  await mapDrawn(page);
+  await mapAtRest(page);
   const spot = await page.evaluate((who) => window.__lantern.view.screenPositionOf(who), id);
   if (spot === null) throw new Error(`there is no ${id} on the map`);
   await pickAtSpot(page, spot, id);

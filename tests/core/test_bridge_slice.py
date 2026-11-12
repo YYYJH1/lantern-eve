@@ -325,8 +325,15 @@ def test_asking_the_clerk_three_times_about_li_er_gives_three_notes_in_order():
     ]
     first, second, third = out["frame"]["notebook"]
     assert "故意" in first["text"]["zh"] and "on purpose" in first["text"]["en"]
-    assert "在石桥" in second["text"]["zh"] and "找" in third["text"]["zh"]
-    assert [e["source"]["hand"] for e in (first, second, third)] == [4, 1, 1]
+    assert "在桥边" in second["text"]["zh"] and "找" in third["text"]["zh"]
+    assert [
+        (e["source"]["how"], (e["source"].get("via") or {}).get("id"))
+        for e in (first, second, third)
+    ] == [
+        ("heard", "zhou_erlang"),  # what the clerk heard from the second son
+        ("saw", None),  # and what he saw himself
+        ("saw", None),
+    ]
     assert [chain(e) for e in (first, second, third)] == [
         ["zhou_huoji", "zhou_erlang", None],  # the first is heard from the second son
         ["zhou_huoji"],  # and the other two are first hand: nobody is left to ask
@@ -356,15 +363,15 @@ def test_asking_who_told_them_walks_the_madams_version_back_to_what_the_clerk_sa
     game = met("cha_laoban", 8)
     out = act(game, "ask", topic="li_er")
     (entry,) = out["frame"]["notebook"]
-    assert entry["source"]["who"]["id"] == "cha_laoban" and entry["source"]["hand"] == 5
+    assert entry["source"]["who"]["id"] == "cha_laoban"
+    assert entry["source"]["how"] == "heard" and entry["source"]["via"]["id"] == "zhou_huoji"
+    assert "hand" not in entry["source"]
     assert "envy" in entry["text"]["en"] and chain(entry) == ["cha_laoban", "zhou_huoji", None]
     meet(game, "zhou_huoji")
     out = act(game, "ask_source", entry="n1")
     first, second = out["frame"]["notebook"]
     assert chain(first) == ["cha_laoban", "zhou_huoji"]  # he says he saw it, and he saw this much
-    assert (
-        second["id"] == "n2" and second["text"]["en"] == "Li Er was at the Stone Bridge last night."
-    )
+    assert second["id"] == "n2" and second["text"]["en"] == "Li Er was at the bridge last night."
     assert first["marks"] == ["unsupported"]  # the tutorial's, and nothing of the madam's words
     out = act(game, "judge", a="n2", b="n1", relation="mismatch")  # until the manager says so
     assert [(r, why) for r, why in acks(out)] == [("applied", None)]

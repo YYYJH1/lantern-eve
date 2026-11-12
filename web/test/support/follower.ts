@@ -66,9 +66,14 @@ export async function putSave(page: Page, name: string, recording: Recording): P
   );
 }
 
-/** Opens the game the opening page starts, loads the recording as a save, and waits until the core in the browser has it and the page shows it. */
-export async function loadMoment(page: Page, waitReady: () => Promise<void>, origin: string, name: string, recording: Recording): Promise<void> {
-  await page.goto(`${origin}/?start=1&pace=3`);
+/**
+ * Opens the game the opening page starts, loads the recording as a save, and waits until the core in the browser has it and the page shows it.
+ * `until` is a tick at which the host holds the world itself once it is let go (the page's `?until=`): a test that needs the world to stand still
+ * at a moment of the game that lasts a few seconds at the pace of the page cannot get there by watching the page and pausing, which is as late as
+ * the machine is slow.
+ */
+export async function loadMoment(page: Page, waitReady: () => Promise<void>, origin: string, name: string, recording: Recording, until: number | null = null): Promise<void> {
+  await page.goto(`${origin}/?start=1&pace=3${until === null ? "" : `&until=${until}`}`);
   await waitReady();
   const id = await putSave(page, name, recording);
   await page.evaluate((save) => window.__lantern.client.load(save), id);

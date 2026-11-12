@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import { expect, type LanternPage, test } from "../support/fixtures.ts";
 import * as fake from "../support/slice.ts";
+import { pressStart } from "../support/start.ts";
 
 // The end of the first day on a page of fake frames, with the world held at tick 300 so that what a test feeds stays as it was fed: the
 // card that says the first day is done (when it comes, what it says, that it holds the world), the words of the top bar and of the task
@@ -10,26 +11,26 @@ test.use({ map: true });
 const WORDS = {
   en: {
     title: "The first day is done",
-    reached: "The first bamboo has reached the Stone Bridge. The festival is on the night of the fifth day. Before then: gather the bamboo and the timber, and mend the bridge; find out how the bridge broke and tell the town; make peace between the two families.",
+    reached: "The first load of bamboo has reached the Stone Bridge. The festival is on the night of the fifth day. Before then, the bridge has to be mended, how it broke has to be told in public, and the two families have to make peace.",
     keep: "Keep playing",
-    idleTop: "Nothing to follow right now",
-    idleTask: "Everything on the list is done. Look around if you like, and wait for the festival on the night of the fifth day.",
+    idleTop: "Nothing to do right now",
+    idleTask: "Everything is done. Look around if you like, and wait for the festival on the night of the fifth day.",
     overTop: "The festival is over",
     overTask: "The festival is over.",
-    pick: "Pick something to follow",
-    none: "Nothing is being followed. Pick one of the tasks below.",
+    pick: "Pick something to do",
+    none: "Nothing chosen yet. Pick one of the tasks below.",
     running: "running",
   },
   zh: {
-    title: "第一天完成",
-    reached: "第一批竹料送到了石桥。灯会在第五天晚上，在那之前还要：凑齐竹料和木料，把桥修好；查清桥是怎么坏的，当众说清；让两家和解。",
+    title: "第一天过完了",
+    reached: "第一批竹料送到了石桥。灯会在第五天晚上。在那之前，还要把桥修好，把桥是怎么坏的当众说清，再让两家和好。",
     keep: "接着玩",
-    idleTop: "眼下没有要追的事",
-    idleTask: "事项都办完了，可以四处走走，等第五天晚上的灯会。",
+    idleTop: "眼下没有要办的事",
+    idleTask: "事都办完了。四处走走，等第五天晚上的灯会。",
     overTop: "灯会已过",
     overTask: "灯会办完了。",
-    pick: "挑一件事来追",
-    none: "还没有追哪一件。从下面挑一件。",
+    pick: "挑一件事来办",
+    none: "还没选要办的事，从下面挑一件。",
     running: "进行中",
   },
 } as const;
@@ -171,13 +172,13 @@ test.describe("the card that says the first day is done", () => {
 /** The elder's three answers when the days after have nothing open now. */
 const ELDER_IDLE = {
   en: [
-    "Nothing on the list is left to follow. Look around as you like, and be ready for the festival on the night of the fifth day.",
-    "No task asks you to compare any lines now. Any two lines in your notebook can be set side by side whenever you like.",
+    "There is nothing left to do now. Look around as you like, and wait for the festival on the night of the fifth day.",
+    "No two lines need comparing now. You can compare any two lines in your notebook whenever you like.",
     "Nothing has to be done right now. Go where you like and ask whom you like until the festival on the night of the fifth day.",
   ],
   zh: [
-    "眼下没有哪件事要追。你随意走走看看，等第五天晚上的灯会就好。",
-    "眼下没有哪个事项要你对照哪两句。见闻簿里的话，想并排放着看，随时都行。",
+    "眼下没什么事要办。随意走走看看，等第五天晚上的灯会就好。",
+    "眼下没有要比的两句。见闻簿里的话，想比随时都能比。",
     "眼下没有非办不可的事。想去哪里、问谁都行，等到第五天晚上的灯会。",
   ],
 } as const;
@@ -278,7 +279,7 @@ test.describe("the card of the morning", () => {
       await expect(today).toHaveText("Today: Ask Li Da for another batch of bamboo, Li Family House, Day 2 08:00 to 17:00");
       expect(await fake.contrast(page, '[data-testid="recap-today"]'), `${theme} en`).toBeGreaterThan(4.5);
       await lantern.setLang("zh");
-      await expect(today).toHaveText("今天：再请李大送一批竹料，李家宅，第二日 辰时 08:00 到 17:00");
+      await expect(today).toHaveText("今天：再请李大送一批竹料，李家宅，第二天 辰时 08:00 到 17:00");
       expect(await fake.contrast(page, '[data-testid="recap-today"]'), `${theme} zh`).toBeGreaterThan(4.5);
     }
     // It is the last thing on the card, after the three lines and before the button.
@@ -339,10 +340,10 @@ test.describe("the card on a real game", () => {
     await page.goto(`${lantern.servers.app.origin}/?pace=100`);
     await lantern.waitReady();
     await expect(page.getByTestId("opening-start")).toBeEnabled({ timeout: 60_000 });
-    await page.getByTestId("opening-start").click();
+    await pressStart(page);
     await expect(page.getByTestId("status")).toHaveText(WORDS.en.running);
     // The bar has the first task and the card is nowhere.
-    await expect(page.getByTestId("topbar-task-text")).toHaveText("Get the first bamboo from the Li family");
+    await expect(page.getByTestId("topbar-task-text")).toHaveText("Get the first load of bamboo from the Li family");
     await expect(page.getByTestId("end-card")).toHaveCount(0);
     expect(lantern.pageErrors).toEqual([]);
   });

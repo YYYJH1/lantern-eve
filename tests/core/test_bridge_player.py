@@ -174,7 +174,15 @@ def test_a_conversation_holds_the_world_and_the_person_where_they_are_until_the_
     (opened,) = events(out, "talk_start")
     leaves = {"hour": 13, "minute": 3}  # the routine says home at one, and he is seven ticks late
     assert opened["npc"] == "li_da" and opened["leaves_at"] == leaves
-    assert out["frame"]["player"]["talk"] == {"npc": "li_da", "costs": COSTS, "leaves_at": leaves}
+    talk = out["frame"]["player"]["talk"]
+    assert {k: talk[k] for k in ("npc", "costs", "leaves_at")} == {
+        "npc": "li_da",
+        "costs": COSTS,
+        "leaves_at": leaves,
+    }
+    assert set(talk) == {
+        "npc", "costs", "leaves_at", "ask_for", "asks_more", "wants", "keep", "give", "queue",
+    }  # fmt: skip
     assert out["frame"]["player"]["activity"] == "chat"
     seen = {n["id"]: n for n in out["frame"]["npcs"]}
     assert seen["li_da"]["activity"] == "chat"
@@ -389,7 +397,7 @@ def test_the_scene_has_a_token_for_the_player_next_to_the_cast():
     ]
     assert scene["player"]["things"][0] == {
         "id": "t_rail",
-        "zh": "石桥栏杆",
+        "zh": "栏杆",
         "en": "Stone Bridge Railing",
     }
     assert "player" not in [c["id"] for c in scene["cast"]] and len(scene["cast"]) == 20
@@ -409,7 +417,7 @@ def test_the_verbs_follow_what_the_player_can_do_now():
     awake = chat(seed=2, who="cha_laoban")
     assert verbs_of(awake)[:2] == ["move", "talk"]
     act(awake, "talk", npc="cha_laoban")
-    assert verbs_of(awake) == ["leave", "ask", "tell", "entrust", "promise"]
+    assert verbs_of(awake) == ["leave", "ask", "tell", "entrust", "promise", "gift"]
     me(awake)["notebook"].append(
         {
             "id": "n1",
@@ -419,13 +427,13 @@ def test_the_verbs_follow_what_the_player_can_do_now():
         }
     )
     assert verbs_of(awake) == [
-        "leave", "ask", "ask_source", "askSource", "tell", "entrust", "promise",
+        "leave", "ask", "ask_source", "askSource", "tell", "entrust", "promise", "gift",
     ]  # fmt: skip
     act(awake, "leave")
     assert "ask" not in verbs_of(awake)
     assert list(player.VERB_ORDER) == [
         "move", "talk", "leave", "ask", "ask_source", "askSource", "tell", "entrust", "promise",
-        "rally", "speak", "speak_publicly", "listen", "look", "track", "judge", "hint",
+        "gift", "rally", "speak", "speak_publicly", "listen", "look", "track", "judge", "hint",
     ]  # fmt: skip
 
 
@@ -506,11 +514,14 @@ def test_the_page_reads_every_entry_the_session_wrote(two_days):
     last = two_days.outs[-1]["frame"]["notebook"]
     assert len(last) >= 5
     for entry in last:
-        assert set(entry) == {"id", "text", "source", "marks", "chain"}
+        assert set(entry) == {"id", "text", "source", "at", "marks", "chain"}
         assert entry["marks"] == [m for m in order if m in entry["marks"]]
         source = entry["source"]
         if source["kind"] == "heard":
-            assert set(source) == {"kind", "who", "hand"} and source["hand"] >= 1
+            assert set(source) <= {"kind", "who", "how", "via"} and "hand" not in source
+            assert source["how"] in ("saw", "heard", "unsure") and ("via" in source) == (
+                source["how"] == "heard"
+            )
             assert set(source["who"]) == {"zh", "en", "id"} and source["who"]["id"] in CAST.index
             assert entry["chain"][0] == source["who"]
         else:
@@ -658,6 +669,6 @@ def test_every_fixed_phrase_has_both_languages_and_two_of_them_join_without_a_ga
         assert set(text) == {"zh", "en"} and text["zh"] and text["en"], code
         assert text["zh"].endswith(("。", "）")) and text["en"].endswith((".", ")")), code
     both = phrases.joined(phrases.phrase("not_said"), {"zh": "我亲眼看见。", "en": "I saw it."})
-    assert both == {"zh": "我可没说过那样的话。我亲眼看见。", "en": "I never said that. I saw it."}
+    assert both == {"zh": "我没说过那样的话。我亲眼看见。", "en": "I never said that. I saw it."}
     with pytest.raises(KeyError):
         phrases.phrase("no_such_code")

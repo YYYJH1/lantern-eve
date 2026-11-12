@@ -1,6 +1,7 @@
 import { chromium, type Page } from "@playwright/test";
 import { CELL, CELL_DEPTH } from "../../src/page/map/projection.ts";
 import { expect, LanternPage, type LanternPage as Lantern, test } from "../support/fixtures.ts";
+import { clearTheMap } from "../support/play.ts";
 
 // This spec looks at the map, so its pages draw it.
 test.use({ map: true });
@@ -274,6 +275,8 @@ test.describe("the town on the map", () => {
     await lantern.open("scenario=bridge&seed=7&pace=60&until=600", { menu: false });
     await lantern.waitForTick(600);
     await drawn(lantern);
+    // The note of the slip and the small act that hangs over the manager lie over a few cells of the map, and a pointer put there is theirs: they are put away first.
+    await clearTheMap(page);
     const canvas = page.getByTestId("map");
     const box = await canvas.boundingBox();
     if (box === null) throw new Error("the map has no box");
@@ -299,7 +302,8 @@ test.describe("the town on the map", () => {
     const after = await page.evaluate(([x, y]) => window.__lantern.view.camera.unproject(x as number, y as number), [px - box.x, py - box.y]);
     expect(after.x).toBeCloseTo(before.x, 0);
     expect(after.y).toBeCloseTo(before.y, 0);
-    expect((await canvasData(page)).fitted).toBe("false");
+    // The canvas publishes its data on the next frame it draws, which on a busy machine is not the moment the camera has moved.
+    await expect.poll(async () => (await canvasData(page)).fitted).toBe("false");
 
     // Dragging moves the map by as much as the pointer moved.
     await page.mouse.move(px, py);

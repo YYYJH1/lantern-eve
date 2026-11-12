@@ -92,8 +92,14 @@ def test_nobody_calls_the_manager_sir_or_madam(pattern: str) -> None:
         r"lengths of",
         r"procession|parade of lanterns",  # the lantern parade
         r"Mark my words",  # 我跟你说 is "I'm telling you"
-        r"Where the talk came from",  # the third part of the statement is How the rumour began
-        r"[Ww]ith more drama",  # the way of telling is Heavier
+        r"Where the talk came from",  # the third part of the card is Why people got it wrong
+        r"How the rumour began|\bCourse\b",  # the names of the parts are the card's
+        r"[Ww]ith more drama|made (it )?heavier|grew heavier",  # a story is exaggerated
+        r"first bamboo",  # the first load of bamboo
+        r"carry (the|that) claim",  # a line that does not hold a claim up does not prove it
+        r"how (they|the two|two lines) stand",  # two lines relate
+        r"along the telling",  # the talk is traced back one person at a time
+        r"\b[Rr]ails?\b",  # the bridge has a railing
     ],
 )
 def test_one_name_for_one_thing_in_english(pattern: str) -> None:
@@ -118,3 +124,56 @@ def test_the_comments_of_the_content_say_what_the_data_is() -> None:
             if line.lstrip().startswith("#") and outside.search(line):
                 hits.append(f"{path.relative_to(ROOT)}:{number}: {line.strip()[:90]}")
     assert hits == []
+
+
+# The Chinese a player reads in the interface and in the cards, the gazette and the statement of
+# the script: one word for the rumour (闲话), for the statement card (讲稿) and for the people who
+# must be there (熟面孔), and no word of the game's machinery. The people speak as they do (the
+# elder and the schoolmaster say 谣言), and the script's own labels of metrics and flags are not
+# read by a player.
+PLAYER_SECTIONS = ("tasks", "paper", "statement", "evidence", "endings", "commitments", "gifts")
+
+
+def player_chinese() -> list[tuple[str, str]]:
+    script = yaml.safe_load(
+        (CONTENT / "scripts" / "broken_bridge.yaml").read_text(encoding="utf-8")
+    )
+    found = [
+        (f"broken_bridge.yaml {section}", text)
+        for section in PLAYER_SECTIONS
+        for key, text in strings(script.get(section))
+        if key in ("zh", "label")
+    ]
+    return found + [(where, text) for where, text in ZH if where.endswith("zh.ts")]
+
+
+@pytest.mark.parametrize(
+    "pattern",
+    [r"陈述", r"谣言", r"传言", r"叫得出名字", r"有名有姓", r"判过", r"嫉妒", r"李周两家"],
+)
+def test_one_name_for_one_thing_in_the_chinese_a_player_reads(pattern: str) -> None:
+    assert [
+        f"{where}: {text[:60]}" for where, text in player_chinese() if re.search(pattern, text)
+    ] == []
+
+
+@pytest.mark.parametrize("pattern", [r"账房先生", r"陈述卡"])
+def test_the_accountant_and_the_statement_card_have_one_name_everywhere(pattern: str) -> None:
+    assert found(pattern, ZH) == []
+
+
+def test_the_parts_of_the_statement_card_have_one_name_in_each_language():
+    """The page names a part of the statement card by its blank (``blank.<part>``), and the core by
+    the title the script gives it, in the reason a statement fell short. A result card shows both,
+    one line under the other, so they are the same words."""
+    script = yaml.safe_load(
+        (CONTENT / "scripts" / "broken_bridge.yaml").read_text(encoding="utf-8")
+    )
+    differ = []
+    for lang in ("en", "zh"):
+        table = (I18N / f"{lang}.ts").read_text(encoding="utf-8")
+        for part in script["statement"]["parts"]:
+            blank = re.search(rf'"blank\.{part["id"]}": "(.*)",$', table, re.M)
+            if blank is None or blank.group(1) != part["title"][lang]:
+                differ.append(f"{lang} {part['id']}: {part['title'][lang]!r}")
+    assert differ == []

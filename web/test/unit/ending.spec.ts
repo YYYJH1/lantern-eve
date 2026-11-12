@@ -94,7 +94,9 @@ test.describe("the ending event", () => {
   test("reads an event with nothing in it, and an ending known from the numbers alone", () => {
     const bare = readEnding({ kind: "ending", tick: 1 });
     expect(bare).toMatchObject({ id: "", label: null, hidden: [], inputs: {}, passage: null, promised: null, turnout: null, reveal: null });
+    expect(bare.tick).toBe(1);
     expect(endingFromHud("ending_full", { promised: 12, turnout: 900 })).toEqual({
+      tick: null,
       id: "ending_full",
       label: null,
       hidden: [],
@@ -104,6 +106,7 @@ test.describe("the ending event", () => {
       turnout: 900,
       reveal: null,
       epilogue: null,
+      festival: null,
     });
   });
 
@@ -186,6 +189,18 @@ test.describe("the tree of a story", () => {
   test("has a width for a name that counts a Chinese character wider than a Latin one", () => {
     expect(pillWidth("李二")).toBeGreaterThan(pillWidth("Li"));
     expect(pillWidth("Shopkeeper Zhou")).toBeGreaterThan(pillWidth("李二"));
+  });
+
+  test("leaves a run of line to be seen between a name and the circle of its number, where the name is as wide as its column", () => {
+    // the widest name of the cast in English, for every person: each stands in a column that is as wide as the name needs
+    const layout = layoutForest(buildForest(chain), () => "Shopkeeper Zhou");
+    expect(layout.edges.length).toBeGreaterThan(0);
+    for (const edge of layout.edges) {
+      // the circle of a number stands in the middle of the gap, and reaches 8.5 and the half of its stroke of 2 to each side of it
+      const run = edge.to.x - TREE.gap / 2 - (8.5 + 1) - (edge.from.x + edge.from.w);
+      // three dashes of 6 with the gaps of 4 between them (the pattern of ending.css)
+      expect(run, `before the circle of the line ${edge.telling.id}`).toBeGreaterThanOrEqual(3 * 6 + 2 * 4);
+    }
   });
 
   test("is empty for a story nobody told, and a single pill for one telling to nobody new", () => {

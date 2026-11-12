@@ -1,4 +1,6 @@
 import type { Page } from "@playwright/test";
+import { en } from "../../src/i18n/en.ts";
+import { zh } from "../../src/i18n/zh.ts";
 import { expect, type LanternPage, test } from "../support/fixtures.ts";
 import * as fake from "../support/slice.ts";
 import * as stmt from "../support/statement.ts";
@@ -25,10 +27,10 @@ test.describe("the full guidance", () => {
   test("is as it was: the next step and the button that does it on the slip, and nothing at the foot of the page while nobody speaks", async ({ lantern }) => {
     const page = lantern.page;
     await guided(lantern);
-    await expect(card(page).getByTestId("task-text")).toHaveText("The Li family will not give bamboo");
+    await expect(card(page).getByTestId("task-text")).toHaveText("Get the first load of bamboo from the Li family");
     await expect(card(page).getByTestId("task-why")).toContainText("Li Er broke the bridge");
-    await expect(card(page).getByTestId("task-next")).toHaveText("Find out where that talk came from");
-    await expect(card(page).getByTestId("task-blocker")).toContainText("Granny Li will not lend bamboo");
+    await expect(card(page).getByTestId("task-next")).toHaveText("Find out who started that talk.");
+    await expect(card(page).getByTestId("task-blocker")).toContainText("The Li family will not give the bamboo");
     await expect(card(page).getByTestId("task-window")).toContainText("Li Family House");
     await expect(page.getByTestId("task-do")).toHaveText("Talk to Granny Li");
     await expect(page.getByTestId("dialogue-line")).toHaveCount(0);
@@ -46,10 +48,10 @@ test.describe("the brief guidance", () => {
     const page = lantern.page;
     await guided(lantern);
     await choose(lantern, "brief");
-    await expect(card(page).getByTestId("task-text")).toHaveText("The Li family will not give bamboo");
-    await expect(page.getByTestId("topbar-task-text")).toHaveText("The Li family will not give bamboo");
+    await expect(card(page).getByTestId("task-text")).toHaveText("Get the first load of bamboo from the Li family");
+    await expect(page.getByTestId("topbar-task-text")).toHaveText("Get the first load of bamboo from the Li family");
     await expect(card(page).getByTestId("task-why")).toContainText("Li Er broke the bridge");
-    await expect(card(page).getByTestId("task-blocker")).toContainText("Granny Li will not lend bamboo");
+    await expect(card(page).getByTestId("task-blocker")).toContainText("The Li family will not give the bamboo");
     await expect(card(page).getByTestId("task-window")).toHaveText("Li Family House, 08:00 to 17:00");
     await expect(page.getByTestId("task-next")).toHaveCount(0);
     await expect(page.getByTestId("task-do")).toHaveCount(0);
@@ -60,7 +62,7 @@ test.describe("the brief guidance", () => {
     expect(await page.evaluate(() => localStorage.getItem("lantern.guidance"))).toBe("brief");
     // In Chinese too.
     await lantern.setLang("zh");
-    await expect(card(page).getByTestId("task-text")).toHaveText("李家不肯给竹料");
+    await expect(card(page).getByTestId("task-text")).toHaveText("借到李家的第一批竹料");
     await expect(page.getByTestId("task-next")).toHaveCount(0);
     await expect(page.getByTestId("dialogue-line")).toHaveCount(0);
     expect(lantern.pageErrors).toEqual([]);
@@ -113,8 +115,8 @@ test.describe("the brief guidance", () => {
       kind: "need",
       job: "truth",
       text: { zh: "把桥的事当众说清", en: "Tell the town how the bridge broke" },
-      why: { zh: "三栏还没填满", en: "The card is not filled in" },
-      next: { zh: "把陈述卡填好", en: "Fill in the card" },
+      why: { zh: "讲稿的三条还没写全", en: "The card is not filled in" },
+      next: { zh: "把讲稿写全", en: "Fill in the card" },
       state: "open",
       blocker: null,
       action: { verb: "state" },
@@ -132,16 +134,21 @@ test.describe("the brief guidance", () => {
     expect(lantern.pageErrors).toEqual([]);
   });
 
-  test("says what the hint of a blocked task says in words that do not point at a next step", async ({ lantern }) => {
+  test("says what is in the way the same to a player of the brief guidance, whose slip has the reasons behind its line of Why", async ({ lantern }) => {
     const page = lantern.page;
     await guided(lantern, fake.tasksWhere({ t_bamboo_first: "open" }));
     await choose(lantern, "brief");
     await fake.feedFrame(page, fake.tasks("t_bamboo_first"));
     await expect(page.getByTestId("hint-pill")).toHaveAttribute("data-hint", "blocked");
-    await expect(page.getByTestId("hint-pill")).toHaveText("Something is in the way. The note of the slip says what, and why.");
+    await expect(page.getByTestId("hint-pill").locator(".hint-pill-text")).toHaveText(en["cue.blocked"]);
     await expect(card(page)).toHaveClass(/is-signal/);
-    await lantern.setLang("zh");
-    await expect(page.getByTestId("hint-pill")).toHaveText("有东西挡了路。签的便笺里写着是什么拦着，以及缘由。");
+    // The reasons are open while the hint is lit, for the brief guidance as for the full one, and the slip has no next step or button.
+    await expect(page.getByTestId("task-blocker")).toBeVisible();
+    await expect(page.getByTestId("task-do")).toHaveCount(0);
+    await lantern.switchLang("zh");
+    // The signal goes out nine seconds after it was lit, which a slow machine can take between the calls of this test: it is lit again for the look.
+    await fake.relight(page, "blocked");
+    await expect(page.getByTestId("hint-pill").locator(".hint-pill-text")).toHaveText(zh["cue.blocked"]);
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -165,7 +172,7 @@ test.describe("the elder gives the button", () => {
     await fake.recordSent(page);
     await page.getByTestId("btn-elder").click();
     await page.getByTestId("elder-level-1").click();
-    await expect(page.getByTestId("elder-text")).toHaveText("Think about this: Find out where that talk came from");
+    await expect(page.getByTestId("elder-text")).toHaveText("Think about this. Find out who started that talk.");
     await expect(page.getByTestId("elder-do")).toHaveCount(0);
     await page.getByTestId("elder-level-3").click();
     await expect(page.getByTestId("elder-answer-3").getByTestId("elder-text")).toHaveText("Your next step: Talk to Granny Li");
@@ -225,7 +232,7 @@ test.describe("the choice", () => {
     await expect(group.locator("strong")).toHaveText("Guidance");
     await expect(page.getByTestId("guidance-full")).toHaveText("Full");
     await expect(page.getByTestId("guidance-brief")).toHaveText("Brief");
-    await expect(group).toContainText("Brief: the note gives only the goal");
+    await expect(group).toContainText("With Brief, the slip says only what to do");
     await lantern.setLang("zh");
     await expect(group.locator("strong")).toHaveText("指引");
     await expect(page.getByTestId("guidance-full")).toHaveText("完整");
@@ -253,14 +260,14 @@ test.describe("the choice", () => {
     await expect(page.getByTestId("task-next")).toBeVisible();
     await page.evaluate(() => {
       const tutorial = window.__lantern.play.guide.tutorial;
-      tutorial.index = 5;
+      tutorial.index = 3;
       tutorial.phase = "card";
       window.__lantern.play.touch();
     });
     const evening = page.getByTestId("tutorial-card");
     await expect(evening).toHaveAttribute("data-step", "evening");
     const choice = page.getByTestId("tut-guidance");
-    await expect(choice).toContainText("From here on, you choose how much the slip does for you.");
+    await expect(choice).toContainText("From here on, you choose how much the red slip does for you.");
     await expect(choice.getByTestId("guidance-brief")).toHaveAttribute("aria-pressed", "true");
     await choice.getByTestId("guidance-full").click();
     await expect(choice.getByTestId("guidance-full")).toHaveAttribute("aria-pressed", "true");

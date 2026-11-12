@@ -153,12 +153,37 @@
   cursor: pointer;
 }
 
-.setting input {
+/* A box that is empty until it is ticked, in both themes: the native one is drawn for the dark scheme as a filled square even when it is not ticked. */
+.setting input[type="checkbox"] {
+  appearance: none;
   flex: none;
+  display: inline-grid;
+  place-content: center;
   width: 20px;
   height: 20px;
-  margin-top: 4px;
-  accent-color: var(--ink);
+  margin: 4px 0 0;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  cursor: pointer;
+}
+
+.setting input[type="checkbox"]::after {
+  content: "";
+  width: 5px;
+  height: 10px;
+  border: solid var(--ink);
+  border-width: 0 2.5px 2.5px 0;
+  transform: translateY(-1px) rotate(45deg);
+  opacity: 0;
+}
+
+.setting input[type="checkbox"]:checked::after {
+  opacity: 1;
+}
+
+.setting input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--rouge);
+  outline-offset: 2px;
 }
 
 .setting-text {
@@ -187,4 +212,12 @@
   font-size: 20px;
   font-weight: 500;
   line-height: 1.7;
+}
+
+/* The line that says the day of the player's computer is a Lantern Festival, under the line of what the five days are for. */
+
+.opening-today {
+  margin: -2px 0 4px;
+  font-size: 17px;
+  letter-spacing: 0.08em;
 }

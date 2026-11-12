@@ -189,3 +189,19 @@ summary.menu-heading {
 .setting-choice .choice {
   justify-self: start;
 }
+
+/* The hints that have been given, a closed line in the help of the menu that opens into the list. */
+.menu-hints-list {
+  margin: 6px 0 2px;
+  padding: 6px 0 2px;
+  border-top: 1px solid var(--rule);
+}
+
+.menu-hints-list summary {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.menu-hints-list .hint-log-list {
+  margin-top: 4px;
+}
