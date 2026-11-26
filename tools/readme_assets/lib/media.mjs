@@ -2,7 +2,7 @@
 // cut down to a palette so that it stays small. ffmpeg is taken from PATH, or from the variable FFMPEG.
 
 import { spawn } from 'node:child_process';
-import { copyFile, link, mkdir, rm, stat } from 'node:fs/promises';
+import { copyFile, link, mkdir, readFile, rm, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 export function ffmpeg(args) {
@@ -25,10 +25,15 @@ export async function numberFrames(frames, dir) {
   await mkdir(dir, { recursive: true });
   let n = 0;
   for (const { file, hold } of frames) {
+    // Chromium can switch between RGB and RGBA PNGs mid-capture. Keep the GIF filter's input
+    // format stable. In PNG's IHDR, byte 25 is the colour type and 2 means RGB.
+    const isRgb = (await readFile(file))[25] === 2;
+    const frame = isRgb ? file : path.join(dir, `rgb-${n}.png`);
+    if (!isRgb) await ffmpeg(['-i', file, '-frames:v', '1', '-pix_fmt', 'rgb24', '-update', '1', frame]);
     for (let i = 0; i < hold; i++) {
       n += 1;
       const target = path.join(dir, `${String(n).padStart(5, '0')}.png`);
-      await link(file, target).catch(() => copyFile(file, target));
+      await link(frame, target).catch(() => copyFile(frame, target));
     }
   }
   return n;

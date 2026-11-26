@@ -193,15 +193,15 @@ test.describe("the words and the state of the card", () => {
     const card = readStatement(frameWith(stmt.statementKey({}, { last: { ...stmt.LAST_WRONG, wrong: ["cause", "rumour"] } })));
     setLang("en");
     expect(partNames(card, ["cause", "rumour"], "en")).toBe("How the bridge broke, Why people got it wrong");
-    expect(wrongLine(card, ["cause", "course"], "en")).toBe("Did not hold: How the bridge broke, What happened that night");
+    expect(wrongLine(card, ["cause", "course"], "en")).toBe("Couldn't back up How the bridge broke, What happened that night");
     setLang("zh");
     expect(partNames(card, ["course", "rumour"], "zh")).toBe("那晚的经过、大家为什么会误会");
-    expect(wrongLine(card, ["cause"], "zh")).toBe("没站住的：桥是怎么坏的");
+    expect(wrongLine(card, ["cause"], "zh")).toBe("站不住的是「桥是怎么坏的」");
     expect(wrongLine(card, [], "zh")).toBeNull();
     // Without a card the page's own names are used.
-    expect(wrongLine(null, ["course"], "zh")).toBe("没站住的：那晚的经过");
+    expect(wrongLine(null, ["course"], "zh")).toBe("站不住的是「那晚的经过」");
     setLang("en");
-    expect(wrongLine(null, ["rumour"], "en")).toBe("Did not hold: Why people got it wrong");
+    expect(wrongLine(null, ["rumour"], "en")).toBe("Couldn't back up Why people got it wrong");
   });
 });
 
@@ -239,7 +239,7 @@ test.describe("the buttons of the tasks that fill in the card and make the state
     // The other ways to speak, and judging the lines, have words of their own.
     expect(label({ verb: "speak", kind: "evidence" }, "en")).toBe("Set the record straight in public");
     expect(label({ verb: "speak", kind: "clarify" }, "zh")).toBe("当众把这话说清");
-    expect(label({ verb: "judge" }, "en")).toBe("Compare two lines in the notebook");
+    expect(label({ verb: "judge" }, "en")).toBe("Check the account in the notebook");
   });
 });
 

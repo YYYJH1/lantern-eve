@@ -507,6 +507,10 @@
   background: var(--paper);
 }
 
+.talk-dock[data-tight-slips] .talk-area .request-buttons {
+  position: static;
+}
+
 .request-buttons .ink-frame {
   display: inline-flex;
   gap: 8px;

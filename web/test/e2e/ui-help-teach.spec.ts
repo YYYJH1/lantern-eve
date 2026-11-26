@@ -133,7 +133,7 @@ test.describe("teaching an act", () => {
     const pill = page.getByTestId("hint-pill");
     await expect(pill).toHaveAttribute("data-hint", "teach.rally");
     await expect(pill.getByTestId("hint-pill-title")).toHaveText(en["teach.rally.title"]);
-    await expect(pill).toContainText("not the same as asking the elder");
+    await expect(pill).toContainText(en["teach.rally.text"]);
     await expect(page.getByTestId("verb-rally")).toHaveClass(/is-signal/);
     await page.getByTestId("verb-rally").click();
     expect((await fake.sentSoFar(page)).at(-1)).toMatchObject({ type: "rally" });
@@ -145,7 +145,7 @@ test.describe("teaching an act", () => {
     await page.getByTestId("verb-entrust").click();
     await expect(pill).toHaveAttribute("data-hint", "teach.convene");
     await expect(pill.getByTestId("hint-pill-title")).toHaveText(en["teach.convene.title"]);
-    await expect(pill).toContainText("Call for helpers");
+    await expect(pill).toContainText("gathered at the hall");
     expect(await log(lantern)).toEqual(["teach.rally", "teach.entrust", "teach.convene"]);
     expect(lantern.pageErrors).toEqual([]);
   });

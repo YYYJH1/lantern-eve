@@ -87,7 +87,7 @@ test.describe("a request on the real core", () => {
     // She says no, in the core's words, where the preview was, and the answer took the minutes the preview said.
     await expect(card).toHaveAttribute("data-phase", "result");
     await expect(page.getByTestId("request-result")).toHaveAttribute("data-ok", "false");
-    await expect(page.getByTestId("request-result")).toHaveText("×Granny Li has a condition you have not met yet. That comes first.");
+    await expect(page.getByTestId("request-result")).toHaveText("×Granny Li needs you to do something first.");
     await expect(page.getByTestId("request-spent")).toHaveText("That took 20 minutes.");
     await expect(page.getByTestId("request-reply")).not.toBeEmpty();
     if (goes) {
@@ -97,7 +97,7 @@ test.describe("a request on the real core", () => {
       await expect(card).toHaveAttribute("data-phase", "result");
       // The column is scrolled to it, where the player is looking, and not left with the card below the fold.
       await expect(card).toBeInViewport({ ratio: 0.9 });
-      await expect(page.getByTestId("request-result")).toHaveText("×Granny Li has a condition you have not met yet. That comes first.");
+      await expect(page.getByTestId("request-result")).toHaveText("×Granny Li needs you to do something first.");
       await expect(page.getByTestId("status")).toHaveText("running");
       await page.getByTestId("request-close").click();
       await expect(page.getByTestId("talk-ended")).toHaveCount(0);
@@ -141,7 +141,7 @@ test.describe("a request on the real core", () => {
     await expect(page.getByTestId("talk-badge")).toHaveCount(0);
     await expect(page.getByTestId("talk-ended")).toBeVisible();
     await expect(card).toHaveAttribute("data-phase", "result");
-    await expect(page.getByTestId("request-result")).toHaveText("×Granny Li has a condition you have not met yet. That comes first.");
+    await expect(page.getByTestId("request-result")).toHaveText("×Granny Li needs you to do something first.");
     await expect(page.getByTestId("request-reply")).not.toBeEmpty();
     await expect(card).toBeInViewport({ ratio: 0.9 });
     await expect(page.getByTestId("status")).toHaveText("running");
@@ -169,7 +169,7 @@ test.describe("a request on the real core", () => {
     // The card still holds the old version, and the core turns it down as stale and does nothing.
     await expect(card).toHaveAttribute("data-phase", "preview");
     await page.getByTestId("request-confirm").click();
-    await expect(page.getByTestId("request-stale")).toHaveText("Things have changed. Have another look");
+    await expect(page.getByTestId("request-stale")).toHaveText("Things have changed since you opened this. Check the terms again before asking.");
     await expect(card).toHaveAttribute("data-phase", "preview");
     // What went out was the action with the version of the first preview, and the core turned it down and did nothing with it.
     const refused = (await appliedActions(lantern)).filter((a) => a.type === "entrust");
@@ -248,7 +248,7 @@ test.describe("the notebook and the evening on the real core", () => {
     const lit = { a: (await line.getAttribute("data-a")) ?? "", b: (await line.getAttribute("data-b")) ?? "" };
     await expect(page.locator('[data-testid="note"][data-hinted="true"]')).toHaveCount(2);
     await expect(page.getByTestId("hint-relation")).toHaveCount(0);
-    await expect(page.getByTestId("notebook-hint")).toContainText("Tell me how these two relate");
+    await expect(page.getByTestId("notebook-hint")).toContainText("Do these two accounts fit together?");
     await page.getByTestId("notebook-hint").click();
     await expect(page.getByTestId("hint-relation")).toBeVisible();
     // A second ask says the relation of the same pair, and does not light another.
@@ -297,7 +297,7 @@ test.describe("the notebook and the evening on the real core", () => {
 
     // The pair to say in public: what the clerk saw first hand, against the version of the madam. The core takes it if it was not judged.
     const judgedNote = async (text: string): Promise<string> => (await page.locator('[data-testid="note"]', { hasText: text }).first().getAttribute("data-id")) ?? "";
-    const seen = await judgedNote("Li Er was at the bridge last night");
+    const seen = await judgedNote("Li Er was at the bridge that night");
     const version = await judgedNote("out of envy");
     expect([seen, version]).not.toContain("");
     await page.locator(`[data-testid="note"][data-id="${version}"]`).getByTestId("note-claim").click();
@@ -316,12 +316,12 @@ test.describe("the notebook and the evening on the real core", () => {
     await page.locator('[data-testid="task-other"][data-id="t_clear_rumour"]').getByTestId("task-track").click();
     await expect(page.getByTestId("task-card")).toHaveAttribute("data-id", "t_clear_rumour");
     const elder = await askElder(page);
-    expect(elder[0]).toBe("Think about this. Take the two lines you compared and set it straight in public.");
-    expect(elder[1]).toContain("You have compared these two already");
-    expect(elder[1]).toContain("Li Er was at the bridge last night");
+    expect(elder[0]).toBe("Here's how I'd go about it. Tell the room what each account says, then explain what the comparison shows.");
+    expect(elder[1]).toContain("You checked");
+    expect(elder[1]).toContain("Li Er was at the bridge that night");
     // The card has no button before the afternoon (the walk to the teahouse is offered from four, an hour before the evening), so the next step
     // is said in the card's own words.
-    expect(elder[2]).toBe("Your next step: Take the two lines you compared and set it straight in public.");
+    expect(elder[2]).toBe("Your next step: Tell the room what each account says, then explain what the comparison shows.");
     // The card has the evening at the teahouse for its window, every day, so the elder says when and where the people are.
     expect(elder[3]).toBe("At Teahouse, Day 1 17:00 to 19:00.");
     expect(elder).toHaveLength(4);
@@ -330,8 +330,8 @@ test.describe("the notebook and the evening on the real core", () => {
     await waitForClock(page, 17, 20);
     // The occasion is listed now, and the elder says when and where the people are.
     const evening = await askElder(page);
-    expect(evening[1]).toContain("You have compared these two already");
-    expect(evening[2]).toMatch(/^Your next step: (Go to Teahouse|Take the two lines you compared and set it straight in public\.)$/);
+    expect(evening[1]).toContain("You checked");
+    expect(evening[2]).toMatch(/^Your next step: (Go to Teahouse|Tell the room what each account says, then explain what the comparison shows\.)$/);
     expect(evening[3]).toBe("At Teahouse, Day 1 17:00 to 19:00.");
     // The card has the manager speak after six, when everyone who counts is in the room (Li Da, who has the bamboo, comes at a quarter to five,
     // the elder and the Zhou people by half past five): before it, at the teahouse, there is nothing to press.
@@ -377,7 +377,7 @@ test.describe("the notebook and the evening on the real core", () => {
     expect(clarified.accepted).toBeGreaterThanOrEqual(4);
     // Granny Li takes her objection back, and the page says so in a note, in words and not as an id.
     expect((await eventsOf(page, "objection_withdrawn")).at(-1)).toMatchObject({ npc: "li_laotai", what: "bamboo" });
-    await expect(page.getByTestId("game-note").filter({ hasText: "Granny Li no longer stands in the way of the bamboo." })).toHaveCount(1);
+    await expect(page.getByTestId("game-note").filter({ hasText: "Granny Li dropped the objection, so you can go back to arranging bamboo." })).toHaveCount(1);
     // The people come in one after the other, and the picture waits for the last (a note does not stay as long).
     await page.getByTestId("clarify-done").click();
     // The same pair cannot be said again to the same people, and the page says why where the pair is.
@@ -403,7 +403,7 @@ test.describe("the notebook and the evening on the real core", () => {
     await expect(card).toHaveAttribute("data-phase", "preview");
     const material = await corePreview(page, { verb: "entrust", npc: "li_da", kind: "material" });
     await expect(page.getByTestId("request-asks").locator("dd")).toHaveText(material.asks.en);
-    expect(material.asks.en).toContain("4 poles come by 7 tomorrow morning");
+    expect(material.asks.en).toContain("they'll bring 4 poles by 7 tomorrow morning");
     expect(material.blockers).toEqual([]);
     await page.getByTestId("request-confirm").click();
     await expect(card).toHaveAttribute("data-phase", "result");

@@ -60,7 +60,7 @@ test.describe("a request on the server host", () => {
       }
       await expect(card).toHaveAttribute("data-phase", "result", { timeout: 30_000 });
       await expect(page.getByTestId("request-result")).toHaveAttribute("data-ok", "false");
-      await expect(page.getByTestId("request-result")).toHaveText("×Granny Li has a condition you have not met yet. That comes first.");
+      await expect(page.getByTestId("request-result")).toHaveText("×Granny Li needs you to do something first.");
       await expect(page.getByTestId("request-spent")).toHaveText("That took 20 minutes.");
       const replay = await page.evaluate(() => window.__lantern.client.exportReplay());
       const sent = replay.records.filter((r) => r[2] === "player" && r[3].type === "entrust");

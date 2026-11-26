@@ -82,8 +82,8 @@ test.describe("the days after the first, on the real core, in Chinese on the lig
     await expect(page.getByTestId("topbar-task-text")).toHaveText("凑齐竹料");
     const card = page.getByTestId("task-card");
     await expect(card).toHaveAttribute("data-id", "t_bamboo_rest");
-    await expect(page.getByTestId("task-why")).toHaveText("桥要十根竹料，已经到了四根。李大又答应送四根。");
-    await expect(page.getByTestId("task-next")).toHaveText("按约好的时间去桥边，看竹料送到没有。");
+    await expect(page.getByTestId("task-why")).toHaveText("修桥要十根竹料。桥边已有四根，李大还答应送四根。");
+    await expect(page.getByTestId("task-next")).toHaveText("到约好的时间，去桥边看看竹料到了没有。");
     await expect(page.getByTestId("task-window")).toHaveText("石桥，辰时 07:00 到 10:00"); // today: the day is left out
     await expect(page.getByTestId("task-do")).toHaveCount(0); // nothing to do but be there
     await snap(page, "second-morning-bar", "zh-light-1280x760");
@@ -121,10 +121,10 @@ test.describe("the days after the first, on the real core, in Chinese on the lig
     expect(frame.board.peace).toMatchObject({ state: "open", witnessed: false });
     await expect(page.getByTestId("topbar-task-text")).toHaveText("第三天早上开工");
     await expect(page.getByTestId("task-card")).toHaveAttribute("data-id", "t_work_3");
-    await expect(page.getByTestId("task-next")).toHaveText("早上去桥边，看帮手开工。");
+    await expect(page.getByTestId("task-next")).toHaveText("早上去桥边看看开工没有。");
     await expect(page.getByTestId("task-window")).toHaveText("石桥，辰时 08:00 到 12:00");
     await expect(page.getByTestId("task-do")).toHaveCount(1); // the button came at seven, an hour before the window
-    await expect(page.getByTestId("task-why")).toHaveText("照这几个帮手，再干两个早上桥就修完了。");
+    await expect(page.getByTestId("task-why")).toHaveText("这几个人再干两个早上，就能把桥修好。");
     await snap(page, "third-morning-bar", "zh-light-1280x760");
     await openBoard(page);
     await expect(page.getByTestId("board-site")).toHaveAttribute("data-bamboo", "10");

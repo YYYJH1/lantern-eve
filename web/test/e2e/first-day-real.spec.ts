@@ -131,10 +131,11 @@ async function theFirstEvening(lantern: LanternPage): Promise<void> {
   await expect(page.getByTestId("opening-start")).toBeEnabled({ timeout: 60_000 });
   await page.getByTestId("opening-start").click();
   await expect(page.getByTestId("people-six-person")).toHaveCount(6);
-  await expect(page.getByTestId("people-more")).toHaveText("镇上还有十来位，见了面再认识。");
+  await expect(page.getByTestId("people-more")).toHaveText(zh["people.opening.more"]);
   await expect(page.getByTestId("tutorial-card")).toHaveCount(0);
   await page.getByTestId("people-enter").click();
   await expect(card).toHaveAttribute("data-step", "granny");
+  await expect(page.getByTestId("tutorial-next")).toHaveText(zh["tut.granny.reply"]);
   expect(await peopleBook(page)).toEqual([]);
   // The world waits under the card, and Granny Li goes to pray at seven. The first talk with her ends twelve minutes of the game after the request that the test makes in it
   // has been paid for, which is under a second at this pace, so the walk to her is begun under the card: the moment she is met in does not depend on how long the machine
@@ -153,8 +154,12 @@ async function theFirstEvening(lantern: LanternPage): Promise<void> {
   await askFor(page, "lend");
   await goAhead(page);
   await expect(card).toHaveAttribute("data-step", "clerk", { timeout: 90_000 });
+  const borrow = page.getByTestId("talk-log").locator('[data-testid="talk-line"]');
+  await expect(borrow.first()).toHaveText(zh["talk.you.borrow"]);
+  await expect(borrow.nth(1)).toContainText("我家老二");
   await page.getByTestId("tutorial-next").click();
   await expect(card).toHaveCount(0);
+  await page.getByTestId("request-close").click();
   // What stands behind the hearts opens from the hearts, and the world waits while it is open.
   await page.getByTestId("hearts").first().click();
   await expect(page.getByTestId("hearts-sheet")).toBeVisible();
@@ -180,7 +185,7 @@ async function theFirstEvening(lantern: LanternPage): Promise<void> {
   await leave(page);
   for (const next of ["cha_laoban", "zhou_huoji"]) {
     await closeElder(page);
-    await expect(page.getByTestId("task-do")).toContainText("听谁说的");
+    await expect(page.getByTestId("task-do")).toContainText("这话是谁说的");
     expect(await followTheSlip(page)).toBe(next);
     await expect(page.getByTestId("picker-askSource")).toBeVisible();
     if (next === "zhou_huoji") {
@@ -204,7 +209,7 @@ async function theFirstEvening(lantern: LanternPage): Promise<void> {
   await page.getByTestId("workspace-tab-notes").click();
 
   // --- 4. The pair: a claim, a line shown against it, one of three plain answers. The wrong answer says to think again and writes nothing down.
-  await expect(page.getByTestId("pair-shown")).toContainText("李二昨晚在桥边。");
+  await expect(page.getByTestId("pair-shown")).toContainText("李二出事那晚在桥边。");
   await expect(page.getByTestId("pair-claim")).toContainText("眼红人家出风头");
   await expect(page.getByTestId("ans-unsupported")).toContainText(zh["pairing.ans.unsupported"]);
   await expect(page.getByTestId("ans-contradicts")).toContainText(zh["pairing.ans.contradicts"]);
@@ -241,6 +246,12 @@ async function theFirstEvening(lantern: LanternPage): Promise<void> {
   await row.getByTestId("judgment-clarify").click();
   await expect(page.getByTestId("clarify")).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId("clarify-claim")).toContainText("眼红人家出风头");
+  await expect(page.getByTestId("clarify-exchange")).toBeVisible();
+  await expect(page.getByTestId("clarify-evidence")).toBeHidden();
+  await page.getByTestId("clarify-follow").click();
+  await expect(page.getByTestId("clarify-evidence").locator("strong")).toHaveText("周家伙计");
+  await expect(page.getByTestId("clarify-evidence")).toContainText("出事那晚在桥边");
+  await expect(page.getByTestId("clarify-answer")).toContainText(zh["clarify.exchange.unsupported"]);
   await expect.poll(() => page.getByTestId("hearer").count(), { timeout: 30_000 }).toBeGreaterThanOrEqual(5);
   await expect(page.getByTestId("clarify-sum")).toBeVisible({ timeout: 30_000 });
   const clarified = (await eventsOf(page, "clarified")).at(-1) as { accepted: number; venue: string };
@@ -256,7 +267,7 @@ async function theFirstEvening(lantern: LanternPage): Promise<void> {
   expect(await followTheSlip(page)).toBe("li_da");
   await theFaceOfTheTalk(page);
   await askFor(page, "material");
-  await expect(page.getByTestId("request-asks").locator("dd")).toHaveText("请李大把竹料送到桥边。要是答应，明早07:00前先送四根。");
+  await expect(page.getByTestId("request-asks").locator("dd")).toHaveText("请李大把竹料送到桥边。要是答应了，明早07:00前先送四根。");
   await goAhead(page);
   await expect(page.getByTestId("request-result")).toHaveAttribute("data-ok", "true");
   // The press may have been sent twice: the core turns back a press whose preview is out of date (the hold it was taken in ended before the press) and
@@ -313,7 +324,7 @@ test.describe("a new player's first day", () => {
     await page.getByTestId("gazette-close").click();
     await expect(end).toBeVisible();
     await expect(page.getByTestId("end-title")).toHaveText("第一天过完了");
-    await expect(page.getByTestId("end-reached")).toHaveText("第一批竹料送到了石桥。灯会在第五天晚上。在那之前，还要把桥修好，把桥是怎么坏的当众说清，再让两家和好。");
+    await expect(page.getByTestId("end-reached")).toHaveText(zh["firstday.reached"]);
     await page.getByTestId("end-close").click();
     await expect(end).toHaveCount(0);
     await expect(page.getByTestId("topbar-task-text")).toHaveText("凑齐竹料");

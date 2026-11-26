@@ -452,7 +452,8 @@ export class Flows {
     if (now === null || now.phase !== "preview") return;
     const body: Record<string, unknown> = { ...this.bodyOf(now.offer), type: now.verb, action_id: now.actionId, version: now.preview.version };
     this.state.request = { phase: "sending", verb: now.verb, npc: now.npc, offer: now.offer, preview: now.preview, actionId: now.actionId, auto: now.auto, follow: now.follow };
-    this.play.send(body, { subject: now.offer.name, npc: now.npc, flow: "request" });
+    const speech = now.verb !== "entrust" ? undefined : body.kind === "lend" ? "talk.you.borrow" : body.kind === "material" ? "talk.you.deliver" : undefined;
+    this.play.send(body, { subject: now.offer.name, npc: now.npc, flow: "request", ...(speech === undefined ? {} : { speech }) });
     this.touch();
   }
 

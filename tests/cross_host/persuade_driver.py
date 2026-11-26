@@ -217,7 +217,7 @@ class Script:
 
 def beats() -> list[Beat]:
     """The game, beat by beat."""
-    envy, at_bridge = Note("out of envy"), Note("Li Er was at the bridge last night.")
+    envy, at_bridge = Note("out of envy"), Note("Li Er was at the bridge that night.")
     return [
         # day 1, the morning: the head of the Zhou family
         Wait(1, 6, 30),
@@ -252,7 +252,7 @@ def beats() -> list[Beat]:
         Do("granny-lend-now", "entrust", kind="lend"),
         # the bamboo is Li Da's, and he was there when it was cleared
         Meet("li_da"),
-        Do("li-da-bamboo", "entrust", kind="material", cite=[Note("made clear in public")]),
+        Do("li-da-bamboo", "entrust", kind="material", cite=[Note("cleared up in public")]),
         # the call was for the crew of five and the Li family had nobody in it: he is asked to join,
         # and joins once the manager has promised him three things
         Do("li-da-stall", "promise", what="stall", item="front", due=4),

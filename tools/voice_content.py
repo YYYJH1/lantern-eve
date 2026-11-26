@@ -140,8 +140,6 @@ KNOWABLE = ("pr_set_straight",)  # the claims a list may ask whether a person kn
 BELIEF_TERMS = ("knows",)
 BANNED = ("；", ";", "—", "–", "―", "－", "--", " - ")
 SENTENCE = {"zh": re.compile(r"[。！？]"), "en": re.compile(r"[.!?]")}
-COMMA = {"zh": "，", "en": ","}
-COMMAS_PER_SENTENCE = {"zh": 1, "en": 2}
 ASCII_PUNCTUATION = re.compile(r"[,.!?:;()]")
 LETTERS = re.compile(r"[A-Za-z]")
 SLOT = sc.SLOT
@@ -273,9 +271,6 @@ def _text_problems(at: str, lang: str, text: str) -> list[str]:
             out.append(f"{at} (zh): write Chinese punctuation and no Latin letters, got {text!r}")
     elif "…" in text:
         out.append(f"{at} (en): write an ellipsis as three full stops, got {text!r}")
-    commas = max((s.count(COMMA[lang]) for s in SENTENCE[lang].split(bare)), default=0)
-    if commas > COMMAS_PER_SENTENCE[lang]:
-        out.append(f"{at} ({lang}): a chain of comma clauses, split it into sentences: {text!r}")
     return out
 
 

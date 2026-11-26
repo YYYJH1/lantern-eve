@@ -395,7 +395,9 @@ def test_a_guessed_motive_does_not_say_the_hedge_of_its_line_again(speaker):
     prop = PROPS["pr_li_damaged_jealous"]
     for pick, (line_hedge, motive_hedge) in enumerate(((one, other), (other, one))):
         for said in claim_wordings(prop, "speculate", "self_seen", speaker, pick=pick):
-            motive = said["zh"].rstrip("。").rpartition("。")[2]
+            (motive,) = [
+                sentence for sentence in said["zh"].split("。") if "是眼红人家出风头" in sentence
+            ]
             assert motive.startswith(motive_hedge) and line_hedge in said["zh"], (speaker, said)
 
 
@@ -418,13 +420,14 @@ def test_the_one_who_told_it_is_themself_in_what_they_told():
             continue
         for said in claim_wordings(PROPS["pr_dalang_at_home"], "assert", "zhou_dalang", speaker):
             assert "自己" in said["zh"] and said["zh"].count("大郎") <= 1, (speaker, said["zh"])
-            assert "they were at home" in said["en"], (speaker, said["en"])
+            assert "they were at home" in said["en"].lower(), (speaker, said["en"])
 
 
 def test_a_family_says_we_the_boatman_is_old_he_and_the_lantern_maker_says_li_er():
     for speaker in ("li_laotai", "li_da", "li_er", "shitou", "li_xiaomei"):
         said = voices.claim_words(PROPS["pr_li_damaged"], "assert", "cha_laoban", speaker, 0, 0)
-        assert "我们家昨晚把栏杆弄坏了" in said["zh"] and "our family" in said["en"], said
+        assert "我们家出事那晚把栏杆弄坏了" in said["zh"], said
+        assert "our family" in said["en"].lower(), said
     for speaker in VOICED:
         if speaker == "old_he":
             continue
@@ -433,7 +436,7 @@ def test_a_family_says_we_the_boatman_is_old_he_and_the_lantern_maker_says_li_er
     said = voices.claim_words(
         PROPS["pr_liner_at_bridge"], "assert", "unknown", "zhadeng_shifu", 0, 0
     )
-    assert "李二昨晚在桥边" in said["zh"] and "二郎" not in said["zh"]
+    assert "李二出事那晚在桥边" in said["zh"] and "二郎" not in said["zh"]
 
 
 def test_what_was_set_straight_is_said_in_two_sentences_what_was_seen_first():

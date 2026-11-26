@@ -83,7 +83,7 @@ test.describe("the gallery of recordings", () => {
     await page.getByTestId("btn-menu").click();
     await page.getByTestId("btn-replays").click();
     await expect(page.getByTestId("gallery")).toBeVisible();
-    await expect(page.getByTestId("gallery-browser-empty")).toHaveText("No saves yet. Save a game from the menu and it will be here.");
+    await expect(page.getByTestId("gallery-browser-empty")).toHaveText("Save a game from the menu to watch it here.");
     await expect(page.getByTestId("gallery-server")).toHaveCount(0);
     // The drawer is shut behind it, and the page of the game is out of reach: it takes no click and no key.
     await expect(page.getByTestId("menu")).toHaveAttribute("data-open", "false");
@@ -333,11 +333,11 @@ test.describe("a link to a recording", () => {
     const page = lantern.page;
     await page.goto(`${lantern.servers.app.origin}/?scenario=bridge&seed=9&pace=1#replay=save-77`);
     await expect(page.getByTestId("gallery")).toBeVisible();
-    await expect(page.getByTestId("gallery-failure")).toHaveText("This recording is not here. It may have been deleted, or it belongs to another browser or server.");
+    await expect(page.getByTestId("gallery-failure")).toHaveText("Replay not found. Try the browser or server where it was saved.");
     expect(await page.evaluate(() => location.hash)).toBe("");
     await expect(page.getByTestId("replay-layer")).toHaveCount(0);
     await page.getByTestId("gallery").getByTestId("lang-zh").click();
-    await expect(page.getByTestId("gallery-failure")).toContainText("这份录像不在这里");
+    await expect(page.getByTestId("gallery-failure")).toContainText("找不到这份录像。");
     await expect(page.getByTestId("gallery").getByTestId("gallery-close")).toContainText("回到游戏");
     // A name that is no name is no link, and a path in it does not get anywhere.
     await page.getByTestId("gallery-close").click();
@@ -424,7 +424,7 @@ test.describe("a recording that does not replay, and one that ends", () => {
     const end = Number(await layer.getByTestId("replay-seek").getAttribute("max"));
     await layer.getByTestId("replay-seek").fill(String(end));
     await expect(layer.getByTestId("ending")).toBeVisible({ timeout: 60_000 });
-    await expect(layer.getByTestId("replay-ended")).toHaveText("End of the recording");
+    await expect(layer.getByTestId("replay-ended")).toHaveText("End of replay");
     expect(await page.evaluate(() => window.__lantern.replay?.play.state.ending?.reveal !== null)).toBe(true);
     // Back on the ending page closes the recording.
     await layer.getByTestId("ending-new").click();

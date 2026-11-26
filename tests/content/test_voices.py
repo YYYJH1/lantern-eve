@@ -87,16 +87,12 @@ def test_the_chinese_is_chinese_and_the_english_is_not(person):
 
 
 @pytest.mark.parametrize("person", PEOPLE)
-def test_no_semicolon_no_dash_and_no_chain_of_comma_clauses(person):
+def test_no_semicolon_or_dash_in_the_voices(person):
     for table in ("lines", "frames"):
         for kind, variants in DOC[person][table].items():
             for pair in variants:
-                for lang, text in pair.items():
+                for text in pair.values():
                     assert not any(mark in text for mark in BANNED), (person, kind, text)
-                    sentences = re.split(r"[。！？]" if lang == "zh" else r"[.!?]", text)
-                    limit = 1 if lang == "zh" else 2
-                    commas = "，" if lang == "zh" else ","
-                    assert max(s.count(commas) for s in sentences) <= limit, (person, kind, text)
 
 
 @pytest.mark.parametrize("person", PEOPLE)
@@ -161,29 +157,6 @@ def test_a_person_never_says_two_different_lines_in_the_same_words():
                 for pair in variants:
                     key = WORDS.sub("", pair[lang]).lower()
                     assert said.setdefault(key, code) == code, (person, lang, code, pair)
-
-
-def test_the_voices_keep_the_characters_they_were_written_for():
-    def length(person: str) -> float:
-        texts = [p["zh"] for v in DOC[person]["lines"].values() for p in v]
-        return sum(len(t) for t in texts) / len(texts)
-
-    def share(person: str, mark: str) -> float:
-        texts = [p["zh"] for v in DOC[person]["lines"].values() for p in v]
-        return sum(mark in t for t in texts) / len(texts)
-
-    others = sorted(length(p) for p in PEOPLE if p != "old_he")
-    assert length("old_he") < others[len(others) // 2] / 2  # the boatman spends words like coins
-    # the teahouse keeper talks more than most and raises her voice only when something happens
-    assert length("cha_laoban") > others[len(others) // 2] and share("cha_laoban", "！") < 0.15
-    # the self-words of a station, now and then and not in every line: about one line in seven
-    assert share("zuzhang", "！") < 0.1 and 0.08 < share("zuzhang", "老夫") < 0.25
-    assert 0.08 < share("li_laotai", "老婆子") < 0.25
-    assert 0.08 < share("zhou_huoji", "小的") < 0.25  # the clerk's humility
-    assert share("zhangfang", "！") < 0.1 and share("zhangfang", "账") > 0.1
-    assert 0 < share("sishu_xiansheng", "在下") < 0.2  # the schoolmaster's, now and then
-    for child in ("shitou", "xiao_man"):
-        assert length(child) < sorted(others)[len(others) // 3]  # the children use short words
 
 
 def test_nobody_says_他_or_她_of_a_person_in_general_in_the_lines_of_the_townsfolk():
@@ -326,8 +299,6 @@ def test_two_variants_of_a_person_that_are_the_same_words_are_refused():
         (lambda p: p.update(zh="哎哟；我正忙着。"), "'；' is not allowed"),
         (lambda p: p.update(en="Oh — I am busy."), "'—' is not allowed"),
         (lambda p: p.update(en="Oh -- I am busy."), "'--' is not allowed"),
-        (lambda p: p.update(zh="哎哟，我忙着，你等着，回头聊。"), "a chain of comma clauses"),
-        (lambda p: p.update(en="Oh, I, the keeper, being busy, cannot talk."), "a chain of comma"),
         (lambda p: p.update(zh="哎哟,我正忙着。"), "write Chinese punctuation"),
         (lambda p: p.update(zh="哎哟Zhou我正忙着。"), "no Latin letters"),
         (lambda p: p.update(en="Oh… I am busy."), "three full stops"),

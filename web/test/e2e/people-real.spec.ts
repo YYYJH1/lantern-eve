@@ -55,7 +55,7 @@ test.describe("meeting people on the real game", () => {
     const granny = cast.find((person) => person.id === "li_laotai");
     await expect(note.getByTestId("meeting-name")).toHaveText(granny?.en ?? "");
     await expect(note.getByTestId("meeting-intro")).toHaveText(granny?.intro.en ?? "");
-    await expect(note.getByTestId("meeting-added")).toHaveText("Now in the people book.");
+    await expect(note.getByTestId("meeting-added")).toHaveText("You can look this person up under People.");
     // The frame has her known, with the half heart of a first talk and the place and the time the talk began.
     const first = await rowOf(page, "li_laotai");
     expect(first).toMatchObject({ known: true, hearts: 1 });
@@ -98,7 +98,7 @@ test.describe("meeting people on the real game", () => {
     await expect(sheet).toHaveCount(0);
     const shopkeeper = lines.nth(1);
     await expect(shopkeeper.getByTestId("people-asked-what")).toHaveText("a front-row stall at the festival");
-    await expect(shopkeeper.getByTestId("people-asked-for")).toHaveText("For: Ask Shopkeeper Zhou to bring the timber to the bridge");
+    await expect(shopkeeper.getByTestId("people-asked-for")).toHaveText("You asked for “Ask Shopkeeper Zhou to bring the timber to the bridge”");
     const madam = lines.nth(2);
     await expect(madam.getByTestId("people-said-entry").first()).toContainText("Li Er");
     await expect(madam.getByTestId("people-said-at").first()).toHaveText(/^Day 1 \d\d:\d\d, (at .+|in the street)$/);

@@ -3,20 +3,20 @@
 # boats.
 person: xiao_man
 voice:
-  zh: 河边人家的孩子，夜里爱钓鱼。安静，有点迷糊，白天老犯困。只说自己看见的，说得很具体，鱼、水、灯、船。用最简单的词，一句话很短。不想说就说「我困了……」。叫船夫老何「老何」，对总管说「你」。
-  en: A child from a house by the river who loves fishing at night. Quiet and a little dreamy, sleepy all through the day. Tells only what the child saw, in small exact things, fish, water, lanterns, boats. Uses the simplest words and short sentences. When unwilling to talk, says "I'm sleepy...".
+  zh: "小满住在河边，爱钓鱼，白天有时犯困。见过的事会先想一想，再用自己熟悉的东西说明白，常说的是水、灯和船。没看见就直说，不愿讲时也会找个由头躲开。叫船夫「老何」。"
+  en: "Xiaoman lives by the river and likes to fish, sometimes getting sleepy by day. Given a moment to think, Xiaoman describes what happened with familiar things such as water, lamps and boats. When something wasn't seen, Xiaoman says so, and changes the subject if unwilling to talk. Use the familiar address for the ferryman."
 call:
   old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "呼……鱼上钩了……（睡熟了）", en: "Zzz... a bite... (fast asleep)"}
-    - {zh: "唔……月亮掉水里了……（睡熟了）", en: "Mm... the moon fell in the water... (fast asleep)"}
+    - {zh: "小满睡着了。", en: "Xiaoman is asleep."}
+    - {zh: "小满迷迷糊糊，没醒。", en: "Xiaoman stirs without waking."}
   busy:
-    - {zh: "我在钓鱼。别吓跑鱼。", en: "I'm fishing. Don't scare the fish."}
-    - {zh: "浮子在动。等一下。", en: "The float's moving. Wait."}
+    - {zh: "你先别过来，我还在钓鱼，脚步重了鱼就跑了。", en: "Don't come any closer just yet. I'm fishing, and footsteps will scare them away."}
+    - {zh: "你等一下嘛，我看见浮子在动了。", en: "Wait a moment. I saw the float move."}
   timeout:
     - {zh: "我困了，要回去睡了。", en: "I'm sleepy. I'm going home to sleep."}
-    - {zh: "鱼该咬钩了。我走了。", en: "The fish should be biting. I'm going."}
+    - {zh: "鱼快咬钩了。", en: "I'm about to get a bite."}
   unknown:
     - {zh: "我没看见。", en: "I didn't see."}
     - {zh: "没人跟我说过。", en: "Nobody told me."}
@@ -33,17 +33,17 @@ lines:
     - {zh: "我不认识你。", en: "I don't know you."}
     - {zh: "娘说不给生人看。", en: "Mum says don't show strangers."}
   took_in:
-    - {zh: "我记住了。", en: "I'll remember."}
-    - {zh: "我知道了。", en: "Okay, I know now."}
+    - {zh: "哦，我这下想明白了。", en: "Oh, I think I understand now."}
+    - {zh: "你说的这个我记住了。", en: "I'll remember what you just told me."}
   knew:
     - {zh: "这个我知道。", en: "I know that."}
     - {zh: "我早知道了。", en: "I knew already."}
   doubted:
     - {zh: "我听到的不一样。", en: "What I heard was different."}
-    - {zh: "好像不对。", en: "That sounds wrong."}
+    - {zh: "等等，可我听别人说的不是这样呀。", en: "Wait. That's not what I heard from the others."}
   caught:
-    - {zh: "你骗我。", en: "You tricked me."}
-    - {zh: "你说谎。以后不跟你说话了。", en: "You lied. I won't talk to you any more."}
+    - {zh: "我还当你说的是真的，你怎么骗我呀？", en: "I thought it was true. Why did you lie to me?"}
+    - {zh: "你都骗过我一回了，我下次就不听你的了。", en: "You fooled me once. I'm not listening next time."}
   deal:
     - {zh: "好。说好了。", en: "Okay. It's a promise."}
     - {zh: "拉钩。", en: "Shake on it."}
@@ -51,8 +51,8 @@ lines:
     - {zh: "光说没用。", en: "Just saying doesn't count."}
     - {zh: "我不信。", en: "I don't believe you."}
   kept_thanks:
-    - {zh: "你说话算数。", en: "You kept your word."}
-    - {zh: "你做到了。谢谢。", en: "You did it. Thanks."}
+    - {zh: "你真把那件事办好了，我就知道你说话算数。", en: "You really did it. I knew you'd keep your word."}
+    - {zh: "我还以为得等好久呢，你已经办好了呀。", en: "I thought it'd take ages, and you've done it already."}
   will_do:
     - {zh: "好，我这就去。", en: "Okay, I'm going."}
     - {zh: "我来做。", en: "I'll do it."}
@@ -76,7 +76,7 @@ lines:
     - {zh: "没有。真的。", en: "Nothing. Really."}
   testified:
     - {zh: "我看见的就是这样。", en: "That's what I saw."}
-    - {zh: "我没骗人，是我亲眼看到的。", en: "I'm not lying. I saw it myself."}
+    - {zh: "我当时就在旁边，你要问什么呀？", en: "I was right there. What do you want to ask?"}
   too_late:
     - {zh: "好晚了。明天再来。", en: "It's really late. Come tomorrow."}
     - {zh: "我要睡了。明天吧。", en: "I'm going to sleep. Tomorrow."}
@@ -120,10 +120,10 @@ lines:
     - {zh: "桥边{item}好多了。", en: "There's lots of {item} at the bridge."}
     - {zh: "{item}够了吧？河边都堆满了。", en: "That's enough {item}, isn't it? The bank's piled full."}
   point_heard:
-    - {zh: "我没看见。不过听{name}说过，你去问。", en: "I didn't see. But I heard {name} say something, so ask."}
-    - {zh: "没人跟我说……{name}好像讲过，你去问吧。", en: "Nobody told me... I think {name} said something. Go and ask."}
+    - {zh: "我没看见这事，只听{name}提过，你还是去那儿问吧。", en: "I didn't see it. I only heard {name} mention it, so ask there."}
+    - {zh: "我听{name}说过，你要不要去问问？", en: "I heard it from {name}. Why don't you ask there?"}
   point_hub:
-    - {zh: "我不知道……你去问{name}吧。", en: "I don't know... ask {name}."}
+    - {zh: "我哪知道这些？你去问问{name}吧。", en: "How would I know? You could ask {name}."}
     - {zh: "我在睡觉，什么也没听到。你去找{name}。", en: "I was asleep and didn't hear anything. Go and find {name}."}
   gift_like:
     - {zh: "{item}……给我的吗？谢谢。", en: "Some {item}... for me? Thank you."}
@@ -136,32 +136,32 @@ lines:
     - {zh: "{item}喝了睡不着……不要了。", en: "Some {item}... tea keeps me awake. No, thanks."}
 frames:
   seen:
-    - {zh: "{line}。真的。", en: "{line}. Really."}
-    - {zh: "{line}。我在那儿，我知道。", en: "{line}. I was there, so I know."}
+    - {zh: "{line}，真的是我自己看见的。", en: "{line}, and I really did see it myself."}
+    - {zh: "{line}，我就在那儿，看得见呀。", en: "{line}, and I was close enough to see."}
   heard:
-    - {zh: "是{teller}告诉我的。说{line}。", en: "It was {teller} who told me that {line}."}
-    - {zh: "{teller}跟我讲过。说{line}。", en: "{teller} told me about it, that {line}."}
+    - {zh: "我听{teller}讲过这事，说{line}。", en: "{teller} told me about it and said {line}."}
+    - {zh: "{line}，是我听{teller}说的呀。", en: "{line}. I heard that from {teller}."}
   unknown:
     - {zh: "好像听谁说过。说{line}。", en: "I think someone said {line}."}
-    - {zh: "大人们在说。说{line}。", en: "The grown-ups say {line}."}
+    - {zh: "我听见有人说{line}。", en: "I heard somebody say {line}."}
   own:
-    - {zh: "我觉得，{line}。", en: "I think it's that {line}."}
-    - {zh: "我自己想的。{line}。", en: "My own idea is that {line}."}
+    - {zh: "我想了一会儿，觉得{line}。", en: "I've been thinking about it, and I think {line}."}
+    - {zh: "我自己想嘛，{line}。", en: "The way I see it, {line}."}
   guess_own:
-    - {zh: "我有点困。{hedge}{line}。", en: "I'm a bit sleepy. {hedge} {line}."}
+    - {zh: "{hedge}{line}。我想不出别的了。", en: "{hedge} {line}. I can't think of anything else."}
     - {zh: "我不太确定。{hedge}{line}。", en: "I'm not really sure. {hedge} {line}."}
   guess_heard:
     - {zh: "{teller}好像说过。{hedge}{line}。", en: "{teller} might have said so. {hedge} {line}."}
     - {zh: "听{teller}讲的，记不清了。{hedge}{line}。", en: "I heard it from {teller}, but I don't remember well. {hedge} {line}."}
   guess_unknown:
-    - {zh: "半夜听到的。{hedge}{line}。", en: "I heard it in the night. {hedge} {line}."}
+    - {zh: "忘了是谁讲的，{hedge}{line}。", en: "Can't remember who said it. {hedge} {line}."}
     - {zh: "只听到一点点。{hedge}{line}。", en: "I only heard a bit. {hedge} {line}."}
   rival:
-    - {zh: "可是{teller}说的不一样。说{line}。", en: "But {teller} said something else, that {line}."}
-    - {zh: "{teller}说的不是这样。说是{line}。", en: "{teller} said it a different way, that {line}."}
+    - {zh: "可{teller}跟我说过，{line}。", en: "But I heard {teller} tell it this way: {line}."}
+    - {zh: "可是{teller}讲的不一样，说{line}。", en: "But {teller} told it differently and said that {line}."}
   known:
     - {zh: "{line}。这个谁都知道。", en: "{line}. Everyone knows it."}
     - {zh: "{line}……这个我也知道。", en: "{line}... I know that too."}
 hedges:
   - {zh: 大概是, en: I guess}
-  - {zh: 我觉得是, en: I believe}
+  - {zh: 我觉得是, en: I think}

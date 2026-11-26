@@ -127,7 +127,7 @@ test.describe("the incense that skips to the next thing", () => {
     await expect(incense).toHaveAttribute("data-day", "");
     await lantern.setLang("en");
     await expect(incense).toHaveAttribute("aria-label", "Skip to the next thing");
-    await expect(page.getByTestId("task-text")).toHaveText("Everything is done. Look around if you like, and wait for the festival on the night of the fifth day.");
+    await expect(page.getByTestId("task-text")).toHaveText("That's everything for now. The festival begins on the fifth evening, so you can look around town until then.");
     expect(lantern.pageErrors).toEqual([]);
   });
 

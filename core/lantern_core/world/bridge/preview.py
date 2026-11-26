@@ -207,8 +207,8 @@ def _arrival(view: View, person: str) -> Words | None:
         found["amount"],
     )
     return _w(
-        f"。要是答应，{when['zh']}先送{numerals.zh_count(amount)}根。",
-        f". If {name['en']} agrees, {amount} poles come {when['en']}.",
+        f"。要是答应了，{when['zh']}先送{numerals.zh_count(amount)}根。",
+        f". If {name['en']} agrees, they'll bring {amount} poles {when['en']}.",
     )
 
 
@@ -223,8 +223,9 @@ def _standing_blocker(view: View, person: str) -> Words:
         item = commitments.item_words(row["item"])
         when = _by(view.now.day, row["due"]["day"], row["due"]["hour"])
         return _sentence(
-            f"{{n}}已经答应了，{when['zh']}送{numerals.zh_count(row['amount'])}根{item['zh']}",
-            f"{{n}} has promised already: {row['amount']} poles of {item['en']}, {when['en']}",
+            f"{{n}}已经答应{when['zh']}送{numerals.zh_count(row['amount'])}根{item['zh']}",
+            f"{{n}} has already promised to bring {row['amount']} poles of {item['en']} "
+            f"{when['en']}",
             person,
         )
     item = commitments.item_words(goals_work.SUPPLIERS[person][0])
@@ -233,36 +234,36 @@ def _standing_blocker(view: View, person: str) -> Words:
 
 # what stands in the way, by the code of the reason it is turned down for
 BLOCKS: dict[str, tuple[str, str]] = {
-    "not_talking": ("你们还没说上话", "you are not talking to {n} yet"),
-    "closed_way": ("{n}还不肯松口", "{n} will not give way yet"),
+    "not_talking": ("先和对方说上话", "start a conversation with {n} first"),
+    "closed_way": ("{n}还不肯答应", "{n} won't agree to it yet"),
     "needs_nod": (
-        "{n}要等李老太松口才肯答应。先把李二的事当众说清",
-        "{n} will not move until Granny Li no longer stands in the way. "
+        "把李二的事当众说清，等李老太点了头，{n}才能答应",
+        "{n} is waiting for Granny Li's approval. "
         "First set the talk about Li Er straight in public",
     ),
     "unaware": (
-        "{n}还没听说那话已经当众说清了。去告诉{n}一声",
-        "{n} has not heard that it was cleared up in public. Go and tell {n}",
+        "{n}没听说那句闲话已经说清了，先把当时讲的话转告{n}",
+        "The rumour was cleared up in public, but {n} hasn't heard. Go and tell {n}",
     ),
-    "distrust": ("{n}还不大信你，这会儿开口太早", "{n} does not trust you enough to be asked yet"),
+    "distrust": ("{n}还不大信你", "{n} doesn't trust you enough to agree yet"),
     "cannot": ("{n}帮不上这个忙", "{n} cannot help with that"),
     "nothing_to_say": ("{n}没什么可说的", "{n} has nothing to say about that"),
     "said_already": ("这件事{n}已经答复过了", "{n} has answered this already"),
-    "too_late": ("天色已晚，今天来不及了", "it is too late today"),
-    "closed": ("这个时辰不方便", "this is not a good hour"),
+    "too_late": ("今天来不及了", "it's too late today"),
+    "closed": ("换个时辰再来", "try again later"),
     "refused": ("{n}还不大信你", "{n} does not trust you enough yet"),
-    "needs": ("得先拿到别的凭据", "something else has to be in hand first"),
+    "needs": ("得先找到别的凭据", "find the other evidence first"),
     "no_entry": ("见闻簿里没有这一条", "your notebook has no such entry"),
-    "no_request": ("这件事办不了", "that cannot be asked"),
-    "unknown_topic": ("这个没法问", "there is no asking about that"),
-    "no_sharpen": ("这句话已经没法说得更重了", "there is no heavier way to say that"),
-    "bad_claim": ("这句话编不出来", "that cannot be made up"),
-    "empty": ("这个你手里没有，许下也是空话", "you hold nothing like that to promise"),
-    "bad_due": ("期限不对", "that is not a possible day"),
+    "no_request": ("不能托人办这件事", "you can't ask for that"),
+    "unknown_topic": ("这个话题不能问", "you can't ask about that"),
+    "no_sharpen": ("这句话没法再说重些", "you can't make that claim any stronger"),
+    "bad_claim": ("这句话不能拿来编造", "you can't make up that claim"),
+    "empty": ("你手里没有这东西", "you don't have that to offer"),
+    "bad_due": ("换个期限", "choose a different deadline"),
     "no_pledge": ("没有这条许诺", "there is no such promise"),
     "wrong_person": ("这条许诺不是许给{n}的", "that promise was not made to {n}"),
-    "kept_already": ("这条许诺已经兑现了", "that promise is kept already"),
-    "lapsed": ("这条许诺已经过期了", "that promise has lapsed"),
+    "kept_already": ("这份许诺已经兑现了", "you've already kept that promise"),
+    "lapsed": ("这份许诺已经误了期限", "the deadline for that promise has passed"),
 }
 
 

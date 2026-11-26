@@ -37,10 +37,10 @@ predicates:
       en: "{who} did not come from {where}"
   fled_from:
     zh: "{who}[{when}]从{where}跑掉了"
-    en: "{who} ran off from {where}[ {when}]"
+    en: "{who} ran away from {where}[ {when}]"
     neg:
       zh: "{who}没从{where}跑掉"
-      en: "{who} did not run off from {where}"
+      en: "{who} did not run away from {where}"
   looked_for:
     zh: "{who}[{when}][在{where}]找{what}"
     en: "{who} was looking for {what}[ at {where}][ {when}]"
@@ -170,10 +170,10 @@ predicates:
   # two sentences, what was seen first and then that it was cleared, in both languages
   set_straight:
     zh: "{who}只看见{whom}在{where}找{what}。这事当众说清了"
-    en: "{who} only saw {whom} looking for {what} at {where}. That has been made clear in public"
+    en: "{who} only saw {whom} looking for {what} at {where}. That was cleared up in public"
     neg:
       zh: "{who}只看见{whom}在{where}找{what}。这事还没人当众说清"
-      en: "{who} only saw {whom} looking for {what} at {where}. Nobody has made that clear in public yet"
+      en: "{who} only saw {whom} looking for {what} at {where}. Nobody has cleared that up in public yet"
 
 # Said after the line, set off by a comma, and in a sentence of its own when a person speaks (below), so
 # each reads after "it was" in English and after 是 in Chinese.
@@ -188,7 +188,7 @@ motives:
   save_face: {zh: 是要面子, en: to save face}
   fear: {zh: 是怕担责任, en: for fear of the blame}
   pride: {zh: 是傲气上来了, en: out of pride}
-  reckless: {zh: 是喝多了胡闹, en: a reckless drunken prank}
+  reckless: {zh: 是喝多了胡闹, en: reckless drunken behaviour}
   debt: {zh: 是欠了债, en: because of a debt}
 
 # The motive as a sentence of its own, said after the line when a person speaks: {motive} is the phrase
@@ -221,7 +221,7 @@ predicate_forms:
 # The time of a span that has a word: it ended before the game began (a night, or longer), or
 # in the small hours of the first morning. A span that runs on into the game has none.
 when:
-  last_night: {zh: 昨晚, en: last night}
+  last_night: {zh: 出事那晚, en: that night}
   lately: {zh: 这几天, en: over the past few days}
   this_morning: {zh: 今早, en: this morning}
 
@@ -232,13 +232,13 @@ when:
 # of an account somebody told them and they did not take in.
 frames:
   seen: {zh: "{line}。", en: "{line}."}
-  heard: {zh: "{teller}跟我说，{line}。", en: "{teller} told me that {line}."}
-  unknown: {zh: "听人说，{line}。", en: "I've heard it said that {line}."}
+  heard: {zh: "我听{teller}说过，{line}。", en: "I heard {teller} say that {line}."}
+  unknown: {zh: "我是听人这么说的，{line}。", en: "What I've heard is that {line}."}
   own: {zh: "照我看，{line}。", en: "If you ask me, {line}."}
   guess_own: {zh: "{hedge}{line}。", en: "{hedge} {line}."}
   guess_heard: {zh: "{teller}猜，{line}。", en: "{teller} guessed that {line}."}
   guess_unknown: {zh: "有人猜，{line}。", en: "Some people guess that {line}."}
-  rival: {zh: "可{teller}跟我说的是，{line}。", en: "But {teller} told me that {line}."}
+  rival: {zh: "不过我听{teller}说，{line}。", en: "But {teller} told me that {line}."}
   # said in place of `seen` of a thing the whole town knows (the predicates under `known`)
   known: {zh: "{line}，镇上谁都知道。", en: "{line}. Everyone in town knows that."}
 

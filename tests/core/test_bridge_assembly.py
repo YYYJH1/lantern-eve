@@ -495,13 +495,13 @@ def test_the_offers_of_the_page_are_the_evidence_held_and_the_table():
     # each piece of evidence is shown by its name, and the table is the same in both languages
     labels = {o["id"]: o["label"] for o in offers["speak"]}
     assert labels["item:e_footprint"] == {
-        "zh": "拿出「断栏边带酒气的鞋印」",
-        "en": "Show: A shoeprint smelling of wine by the broken railing",
+        "zh": "拿出「断栏边的鞋印，近处能闻到酒气」",
+        "en": "Show: A shoeprint by the broken railing, with a smell of wine nearby",
     }
     assert labels["item:e_gengfu_dalang"]["en"] == (
-        "Show: The night watchman's word: Zhou Dalang, drunk, walked onto the bridge"
+        "Show: The watchman says Zhou Dalang staggered onto the bridge drunk"
     )
-    assert labels["meal"] == {"zh": "摆一桌和解饭", "en": "Lay a table for peace"}
+    assert labels["meal"] == {"zh": "摆一桌和解饭", "en": "Host a reconciliation meal"}
     assert offers["tell"] == [] and offers["entrust"] == [] and offers["promise"] == []
     one = offers["speak"][1]
     out = speak(game, **one["body"])

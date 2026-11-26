@@ -238,8 +238,8 @@ def test_the_words_of_the_card_in_the_frame_carry_the_numbers_of_the_moment():
     run_to(game, at(2, 7, 30))
     rest = tasks_of(frame_now(game))["t_bamboo_rest"]
     assert rest["why"] == {
-        "zh": "桥要十根竹料，桥边才有四根。",
-        "en": "The bridge needs 10 poles of bamboo and only 4 lie there.",
+        "zh": "修桥要十根竹料。桥边只有四根。",
+        "en": "The bridge needs 10 bamboo poles. Only 4 have arrived.",
     }
     meet(game, LI_DA)
     win_li_da(game)
@@ -247,8 +247,9 @@ def test_the_words_of_the_card_in_the_frame_carry_the_numbers_of_the_moment():
     act(game, "leave")
     rest = tasks_of(frame_now(game))["t_bamboo_rest"]
     assert rest["why"] == {
-        "zh": "桥要十根竹料，已经到了四根。李大又答应送四根。",
-        "en": "The bridge needs 10 poles of bamboo and has 4. Li Da has promised 4 more.",
+        "zh": "修桥要十根竹料。桥边已有四根，李大还答应送四根。",
+        "en": "The bridge needs 10 bamboo poles. There are 4 on site, "
+        "and Li Da has promised 4 more.",
     }
     assert (
         rest["action"] is None and rest["window"]["place"] == "p_bridge"

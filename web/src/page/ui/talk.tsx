@@ -68,7 +68,7 @@ function Line({ line, partner, lang, scene, onPoint, followUp, signal }: { line:
     const offered = line.how === "entrust" || line.how === "promise";
     return (
       <li class="talk-you" data-testid="talk-line" data-who="you" data-how={line.how}>
-        {t(YOU[line.how], { subject: offered && lang === "en" ? lowerFirst(subject) : subject })}
+        {t(line.speech ?? YOU[line.how], { subject: offered && lang === "en" ? lowerFirst(subject) : subject })}
       </li>
     );
   }

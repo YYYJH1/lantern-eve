@@ -24,8 +24,8 @@ legend:
   ".": {id: grass, zh: 草地, en: Grass, cost: 3}
   ";": {id: bank, zh: 河滩, en: Gravel bank, cost: 2}
   "w": {id: pier, zh: 码头栈板, en: Pier planks, cost: 1}
-  "#": {id: wall, zh: 墙与树, en: Wall or tree, cost: 0}
-  "H": {id: building, zh: 房屋, en: Building footprint, cost: 0}
+  "#": {id: wall, zh: 墙或树, en: Wall or tree, cost: 0}
+  "H": {id: building, zh: 房屋, en: Building, cost: 0}
 weather:
   - {id: clear, zh: 晴, en: Clear}
   - {id: light_rain, zh: 小雨, en: Light rain}
@@ -240,8 +240,8 @@ places:
 
 barriers:
   - id: lane_barrier
-    zh: 杂物堵住的夹道口
-    en: Lane blocked by junk
+    zh: 夹道口堆着杂物
+    en: Debris blocking the lane
     place: p_temple_lane
     cells: [[55, 20], [55, 21]]
     closed: "#"

@@ -143,7 +143,7 @@ test.describe("a talk", () => {
     await expect(page.getByTestId("card-talk")).toHaveText("Talking now");
     await expect(page.getByTestId("card-talk")).toBeDisabled();
     // The madam greets the manager as the talk opens, and her greeting is the line of the bar until she answers something (the core chose it by the state of the game: a first meeting).
-    await expect(page.getByTestId("dialogue-line")).toHaveText("Teahouse Keeper: “You'll be the new Manager? I keep this teahouse. Sit down and I'll pour you a bowl of tea.”");
+    await expect(page.getByTestId("dialogue-line")).toHaveText("Teahouse Keeper: “Are you the new Manager? Come and sit down. I'll pour you a bowl of tea.”");
     await expect(page.getByTestId("talk-area")).toBeVisible();
     // The questions are a list that the act opens, and nothing is listed until it is pressed.
     await expect(page.getByTestId("topic-chips")).toHaveCount(0);
@@ -234,7 +234,7 @@ test.describe("a talk", () => {
     await expect(note).toHaveAttribute("data-fresh", "true");
     await page.getByTestId("btn-notebook").click();
     await expect(note).toBeVisible();
-    await expect(note.getByTestId("source-badge")).toHaveText("Teahouse Keeper says they saw it");
+    await expect(note.getByTestId("source-badge")).toHaveText("Teahouse Keeper says they saw it themselves");
     // Nobody has seen it with their own eyes, and the notebook has put no mark on it: it marks what the player has judged, and nothing else.
     expect((await note.getAttribute("data-marks")) ?? "").toBe("");
     await expect(note.getByTestId("note-ask-source")).toBeVisible();
@@ -245,7 +245,7 @@ test.describe("a talk", () => {
     // Ask where it came from, from the notebook itself.
     await note.getByTestId("note-ask-source").click();
     await expect(page.getByTestId("talk-line")).toHaveCount(4);
-    await expect(page.getByTestId("talk-line").nth(2)).toContainText("You ask who told them: ");
+    await expect(page.getByTestId("talk-line").nth(2)).toContainText("Who told you “");
     await lantern.settled();
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-open", "false");
@@ -354,16 +354,16 @@ test.describe("listening, looking and calling for helpers", () => {
     await expect(page.getByTestId("notebook-count")).toHaveText("0");
     await page.getByTestId("verb-listen").click();
     await expect(notes(page).first()).toContainText("You overheard");
-    await expect(notes(page).first()).toContainText("and noted it down.");
+    await expect(notes(page).first()).toContainText("something new, so you wrote it down.");
     await expect(page.getByTestId("notebook-count")).toHaveText("1");
     await expect(page.getByTestId("notebook-count")).toHaveClass(/is-fresh/);
     await page.getByTestId("btn-notebook").click();
     await expect(page.getByTestId("note").first()).toHaveAttribute("data-fresh", "true");
     await expect(page.getByTestId("note").first().getByTestId("source-badge")).toHaveAttribute("data-source", "heard");
-    await expect(page.getByTestId("note").first().getByTestId("source-badge")).toHaveText(/ (says they heard it from .+|says they saw it|cannot say who told them)$/);
+    await expect(page.getByTestId("note").first().getByTestId("source-badge")).toHaveText(/ (says they heard it from .+|says they saw it themselves|couldn't say who told them)$/);
     // What was heard is not offered again, and asking for it is refused with a reason.
     await page.evaluate(() => window.__lantern.play.listen());
-    await expect(notes(page).last()).toHaveText(/Nobody nearby is saying anything new\.|You overheard/);
+    await expect(notes(page).last()).toHaveText(/Nobody nearby is saying anything new\.|something you'd already written down\./);
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -377,7 +377,7 @@ test.describe("listening, looking and calling for helpers", () => {
     await expect(page.getByTestId("picker-look").getByTestId("picker-option")).toHaveText(["Stone Bridge Railing"]);
     await page.getByTestId("picker-look").getByTestId("picker-option").first().click();
     await expect(notes(page).last()).toHaveAttribute("data-reason", "closed");
-    expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ en: "It is not open to you at this hour.", zh: "这个时辰看不了。" });
+    expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({ en: "You can't examine it now.", zh: "眼下没法查看。" });
 
     // 09:20.
     await lantern.open("scenario=bridge&seed=7&pace=40&until=400", { menu: false });
@@ -388,7 +388,7 @@ test.describe("listening, looking and calling for helpers", () => {
     // The player is busy for the while it takes, and the core does not offer the act meanwhile.
     await expect(page.getByTestId("verb-look")).toHaveAttribute("data-off", "busy");
     await run(page);
-    await expect(notes(page).filter({ hasText: /You noted down|You found nothing/ })).toHaveCount(1, { timeout: 30_000 });
+    await expect(notes(page).filter({ hasText: /^A closer look (turned up|revealed)/ })).toHaveCount(1, { timeout: 30_000 });
     // What the core says it wrote is what the notebook holds.
     const written = await page.evaluate(() => {
       const found = window.__lantern.client.state.events.filter((e) => e.kind === "inspected");
@@ -398,9 +398,9 @@ test.describe("listening, looking and calling for helpers", () => {
     expect(written.entries).toBeGreaterThanOrEqual(0);
     await expect(page.getByTestId("notebook-count")).toHaveText(String(written.entries));
     if (written.entries > 0) {
-      await expect(notes(page).last()).toHaveText(`You noted down ${written.entries} new things.`);
+      await expect(notes(page).last()).toHaveText(`A closer look turned up ${written.entries} clues, which you added to your notebook.`);
       await page.getByTestId("btn-notebook").click();
-      await expect(page.getByTestId("note").first().getByTestId("source-badge")).toHaveText("You saw it");
+      await expect(page.getByTestId("note").first().getByTestId("source-badge")).toHaveText("You saw it yourself");
       await lantern.settled();
       await page.keyboard.press("Escape");
     }
@@ -503,7 +503,7 @@ test.describe("listening, looking and calling for helpers", () => {
 
     // A promise is not sent when the choice is made: the player sees its preview, and sends it by confirming.
     await page.getByTestId("verb-context").click();
-    await expect(page.getByTestId("picker-promise")).toHaveAttribute("aria-label", "Promise Teahouse Keeper something");
+    await expect(page.getByTestId("picker-promise")).toHaveAttribute("aria-label", "What would you promise Teahouse Keeper?");
     await expect(page.getByTestId("picker-promise").getByTestId("picker-option")).toHaveText(["A market stall", "Lighting the main lantern"]);
     await page.getByTestId("picker-option").first().click();
     await expect(page.getByTestId("picker-promise")).toHaveCount(0);
@@ -520,7 +520,7 @@ test.describe("listening, looking and calling for helpers", () => {
 
     // With nothing written there is nothing to tell. The list says so, and Escape closes it.
     await page.getByTestId("verb-tell").click();
-    await expect(page.getByTestId("picker-tell").getByTestId("picker-empty")).toHaveText("You have noted nothing to tell yet.");
+    await expect(page.getByTestId("picker-tell").getByTestId("picker-empty")).toHaveText("Write down something you saw or heard before passing it on.");
     await lantern.settled();
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("picker-tell")).toHaveCount(0);
@@ -538,7 +538,7 @@ test.describe("listening, looking and calling for helpers", () => {
     };
     await fake.feedFrame(page, withEntry);
     await page.getByTestId("verb-tell").click();
-    await expect(page.getByTestId("picker-tell").getByTestId("picker-option")).toHaveText(["Boatman He was under the bridge.You saw it"]);
+    await expect(page.getByTestId("picker-tell").getByTestId("picker-option")).toHaveText(["Boatman He was under the bridge.You saw it yourself"]);
     await page.getByTestId("picker-tell").getByTestId("picker-option").last().click();
     expect((await sent())[2]).toEqual({ entry: "n7", how: "faithful", type: "tell" });
 
@@ -650,7 +650,7 @@ test.describe("the ending", () => {
     await expect(page.getByTestId("reveal-truth")).toContainText(/[一-鿿]/);
     await expect(page.getByTestId("reveal-told")).toContainText("一共传了");
     await expect(page.getByTestId("tree-node").first()).toHaveText(/[一-鿿]/);
-    await expect(page.getByTestId("tree-change").first()).toContainText("说给");
+    await expect(page.getByTestId("tree-change").first()).toContainText("讲给");
     await expect(page.getByTestId("reveal-truth").locator(".ending-truth")).toHaveText(reveal.truth.label.zh);
     await expect(page.getByTestId("reveal-chain").first().getByRole("heading")).toHaveText(reveal.chains[0]?.label.zh ?? "");
     for (const [prop, text] of await words("zh")) expect(text).toBe(chain?.texts[prop ?? ""]?.zh);
@@ -807,10 +807,10 @@ test.describe("the ending", () => {
     await expect(page.getByTestId("spoke-tellings")).toHaveText("2, 1 of them untrue");
     await expect(page.getByTestId("spoke-reached-names").locator("li")).toHaveText([names.cha_laoban?.en ?? "", names.zhou_niangzi?.en ?? ""]);
     await expect(page.getByTestId("told-line")).toHaveText([
-      `To ${names.cha_laoban?.en}: “${word("p3", "en")}” (as it was)`,
-      `To ${names.zhou_niangzi?.en}: “${word("fab", "en")}” (made up, caught)`,
+      `You told ${names.cha_laoban?.en} “${word("p3", "en")}” (as you heard it)`,
+      `You told ${names.zhou_niangzi?.en} “${word("fab", "en")}” (made up, caught)`,
     ]);
-    await expect(page.getByTestId("said-line")).toHaveText([`${names.zhou_niangzi?.en} to ${names.cha_laoban?.en}: ${word("p3", "en")}`]);
+    await expect(page.getByTestId("said-line")).toHaveText([`${names.zhou_niangzi?.en} told ${names.cha_laoban?.en}, “${word("p3", "en")}”`]);
 
     await lantern.setLang("zh");
     await expect(page.getByTestId("ending-title")).toHaveText("灯下勉强");
@@ -825,8 +825,8 @@ test.describe("the ending", () => {
     await expect(tree.locator('[data-testid="tree-node"][data-person="player"] text').first()).toHaveText(names.player?.zh ?? "");
     await expect(tree.getByTestId("tree-quote")).toHaveText([`「${word("p2", "zh")}」`, `「${word("p3", "zh")}」`]);
     await expect(page.getByTestId("told-line")).toHaveText([
-      `对${names.cha_laoban?.zh}说「${word("p3", "zh")}」，照实说的`,
-      `对${names.zhou_niangzi?.zh}说「${word("fab", "zh")}」，是编的，被拆穿了`,
+      `你跟${names.cha_laoban?.zh}说了「${word("p3", "zh")}」，照原话说的`,
+      `你跟${names.zhou_niangzi?.zh}说了「${word("fab", "zh")}」，是编的，被拆穿了`,
     ]);
     await expect(page.getByTestId("said-line")).toHaveText([`${names.zhou_niangzi?.zh}对${names.cha_laoban?.zh}说「${word("p3", "zh")}」`]);
     expect(lantern.pageErrors).toEqual([]);
@@ -953,17 +953,17 @@ test.describe("the ending", () => {
     await expect(page.locator('[data-input="a_new_input"]')).toContainText("a_new_input");
     await expect(page.locator('[data-input="detour_done"]')).toContainText("The detour was ready");
     // The truth is a text the core gives in Chinese only: the page has its own for the variant.
-    await expect(page.getByTestId("reveal-truth")).toHaveText(/It really was the autumn flood\./);
+    await expect(page.getByTestId("reveal-truth")).toHaveText(/The autumn flood broke the railing\./);
     // A chain with a label in Chinese only and no text of the page's own is shown as the core gave it.
     await expect(page.getByTestId("reveal-chain").getByRole("heading")).toHaveText("从甲到乙");
     await expect(page.getByTestId("tree-node")).toHaveCount(3);
     await expect(page.getByTestId("tree-flag")).toHaveCount(1);
-    await expect(page.getByTestId("tree-change")).toHaveText(/ to .*: made it sound worse/);
+    await expect(page.getByTestId("tree-change")).toHaveText(/When .* told .*, they made it sound worse/);
     // How far the manager's words went, and what was said of them.
     await expect(page.getByTestId("spoke-tellings")).toHaveText("3, 1 of them untrue");
     await expect(page.getByTestId("spoke-reached")).toHaveText("2");
     await expect(page.getByTestId("spoke-furthest")).toHaveText("the 2nd person down the line");
-    await expect(page.getByTestId("said-line")).toHaveText([`${names.li_da?.en} to ${names.li_xiaomei?.en}: The manager sides with the Li family.`]);
+    await expect(page.getByTestId("said-line")).toHaveText([`${names.li_da?.en} told ${names.li_xiaomei?.en}, “The manager sides with the Li family.”`]);
     await expect(page.getByTestId("reveal-believers").locator('[data-side="false"]')).toContainText(names.li_er?.en ?? "");
     await expect(page.getByTestId("reveal-believers").locator('[data-side="none"] li')).toHaveText([names.old_he?.en ?? ""]);
 
@@ -971,7 +971,7 @@ test.describe("the ending", () => {
     await expect(page.getByTestId("ending-title")).toHaveText("勉强");
     await expect(page.getByTestId("ending-tag")).toHaveText(["谎话成了传说"]);
     await expect(page.getByTestId("reveal-truth")).toContainText("真是秋汛冲的");
-    await expect(page.getByTestId("tree-change")).toHaveText(/说给.*时，说得更重了/);
+    await expect(page.getByTestId("tree-change")).toHaveText(/讲给.*听时，说得更重了/);
     await expect(page.getByTestId("spoke-furthest")).toHaveText("第二个人");
     await expect(page.getByTestId("said-line")).toHaveText([`${names.li_da?.zh}对${names.li_xiaomei?.zh}说「总管偏袒李家。」`]);
     await lantern.setLang("en");

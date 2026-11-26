@@ -295,16 +295,17 @@ def test_a_part_that_did_not_hold_comes_before_the_proof_and_the_goal_and_names_
     assert assembly.missed(state_of(game)) == "parts"
     why = made(game, at(4, 19))["truth"]["last"]["why"]
     assert why == {
-        "zh": "「桥是怎么坏的」这一条，没有人亲眼看见。"
+        "zh": "「桥是怎么坏的」这一条，没有目击者能证实。"
         "「大家为什么会误会」这一条，和更夫亲眼看见的不一样。",
-        "en": "The part “How the bridge broke” rests on nothing anyone saw. "
-        "The part “Why people got it wrong” goes against what the Night Watchman saw "
+        "en": "The part “How the bridge broke” has no eyewitness to back it up. "
+        "The part “Why people got it wrong” doesn't match what the Night Watchman saw "
         "with their own eyes.",
     }
     speech(game, statement(9, 8, 2, 1, 0, fails=[["course", "unsourced", ""]]))
     assert made(game, at(4, 19))["truth"]["last"]["why"] == {
-        "zh": "「那晚的经过」这一条，话传走样了。",
-        "en": "The part “What happened that night” rests on talk that changed as it was passed on.",
+        "zh": "「那晚的经过」这一条，是从传走样的话里来的。",
+        "en": "The part “What happened that night” comes from a story that changed "
+        "as it was passed on.",
     }
     speech(game, statement(9, 8, 2, 1, 1))  # the last one told it
     assert made(game, at(4, 19))["truth"]["last"]["why"] is None
@@ -313,7 +314,7 @@ def test_a_part_that_did_not_hold_comes_before_the_proof_and_the_goal_and_names_
 def test_the_words_of_a_shortfall_are_in_both_languages_and_name_the_numbers_of_the_goal():
     assert board.SHORT["named"]["en"] == "Fewer than 5 familiar faces were there"
     assert board.SHORT["named"]["zh"] == "在场的熟面孔不到五个"
-    assert board.SHORT["accepted"]["en"] == "Fewer than 60% of those there believed it"
+    assert board.SHORT["accepted"]["en"] == "Fewer than 60% of the audience believed you"
     assert board.SHORT["accepted"]["zh"] == "在场的人里信的不到六成"
     assert set(board.SHORT) == set(assembly.MISSED) - {"parts", "proof"}  # those have their own
     for words in board.SHORT.values():

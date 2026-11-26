@@ -3,14 +3,12 @@
 // The page is the real one (web/dist-e2e, served by lib/serve.mjs) and the world behind it is the
 // real core running in Pyodide in the page's worker. Two things make the pictures repeatable.
 //
-// Time is stepped by hand. The page is opened with `?until=1`, which holds the world after its
-// first tick. From then on, one tick is one pair of the page's own pause messages: `resume`,
+// Time is stepped by hand around actions. The story capture pauses before leaving the opening page.
+// One tick is one pair of the page's own pause messages: `resume`,
 // which the host answers at once with one tick, and `pause` right behind it, which the worker
-// reads before the next tick can be due (`?pace=0.1` makes a tick take a second of real time, and
-// nothing here ever waits for one). So the world is always held at a tick the script chose, and an
-// action sent in between is applied at exactly that tick. The core is a function of its seed and
-// of the inputs it is given at each tick, so the same script gives the same game, and the same
-// frames as a run in real time.
+// reads before the next tick is due at the manual recording speed. Actions are sent while
+// paused. For long cuts without actions or pictures, the host clock runs at its skip speed
+// until the next scene or time window.
 //
 // A talk is the exception. While the manager talks the core holds the clock by itself: no tick
 // comes, whatever is asked of the host, so a step inside a talk would wait for ever. The script
@@ -29,7 +27,11 @@ export const PAGE_SIDE = String.raw`
 (() => {
   const L = () => window.__lantern;
   const frame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()));
+  const manualSpeed = 0.25;
   const film = {
+    manualPace() {
+      L().client.setPace(manualSpeed);
+    },
     /** Whether the manager is in a talk. */
     talking() {
       return L().play.state.talk !== null;
@@ -377,6 +379,25 @@ export class Film {
     const used = await this.page.evaluate(`window.__film.stepUntil(() => (${condition}), ${max})`);
     if (used < 0) throw new Error(`${what} did not happen within ${max} ticks`);
     return used;
+  }
+
+  /** Runs a cut with no player actions and returns the clock to manual stepping. */
+  async runUntil(condition, max, what = condition) {
+    if (await this.page.evaluate(condition)) return;
+    const limit = (await this.tick) + max;
+    await this.page.evaluate(`(() => {
+      const client = window.__lantern.client;
+      client.setPace(12, true);
+      client.resume();
+    })()`);
+    try {
+      await this.page.waitFor("!window.__lantern.client.state.stats?.reasons.includes('user')", { timeout: 10000, what: 'the recording clock to resume' });
+      await this.page.waitFor(`(${condition}) || window.__lantern.client.state.simTick >= ${limit}`, { timeout: 120000, what });
+    } finally {
+      await this.page.evaluate('window.__film.pauseWorld(); window.__film.manualPace()');
+      await this.page.waitFor("window.__lantern.client.state.stats?.reasons.includes('user')", { what: 'the recording pause' });
+    }
+    if (!await this.page.evaluate(condition)) throw new Error(`${what} did not happen within ${max} ticks`);
   }
 
   /** Lets the picture settle and returns the number of the map's frame. */

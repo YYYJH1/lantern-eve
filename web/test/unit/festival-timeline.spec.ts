@@ -218,13 +218,13 @@ test.describe("the closing line", () => {
         seen.add(`${lang}|${text}`);
       }
     }
-    expect(translate("zh", OPENING)).toBe("第五夜，灯会。");
-    expect(translate("en", OPENING)).toBe("The fifth night. The lantern festival.");
+    expect(translate("zh", OPENING)).toBe("第五天夜里，灯会开始了。");
+    expect(translate("en", OPENING)).toBe("On the fifth evening, the lantern festival began.");
   });
 
   test("says in the storyteller's line the story that spread, between quotation marks, where it is known", () => {
-    expect(translate("zh", "festival.story", { story: "「李家故意毁桥。」" })).toBe("茶馆旁边，说书人正讲：「李家故意毁桥。」听的人都信了。");
-    expect(translate("en", "festival.story", { story: "“The Li family wrecked the bridge.”" })).toBe("Beside the teahouse a storyteller tells the story: “The Li family wrecked the bridge.” The listeners believe it.");
+    expect(translate("zh", "festival.story", { story: "「李家故意毁桥。」" })).toBe("茶馆旁，说书人把这桩事讲了一遍。「李家故意毁桥。」围在跟前的人听了，都信这个说法。");
+    expect(translate("en", "festival.story", { story: "“The Li family wrecked the bridge.”" })).toBe("Beside the teahouse, the storyteller gave an account. “The Li family wrecked the bridge.” The people gathered around believed it.");
   });
 });
 

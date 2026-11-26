@@ -49,13 +49,13 @@ TESTS = Path(__file__).resolve().parents[1]
 # The state hashes of scripted games, pinned. The content hash is that of the town, the cast, the
 # script and the clock, and also of the prompts and the words they quote.
 BRIDGE_HASHES = {
-    1: "906bb9719c9db6d68585f1f19694af359a2308e175ec3cab7f604e11e43b2e10",
-    7: "86de32a6bd2f6e194b438d6a2fae9af6a99ca4ec8444aba1e52fd310d7aaee1c",
-    2015: "8c8c7379d7971a0b7926f851fbb658bf089fcbc91365a2c771a2bca7e4bf91f9",
+    1: "f95f559e50a5fe1d6aac69182b4244a43c1003f197de7b6b21fcd5c5db7dd665",
+    7: "02f13691d9cf52c88048d9a24dd69476de4f059ea4b3f2c5f5d9fd1e661223bc",
+    2015: "6a14a464199802b3be3f344f88ff1176a8c93970f41606ccdee1ac8324bb6811",
 }
-CONTENT_HASH = "a41bf790d92d276239dfede7e7c5f5adf679ca1d5f4851477615c3e028f5f0d8"
-DRIVER_LAST_HASH = "3ab27fb752a656b2fe408812b7e7d6be1e83f82fb492cd9f42c6a976b15f052b"
-DRIVER_OUTPUTS = "4dd8230fa60998e90d1d08af9dc5a2d0f9ac1cb2e36d3df16b75061f29b99cc5"
+CONTENT_HASH = "b15fc24032bd7d6b08c89a44c0b42543fefefc7c6599b692240bb91f656f8123"
+DRIVER_LAST_HASH = "136e0ef3da8c1a4a767c05fe41f4e9f9aeee5c8999f5ee57c9eb216fac2a47c6"
+DRIVER_OUTPUTS = "9a3393a16b6c2746be3c88ebfeaa709fdf2b2277c98a0dffc22cc2e351b0db73"
 DRIVER_CALLS = 2071  # 2,070 ticks, and the one call in which the world stood still (a talk opens)
 M0_LAST_HASH = "79b0a8997a3fbc5b560fe73e2981665415f06615d2d5b456b4e7fe3b0a73cf0d"
 M0_OUTPUTS = "70853215b3f57b0a82b4cb9976d16a607be3160150b27fa48e804f0c6f27e610"

@@ -59,8 +59,8 @@ def test_every_entry_of_the_notebook_has_the_whole_chain_the_game_never_showed()
         "pr_liner_at_bridge",
     ]
     assert data["texts"]["pr_liner_at_bridge"] == {
-        "zh": "李二昨晚在桥边。",
-        "en": "Li Er was at the bridge last night.",
+        "zh": "李二出事那晚在桥边。",
+        "en": "Li Er was at the bridge that night.",
     }
     assert {h["prop"] for h in entry["chain"]} <= set(data["texts"])
     # the game showed the manager none of this until they had asked

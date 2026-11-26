@@ -46,7 +46,7 @@ test.describe("each way the night can go", () => {
       // It plays before the ending page, over the map, with the pause of its own and nothing else of the page in the way.
       await expect(director).toHaveAttribute("data-skippable", "true");
       await expect(page.getByTestId("ending")).toHaveCount(0);
-      await expect(page.getByTestId("director-caption")).toHaveText("The fifth night. The lantern festival.");
+      await expect(page.getByTestId("director-caption")).toHaveText("On the fifth evening, the lantern festival began.");
       await expect(page.getByTestId("director-caption")).toHaveAttribute("data-style", "title");
       await expect(page.locator(".shell")).toHaveAttribute("data-festival", "true");
       await expect(page.getByTestId("btn-menu")).toBeHidden();
@@ -87,7 +87,7 @@ test.describe("each way the night can go", () => {
       if (c.hidden) {
         const story = tl.story as [number, number];
         await go(story[0] + 2);
-        await expect.poll(() => words(page)).toBe(`Beside the teahouse a storyteller tells the story: “${FALSE_STORY_EN}” The listeners believe it.`);
+        await expect.poll(() => words(page)).toBe(`Beside the teahouse, the storyteller gave an account. “${FALSE_STORY_EN}” The people gathered around believed it.`);
       }
       await go(tl.closing + 3);
       await expect.poll(() => words(page)).toBe(c.closing);
@@ -181,7 +181,7 @@ test.describe("the same night by every road to the ending", () => {
       expect(states[other]?.plan).toEqual(states[0]?.plan);
       expect(states[other]?.timeline).toEqual(states[0]?.timeline);
     }
-    expect(spoken[0]).toEqual(["第五夜，灯会。", `茶馆旁边，说书人正讲：「${FALSE_STORY_ZH}」听的人都信了。`, "桥修好了。两家的人并肩走着，主灯是两家当家一起点的。"]);
+    expect(spoken[0]).toEqual(["第五天夜里，灯会开始了。", `茶馆旁，说书人把这桩事讲了一遍。「${FALSE_STORY_ZH}」围在跟前的人听了，都信这个说法。`, "提灯的队伍先从修好的石桥过河，到了点主灯的时候，李、周两家的当家一道上前把灯点亮。"]);
     expect(spoken[1]).toEqual(spoken[0]);
     expect(spoken[2]).toEqual(spoken[0]);
     expect(spoken[3]).toEqual(spoken[0]);

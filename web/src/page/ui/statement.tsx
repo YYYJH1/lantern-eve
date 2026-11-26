@@ -54,7 +54,7 @@ function OptionRow({ part, option, entries, lang, play, onUse }: { part: Stateme
       </button>
       {behind.length === 0 ? null : (
         <details class="stmt-notes" data-testid="statement-notes" onToggle={onUse}>
-          <summary>{t("statement.notes", { n: count(lang, behind.length) })}</summary>
+          <summary>{behind.length === 1 ? t("statement.notes.one") : t("statement.notes", { n: count(lang, behind.length) })}</summary>
           <ul class="stmt-entries">
             {behind.map((entry) => (
               <li key={entry.id}>

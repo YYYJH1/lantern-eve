@@ -2,9 +2,9 @@
 
 # 第三方组件
 
-游戏本身用 MIT 许可证（见 `LICENSE`）。构建出的站点 https://yyyjh1.github.io/lantern-eve/ 还带着下面这些组件，各用各的许可证。站点把 npm 包、Pyodide 和 Python 的许可证文本放在 `licenses/` 里，字体的许可证放在各自字体旁边（`OFL.txt`）。小镇的图和纸边是本仓库自己的工具画的（`tools/sprite-kit`、`tools/ink_ui`）。声音是页面自己用 Web Audio 合成的，站点里没有任何录音。
+游戏按 [MIT 许可证](LICENSE) 发布。页面附带的组件列在下方。npm 包、Pyodide 和 Python 的许可证随站点放在 `licenses/`，字体的许可证是字体旁的 `OFL.txt`。小镇美术和纸边由仓库里的 `tools/sprite-kit` 和 `tools/ink_ui` 生成。页面用 Web Audio 合成声音。
 
-## 页面的脚本
+## 网页依赖
 
 | 包 | 版本 | 许可证 | 用途 | 来源 |
 |---|---|---|---|---|
@@ -22,7 +22,7 @@
 | `@types/earcut` | 3.0.0 | MIT | 只有类型声明，不在脚本里 | https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/earcut |
 | `@webgpu/types` | 0.1.74 | BSD-3-Clause | 只有类型声明，不在脚本里 | https://github.com/gpuweb/types |
 
-版本就是 `web/package-lock.json` 里锁定的版本。页面依赖的包要是不在这张表里，或者版本对不上，`tests/test_third_party.py` 就会失败。标着「不在脚本里」的五个包，是跟着 PixiJS 一起装上的，没有打进页面的脚本，它们的许可证文本照样放在 `licenses/npm/` 里。主脚本里有几行 Vite（MIT）的模块预加载代码，别的构建工具都不在站点里。
+版本取自 `web/package-lock.json`，由 `tests/test_third_party.py` 核对。随 PixiJS 安装的五个可选或类型依赖未进入脚本，但仍随站点提供许可证。主脚本还带有 Vite（MIT）的模块预加载代码。
 
 ## Python 运行时
 

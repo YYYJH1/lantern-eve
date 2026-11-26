@@ -24,7 +24,7 @@ const REQUESTS: Request[] = [
   { task: "t_helper_zhou", npc: "zhou_dalang", en: "Ask Zhou Dalang to help out", zh: "请周家大郎来帮忙", asked: { verb: "entrust", npc: "zhou_dalang", kind: "join" } },
   { task: "t_helper_chain", npc: "li_xiaomei", en: "Ask Li Xiaomei to talk Zhou Erlang round", zh: "请李家小妹去劝周家二郎", asked: { verb: "entrust", npc: "li_xiaomei", kind: "persuade", target: "zhou_erlang" } },
   { task: "t_lane", npc: "miaozhu", en: "Ask Temple Keeper to open the lane behind the temple", zh: "请庙祝打开庙后的夹道", asked: { verb: "entrust", npc: "miaozhu", kind: "lane" } },
-  { task: "t_witness", npc: "gengfu", en: "Ask Night Watchman to say what they saw", zh: "请更夫说说亲眼看见了什么", asked: { verb: "entrust", npc: "gengfu", kind: "testify" } },
+  { task: "t_witness", npc: "gengfu", en: "Ask Night Watchman to testify", zh: "请更夫作证", asked: { verb: "entrust", npc: "gengfu", kind: "testify" } },
   { task: "t_convene", npc: "zuzhang", en: "Ask Clan Elder to call the clan", zh: "请族长召集族人", asked: { verb: "entrust", npc: "zuzhang", kind: "convene" } },
 ];
 
@@ -204,12 +204,12 @@ test.describe("the button of a task that speaks in public", () => {
 
   test("lays a table for the two families: the words in both languages, and the list has the table and nothing else", async ({ lantern }) => {
     const page = await atTheTeahouse(lantern, "t_meal");
-    await expect(page.getByTestId("task-do")).toHaveText("Lay a table for peace");
+    await expect(page.getByTestId("task-do")).toHaveText("Host a reconciliation meal");
     await lantern.setLang("zh");
     await expect(page.getByTestId("task-do")).toHaveText("摆一桌和解饭");
     await lantern.setLang("en");
     await page.getByTestId("task-do").click();
-    await expect(page.getByTestId("picker-speak").getByTestId("picker-option")).toHaveText(["Lay a table for peace"]);
+    await expect(page.getByTestId("picker-speak").getByTestId("picker-option")).toHaveText(["Host a reconciliation meal"]);
     await page.getByTestId("picker-option").click();
     expect((await fake.sentSoFar(page)).at(-1)).toMatchObject({ type: "speak", kind: "meal" });
   });
@@ -218,7 +218,7 @@ test.describe("the button of a task that speaks in public", () => {
     const page = await atTheTeahouse(lantern, "t_statement", fake.SPEAK_OFFERS.filter((offer) => offer.body.kind === "meal"));
     await page.getByTestId("task-do").click();
     await expect(page.getByTestId("picker-speak")).toBeVisible();
-    await expect(page.getByTestId("picker-empty")).toHaveText("There is nothing to choose yet.");
+    await expect(page.getByTestId("picker-empty")).toHaveText("Nothing else to do here right now.");
     await expect(page.getByTestId("picker-option")).toHaveCount(0);
   });
 
@@ -230,7 +230,7 @@ test.describe("the button of a task that speaks in public", () => {
     await expect(page.getByTestId("picker-speak")).toHaveCount(0);
     // The manager gets there: the town offers to speak, and the list that was asked for opens by itself.
     await fake.feedFrame(page, fake.speakingFrame(await fake.playerOf(page)));
-    await expect(page.getByTestId("picker-speak").getByTestId("picker-option")).toHaveText(["Lay a table for peace"]);
+    await expect(page.getByTestId("picker-speak").getByTestId("picker-option")).toHaveText(["Host a reconciliation meal"]);
   });
 
   test("clears a claim up from the notebook, where the lines the player judged are", async ({ lantern }) => {

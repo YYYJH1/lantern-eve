@@ -3,23 +3,23 @@
 # over words.
 person: mujiang
 voice:
-  zh: 木匠。实在，说话慢，爱拿木头、榫头打比方，信手上的活，不信嘴上的话。在乎修桥的木头够不够、好不好。不想说就说「我只管木头」。对总管说「你」。叫船夫老何「老何」。
-  en: The carpenter. Practical and slow of speech, reaches for timber and joints to make a point, trusts work done by hand and not what people say. Cares whether there is enough good timber to mend the bridge. When unwilling to say, answers "I only deal in timber".
+  zh: "木匠惯于边做边看，事情经没经手、眼睛看没看见，会说得实在。说活儿才提木料或尺寸，换了别的话题也用寻常话。若拿不准，就让人去问经手的。对总管直说。"
+  en: "The carpenter puts things plainly, especially when it's a question of who handled the work or what was seen. Timber and measurements belong in talk about the work. Other matters call for everyday speech. When uncertain, the carpenter points the Manager to the person who handled it."
 call:
   old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "呼……墨线……弹歪了……（睡熟了）", en: "Zzz... the ink line... snapped crooked... (fast asleep)"}
-    - {zh: "唔……这块料……还得刨……（睡熟了）", en: "Mm... this board... needs more planing... (fast asleep)"}
+    - {zh: "木匠没醒。", en: "The carpenter doesn't wake."}
+    - {zh: "呼吸匀匀的，还睡着。", en: "Steady breathing. Still asleep."}
   busy:
-    - {zh: "手上的活没完，回头再说。", en: "My hands are full. Later."}
-    - {zh: "刨子正顺手，别打断我。", en: "The plane is running nicely. Don't stop me now."}
+    - {zh: "我手上的活还没做完，你有话等我得空了再讲。", en: "I've work in hand. Tell me what you need once I have a moment."}
+    - {zh: "这一下先让我刨完。", en: "Let me finish this pass with the plane."}
   timeout:
     - {zh: "木料还等着下锯，得回去了。", en: "There's timber waiting for the saw. I have to get back."}
     - {zh: "尺寸还没量完，我先忙去了。", en: "I haven't finished measuring. I'll get on with it."}
   unknown:
     - {zh: "这事我没经手，不清楚。", en: "I never had a hand in it, so I don't know."}
-    - {zh: "木头我懂，这个我不懂。", en: "I know timber. This I don't know."}
+    - {zh: "甭问我，我不知道。", en: "Couldn't tell you. I don't know."}
   evade:
     - {zh: "我只管木头。", en: "I only deal in timber."}
     - {zh: "这话不说为好。", en: "Better left unsaid."}
@@ -33,29 +33,29 @@ lines:
     - {zh: "咱们还不熟，下回再说。", en: "We don't know each other yet. Next time."}
     - {zh: "这东西不给生人。", en: "This isn't for strangers."}
   took_in:
-    - {zh: "好，这话我收着。", en: "Right, I'll keep that."}
-    - {zh: "知道了，我记着。", en: "I see. I'll remember."}
+    - {zh: "你这么一说，前后的事我就连得上了。", en: "The way you put it, I can see how one thing led to the next."}
+    - {zh: "你刚才说的话，我记着了。", en: "I'll remember what you've just told me."}
   knew:
     - {zh: "这事我早晓得了。", en: "Heard that one already."}
     - {zh: "这个早有人跟我说过了。", en: "Somebody told me that a while back."}
   doubted:
     - {zh: "不对，我听来的不是这样。", en: "No. What I heard was different."}
-    - {zh: "听着不对路。", en: "That doesn't sound right."}
+    - {zh: "这段我听的是另一个样，你上哪儿问的？", en: "I heard that part differently. Where did you ask?"}
   caught:
-    - {zh: "你糊弄我。往后你的话，我一句不信。", en: "You fooled me. I won't believe a word you say from now on."}
-    - {zh: "木头都不骗人，你倒骗我。", en: "Even timber doesn't lie, and you lied to me."}
+    - {zh: "我信了你的话才当回事，你倒好，拿个假的来糊弄我。", en: "I took it seriously because I trusted you, and you went and told me a lie."}
+    - {zh: "你那话是假的。亏我当了真。", en: "That was a lie. And I took you at your word."}
   deal:
-    - {zh: "行，就这么钉死了。", en: "Right, that's nailed down."}
-    - {zh: "好，一锤定音。", en: "Good. That's hammered home."}
+    - {zh: "行，定下来吧。", en: "All right. Let's settle it."}
+    - {zh: "那就按说好的办。", en: "Then we'll do as we agreed."}
   empty:
     - {zh: "没有实料的话，我不信。", en: "Talk with nothing solid in it, I don't believe."}
     - {zh: "空架子立不住。", en: "An empty frame won't stand."}
   kept_thanks:
-    - {zh: "你说话作数，我记着。", en: "Your word holds. I'll remember that."}
-    - {zh: "你这事办得牢靠。往后有活尽管开口。", en: "You did that solidly. If you ever need work done, just ask."}
+    - {zh: "你答应了就照办，往后跟你打交道我也就放心了。", en: "You did what you'd said. I'll feel easier dealing with you from here on."}
+    - {zh: "这事办得牢靠。有用得着我的地方就说。", en: "You did a good job. If you need me for anything, ask."}
   will_do:
     - {zh: "好，这活我接了。", en: "Good, I'll take the job."}
-    - {zh: "行，我来动手。", en: "Right, I'll get my hands on it."}
+    - {zh: "这活我能接，回头就动手。", en: "I can take that job. I'll get to work on it."}
   cannot:
     - {zh: "这活我干不了。", en: "I can't do that job."}
     - {zh: "手艺不到，帮不上。", en: "That's past my craft. I can't help."}
@@ -120,10 +120,10 @@ lines:
     - {zh: "{item}够量了，榫口都够用。", en: "There's enough {item}. Every joint is covered."}
     - {zh: "桥边的{item}我量过了，不缺。", en: "I've measured the {item} at the bridge, and none is short."}
   point_heard:
-    - {zh: "这事我没经手。不过听{name}说过，你去问问。", en: "I never handled it. But I heard {name} talk about it, so go and ask."}
-    - {zh: "木头我懂，这个不懂。{name}好像提过，去问问吧。", en: "Timber I know, not this. I think {name} mentioned it, so ask."}
+    - {zh: "这事我没经手，倒听{name}说起过，你去问问就知道。", en: "It wasn't my work, but I heard {name} mention it. You'll find out more if you ask."}
+    - {zh: "我也只听了个大概，你找{name}再问问。", en: "I only heard the gist. Ask {name} if you need the rest."}
   point_hub:
-    - {zh: "我不清楚。镇上的事，找{name}最快。", en: "I'm not sure. For town news, going to {name} is quickest."}
+    - {zh: "这方面我帮不上，你想打听镇上的事，去问{name}稳妥些。", en: "I can't help you there. If you want to know what's going on in town, your best bet is {name}."}
     - {zh: "这个我不懂。你去问{name}，茶馆里人来人往。", en: "That's beyond me. Ask {name}. People come and go at that teahouse all day."}
   gift_like:
     - {zh: "{item}，好。干完活喝两口。", en: "Some {item}. Good. A drop after work."}
@@ -136,32 +136,32 @@ lines:
     - {zh: "{item}……我不沾这个。谢了。", en: "Some {item}... not for me. Thanks."}
 frames:
   seen:
-    - {zh: "我亲眼看见的，不掺假。{line}。", en: "I saw with my own eyes, nothing added, that {line}."}
-    - {zh: "{line}。我就在跟前看着。", en: "{line}. I was right there and saw it."}
+    - {zh: "{line}，我当时就在跟前，看得清。", en: "{line}. I was close enough to see for myself."}
+    - {zh: "我当时就在跟前，看着{line}。", en: "I was right beside it, and I saw that {line}."}
   heard:
-    - {zh: "{teller}给我递过话。说{line}。", en: "{teller} passed the word to me, that {line}."}
-    - {zh: "{teller}当面跟我讲的。说是{line}。", en: "{teller} told me to my face that {line}."}
+    - {zh: "这话是{teller}传给我的，说是{line}。", en: "I got word from {teller} that {line}."}
+    - {zh: "{teller}亲口讲的，说{line}。", en: "I heard it straight from {teller} that {line}."}
   unknown:
     - {zh: "镇上有人这么讲。说{line}。", en: "Some in town say {line}."}
-    - {zh: "听人念叨的，谁说的我没问。说是{line}。", en: "I heard people going on about it and didn't ask who. The story is that {line}."}
+    - {zh: "听人讲{line}。我没问是谁先说的。", en: "Someone said {line}. I didn't ask who started it."}
   own:
     - {zh: "我掂量着，{line}。", en: "Weighing it up, I'd say {line}."}
     - {zh: "凭我这双眼，{line}。", en: "By my own eye, {line}."}
   guess_own:
-    - {zh: "没凭没据，瞎猜的。{hedge}{line}。", en: "No proof, just a guess. {hedge} {line}."}
+    - {zh: "{hedge}{line}。先这么听着吧。", en: "{hedge} {line}. Keep it in mind for now."}
     - {zh: "这话你听听就好。{hedge}{line}。", en: "Take this for what it's worth. {hedge} {line}."}
   guess_heard:
-    - {zh: "{teller}起了个头。{hedge}{line}。", en: "{teller} gave me the start of it. {hedge} {line}."}
+    - {zh: "听{teller}提了个头，{hedge}{line}。", en: "From the bit I heard from {teller}, {hedge} {line}."}
     - {zh: "{teller}的话我掂量过。{hedge}{line}。", en: "I've weighed {teller}'s words. {hedge} {line}."}
   guess_unknown:
     - {zh: "不知谁起的头。{hedge}{line}。", en: "No idea who started it. {hedge} {line}."}
-    - {zh: "风里刮来的。{hedge}{line}。", en: "It blew in from somewhere. {hedge} {line}."}
+    - {zh: "我就听到几句，{hedge}{line}。", en: "All I heard was a bit here and there. {hedge} {line}."}
   rival:
-    - {zh: "可{teller}说的不是这样。说{line}。", en: "Only {teller} told it otherwise, that {line}."}
-    - {zh: "{teller}当面讲的是另一个样。说{line}。", en: "{teller} told me to my face it was different, that {line}."}
+    - {zh: "这就怪了，我听{teller}说过，{line}。", en: "That's odd. I heard {teller} say that {line}."}
+    - {zh: "可我还听{teller}讲过另一句，说是{line}。", en: "But I heard a different account from {teller}, that {line}."}
   known:
     - {zh: "{line}。这事镇上都知道。", en: "{line}. The town knows that."}
     - {zh: "{line}，明摆着的。", en: "{line}. It's plain to see."}
 hedges:
-  - {zh: 看样子, en: I'd judge}
-  - {zh: 约莫, en: I judge}
+  - {zh: 看样子, en: "I'd say"}
+  - {zh: 约莫, en: I reckon}

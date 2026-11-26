@@ -312,8 +312,8 @@ PROMISED_WHY = {
     "en": "Li Da has promised to bring 4 poles of bamboo to the bridge.",
 }
 PROMISED_NEXT = {
-    "zh": "按约好的时间去桥边，看竹料送到没有。",
-    "en": "Be at the bridge at the agreed time and see the bamboo arrive.",
+    "zh": "到约好的时间，去桥边看看竹料到了没有。",
+    "en": "Check for the bamboo at the bridge when it's due.",
 }
 AT_THE_BRIDGE = {"day": 2, "from": 6, "to": 7, "place": "p_bridge"}  # the evening promise's window
 
@@ -407,7 +407,7 @@ def test_the_task_of_the_bamboo_asks_for_li_da_again_when_he_takes_the_promise_b
     play_to(game, log, at(1, 19, 5))  # the next hour: the tasks look again
     task = the_bamboo(frame_now(game))
     assert task["state"] == "open" and task["action"] == ASK_LI_DA
-    assert task["why"]["zh"] == "李老太松口了。竹料归李大管。"
+    assert task["why"]["zh"] == "李老太点了头，接下来得问李大什么时候能把竹料送到桥边。"
 
 
 def test_the_bamboo_arrives_with_a_word_over_the_head_of_whoever_brought_it_for_a_little_while():
@@ -443,7 +443,7 @@ def test_the_recap_comes_once_at_seven_with_the_delivery_and_the_promise_each_po
     delivery, promise = lines
     assert delivery["text"] == {
         "zh": "李大答应的四根竹料，已经送到石桥。",
-        "en": "The 4 poles of bamboo that Li Da promised have reached the Stone Bridge.",
+        "en": "Li Da's delivery of 4 poles of bamboo reached the Stone Bridge.",
     }
     assert promise["text"] == {
         "zh": "李大答应送来四根竹料。",
@@ -527,8 +527,8 @@ def test_events_that_other_subsystems_emit_make_the_other_lines_of_the_recap(mon
     assert made["lines"] == 3
     lines = state_of(game)[commitments.SECTION]["recap"]["lines"]
     assert [line["text"]["en"] for line in lines] == [
-        "The 4 poles of bamboo that Li Da promised have reached the Stone Bridge.",
-        "Granny Li has given way on lending the bamboo.",
+        "Li Da's delivery of 4 poles of bamboo reached the Stone Bridge.",
+        "Granny Li gave the go-ahead for lending the bamboo.",
         "Li Da promised to bring 4 poles of bamboo.",
     ]  # the delivery, the person who withdrew an objection, the promise: not the claim set straight
     assert lines[1]["text"]["zh"] == "李老太松口了，答应借竹料。"
@@ -557,10 +557,10 @@ def test_a_claim_set_straight_in_public_is_the_line_of_the_people_who_changed_th
     play_to(game, log, at(2, 8))
     (line,) = state_of(game)[commitments.SECTION]["recap"]["lines"]
     assert line["text"] == {
-        "zh": "你当众讲明，那话传过了头。周家伙计、李老太、茶馆老板娘听了，改了口。",
+        "zh": "你当众把两种说法一对，周家伙计、李老太、茶馆老板娘听完改了口。",
         "en": (
-            "You told everyone the talk had gone too far. Zhou's Clerk, Granny Li and "
-            "Teahouse Keeper changed their minds."
+            "You compared the two accounts in public. After hearing both, Zhou's Clerk, "
+            "Granny Li and Teahouse Keeper changed their minds."
         ),
     }
     assert line["events"] == [log.number(log.of("clarified")[0])]
@@ -600,8 +600,8 @@ def test_the_recap_has_three_lines_at_most_and_prefers_a_kind_it_has_not_got_yet
         9,
     ]  # in the order of the events within a kind
     assert [line["text"]["en"] for line in lines] == [
-        "The 4 poles of bamboo that Li Da promised have reached the Stone Bridge.",
-        "The 4 poles of timber that Li Da promised have reached the Stone Bridge.",
+        "Li Da's delivery of 4 poles of bamboo reached the Stone Bridge.",
+        "Li Da's delivery of 4 poles of timber reached the Stone Bridge.",
         "Li Da promised to bring 4 poles of bamboo.",
     ]
     assert lines[0]["events"] == [3, 5] and lines[1]["events"] == [
@@ -611,7 +611,7 @@ def test_the_recap_has_three_lines_at_most_and_prefers_a_kind_it_has_not_got_yet
     assert commitments._lines(world, []) == []
     # a stance and nothing else
     (only,) = commitments._lines(world, [withdrawn(4, 9)])
-    assert only["text"]["en"] == "Granny Li has given way."
+    assert only["text"]["en"] == "Granny Li dropped the objection."
     assert only["events"] == [4]
     # five withdrawals: three lines, the newest of them first within the kind
     people = ("li_laotai", "li_da", "zuzhang", "cha_laoban", "gengfu")
@@ -1028,8 +1028,8 @@ def test_the_term_commitment_holds_for_the_person_the_item_and_the_state():
 
 LI_DA_MATERIAL = {"verb": "entrust", "npc": LI_DA, "kind": "material"}
 PROMISED_LINE = {
-    "zh": "李大已经答应了，明早07:00前送四根竹料",
-    "en": "Li Da has promised already: 4 poles of bamboo, by 7 tomorrow morning",
+    "zh": "李大已经答应明早07:00前送四根竹料",
+    "en": "Li Da has already promised to bring 4 poles of bamboo by 7 tomorrow morning",
 }
 ENOUGH_LINE = {
     "zh": "桥边的竹料已经够了",
@@ -1199,8 +1199,11 @@ def test_the_same_holds_for_the_timber_when_the_script_gives_it_in_batches(scrip
     meet(game, "zhou_zhanggui")
     assert look(game, npc="zhou_zhanggui")["blockers"] == [
         {
-            "zh": "周掌柜已经答应了，明早07:00前送三根木料",
-            "en": "Shopkeeper Zhou has promised already: 3 poles of timber, by 7 tomorrow morning",
+            "zh": "周掌柜已经答应明早07:00前送三根木料",
+            "en": (
+                "Shopkeeper Zhou has already promised to bring "
+                "3 poles of timber by 7 tomorrow morning"
+            ),
         }
     ]
     act(game, "leave")
@@ -1226,13 +1229,15 @@ def test_the_plain_words_of_the_goods_lines_fill_the_slots_too_for_the_prompt_of
     open_line = [LI_DA, game.tick + 600, "goods", "promise_open", "m1"]
     today = clock.at(game.tick).day
     assert converse.words(world, open_line, plain=True, today=today) == {
-        "zh": "我答应过了，明早七点前把四根竹料送到桥边。",
-        "en": "I've promised already: 4 poles of bamboo at the bridge by seven tomorrow morning.",
+        "zh": "说好的四根竹料，我还是明早七点前送到桥边。",
+        "en": (
+            "I'll bring the 4 poles of bamboo we agreed on to the bridge by seven tomorrow morning."
+        ),
     }
     # where no day is named the time is the date of the game, as the cards write it
     assert converse.words(world, open_line, plain=True) == {
-        "zh": "我答应过了，第二天07:00前把四根竹料送到桥边。",
-        "en": "I've promised already: 4 poles of bamboo at the bridge by 07:00 on day 2.",
+        "zh": "说好的四根竹料，我还是第二天07:00前送到桥边。",
+        "en": "I'll bring the 4 poles of bamboo we agreed on to the bridge by 07:00 on day 2.",
     }
     enough = [LI_DA, game.tick + 600, "goods", "goods_enough", "timber"]
     assert converse.words(world, enough, plain=True) == {

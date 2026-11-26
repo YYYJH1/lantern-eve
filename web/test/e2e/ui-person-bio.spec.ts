@@ -59,7 +59,7 @@ test.describe("what the town says of a person", () => {
       }
     }
     await lantern.setLang("en");
-    await expect(card.getByTestId("person-bio-text")).toContainText("Clan Elder");
+    await expect(card.getByTestId("person-bio-text")).toHaveText(bioOf("zuzhang").en);
     expect(lantern.pageErrors).toEqual([]);
   });
 

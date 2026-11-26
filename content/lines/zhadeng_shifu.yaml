@@ -1,32 +1,32 @@
 # The Lantern Maker, a woman, master of the lantern workshop. Warm and absorbed, she talks of paste,
 # bamboo strips, lantern paper and light, cares whether the lanterns will be ready far more than
-# about the quarrel of the two families, and calls Li Er, who works at her benches, 二郎.
+# about the quarrel of the two families, and calls Li Er, who works at her benches, Li Er.
 person: zhadeng_shifu
 voice:
-  zh: 扎灯坊的女师傅。热心，专注，一开口就是糨糊、竹篾、灯纸和光。两家吵架她不上心，只在乎灯会办不办得好，灯扎不扎得完，今年的主灯亮不亮。不想说就说「我这儿忙着呢，灯要紧」。对总管说「你」。叫李二「二郎」，两人同在扎灯坊做事，叫李家小妹「小妹」，叫船夫老何「老何」。
-  en: The woman who is master of the lantern workshop. Warm and absorbed, always on paste, bamboo strips, lantern paper and light. Cares whether the lanterns will be finished and this year's great lantern shines, not about the families' quarrel. When she would rather not say, she says she is busy and the lanterns come first.
+  zh: "扎灯坊的女师傅惦记着手上的灯，手里正有活时通常先请人等一会儿，再来细说。竹篾、灯纸和糨糊都是做活时会交代的东西。两家互相指责，她没有闲工夫跟着评说，倒愿意讲自己确实知道的事。"
+  en: "A woman who has made lanterns for years, she asks visitors to give her time to finish what she's doing, then answers them properly. Bamboo strips, paper and paste come up as part of the work. She has little patience for the families' quarrel and will say what she actually knows."
 call:
   li_er: {zh: 李二, en: Li Er}
   li_xiaomei: {zh: 小妹, en: Xiaomei}
   old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "呼……灯骨……还没扎好……（睡熟了）", en: "Zzz... the frames... not bound yet... (fast asleep)"}
-    - {zh: "唔……主灯亮了……（睡熟了）", en: "Mm... the great lantern's lit... (fast asleep)"}
+    - {zh: "扎灯师傅睡着了。", en: "The lantern maker is asleep."}
+    - {zh: "叫不醒，还睡着。", en: "Still asleep when you call."}
   busy:
-    - {zh: "糨糊还没干，我腾不出手。", en: "The paste isn't dry and I can't spare a hand."}
+    - {zh: "糨糊还没干透，这灯面离不得人，你等我一会儿。", en: "The paste hasn't dried through. I need to stay with the paper a little longer."}
     - {zh: "我正糊灯面呢，等我糊完这一张。", en: "I'm pasting a lantern face. Let me finish this sheet."}
   timeout:
     - {zh: "灯还等着收尾，我得回去了。", en: "A lantern is waiting for its finishing touches. I have to get back."}
     - {zh: "灯会就在眼前，活儿不等人。", en: "The festival is nearly here and the work won't wait."}
   unknown:
     - {zh: "这个我还真不知道。", en: "That one I really don't know."}
-    - {zh: "灯里的事我懂，这个我不懂。", en: "I know what goes into a lantern. This I don't know."}
+    - {zh: "我没留意这事。", en: "I haven't been keeping up with that."}
   evade:
     - {zh: "我这儿忙着呢，灯要紧。", en: "I'm busy here. The lanterns come first."}
     - {zh: "两家的事我不掺和，别问我。", en: "I keep out of the two families' business. Don't ask me."}
   not_said:
-    - {zh: "我没讲过，别把话糊到我身上。", en: "I never said it. Don't paste those words on me."}
+    - {zh: "这话我可从没讲过。", en: "I never said anything of the sort."}
     - {zh: "这不是我的话。", en: "Those aren't my words, really."}
   not_so:
     - {zh: "不是这样的，你再想想。", en: "It isn't so. Think again."}
@@ -35,26 +35,26 @@ lines:
     - {zh: "咱们不熟，下回再来吧。", en: "We don't know each other. Come again some time."}
     - {zh: "工坊里的东西不给生人看。", en: "What's in the workshop isn't for strangers."}
   took_in:
-    - {zh: "好，这话我记下了。", en: "Good, I'll keep that in mind."}
-    - {zh: "明白了，多谢你告诉我。", en: "I see. Thanks for telling me."}
+    - {zh: "你把这段说明白了，我也就知道怎么回事了。", en: "I see what happened now you've explained that part."}
+    - {zh: "多谢你特地来讲，这事我记着。", en: "Thank you for coming to tell me. I'll keep it in mind."}
   knew:
     - {zh: "这事我早听人说了。", en: "I heard about it a while back."}
     - {zh: "这个我早知道了，坊里都传遍了。", en: "I knew that already. It's all round the workshop."}
   doubted:
     - {zh: "我听来的不是这个样。", en: "What I heard had it another way."}
-    - {zh: "听着不对，跟我听到的对不上。", en: "That sounds off. It doesn't match what I heard."}
+    - {zh: "这一段跟我听来的对不上，你是从哪儿听的？", en: "That part doesn't fit what I heard. Where did you get it?"}
   caught:
-    - {zh: "原来你一直在骗我。往后你说什么，我都不信了。", en: "So you were lying to me all along. I won't believe anything you say now."}
-    - {zh: "你骗了我。亏我还给你留了一盏灯。", en: "You lied to me. And I'd saved a lantern for you."}
+    - {zh: "我先前还信了你那番话，没想到你也会拿假的来哄人。", en: "I believed you at the time. I didn't think you'd try to fool me with a lie."}
+    - {zh: "你编的？还真给你哄住了。", en: "You made it up? And I fell for it."}
   deal:
-    - {zh: "好，这事就这么扎紧了。", en: "Good, then it's tied tight."}
+    - {zh: "说准了，我按这个办。", en: "Settled then. I'll do my part."}
     - {zh: "行，说定了。灯会上见。", en: "All right, it's settled. See you at the festival."}
   empty:
     - {zh: "光说不扎，灯是不会亮的。", en: "Talk without binding a lantern gives no light."}
     - {zh: "手里什么都没有，光说我不信。", en: "You've nothing in hand. I won't believe mere talk."}
   kept_thanks:
-    - {zh: "你说到做到，我记着这份好。", en: "You did as you said, and I'll remember the kindness."}
-    - {zh: "多谢你守信，灯会上给你挂盏好灯。", en: "Thanks for keeping your word. I'll hang a good lantern for you at the festival."}
+    - {zh: "我原想着这事还得劳你费心，你倒已经办成了，我记着你的好。", en: "I thought the trouble wasn't over yet, and you've already seen it through. I'll remember what you did for me."}
+    - {zh: "答应我的事都办妥了。劳你费心。", en: "You got everything done as promised. I appreciate it."}
   will_do:
     - {zh: "好，这活我来扎。", en: "Good, I'll make this one."}
     - {zh: "交给我吧，误不了事。", en: "Leave it to me. It won't be late."}
@@ -78,7 +78,7 @@ lines:
     - {zh: "灯不会说话，我也没什么好说。", en: "A lantern doesn't talk, and I've nothing to say either."}
   testified:
     - {zh: "我讲的，都是自己亲眼看见的。", en: "What I tell you, I saw with my own two eyes."}
-    - {zh: "没见到的，我一个字都不说。", en: "What I didn't see, I won't say a word of."}
+    - {zh: "我只能讲看见的那一段，旁的先别算上。", en: "I can tell you the part I saw. Leave the rest aside for now."}
   too_late:
     - {zh: "天黑透了，明天白天再来。", en: "It's pitch dark. Come in the daytime tomorrow."}
     - {zh: "夜里要守着灯，明早再说。", en: "I have to watch the lanterns tonight. Let's talk in the morning."}
@@ -99,7 +99,7 @@ lines:
     - {zh: "不行，我主意已定。", en: "No. My mind's made up."}
   elder_yes:
     - {zh: "说得明白，我服了。", en: "Clearly put. I'm convinced."}
-    - {zh: "你这么一说，我心里亮堂了。", en: "Now you say it like that, it's clear to me."}
+    - {zh: "你这么一讲，这事我懂了。", en: "I see what you mean now."}
   elder_no:
     - {zh: "光这些，还说不通。", en: "On this alone, it doesn't make sense yet."}
     - {zh: "我还没想明白，再等等。", en: "I haven't got it straight yet. Give me time."}
@@ -122,10 +122,10 @@ lines:
     - {zh: "桥边的{item}够了，别再添了。", en: "There's enough {item} at the bridge. Don't add more."}
     - {zh: "{item}够用了，剩下的留着扎灯。", en: "The {item} is enough, so keep the rest for lanterns."}
   point_heard:
-    - {zh: "灯里的事我懂，这个不懂。不过听{name}提起过，去问问吧。", en: "I know lanterns, not this. But I heard {name} mention it, so go and ask."}
-    - {zh: "这事我没留意，手里的灯顾不过来。{name}好像知道，你去问问。", en: "I didn't notice, with all these lanterns on my hands. I think {name} knows, so go and ask."}
+    - {zh: "听{name}讲过这事，不过坊里那会儿忙，我没留心，你还是去问问吧。", en: "I heard of it from {name}. We were busy at the workshop and I didn't catch much, so ask there."}
+    - {zh: "我只听了半截，你到{name}那儿问问吧。", en: "I caught only part of it. You'd better ask {name}."}
   point_hub:
-    - {zh: "我只管糊灯，不管闲话。镇上的消息，找{name}吧。", en: "I only paste lanterns and mind no gossip. For news of the town, see {name}."}
+    - {zh: "坊里的事我倒知道，镇上传些什么我听得少，你可以去问{name}。", en: "I know what goes on in the workshop, but I don't hear much of the town's talk. Try asking {name}."}
     - {zh: "这个我答不上来。茶馆里人来人往，你去问问{name}。", en: "I can't answer that. Folk come and go at the teahouse, so ask {name}."}
   gift_like:
     - {zh: "{item}啊，这个好。正用得着。", en: "Oh, {item}. Just what I can use."}
@@ -138,32 +138,32 @@ lines:
     - {zh: "{item}我不沾，扎灯得手稳。心意我领了。", en: "I don't touch {item}. Lantern work needs a steady hand. Thank you all the same."}
 frames:
   seen:
-    - {zh: "这是我亲眼瞧见的。{line}。", en: "I saw it myself, right in front of me, that {line}."}
+    - {zh: "那会儿我刚好在边上，瞧见{line}。", en: "I happened to be standing nearby and saw that {line}."}
     - {zh: "{line}。我就在边上，看得清清楚楚。", en: "{line}. I was right beside it and saw it clearly."}
   heard:
-    - {zh: "{teller}来坊里时提起过。说{line}。", en: "{teller} brought it up at the workshop, saying {line}."}
-    - {zh: "我是听{teller}说起的。说是{line}。", en: "{teller} spoke of it to me, and said {line}."}
+    - {zh: "我听{teller}带过一句，说{line}。", en: "I heard {teller} mention in passing that {line}."}
+    - {zh: "{line}，这话是{teller}讲给我听的。", en: "{line}. That's the account I got from {teller}."}
   unknown:
-    - {zh: "张罗灯会的人都在说。说{line}。", en: "Everyone getting the festival ready says {line}."}
-    - {zh: "听人闲聊的，谁先说的不晓得。说是{line}。", en: "I heard it in idle talk, and who said it first I couldn't tell you. It was that {line}."}
+    - {zh: "外面有人这么讲，说{line}。", en: "I've heard people say that {line}."}
+    - {zh: "听见有人闲聊，说是{line}。", en: "I heard someone say in passing that {line}."}
   own:
-    - {zh: "拿我做灯的眼睛看，{line}。", en: "To my lantern maker's eye, {line}."}
+    - {zh: "这是我想出来的，{line}。", en: "Here's where I landed: {line}."}
     - {zh: "我自己琢磨，{line}。", en: "I've puzzled over it, and I think {line}."}
   guess_own:
     - {zh: "我也说不准。{hedge}{line}。", en: "I can't be certain. {hedge} {line}."}
-    - {zh: "还没看真切。{hedge}{line}。", en: "I haven't seen it clearly. {hedge} {line}."}
+    - {zh: "{hedge}{line}。这事还得再问问。", en: "{hedge} {line}. Someone should ask around."}
   guess_heard:
     - {zh: "{teller}说得模模糊糊。{hedge}{line}。", en: "{teller} was hazy about it. {hedge} {line}."}
-    - {zh: "就凭{teller}那几句话。{hedge}{line}。", en: "Going only on those few words of {teller}'s. {hedge} {line}."}
+    - {zh: "听{teller}这么讲，{hedge}{line}。", en: "After hearing {teller} talk about it, {hedge} {line}."}
   guess_unknown:
     - {zh: "说不清是从哪来的。{hedge}{line}。", en: "Nobody can say where it came from. {hedge} {line}."}
-    - {zh: "坊里有人提过一句，也没说是谁讲的。{hedge}{line}。", en: "Someone at the workshop mentioned it without saying who from. {hedge} {line}."}
+    - {zh: "听来的话没说是谁讲的，{hedge}{line}。", en: "Who said it, I couldn't tell you. {hedge} {line}."}
   rival:
-    - {zh: "可{teller}讲的是另一个样。说{line}。", en: "But {teller} told it another way, that {line}."}
-    - {zh: "{teller}讲的又不一样。说是{line}。", en: "{teller}'s version was cut from different paper, saying {line}."}
+    - {zh: "{teller}跟我说的不大一样，说{line}。", en: "What {teller} told me was a little different: {line}."}
+    - {zh: "我还听{teller}讲了个不同的说法。{line}。", en: "I also heard another version from {teller}, who said that {line}."}
   known:
     - {zh: "{line}，这谁都知道。", en: "{line}. Anyone could tell you that."}
     - {zh: "{line}。镇上的人都清楚。", en: "{line}. The town knows it well."}
 hedges:
-  - {zh: 我估摸着, en: I would think}
-  - {zh: 大约, en: I'd say}
+  - {zh: 我估摸着, en: "I'd guess"}
+  - {zh: 大约, en: "I'd say"}

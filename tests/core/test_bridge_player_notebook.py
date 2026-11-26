@@ -150,8 +150,8 @@ def test_the_shopkeepers_rumour_shows_only_the_tutorials_mark_until_the_manager_
     (entry,) = out["frame"]["notebook"]
     assert entry["id"] == "n1"
     assert entry["text"] == {
-        "zh": "李二昨晚把栏杆弄坏了。",
-        "en": "Li Er broke the bridge railing last night.",
+        "zh": "李二出事那晚把栏杆弄坏了。",
+        "en": "Li Er broke the bridge railing that night.",
     }
     assert entry["source"] == {
         "kind": "heard",
@@ -171,13 +171,13 @@ def test_the_shopkeepers_rumour_shows_only_the_tutorials_mark_until_the_manager_
     # Li Er broke the rail. The others are for the manager to judge.
     assert first["marks"] == ["unsupported"]  # the demonstration of the script
     assert first["chain"][1:] == [clerk]  # asked: he says he saw it, so nothing is left to ask
-    assert second["id"] == "n2" and second["text"]["en"] == "Li Er was at the bridge last night."
+    assert second["id"] == "n2" and second["text"]["en"] == "Li Er was at the bridge that night."
     assert second["source"]["who"]["id"] == "zhou_huoji" and second["source"]["how"] == "saw"
     assert second["marks"] == [] and second["chain"] == [clerk]
     claimed(out, game, "zhou_huoji", "pr_liner_at_bridge", "self_seen", lead="not_said")
     (said,) = [b for b in out["frame"]["bubbles"] if b["npc"] == "zhou_huoji"]
-    assert voices.called("zhou_huoji", "li_er")["zh"] + "昨晚在桥边" in said["text"]["zh"]
-    assert "Li Er was at the bridge last night" in said["text"]["en"]
+    assert voices.called("zhou_huoji", "li_er")["zh"] + "出事那晚在桥边" in said["text"]["zh"]
+    assert "Li Er was at the bridge that night" in said["text"]["en"]
     (asked,) = events(out, "asked")
     assert (asked["npc"], asked["answer"], asked["path"], asked["prop"], asked["source"]) == (
         "zhou_huoji",
@@ -484,10 +484,10 @@ def test_a_person_answers_a_question_about_a_prop_with_what_they_hold_and_how_th
     claimed(out, game, "zhou_huoji", "pr_liner_looking", "self_seen")
     (said,) = [b for b in out["frame"]["bubbles"] if b["npc"] == "zhou_huoji"]
     assert (
-        voices.called("zhou_huoji", "li_er")["zh"] + "昨晚在桥边找掉进水里的灯笼"
+        voices.called("zhou_huoji", "li_er")["zh"] + "出事那晚在桥边找掉进水里的灯笼"
         in said["text"]["zh"]
     )
-    assert "Li Er was looking for the lost lantern at the bridge last night" in (said["text"]["en"])
+    assert "Li Er was looking for the lost lantern at the bridge that night" in (said["text"]["en"])
     assert said["until"] == me(game)["talk"]["until"]  # it stays up as long as they talk
     (entry,) = out["frame"]["notebook"]
     assert entry["source"]["who"]["id"] == "zhou_huoji" and entry["source"]["how"] == "saw"
@@ -551,7 +551,7 @@ def test_old_he_lies_that_he_was_home_and_pretends_not_to_know_who_broke_the_rai
     )
     claimed(out, game, "old_he", "pr_he_home", "self_seen")
     (said,) = [b for b in out["frame"]["bubbles"] if b["npc"] == "old_he"]
-    assert "I was at home last night" in said["text"]["en"]
+    assert "I was at home that night" in said["text"]["en"]
     # he believes the truth, and the truth is not what the player is told
     assert social_["beliefs"]["old_he"]["pr_he_under_bridge"].startswith("assert|")
     for topic in ("pr_boat_damaged", "t_rail"):
@@ -572,7 +572,7 @@ def test_somebody_with_nothing_to_hide_tells_what_a_liar_would_have_denied():
     assert (asked["path"], asked["prop"]) == ("belief", "pr_he_home")  # the truth, here
     claimed(out, game, "old_he", "pr_he_home", "self_seen", lead="not_so")
     (said,) = [b for b in out["frame"]["bubbles"] if b["npc"] == "old_he"]
-    assert "I was at home last night" in said["text"]["en"]
+    assert "I was at home that night" in said["text"]["en"]
 
 
 def test_the_drunk_son_denies_what_he_did_and_declines_to_speak_of_what_blames_him():
@@ -761,8 +761,8 @@ def test_overhearing_both_sides_shows_the_mismatch_once_it_is_judged():
     assert ack(act(game, "listen")) == ("applied", None)
     first, second = step(game)["frame"]["notebook"]
     assert (first["text"]["en"], second["text"]["en"]) == (
-        "Li Er broke the bridge railing last night.",
-        "Li Er was at the bridge last night.",
+        "Li Er broke the bridge railing that night.",
+        "Li Er was at the bridge that night.",
     )
     assert first["marks"] == ["unsupported"] and second["marks"] == []  # the tutorial's one
     # the words of the shopkeeper are not what the clerk said, and the clerk's words are the
@@ -847,7 +847,7 @@ def test_a_rumour_is_traced_hop_by_hop_to_the_one_who_made_it_up():
     (said,) = [b for b in out["frame"]["bubbles"] if b["npc"] == "zhou_niangzi"]
     teller, accused = (voices.called("zhou_niangzi", p) for p in ("cha_laoban", "li_er"))
     assert teller["en"].lower() in said["text"]["en"].lower() and teller["zh"] in said["text"]["zh"]
-    assert f"{accused['en']} broke the bridge railing last night".lower() in (
+    assert f"{accused['en']} broke the bridge railing that night".lower() in (
         said["text"]["en"].lower()
     )
     assert [e["id"] for e in out["frame"]["notebook"]] == ["n1"]  # nothing new: it is the entry
@@ -858,7 +858,7 @@ def test_a_rumour_is_traced_hop_by_hop_to_the_one_who_made_it_up():
     claimed(out, game, "cha_laoban", "pr_liner_damaged", "cha_laoban")  # her own idea: "own"
     (said,) = [b for b in out["frame"]["bubbles"] if b["npc"] == "cha_laoban"]
     accused = voices.called("cha_laoban", "li_er")
-    assert f"{accused['en']} broke the bridge railing last night".lower() in (
+    assert f"{accused['en']} broke the bridge railing that night".lower() in (
         said["text"]["en"].lower()
     )
     assert entry_of(out, "n1")["marks"] == []  # nobody saw it, and the manager has judged nothing

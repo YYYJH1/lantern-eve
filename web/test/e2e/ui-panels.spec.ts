@@ -29,18 +29,18 @@ test.describe("the notebook", () => {
 
     const notes = page.getByTestId("note");
     await expect(notes.first()).toBeVisible();
-    await expect(notes.nth(0).getByTestId("source-badge")).toHaveText("You saw it");
+    await expect(notes.nth(0).getByTestId("source-badge")).toHaveText("You saw it yourself");
     await expect(notes.nth(0).getByTestId("source-badge")).toHaveAttribute("data-source", "seen");
     await expect(notes.nth(1).getByTestId("source-badge")).toHaveText("Zhou's Clerk says they heard it from Night Watchman");
-    await expect(notes.nth(2).getByTestId("source-badge")).toHaveText("Shopkeeper Zhou cannot say who told them");
+    await expect(notes.nth(2).getByTestId("source-badge")).toHaveText("Shopkeeper Zhou couldn't say who told them");
     await expect(notes.nth(0).getByTestId("seal-contradicts")).toHaveCount(0);
 
     // Every mark has a seal of its own, in the language of the page, with what it means to hover on.
     const seals = {
-      contradicts: ["Says the opposite", "Another note says the opposite. They cannot both be right."],
-      unsupported: ["No grounds", "What you know does not show this to be true yet."],
-      sourceMismatch: ["Changed on the way", "The teller names who they heard it from, but that person said something else."],
-      unconfirmed: ["Nobody saw it", "Nobody has said they saw it with their own eyes."],
+      contradicts: ["Says the opposite", "Another account says the opposite. They cannot both be true."],
+      unsupported: ["Insufficient evidence", "This clue bears on the account. It doesn't establish it on its own."],
+      sourceMismatch: ["Changed on the way", "The person named as the source gave a different account."],
+      unconfirmed: ["No eyewitness found", "So far, the sources you have don't lead to an eyewitness."],
     } as const;
     for (const [mark, [label, hint]] of Object.entries(seals)) {
       const seal = page.getByTestId(`seal-${mark}`).first();
@@ -55,11 +55,11 @@ test.describe("the notebook", () => {
 
     // Chinese: the same marks under their Chinese names.
     await lantern.setLang("zh");
-    for (const [mark, label] of [["contradicts", "说法相反"], ["unsupported", "没有根据"], ["sourceMismatch", "传走样了"], ["unconfirmed", "没人亲眼看见"]] as const) {
+    for (const [mark, label] of [["contradicts", "说法相反"], ["unsupported", "证据不足"], ["sourceMismatch", "传走样了"], ["unconfirmed", "还没找到目击者"]] as const) {
       await expect(page.getByTestId(`seal-${mark}`).first()).toHaveText(label);
     }
-    await expect(notes.nth(0).getByTestId("source-badge")).toHaveText("你亲眼看见的");
-    await expect(notes.nth(1).getByTestId("source-badge")).toHaveText("周家伙计说，是听更夫说的");
+    await expect(notes.nth(0).getByTestId("source-badge")).toHaveText("亲眼所见");
+    await expect(notes.nth(1).getByTestId("source-badge")).toHaveText("周家伙计说是听更夫讲的");
     await expect(page.getByTestId("notebook-entries")).toHaveText("五条");
 
     // How a thing reached the player, hop by hop, with the hops not asked yet marked.
@@ -85,7 +85,7 @@ test.describe("the notebook", () => {
     await lantern.waitForTick(300);
     await expect(page.getByTestId("notebook-count")).toHaveText("0");
     await page.getByTestId("btn-notebook").click();
-    await expect(page.getByTestId("notebook-empty")).toHaveText("Nothing written yet. What you hear and see goes in here.");
+    await expect(page.getByTestId("notebook-empty")).toHaveText("What you hear and what you find in town goes here. Next time someone mentions the same thing, you can check what you wrote.");
     await expect(page.getByTestId("notebook-sample")).toHaveCount(0);
 
     await page.evaluate(() =>

@@ -54,9 +54,9 @@ test.describe("the acts of a talk", () => {
       }
     }
     await lantern.setLang("en");
-    await expect(page.getByTestId("talk-time-note")).toHaveText("Time stands still while you talk. It moves on once you have said something.");
+    await expect(page.getByTestId("talk-time-note")).toHaveText("The town clock pauses while you talk. Once an action is done, the clock advances by the time it took.");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("talk-time-note")).toHaveText("说话的时候，时间停着。说完一件事，时间才往前走。");
+    await expect(page.getByTestId("talk-time-note")).toHaveText("说话时镇上的钟会停着。等一件事办完，刚才用去的时间才算进去。");
     await lantern.setLang("en");
     expect(lantern.pageErrors).toEqual([]);
   });
@@ -188,7 +188,7 @@ test.describe("asking around", () => {
     await page.getByTestId("verb-ask").click();
     await expect(page.getByTestId("topic-chips")).toBeVisible();
     await expect(page.getByTestId("ask-top").getByTestId("topic-chip")).toHaveCount(3);
-    await expect(page.getByTestId("ask-more")).toHaveText("Others");
+    await expect(page.getByTestId("ask-more")).toHaveText("Other topics");
     await expect(page.getByTestId("ask-more")).toHaveAttribute("aria-expanded", "false");
     // The others are not shown until the word is pressed, and then they are listed by what they are, each once.
     await expect(page.locator('.chip-group[data-kind="person"]')).toHaveCount(0);
@@ -247,7 +247,7 @@ test.describe("asking around", () => {
     const line = { id: "n_rail", text: n("栏杆是朝河那边断的。", "The rail broke on the river side."), source: heard, marks: [], chain: [{ ...n("茶馆老板娘", "Teahouse Keeper"), id: "cha_laoban" }, { ...n("周家伙计", "Zhou's Clerk"), id: "zhou_huoji" }, null] };
     await fake.startTalk(page, "zhou_huoji", { notebook: [...fake.notebook(), line] });
     await page.getByTestId("verb-ask").click();
-    await expect(page.getByTestId("ask-follow")).toHaveText("Who told you: The rail broke on the river side");
+    await expect(page.getByTestId("ask-follow")).toHaveText("Who told you “The rail broke on the river side”?");
     await page.getByTestId("ask-follow").click();
     expect((await fake.sentSoFar(page)).at(-1)).toMatchObject({ type: "ask_source", entry: "n_rail" });
     // Another person is not the next to be asked.
@@ -292,7 +292,7 @@ test.describe("asking around", () => {
     const page = lantern.page;
     await fake.openFirstDay(lantern, fake.tasks("t_source"));
     await fake.recordSent(page);
-    await expect(page.getByTestId("task-do")).toHaveText("Ask Zhou's Clerk who told them");
+    await expect(page.getByTestId("task-do")).toHaveText("Ask Zhou's Clerk who said it");
     await fake.startTalk(page, "zhou_huoji", fake.tasks("t_source"));
     await openTheNote(page);
     await page.getByTestId("task-do").click();
@@ -302,7 +302,7 @@ test.describe("asking around", () => {
     await page.getByTestId("picker-askSource").getByTestId("picker-option").first().click();
     expect((await fake.sentSoFar(page)).at(-1)).toMatchObject({ type: "ask_source" });
     await lantern.setLang("zh");
-    await expect(page.getByTestId("task-do")).toHaveText("问周家伙计听谁说的");
+    await expect(page.getByTestId("task-do")).toHaveText("问周家伙计这话是谁说的");
   });
 
   test("keeps the list above the strip under the slip when its note is open, so that the note and its buttons are not covered", async ({ lantern }) => {

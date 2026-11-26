@@ -22,8 +22,8 @@ test.describe("the notebook as a workspace", () => {
     const note = page.getByTestId("note").nth(1);
     await expect(note.getByTestId("note-words")).toContainText("Li Er was at the bridge last night.");
     await expect(note.getByTestId("note-words")).toContainText("What was said");
-    await expect(note.getByTestId("note-source")).toContainText("Who told you");
-    await expect(note.getByTestId("note-source").getByTestId("source-badge")).toHaveText("Zhou's Clerk says they saw it");
+    await expect(note.getByTestId("note-source")).toContainText("Source");
+    await expect(note.getByTestId("note-source").getByTestId("source-badge")).toHaveText("Zhou's Clerk says they saw it themselves");
     const words = await note.getByTestId("note-words").boundingBox();
     const source = await note.getByTestId("note-source").boundingBox();
     if (words === null || source === null) throw new Error("no box");
@@ -32,8 +32,8 @@ test.describe("the notebook as a workspace", () => {
     expect(Math.abs(source.x - words.x)).toBeLessThan(4);
     await lantern.setLang("zh");
     await expect(note.getByTestId("note-words")).toContainText("原话");
-    await expect(note.getByTestId("note-source")).toContainText("听谁说的");
-    await expect(note.getByTestId("note-source").getByTestId("source-badge")).toHaveText("周家伙计说，是亲眼看见的");
+    await expect(note.getByTestId("note-source")).toContainText("出处");
+    await expect(note.getByTestId("note-source").getByTestId("source-badge")).toHaveText("周家伙计说自己亲眼见过");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -75,7 +75,7 @@ test.describe("the notebook as a workspace", () => {
     await expect(button.getByTestId("cost-clarify")).toHaveCount(0);
     await expect(button).toBeDisabled();
     // It says where and when, and does not leave the player to guess.
-    await expect(page.getByTestId("judgment-where").first()).toHaveText("To clear it up in public, go to the teahouse between 17:00 and 21:00, or wait until the elder has called the clan to the hall.");
+    await expect(page.getByTestId("judgment-where").first()).toHaveText("Speak at the teahouse from 17:00 to 21:00, or at the hall once the elder has called a meeting.");
     await fake.feedFrame(page, { hud: { verbs: ["move", "speak", "speak_publicly", "judge", "hint"] } });
     await expect(button).toBeEnabled();
     await expect(page.getByTestId("judgment-where")).toHaveCount(0);
@@ -89,7 +89,7 @@ test.describe("the notebook as a workspace", () => {
     await expect(button).toContainText("拿去当众说清");
     // Not at the venue, or in a talk: the same button waits, and in a talk it says what to do.
     await fake.feedFrame(page, { hud: { verbs: ["move", "judge", "hint"] } });
-    await expect(page.getByTestId("judgment-where").first()).toHaveText("要当众说清，就在傍晚 17:00 到 21:00 去茶馆，或者等族长把族人召到祠堂。");
+    await expect(page.getByTestId("judgment-where").first()).toHaveText("17:00 到 21:00 可以在茶馆当众说。族长要是把人召到了祠堂，就能去祠堂说。");
     await fake.startTalk(page, "li_laotai");
     await expect(page.getByTestId("judgment-where").first()).toHaveText("你还在和人说话，先告辞吧。");
   });
@@ -102,14 +102,14 @@ test.describe("the notebook as a workspace", () => {
     const button = page.getByTestId("judgment-clarify");
     const words: Record<string, { en: string; zh: string }> = {
       no_entry: { en: "That note is not in your notebook.", zh: "见闻簿里没有这一条。" },
-      not_shown: { en: "Those two lines alone do not show that.", zh: "单凭这两句，看不出这一点。" },
-      overclaim: { en: "You said more than these lines show. Those who know better will remember it.", zh: "你说的比这几句话能证明的多。知道底细的人会记着。" },
-      no_witness: { en: "Nobody says they saw it happen, so there is nobody to bear it out.", zh: "没人说自己亲眼看见过，找不出人作证。" },
+      not_shown: { en: "Comparing these two entries doesn't establish that conclusion.", zh: "拿这两条来核对，还得不出这个结论。" },
+      overclaim: { en: "You told the room more than your evidence could prove. People who know what happened will remember.", zh: "你当众说的超出了凭据能证明的事，知道底细的人会记住。" },
+      no_witness: { en: "No one has come forward as an eyewitness, so there's nobody to testify yet.", zh: "还没有谁说亲眼见过，眼下找不到人作证。" },
       said_already: { en: "You said this here already, to the same people.", zh: "这些话你已经当着这些人说过了。" },
-      no_venue: { en: "Not here. Speak at the teahouse in the evening, or at the hall when the clan is called.", zh: "这里不是当众说话的地方。傍晚去茶馆，或族长召集族人时去祠堂。" },
+      no_venue: { en: "Speak at the teahouse in the evening. If the elder has already called the clan to the hall, you can speak there too.", zh: "到傍晚去茶馆说。要是族长已在祠堂召集族人，也可以去祠堂。" },
       not_evening: { en: "The teahouse only fills up after 17:00.", zh: "茶馆要到 17:00 以后才有人。" },
       no_meeting: { en: "The elder has not called the clan to the hall.", zh: "族长还没把族人召到祠堂。" },
-      empty_room: { en: "There is nobody here to hear you.", zh: "这里没有人听你说。" },
+      empty_room: { en: "Nobody is here to hear you. Wait until you have an audience.", zh: "这儿没人能听见，等有人在场再开口。" },
     };
     let tick = 20;
     for (const [reason, w] of Object.entries(words)) {
@@ -181,8 +181,8 @@ test.describe("what a clarification did", () => {
     await expect(view).toBeVisible();
     await expect(page.getByTestId("hearer")).toHaveCount(4);
     const words = {
-      en: { claim: "You said in public that this claim goes too far: “Li Er broke the bridge railing last night.”", sum: "3 of 4 changed their minds.", names: ["Zhou's Clerk", "Granny Li", "Teahouse Keeper", "Shopkeeper Zhou"], change: ["blames, now believes", "unsure, now believes", "unsure, now believes", "still blames"], reason: "I only saw him by the bridge. I did not see him touch it.", title: "What they made of it" },
-      zh: { claim: "你当众指出这句话说过了头：「李二昨晚把栏杆弄坏了。」", sum: "四个人里，三个改了主意。", names: ["周家伙计", "李老太", "茶馆老板娘", "周掌柜"], change: ["从怪罪变成相信", "从拿不准变成相信", "从拿不准变成相信", "还是怪罪"], reason: "我只看见他在桥边，没看见他碰桥。", title: "在场的人怎么想" },
+      en: { claim: "You told the room that “Li Er broke the bridge railing last night.” went further than the evidence.", sum: "3 of 4 changed their minds.", names: ["Zhou's Clerk", "Granny Li", "Teahouse Keeper", "Shopkeeper Zhou"], change: ["blames, now believes", "unsure, now believes", "unsure, now believes", "still blames"], reason: "I only saw him by the bridge. I did not see him touch it.", title: "What they made of it" },
+      zh: { claim: "你当众说，「李二昨晚把栏杆弄坏了。」这话传过了头。", sum: "四个人里，三个改了主意。", names: ["周家伙计", "李老太", "茶馆老板娘", "周掌柜"], change: ["从怪罪变成相信", "从拿不准变成相信", "从拿不准变成相信", "还是怪罪"], reason: "我只看见他在桥边，没看见他碰桥。", title: "在场的人怎么想" },
     } as const;
     for (const theme of ["light", "dark"] as const) {
       await lantern.setTheme(theme);
@@ -225,6 +225,25 @@ test.describe("what a clarification did", () => {
     const delays = await page.getByTestId("hearer").evaluateAll((els) => els.map((el) => Number.parseFloat(getComputedStyle(el).animationDelay)));
     expect(delays).toHaveLength(4);
     for (let i = 1; i < delays.length; i++) expect(delays[i] ?? 0, `person ${i}`).toBeGreaterThan(delays[i - 1] ?? 0);
+  });
+
+  test("the manager reads from the notebook when the witness is away", async ({ lantern }) => {
+    const page = lantern.page;
+    await fake.openFirstDay(lantern);
+    await lantern.setLang("en");
+    await fake.feedFrame(page, {}, [{
+      ...fake.clarified(),
+      judgment: "unsupported",
+      witnesses: [],
+      audience: [{ npc: "zhou_zhanggui", before: "against", after: "against", reason: { zh: "你是问过谁？", en: "Who did you ask?" } }],
+    }]);
+    await expect(page.getByTestId("clarify-objection")).toContainText("Who did you ask?");
+    await expect(page.getByTestId("clarify-evidence")).toBeHidden();
+    await page.getByTestId("clarify-follow").click();
+    const evidence = page.getByTestId("clarify-evidence");
+    await expect(evidence.locator("strong")).toHaveText("Manager");
+    await expect(evidence).toContainText("Zhou's Clerk said they saw it firsthand.");
+    await expect(evidence).toContainText("Li Er was at the bridge last night");
   });
 
   test("is put away with its button or the Escape key, and says when nobody was there", async ({ lantern }) => {

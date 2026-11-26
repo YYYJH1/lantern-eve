@@ -667,7 +667,8 @@ def test_every_fixed_phrase_has_both_languages_and_two_of_them_join_without_a_ga
 
     for code, text in phrases.PHRASES.items():
         assert set(text) == {"zh", "en"} and text["zh"] and text["en"], code
-        assert text["zh"].endswith(("。", "）")) and text["en"].endswith((".", ")")), code
+        assert text["zh"].endswith(("。", "？", "！", "）")), code
+        assert text["en"].endswith((".", "?", "!", ")")), code
     both = phrases.joined(phrases.phrase("not_said"), {"zh": "我亲眼看见。", "en": "I saw it."})
     assert both == {"zh": "我没说过那样的话。我亲眼看见。", "en": "I never said that. I saw it."}
     with pytest.raises(KeyError):

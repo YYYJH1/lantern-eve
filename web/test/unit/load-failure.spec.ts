@@ -26,13 +26,13 @@ test.describe("why a save could not be loaded", () => {
   });
 
   test("has its words in both languages: the opening page says what to do, the menu, which has a game running, only what happened", () => {
-    expect(translate("en", "opening.continue.version")).toBe("This save was made by another version of the game, which this one cannot read. Press Start for a new game.");
-    expect(translate("zh", "opening.continue.version")).toBe("这份存档是另一个版本的游戏存的，这一版读不出来。点「开始」开一局新的。");
-    expect(translate("en", "menu.load.version")).toBe("This save was made by another version of the game, which this one cannot read.");
-    expect(translate("zh", "menu.load.version")).toBe("这份存档是另一个版本的游戏存的，这一版读不出来。");
+    expect(translate("en", "opening.continue.version")).toBe("This save is from a different version. Select Start to play a new game.");
+    expect(translate("zh", "opening.continue.version")).toBe("这一版读不了这份存档。点「开始」开新的一局。");
+    expect(translate("en", "menu.load.version")).toBe("This version can't open that save.");
+    expect(translate("zh", "menu.load.version")).toBe("这一版读不了这份存档。");
     // The words for every other cause are what they were.
-    expect(translate("en", "opening.continue.failed")).toBe("That save could not be loaded.");
-    expect(translate("zh", "opening.continue.failed")).toBe("这份存档没能读出来。");
+    expect(translate("en", "opening.continue.failed")).toBe("Couldn't read this save. Try opening another one from the menu.");
+    expect(translate("zh", "opening.continue.failed")).toBe("这份存档没能读出来，试试从菜单读取另一份。");
   });
 
   test("is another version's for a save that the host rebuilds to other hashes, with the core and the content that made it named in the error", async () => {

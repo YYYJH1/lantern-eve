@@ -55,7 +55,7 @@ test.describe("a moment of the festival", () => {
     expect(await reasons(page)).not.toContain("show");
     await moment(page, ECHO);
     await expect(director(page)).toHaveAttribute("data-show", "echo");
-    await expect(page.getByTestId("director-caption")).toHaveText("What you said came back to you from Shopkeeper Zhou.");
+    await expect(page.getByTestId("director-caption")).toHaveText("You heard your own words come back to you from Shopkeeper Zhou.");
     await expect(page.getByTestId("director-skip")).toHaveCount(0);
     // the world is held with a reason of its own, and the pause the test host keeps is not touched
     await expect.poll(() => reasons(page)).toContain("show");
@@ -129,7 +129,7 @@ test.describe("a moment of the festival", () => {
     await page.waitForFunction(() => window.__lantern.play.director.port !== null);
     await fake.recordSent(page);
     await moment(page, TOGETHER);
-    await expect(page.getByTestId("director-caption")).toHaveText("李家和周家的人，第一次一起搬料。");
+    await expect(page.getByTestId("director-caption")).toHaveText("李家和周家头一回一起搬料。");
     await advance(page, 500);
     await page.getByTestId("director-veil").click();
     await expect(director(page)).toHaveCount(0);

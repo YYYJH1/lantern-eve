@@ -293,10 +293,10 @@ test.describe("the moments of a frame", () => {
   });
 
   test("say what they say in both languages", () => {
-    expect(translate("zh", "moment.echo", { from: "周掌柜" })).toBe("你说过的话，又从周掌柜那里传回来了。");
-    expect(translate("en", "moment.echo", { from: "Zhou the shopkeeper" })).toBe("What you said came back to you from Zhou the shopkeeper.");
-    expect(translate("zh", "moment.echoPlain")).toBe("你说过的话，又传回来了。");
-    expect(translate("zh", "moment.together_work")).toBe("李家和周家的人，第一次一起搬料。");
+    expect(translate("zh", "moment.echo", { from: "周掌柜" })).toBe("你从周掌柜嘴里又听到了自己原先说的话。");
+    expect(translate("en", "moment.echo", { from: "Zhou the shopkeeper" })).toBe("You heard your own words come back to you from Zhou the shopkeeper.");
+    expect(translate("zh", "moment.echoPlain")).toBe("你又听见了自己传出去的话。");
+    expect(translate("zh", "moment.together_work")).toBe("李家和周家头一回一起搬料。");
     expect(translate("zh", "moment.both_banks")).toBe("两岸都挂起了灯。");
     expect(translate("en", "moment.both_banks")).toBe("Lanterns hang on both banks.");
     expect(translate("zh", "director.skip")).toBe("跳过");

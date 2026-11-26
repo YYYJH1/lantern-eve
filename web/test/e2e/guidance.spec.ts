@@ -172,7 +172,7 @@ test.describe("the elder gives the button", () => {
     await fake.recordSent(page);
     await page.getByTestId("btn-elder").click();
     await page.getByTestId("elder-level-1").click();
-    await expect(page.getByTestId("elder-text")).toHaveText("Think about this. Find out who started that talk.");
+    await expect(page.getByTestId("elder-text")).toHaveText("Here's how I'd go about it. Find out who started that talk.");
     await expect(page.getByTestId("elder-do")).toHaveCount(0);
     await page.getByTestId("elder-level-3").click();
     await expect(page.getByTestId("elder-answer-3").getByTestId("elder-text")).toHaveText("Your next step: Talk to Granny Li");
@@ -232,7 +232,7 @@ test.describe("the choice", () => {
     await expect(group.locator("strong")).toHaveText("Guidance");
     await expect(page.getByTestId("guidance-full")).toHaveText("Full");
     await expect(page.getByTestId("guidance-brief")).toHaveText("Brief");
-    await expect(group).toContainText("With Brief, the slip says only what to do");
+    await expect(group).toContainText("Brief shows the task, the reason, any obstacle, and the time and place.");
     await lantern.setLang("zh");
     await expect(group.locator("strong")).toHaveText("指引");
     await expect(page.getByTestId("guidance-full")).toHaveText("完整");
@@ -267,7 +267,7 @@ test.describe("the choice", () => {
     const evening = page.getByTestId("tutorial-card");
     await expect(evening).toHaveAttribute("data-step", "evening");
     const choice = page.getByTestId("tut-guidance");
-    await expect(choice).toContainText("From here on, you choose how much the red slip does for you.");
+    await expect(choice).toContainText("The red slip will keep track of who to find and where to go. Make your own way there or click the underlined step.");
     await expect(choice.getByTestId("guidance-brief")).toHaveAttribute("aria-pressed", "true");
     await choice.getByTestId("guidance-full").click();
     await expect(choice.getByTestId("guidance-full")).toHaveAttribute("aria-pressed", "true");

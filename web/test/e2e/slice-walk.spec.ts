@@ -166,7 +166,7 @@ test.describe("the game the opening page starts", () => {
     await page.getByTestId("request-confirm").click();
     await expect(card).toHaveAttribute("data-step", "clerk", { timeout: 90_000 });
     await expect(page.getByTestId("tutorial-step")).toHaveText("带教 第 2 步，共 4 步");
-    await expect(page.getByTestId("tut-blocker").locator("dd")).toHaveText("李家不肯给竹料");
+    await expect(page.getByTestId("tut-blocker").locator("dd")).toHaveText("李家不肯借竹料");
     await snap(page, "granny-li-refuses");
     await page.getByTestId("tutorial-next").click();
     await expect(card).toHaveCount(0);
@@ -184,6 +184,7 @@ test.describe("the game the opening page starts", () => {
 
     // --- 3. The rumour, back to Zhou's clerk. Each time the task card says whom to ask next: Granny Li about Li Er, then the one she
     // heard it from, and the one that one heard it from. The button walks the player there and opens the list of notes to ask the source of.
+    await page.getByTestId("request-close").click();
     // The talk folded the note of the slip: the player opens it to press the phrase that asks the source.
     await openTheNote(page);
     await page.getByTestId("task-do").click();
@@ -199,7 +200,7 @@ test.describe("the game the opening page starts", () => {
     await leave(page);
     for (const next of ["cha_laoban", "zhou_huoji"]) {
       await closeElder(page);
-      await expect(page.getByTestId("task-do")).toContainText("听谁说的");
+      await expect(page.getByTestId("task-do")).toContainText("这话是谁说的");
       const who = await followTask(page);
       expect(who).toBe(next);
       await expect(page.getByTestId("picker-askSource")).toBeVisible();
@@ -221,7 +222,7 @@ test.describe("the game the opening page starts", () => {
     await expect(page.getByTestId("tutorial-step")).toHaveText("带教 第 3 步，共 4 步");
     await expect(page.getByTestId("tut-relation")).toHaveText(zh["pairing.ans.unsupported"]);
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-open", "true");
-    await expect(page.getByTestId("pair-shown")).toContainText("李二昨晚在桥边。");
+    await expect(page.getByTestId("pair-shown")).toContainText("李二出事那晚在桥边。");
     await expect(page.getByTestId("pair-claim")).toContainText("眼红人家出风头");
     await expect(page.getByTestId("ans-unsupported")).toHaveClass(/is-signal/);
     await snap(page, "tutorial-compare");
@@ -229,13 +230,17 @@ test.describe("the game the opening page starts", () => {
     // A wrong answer first: the page says to think again, and nothing is written down.
     await page.getByTestId("ans-contradicts").click();
     await expect(page.getByTestId("pair-outcome")).toHaveAttribute("data-ok", "false");
-    await expect(page.getByTestId("pair-outcome")).toHaveText("不对。再想想，这两句能不能都对？");
+    await expect(page.getByTestId("pair-outcome")).toHaveText("先念清这两句各说了什么。若怀疑话传错了，也看看两句各是谁说的。");
     await expect(page.getByTestId("judgment")).toHaveCount(0);
     await snap(page, "pairing-think-again");
     // The right one is kept, and said in one sentence that names the two lines.
     await page.getByTestId("ans-unsupported").click();
     await expect(page.getByTestId("pair-outcome")).toHaveAttribute("data-ok", "true");
-    await expect(page.getByTestId("pair-outcome")).toContainText("对。「李二昨晚在桥边」");
+    await expect(page.getByTestId("pair-outcome")).toHaveText(
+      zh["pairing.ok.unsupported"]
+        .replace("{a}", "李二出事那晚在桥边")
+        .replace("{b}", "李二出事那晚把栏杆弄坏了，是眼红人家出风头"),
+    );
     await expect(page.getByTestId("judgment")).toHaveCount(1);
     await expect(page.getByTestId("judgment")).toHaveAttribute("data-relation", "unsupported");
     await expect(page.getByTestId("judgment").locator(".judgment-relation")).toHaveText(zh["pairing.ans.unsupported"]);
@@ -252,13 +257,13 @@ test.describe("the game the opening page starts", () => {
     await expect(page.getByTestId("tut-when")).toContainText("茶馆，第一天 酉时 17:00 到 19:00");
     await snap(page, "tutorial-evening");
     await page.getByTestId("tutorial-next").click();
-    await expect(page.getByTestId("game-note").last()).toHaveText("带教走完了。往后有难处，随时来问族长。");
+    await expect(page.getByTestId("game-note").last()).toHaveText("后面的事还得你多跑几趟。碰上难办的，就来跟老夫说。");
     // The judgement is done, and the core follows the task that asks for the rumour to be set straight, with the evening at the teahouse for
     // its window. Nothing has to be picked: the bar tells the player what is next. The button that goes to the teahouse comes at four.
     await expect(page.getByTestId("task-card")).toHaveAttribute("data-id", "t_clear_rumour");
     await expect(page.getByTestId("topbar-task-text")).toHaveText("把李二的事当众说清");
     await expect(page.getByTestId("task-changed")).toContainText("接着办");
-    await expect(page.getByTestId("task-next")).toContainText("拿着你比过的那两句话，去当众说清。");
+    await expect(page.getByTestId("task-next")).toContainText("把比过的两句话说给街坊听，再把你比出来的结果说明白。");
     await expect(page.getByTestId("task-window")).toHaveText("茶馆，酉时 17:00 到 19:00");
     await expect(page.getByTestId("task-do")).toHaveCount(0);
     await waitForClock(page, 16, 5, 1, 240_000);
@@ -302,7 +307,7 @@ test.describe("the game the opening page starts", () => {
 
     // --- 6. Granny Li withdraws her objection: the core says so, and the page says it in words
     expect((await eventsOf(page, "objection_withdrawn")).at(-1)).toMatchObject({ npc: "li_laotai", what: "bamboo" });
-    await expect(page.getByTestId("game-note").filter({ hasText: "李老太松口了，竹料的事不再拦着。" })).toHaveCount(1);
+    await expect(page.getByTestId("game-note").filter({ hasText: "李老太松了口，可以接着张罗竹料了。" })).toHaveCount(1);
     await page.getByTestId("clarify-done").click();
     await page.getByTestId("notebook-close").click();
     // The half hour is paid for once the notebook is shut: the clock goes by at the fast rate, and holds no more.
@@ -316,8 +321,8 @@ test.describe("the game the opening page starts", () => {
     const request = page.getByTestId("request-card");
     // The title says who is asked and not what: the card says what below it, and the offer's own words begin with 请 as well.
     await expect(request.locator(".request-title")).toHaveText("请李大");
-    await expect(page.getByTestId("request-asks").locator("dd")).toHaveText("请李大把竹料送到桥边。要是答应，明早07:00前先送四根。");
-    await expect(page.getByTestId("request-blockers")).toContainText("眼下没看出有什么拦着");
+    await expect(page.getByTestId("request-asks").locator("dd")).toHaveText("请李大把竹料送到桥边。要是答应了，明早07:00前先送四根。");
+    await expect(page.getByTestId("request-blockers")).toContainText("眼下可以开口问。");
     await expect(page.getByTestId("request-card")).toHaveAttribute("data-cost", "20");
     await expect(page.getByTestId("request-confirm")).toBeEnabled();
     expect((await appliedActions(lantern)).filter((a) => a.type === "entrust" && a.kind === "material")).toEqual([]);
@@ -344,7 +349,7 @@ test.describe("the game the opening page starts", () => {
     await expect(task).toHaveAttribute("data-id", "t_bamboo_first");
     await expect(task).toHaveAttribute("data-state", "open");
     await expect(page.getByTestId("task-why")).toHaveText("李大答应把四根竹料送到桥边。");
-    await expect(page.getByTestId("task-next")).toHaveText("按约好的时间去桥边，看竹料送到没有。");
+    await expect(page.getByTestId("task-next")).toHaveText("到约好的时间，去桥边看看竹料到了没有。");
     // The time is the promise's own: from the hour he sets out to the hour it is due, at the bridge.
     await expect(page.getByTestId("task-window")).toHaveText("石桥，第二天 卯时 06:00 到 07:00");
     await expect(page.getByTestId("task-do")).toHaveCount(0);
@@ -377,7 +382,7 @@ test.describe("the game the opening page starts", () => {
     await clockReaches(page, 5, 50, 2);
     await expect(page.getByTestId("elder")).toHaveCount(0);
     await expect(page.getByTestId("task-card")).toHaveAttribute("data-id", "t_bamboo_first");
-    await expect(page.getByTestId("task-next")).toHaveText("按约好的时间去桥边，看竹料送到没有。");
+    await expect(page.getByTestId("task-next")).toHaveText("到约好的时间，去桥边看看竹料到了没有。");
     // It is the second day now, so the slip leaves the day out.
     await expect(page.getByTestId("task-window")).toHaveText("石桥，卯时 06:00 到 07:00");
     await snap(page, "the-next-dawn");
@@ -440,7 +445,7 @@ test.describe("the game the opening page starts", () => {
     // --- 12. The paper is away, and the card says the first day is done: what was done, what is left, and the elder who stays home. The world waits for it.
     await expect(end).toBeVisible();
     await expect(page.getByTestId("end-title")).toHaveText("第一天过完了");
-    await expect(page.getByTestId("end-reached")).toHaveText("第一批竹料送到了石桥。灯会在第五天晚上。在那之前，还要把桥修好，把桥是怎么坏的当众说清，再让两家和好。");
+    await expect(page.getByTestId("end-reached")).toHaveText("头一批竹料已经送到桥边。离第五天晚上的灯会还有几天，趁这阵把桥修好，查清栏杆怎么断的，也劝李、周两家坐下来谈一谈。");
     await expect(page.getByTestId("end-more")).toHaveCount(0);
     await expect(page.getByTestId("end-close")).toHaveText("接着玩");
     await expect(page.getByTestId("status")).toHaveText("已暂停");
@@ -461,7 +466,7 @@ test.describe("the game the opening page starts", () => {
     await expect(next).toHaveAttribute("data-id", "t_bamboo_rest");
     await expect(next).toHaveAttribute("data-state", "open");
     await expect(page.getByTestId("task-changed")).toHaveText("「借到李家的第一批竹料」办成了，接着办「凑齐竹料」");
-    await expect(page.getByTestId("task-why")).toHaveText("桥要十根竹料，桥边才有四根。");
+    await expect(page.getByTestId("task-why")).toHaveText("修桥要十根竹料。桥边只有四根。");
     await expect(page.getByTestId("task-next")).toHaveText("再请李大送一批。");
     await expect(page.getByTestId("task-do")).toHaveText("请李大帮忙");
     expect(await page.getByTestId("task-other").evaluateAll((els) => els.map((el) => el.getAttribute("data-id")))).toEqual(["t_timber"]);
@@ -490,10 +495,10 @@ test.describe("the game the opening page starts", () => {
     await expect(page.getByTestId("board-deadline")).toContainText("第四天 18:00");
     await page.getByTestId("board-tab-truth").click();
     await expect(page.getByTestId("truth-state")).toHaveAttribute("data-state", "open");
-    await expect(page.getByTestId("truth-need")).toHaveText(["至少五个熟面孔在场", "在场的人有六成以上信", "族长也信"]);
+    await expect(page.getByTestId("truth-need")).toHaveText(["至少五个认识的街坊在场", "在场的人里，至少有六成相信这个说法", "族长也认这个说法"]);
     await page.getByTestId("board-tab-peace").click();
     await expect(page.getByTestId("peace-act")).toHaveCount(3);
-    await expect(page.getByTestId("peace-witness")).toHaveText("还没人亲眼看见两家和好");
+    await expect(page.getByTestId("peace-witness")).toHaveText("还缺人为两家和好作见证");
     await snap(page, "the-board-of-the-second-day", 400, { width: 1280, height: 1100 });
     await page.getByTestId("board-tab-peace").click();
 
@@ -502,8 +507,8 @@ test.describe("the game the opening page starts", () => {
     await page.waitForFunction(() => window.__lantern.play.guide.elder.open, undefined, { timeout: 150_000, polling: 300 });
     await expect(recap).toHaveCount(0);
     await expect(end).toHaveCount(0);
-    await expect(page.getByTestId("elder-lead")).toHaveText("族长来找你了，看你像是卡住了。");
-    await expect(page.getByTestId("elder-text")).toHaveText("你往这头想想。再请李大送一批。");
+    await expect(page.getByTestId("elder-lead")).toHaveText("族长来问你事情办得怎么样。");
+    await expect(page.getByTestId("elder-text")).toHaveText("老夫看，这事可以这样办。再请李大送一批。");
     await snap(page, "the-elder-comes-by");
     await page.getByTestId("elder-close").click();
     await expect(page.getByTestId("topbar-task-text")).toHaveText("凑齐竹料");

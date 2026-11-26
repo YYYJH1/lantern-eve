@@ -176,7 +176,7 @@ test.describe("opening the card", () => {
 
   test("from a task whose action is judge: the notebook opens at the notes, as it did, with the card a tab away", async ({ lantern }) => {
     const page = await open(lantern, stmt.statementKey(), taskWith({ verb: "judge" }));
-    await expect(page.getByTestId("task-do")).toHaveText("Compare two lines in the notebook");
+    await expect(page.getByTestId("task-do")).toHaveText("Check the account in the notebook");
     await page.getByTestId("task-do").click();
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-open", "true");
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-part", "notes");
@@ -280,9 +280,9 @@ test.describe("choosing", () => {
     // An option that no note bears on yet is not one to choose.
     await page.locator('[data-id="c_dalang"]').getByTestId("statement-pick").click();
     await fake.feedFrame(page, {}, [ackOf(await lastId(page), "rejected", "not_shown")]);
-    await expect(page.getByTestId("statement-no")).toHaveText("Nothing in your notebook bears on that yet.");
+    await expect(page.getByTestId("statement-no")).toHaveText("Find a notebook entry that bears on this account before choosing it.");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("statement-no")).toHaveText("见闻簿里还没有和这个说法有关的话。");
+    await expect(page.getByTestId("statement-no")).toHaveText("先找一条与这个说法有关的见闻，才能选它。");
     await lantern.setLang("en");
     // The next choice clears it.
     await page.locator('[data-id="c_flood"]').getByTestId("statement-pick").click();
@@ -299,7 +299,7 @@ test.describe("what stands behind an option", () => {
     await expect(option("c_boat").getByTestId("statement-for")).toHaveAttribute("data-n", "2");
     await expect(option("c_boat").getByTestId("statement-for").locator(".tally-mark")).toHaveCount(1);
     await expect(option("c_boat").getByTestId("statement-against")).toHaveAttribute("data-n", "0");
-    await expect(option("c_boat").getByTestId("statement-marks")).toHaveAttribute("aria-label", "2 for, 0 against");
+    await expect(option("c_boat").getByTestId("statement-marks")).toHaveAttribute("aria-label", "2 in support, 0 against");
     await expect(option("c_li_er").getByTestId("statement-for")).toHaveAttribute("data-n", "1");
     await expect(option("c_li_er").getByTestId("statement-against")).toHaveAttribute("data-n", "1");
     await expect(option("c_li_er").getByTestId("statement-against")).toHaveText("1");
@@ -309,7 +309,7 @@ test.describe("what stands behind an option", () => {
     await expect(option("c_dalang").getByTestId("statement-marks")).toHaveAttribute("data-testid", "statement-marks");
     await expect(option("c_boat")).toHaveAttribute("data-support", "2");
     await lantern.setLang("zh");
-    await expect(option("c_boat").getByTestId("statement-marks")).toHaveAttribute("aria-label", "两条对得上，零条对不上");
+    await expect(option("c_boat").getByTestId("statement-marks")).toHaveAttribute("aria-label", "两条支持，零条有出入");
     await expect(option("c_boat").getByTestId("statement-pick")).toContainText("船夫老何夜里撑船，船头撞断了栏杆");
   });
 
@@ -318,7 +318,8 @@ test.describe("what stands behind an option", () => {
     await turnToCard(page);
     const boat = page.locator('[data-testid="statement-option"][data-id="c_boat"]');
     const notes = boat.getByTestId("statement-notes");
-    await expect(notes.locator("summary")).toHaveText("What it rests on (2)");
+    await expect(notes.locator("summary")).toHaveText("2 related notes");
+    await expect(page.locator('[data-testid="statement-option"][data-id="c_flood"] summary')).toHaveText("1 related note");
     await expect(notes).not.toHaveAttribute("open", "");
     await expect(boat.getByTestId("statement-entry").first()).toBeHidden();
     await notes.locator("summary").click();
@@ -336,7 +337,7 @@ test.describe("what stands behind an option", () => {
     await page.getByTestId("workspace-tab-statement").click();
     await expect(page.getByTestId("statement-card")).toBeVisible();
     await lantern.setLang("zh");
-    await expect(page.locator('[data-testid="statement-option"][data-id="c_boat"]').getByTestId("statement-notes").locator("summary")).toHaveText("凭这两条");
+    await expect(page.locator('[data-testid="statement-option"][data-id="c_boat"]').getByTestId("statement-notes").locator("summary")).toHaveText("看这两条见闻");
   });
 
   test("leaves out a note the notebook does not have, and lists none where none of them are there", async ({ lantern }) => {
@@ -358,7 +359,7 @@ test.describe("what stands behind an option", () => {
     await turnToCard(page);
     const part = (id: string) => page.locator(`[data-testid="statement-part"][data-part="${id}"]`);
     await expect(part("course")).toHaveAttribute("data-gap", "true");
-    await expect(part("course").getByTestId("statement-gap")).toHaveText("Nothing in your notebook bears on this part yet.");
+    await expect(part("course").getByTestId("statement-gap")).toHaveText("There's more to find out about this part. Look for a notebook entry that bears on it.");
     // The options are still there to choose from, with nothing behind them.
     await expect(part("course").getByTestId("statement-option")).toHaveCount(3);
     await expect(part("course").getByTestId("statement-notes")).toHaveCount(0);
@@ -369,7 +370,7 @@ test.describe("what stands behind an option", () => {
     await expect(part("rumour").getByTestId("statement-part-title")).toHaveText("Why people got it wrong:");
     await expect(part("rumour").getByTestId("statement-option")).toHaveCount(0);
     await lantern.setLang("zh");
-    await expect(part("course").getByTestId("statement-gap")).toHaveText("见闻簿里还没有和这一条有关的话。");
+    await expect(part("course").getByTestId("statement-gap")).toHaveText("这件事还有一处没打听清楚，先找一条和它有关的见闻。");
     await expect(part("rumour").getByTestId("statement-part-title")).toHaveText("大家为什么会误会：");
     expect(lantern.pageErrors).toEqual([]);
   });
@@ -416,9 +417,9 @@ test.describe("making the statement", () => {
     await expect(page.getByTestId("statement-recap").locator("li")).toHaveText([
       "How the bridge broke: Boatman He's boat struck the railing in the night",
       "What happened that night: Boatman He poled under the bridge in the night and the bow struck the railing. Afterwards the boatman quietly mended the boat",
-      "Why people got it wrong: Zhou's Clerk only saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou, holding an old grudge, guessed that Li Er broke the railing. The story grew as it went round and picked up “on purpose” and “envy”",
+      "Why people got it wrong: Zhou's Clerk saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou heard that and, remembering the old grudge, guessed that Li Er had broken the railing. By the time the neighbours heard, the story had picked up ‘on purpose’ and ‘envy’",
     ]);
-    await expect(box).toContainText("The statement can be made only once a day. A part that does not hold costs you trust with the people there.");
+    await expect(box).toContainText("You can give the statement once a day. If people who know what happened spot a claim you can't back up, they'll trust you less.");
     await expect(page.getByTestId("statement-state")).toHaveCount(0);
     expect(await sentOf(page, "speak")).toEqual([]);
     // The safe answer has the keyboard.
@@ -433,7 +434,7 @@ test.describe("making the statement", () => {
     await expect(page.getByTestId("statement-recap").locator("li").first()).toHaveText("桥是怎么坏的：船夫老何夜里撑船，船头撞断了栏杆");
     await expect(page.getByTestId("statement-confirm")).toContainText("就这么说");
     await expect(page.getByTestId("statement-cancel")).toHaveText("再想想");
-    await expect(box).toContainText("讲稿一天只能拿出来说一回。哪一条站不住，在场的人就少信你几分。");
+    await expect(box).toContainText("一天只有一次照讲稿说的机会。哪一句拿不出凭据，知道底细的人往后就没那么信你了。");
   });
 
   test("writes no minutes of the speech on the button or on the yes", async ({ lantern }) => {
@@ -483,11 +484,11 @@ test.describe("making the statement", () => {
     const panel = page.getByTestId("clarify");
     await expect(panel).toBeVisible();
     await expect(panel).toHaveAttribute("data-kind", "statement");
-    await expect(panel.locator(".sheet-title")).toHaveText("How the statement went");
-    await expect(page.getByTestId("stated-result")).toHaveText("It did not carry.");
+    await expect(panel.locator(".sheet-title")).toHaveText("What the room made of it");
+    await expect(page.getByTestId("stated-result")).toHaveText("Your statement didn't carry this time.");
     await expect(page.getByTestId("stated-verdict")).toHaveAttribute("data-told", "false");
-    await expect(page.getByTestId("stated-wrong")).toHaveText("Did not hold: How the bridge broke");
-    await expect(page.getByTestId("stated-why")).toHaveText("Why: The part “How the bridge broke” goes against what Boatman He saw with their own eyes.");
+    await expect(page.getByTestId("stated-wrong")).toHaveText("Couldn't back up How the bridge broke");
+    await expect(page.getByTestId("stated-why")).toHaveText("Why: The part “How the bridge broke” doesn't match what Boatman He saw with their own eyes.");
     await expect(page.getByTestId("stated-line")).toHaveText("Day 4 18:00, Teahouse: 7 there, 6 believed it (86%), the elder believed it");
     // The people, one by one, with where they stood and why: the panel of a clarification, below the verdict.
     await expect(page.getByTestId("hearer")).toHaveCount(4);
@@ -507,8 +508,8 @@ test.describe("making the statement", () => {
     await expect(panel).toHaveCount(0);
     await expect(page.getByTestId("statement-last")).toHaveAttribute("data-told", "false");
     await expect(page.getByTestId("statement-last-line")).toHaveText("Day 4 18:00, Teahouse: 7 there, 6 believed it (86%), the elder believed it");
-    await expect(page.getByTestId("statement-wrong")).toHaveText("Did not hold: How the bridge broke");
-    await expect(page.getByTestId("statement-reason")).toHaveText("Why: The part “How the bridge broke” goes against what Boatman He saw with their own eyes.");
+    await expect(page.getByTestId("statement-wrong")).toHaveText("Couldn't back up How the bridge broke");
+    await expect(page.getByTestId("statement-reason")).toHaveText("Why: The part “How the bridge broke” doesn't match what Boatman He saw with their own eyes.");
     await expect(page.getByTestId("statement-state")).toBeDisabled();
     await expect(page.getByTestId("statement-why")).toHaveText(stmt.WHY_USED.en);
     expect(lantern.pageErrors).toEqual([]);
@@ -522,7 +523,7 @@ test.describe("making the statement", () => {
     await page.getByTestId("statement-confirm").click();
     await fake.feedFrame(page, { statement: stmt.readyKey({ can_state: false, why_not: stmt.WHY_USED, used_today: true, last: stmt.LAST_TOLD }) }, [ackOf(await lastId(page)), stmt.spokeEvent(stmt.LAST_TOLD)]);
     const panel = page.getByTestId("clarify");
-    await expect(panel.locator(".sheet-title")).toHaveText("当众说的结果");
+    await expect(panel.locator(".sheet-title")).toHaveText("众人听完怎么想");
     await expect(page.getByTestId("stated-result")).toHaveText("你当众把这件事说清了。");
     await expect(page.getByTestId("stated-verdict")).toHaveAttribute("data-told", "true");
     await expect(page.getByTestId("stated-wrong")).toHaveCount(0);
@@ -531,7 +532,7 @@ test.describe("making the statement", () => {
     // A statement with parts that did not hold, in Chinese.
     await page.getByTestId("clarify-done").click();
     await fake.feedFrame(page, { statement: stmt.readyKey({ can_state: false, used_today: true, last: { ...stmt.LAST_WRONG, wrong: ["cause", "rumour"], why: { zh: "传走样了", en: "The sources do not match" } } }) });
-    await expect(page.getByTestId("statement-wrong")).toHaveText("没站住的：桥是怎么坏的、大家为什么会误会");
+    await expect(page.getByTestId("statement-wrong")).toHaveText("站不住的是「桥是怎么坏的、大家为什么会误会」");
     await expect(page.getByTestId("statement-reason")).toHaveText("因为传走样了");
   });
 
@@ -541,7 +542,7 @@ test.describe("making the statement", () => {
     await page.getByTestId("statement-state").click();
     await page.getByTestId("statement-confirm").click();
     await fake.feedFrame(page, { statement: stmt.readyKey({ can_state: false, used_today: true, last: stmt.LAST_WRONG }) }, [ackOf(await lastId(page))]);
-    await expect(page.getByTestId("stated-result")).toHaveText("It did not carry.");
+    await expect(page.getByTestId("stated-result")).toHaveText("Your statement didn't carry this time.");
     await expect(page.getByTestId("stated-line")).toContainText("7 there, 6 believed it (86%)");
     await expect(page.getByTestId("hearers")).toHaveCount(0);
     await expect(page.getByTestId("clarify-empty")).toHaveCount(0);
@@ -552,7 +553,7 @@ test.describe("making the statement", () => {
     const page = await open(lantern, stmt.readyKey());
     await turnToCard(page);
     const reasons: Array<[string, string, string]> = [
-      ["incomplete", "The three parts of the card are not all filled in.", "讲稿的三条还没写全。"],
+      ["incomplete", "Choose an account for each of the three parts before speaking in public.", "把讲稿的三处都选好，再来当众说。"],
       ["stated_today", "You have made your statement today already.", "今天已经照讲稿说过一回了。"],
       ["too_early", "The statement has to wait for the evening of the fourth day.", "要等第四天傍晚，才能照讲稿当众说。"],
       ["few_present", "There are too few people here to witness it.", "在场的人太少，作不了见证。"],
@@ -577,7 +578,7 @@ test.describe("making the statement", () => {
     const frame = fake.speakingFrame(await fake.playerOf(page));
     await fake.feedFrame(page, { ...frame, player: { ...(frame.player as Record<string, unknown>), offers: { entrust: [], promise: [], tell: [], speak: offers } } });
     await page.getByTestId("verb-speak").click();
-    await expect(page.getByTestId("picker-speak").getByTestId("picker-option")).toHaveText(["Show everything you hold", "Show: fresh scrapes on the bridge pier", "Lay a table for peace", "Make the statement"]);
+    await expect(page.getByTestId("picker-speak").getByTestId("picker-option")).toHaveText(["Show everything you hold", "Show: fresh scrapes on the bridge pier", "Host a reconciliation meal", "Make the statement"]);
     await page.locator('[data-testid="picker-option"][data-id="statement"]').click();
     await expect(page.getByTestId("picker-speak")).toHaveCount(0);
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-part", "statement");
@@ -596,7 +597,7 @@ test.describe("making the statement", () => {
     await page.getByTestId("statement-confirm").click();
     await fake.feedFrame(page, {}, [ackOf(await lastId(page), "rejected", "no_venue")]);
     await expect(page.getByTestId("statement-no")).toHaveAttribute("data-reason", "no_venue");
-    await expect(page.getByTestId("statement-no")).toHaveText("Not here. Speak at the teahouse in the evening, or at the hall when the clan is called.");
+    await expect(page.getByTestId("statement-no")).toHaveText("Speak at the teahouse in the evening. If the elder has already called the clan to the hall, you can speak there too.");
     await expect(page.getByTestId("statement-state")).toBeEnabled();
     await expect(page.getByTestId("clarify")).toHaveCount(0);
     await lantern.setLang("zh");

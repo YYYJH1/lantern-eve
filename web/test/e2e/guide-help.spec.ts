@@ -78,7 +78,7 @@ test.describe("the signals of the world", () => {
     await lantern.openMenu();
     await expect(page.getByTestId("btn-hints")).toHaveText("Hints (0)");
     await page.getByTestId("btn-hints").click();
-    await expect(page.getByTestId("hint-log-empty")).toContainText("No hints yet");
+    await expect(page.getByTestId("hint-log-empty")).toHaveText("Hints that flash on screen are kept here.");
     await page.getByTestId("menu-close").click();
     await fake.feedFrame(page, { notebook: NOTEBOOK_TWO, ...fake.tasks("t_bamboo_first") });
     await page.getByTestId("hint-pill-close").click();
@@ -155,13 +155,13 @@ test.describe("asking the elder", () => {
     // The world is held while he talks: the pause button does not let it go.
     await expect(page.getByTestId("btn-pause")).toBeDisabled();
     for (const level of [1, 2, 3]) await expect(page.getByTestId(`elder-level-${level}`)).toBeEnabled();
-    await expect(page.getByTestId("elder-level-1")).toHaveText("Which way to think");
+    await expect(page.getByTestId("elder-level-1")).toHaveText("Give me a lead");
     await expect(page.getByTestId("elder-level-2")).toHaveText("Which lines to compare");
     await expect(page.getByTestId("elder-level-3")).toHaveText("Just tell me the next step");
 
     // Level 1: the next of the task that is followed.
     await page.getByTestId("elder-level-1").click();
-    await expect(page.getByTestId("elder-answer-1").getByTestId("elder-text")).toHaveText("Think about this. Find out who started that talk.");
+    await expect(page.getByTestId("elder-answer-1").getByTestId("elder-text")).toHaveText("Here's how I'd go about it. Find out who started that talk.");
     await expect(page.getByTestId("elder-level-1")).toHaveCount(0);
 
     // Level 2: the core's pair, asked of the core, and the relation it gives when asked a second time.
@@ -170,9 +170,9 @@ test.describe("asking the elder", () => {
     await fake.feedFrame(page, { hint: { a: "n_clerk", b: "n_broke" } });
     const two = page.getByTestId("elder-answer-2");
     await expect(two).toHaveAttribute("data-from", "core");
-    await expect(two.getByTestId("elder-text")).toHaveText("Check “Li Er was at the bridge last night” against the claim “Li Er broke the bridge railing last night”.");
+    await expect(two.getByTestId("elder-text")).toHaveText("Put “Li Er was at the bridge last night” next to “Li Er broke the bridge railing last night” and see exactly what the first account tells you.");
     await fake.feedFrame(page, { hint: { a: "n_clerk", b: "n_broke", relation: "unsupported" } });
-    await expect(two.locator(".elder-extra")).toHaveText("As I see it, it doesn't prove the claim.");
+    await expect(two.locator(".elder-extra")).toHaveText("As I see it, it isn't enough to prove the account.");
 
     // Level 3: the next step, from the action of the task, with where and when.
     await page.getByTestId("elder-level-3").click();
@@ -184,7 +184,7 @@ test.describe("asking the elder", () => {
     for (const theme of ["light", "dark"] as const) {
       await lantern.setTheme(theme);
       await lantern.setLang("zh");
-      await expect(page.getByTestId("elder-answer-1").getByTestId("elder-text")).toHaveText("你往这头想想。问清这话是谁先说的。");
+      await expect(page.getByTestId("elder-answer-1").getByTestId("elder-text")).toHaveText("老夫看，这事可以这样办。问清这话是谁先说的。");
       await expect(page.getByTestId("elder-answer-3").getByTestId("elder-text")).toHaveText("下一步，去找李老太说话。");
       await expect(page.getByTestId("elder-answer-3").locator(".elder-extra")).toHaveText("在李家宅，第一天 辰时 08:00 到 17:00。");
       expect(await fake.contrast(page, '[data-testid="elder-answer-1"] [data-testid="elder-text"]'), theme).toBeGreaterThan(4.5);
@@ -206,7 +206,7 @@ test.describe("asking the elder", () => {
     // No verb to ask the core with: nothing was sent, and the pair is the one the marks of the notebook give.
     expect(await fake.sentSoFar(page)).toEqual([]);
     await expect(page.getByTestId("elder-answer-2")).toHaveAttribute("data-from", "page");
-    await expect(page.getByTestId("elder-answer-2").getByTestId("elder-text")).toContainText("“Li Er was at the bridge last night” against the claim “Li Er broke the bridge railing last night”");
+    await expect(page.getByTestId("elder-answer-2").getByTestId("elder-text")).toContainText("“Li Er was at the bridge last night” next to “Li Er broke the bridge railing last night”");
     await page.getByTestId("elder-close").click();
     // With nothing to compare, and nothing followed, the elder says what he has.
     await fake.feedFrame(page, { notebook: [NOTEBOOK_TWO[0]], tracked: null });
@@ -214,8 +214,8 @@ test.describe("asking the elder", () => {
     await page.getByTestId("elder-level-1").click();
     await page.getByTestId("elder-level-2").click();
     await page.getByTestId("elder-level-3").click();
-    await expect(page.getByTestId("elder-answer-1").getByTestId("elder-text")).toHaveText("Pick something to do first, and I will tell you which way to think.");
-    await expect(page.getByTestId("elder-answer-2").getByTestId("elder-text")).toHaveText("Nothing in your notebook is worth setting side by side yet. Ask around first.");
+    await expect(page.getByTestId("elder-answer-1").getByTestId("elder-text")).toHaveText("Tell me what you're trying to get done.");
+    await expect(page.getByTestId("elder-answer-2").getByTestId("elder-text")).toHaveText("You've got little to go on. Ask around and see who can tell you what happened.");
     await expect(page.getByTestId("elder-answer-3").getByTestId("elder-text")).toHaveText("Pick something to do first.");
     // Escape closes his card.
     await page.keyboard.press("Escape");
@@ -243,7 +243,7 @@ test.describe("the elder who comes by", () => {
     const sheet = page.getByTestId("elder");
     await expect(sheet).toBeVisible();
     await expect(sheet).toHaveAttribute("data-visit", "true");
-    await expect(page.getByTestId("elder-lead")).toHaveText("The elder came by. You look stuck.");
+    await expect(page.getByTestId("elder-lead")).toHaveText("The elder has come to see how you're getting on.");
     await expect(page.getByTestId("elder-answer-1")).toBeVisible();
     await expect(page.getByTestId("elder-answer-2")).toHaveCount(0);
     await page.getByTestId("elder-close").click();
@@ -340,7 +340,7 @@ test.describe("the elder on a real game", () => {
     const sheet = page.getByTestId("elder");
     await expect(sheet).toBeVisible({ timeout: 60_000 });
     await expect(sheet).toHaveAttribute("data-visit", "true");
-    await expect(page.getByTestId("elder-answer-1").getByTestId("elder-text")).toHaveText("Think about this. Go to the Li house and ask Granny Li to lend the bamboo.");
+    await expect(page.getByTestId("elder-answer-1").getByTestId("elder-text")).toHaveText("Here's how I'd go about it. Go to the Li house and ask Granny Li to lend the bamboo.");
     // The world waits for him.
     const tick = await page.evaluate(() => window.__lantern.client.state.simTick);
     await page.waitForTimeout(800);

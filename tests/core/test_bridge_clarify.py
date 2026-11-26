@@ -242,7 +242,11 @@ def test_the_other_kinds_of_speech_are_as_they_were_and_the_new_one_has_its_fiel
 def test_with_the_witness_there_all_five_of_the_named_take_it_in_and_the_shopkeeper_does_not(
     evening,
 ):
-    taken = stands(clarify_(evening))
+    out = clarify_(evening)
+    speech = events(out, "clarified")[0]
+    assert speech["judgment"] == "unsupported"
+    assert speech["witnesses"] == ["zhou_huoji"]
+    taken = stands(out)
     assert [p for p in FIVE if taken[p]["after"] == "for"] == list(FIVE)
     assert taken["zhou_huoji"]["before"] == "against"  # he held the second son's version of it
     assert taken["zhou_huoji"]["reason"] in voices.variants("zhou_huoji", "witness_in_public")
@@ -285,7 +289,9 @@ def test_the_target_of_the_slice_with_only_his_words_cited_both_of_the_li_family
 def test_with_only_his_words_cited_the_two_of_the_li_family_still_take_it_in(evening):
     send_away(evening, "zhou_huoji", "p_zhou_house")
     assert "zhou_huoji" not in assembly.audience(state_of(evening), "p_teahouse")
-    taken = stands(clarify_(evening))
+    out = clarify_(evening)
+    assert events(out, "clarified")[0]["witnesses"] == []
+    taken = stands(out)
     assert "zhou_huoji" not in taken
     assert all(taken[p]["after"] == "for" for p in LI)
     named = [p for p in FIVE if p in taken]
@@ -360,8 +366,8 @@ def test_an_acceptor_drops_the_claim_trusts_more_and_takes_in_what_was_said_in_p
     shown = step(evening)["frame"]["notebook"][-1]
     assert shown["id"] == "n5" and shown["source"] == {"kind": "seen"}
     assert shown["text"]["en"] == (
-        "Zhou's Clerk only saw Li Er looking for the lost lantern at the bridge. That has been "
-        "made clear in public."
+        "Zhou's Clerk only saw Li Er looking for the lost lantern at the bridge. "
+        "That was cleared up in public."
     )
     assert (
         shown["text"]["zh"].startswith("周家伙计只看见李二") and "当众说清了" in shown["text"]["zh"]
@@ -842,7 +848,9 @@ def test_a_witness_who_takes_no_stand_lends_the_speech_no_strength(evening, monk
     strength: the wife of the master of the Zhou house, whom 80 takes in (75) and 60 does not (55),
     is unsure."""
     monkeypatch.setattr(assembly, "culprit_of", lambda variant: "zhou_huoji")
-    taken = stands(clarify_(evening))
+    out = clarify_(evening)
+    assert events(out, "clarified")[0]["witnesses"] == []
+    taken = stands(out)
     assert taken["zhou_huoji"]["before"] == taken["zhou_huoji"]["after"] == "against"
     assert taken["zhou_niangzi"]["after"] == "unsure"
     assert all(taken[p]["after"] == "for" for p in LI)

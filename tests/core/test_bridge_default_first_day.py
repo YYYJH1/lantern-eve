@@ -216,7 +216,7 @@ def test_the_night_watchman_is_the_last_to_ask_and_speaks_from_the_afternoon_of_
     idle(game)
     card = tasks_of(frame_now(game))[CARD]
     assert card["action"] == {"verb": "entrust", "npc": "gengfu", "request": "testify"}
-    assert "watch post" in card["next"]["en"]
+    assert "Watch Post" in card["next"]["en"]
 
 
 def test_the_footprint_is_left_alone_from_the_third_day():
@@ -247,7 +247,10 @@ def test_once_the_manager_holds_the_note_of_what_was_cleared_the_card_has_them_t
     entry = note_of_the_clearing(game)
     card = tasks_of(frame_now(game))[CARD]
     assert card["action"] == {"verb": "tell", "npc": "li_laotai", "item": entry}
-    assert "cleared" in card["why"]["en"] and "tell" in card["next"]["en"].lower()
+    assert card["why"]["en"] == (
+        "The town has heard what happened at the bridge. Granny Li still won't lend the bamboo."
+    )
+    assert card["next"]["en"] == "Go and tell Granny Li that the matter was set straight in public."
     meet(game, "li_laotai")
     assert acks(act(game, "tell", entry=entry, how="faithful")) == [("applied", None)]
     act(game, "leave")

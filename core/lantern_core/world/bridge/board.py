@@ -81,12 +81,12 @@ SHORT = {
     },
     "accepted": {
         "zh": f"在场的人里信的不到{numerals.zh_share(assembly.ACCEPT_PERCENT)}",
-        "en": f"Fewer than {assembly.ACCEPT_PERCENT}% of those there believed it",
+        "en": f"Fewer than {assembly.ACCEPT_PERCENT}% of the audience believed you",
     },
     "elder_absent": {"zh": "族长不在场", "en": "The elder was not there"},
     "elder_refused": {
-        "zh": "族长在场，可没被说服",
-        "en": "The elder was there but was not convinced",
+        "zh": "族长听了，还是不信",
+        "en": "The elder heard you and still wasn't convinced",
     },
 }
 
@@ -96,15 +96,15 @@ ACTS = (
         "id": peace.STOP,
         "text": {
             "zh": (
-                f"闲话当众说清了，两家当家就不再当着人互相指责。当时在场的和事后听说的，"
-                f"积怨各降{peace.STOP_DROP}点。桥的事说清时，"
-                f"信了的再各降{assembly.GRUDGE_DROP}点"
+                f"闲话当众说清后，知道这件事的当家就不再当众指责对方。"
+                f"当场听到或事后得知的当家，积怨各降{peace.STOP_DROP}点。"
+                f"桥的事说清时，相信真相的当家各再降{assembly.GRUDGE_DROP}点"
             ),
             "en": (
-                f"A head stops accusing the other family in public: each head who is there "
-                f"when the rumour is cleared up, or hears of it later, drops "
-                f"{peace.STOP_DROP} points of grudge. Once the truth is told, each head who "
-                f"believes it drops {assembly.GRUDGE_DROP} more"
+                f"Once the rumour is cleared up in public, the heads who hear about it stop "
+                f"blaming the other family in public. Each loses {peace.STOP_DROP} grudge points, "
+                f"whether they hear it then or later. When the truth about the bridge comes out, "
+                f"each head who believes it loses {assembly.GRUDGE_DROP} more"
             ),
         },
     },
@@ -116,8 +116,8 @@ ACTS = (
                 f"最多算{numerals.zh_count(peace.WORK_MORNINGS)}个早上"
             ),
             "en": (
-                f"Helpers of both families work at the bridge the same morning: each head's grudge "
-                f"drops by {peace.WORK_DROP}, for up to {peace.WORK_MORNINGS} mornings"
+                f"If helpers from both families work at the bridge on the same morning, each head "
+                f"loses {peace.WORK_DROP} grudge points. Up to {peace.WORK_MORNINGS} mornings count"
             ),
         },
     },
@@ -129,9 +129,9 @@ ACTS = (
                 f"桥的事说清以后再吃，降{assembly.MEAL_DROP_AFTER_TRUTH}点"
             ),
             "en": (
-                f"Both heads share a meal while others see it: the grudge drops by "
-                f"{assembly.MEAL_DROP}, or by {assembly.MEAL_DROP_AFTER_TRUTH} once the truth is "
-                f"told"
+                f"When the two heads eat together in front of witnesses, the grudge drops by "
+                f"{assembly.MEAL_DROP} points. If the truth is already out, it drops by "
+                f"{assembly.MEAL_DROP_AFTER_TRUTH} points"
             ),
         },
     },

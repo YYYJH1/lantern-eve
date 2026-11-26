@@ -41,9 +41,9 @@ test.describe("the Chinese words that carry a count", () => {
     expect(zhOf("unit.people", 2)).toBe("两人");
     expect(zhOf("unit.coins", 40)).toBe("四十文");
     expect(zhOf("slip.more", 3)).toBe("还有三件");
-    expect(zhOf("note.inspected.some", 3)).toBe("见闻簿里新记了三条。");
-    expect(zhOf("note.joinedMore", 1, { names: "老何、李大" })).toBe("老何、李大和另外一个人答应来帮忙。");
-    expect(zhOf("note.testified.some", 2, { name: "老何" })).toBe("老何把亲眼看见的跟你讲了。你记下了两条。");
+    expect(zhOf("note.inspected.some", 3)).toBe("你细看后找出三条线索，记在了见闻簿里。");
+    expect(zhOf("note.joinedMore", 1, { names: "老何、李大" })).toBe("老何、李大答应来帮忙，另外还有一个人。");
+    expect(zhOf("note.testified.some", 2, { name: "老何" })).toBe("你把老何亲眼见到的事记进见闻簿，一共两条。");
     expect(zhOf("task.expected.more", 2)).toBe("还有两人");
     expect(zhOf("person.favours.owes", 2)).toBe("欠你两份人情");
     expect(zhOf("person.favours.owed", 3, { name: "李大" })).toBe("你欠李大三份人情");
@@ -55,13 +55,13 @@ test.describe("the Chinese words that carry a count", () => {
   test("read the same way when two counts stand in one sentence", () => {
     const two = { named: count("zh", 9), accepted: count("zh", 8), where: "祠堂" };
     // The note over the map says what was done, and the ledger keeps how many took it in.
-    expect(said("zh", "note.spoke", two)).toBe("你在祠堂当众拿出了凭据，在场的人都听见了。");
-    expect(said("zh", "note.spoke.cleared", two)).toBe("你在祠堂当众把真相讲明白了。");
+    expect(said("zh", "note.spoke", two)).toBe("你在祠堂拿出凭据，把自己的说法讲给在场的人听。");
+    expect(said("zh", "note.spoke.cleared", two)).toBe("你在祠堂当众讲明了事情经过。");
     expect(said("zh", "clarify.sum", { n: count("zh", 9), changed: count("zh", 8) })).toBe("九个人里，八个改了主意。");
     expect(said("zh", "ending.told", { total: count("zh", 12), mutated: count("zh", 5) })).toBe("一共传了十二回，其中五回把话说走了样。");
     const last = { when: "第三天 18:00", where: "茶馆", named: count("zh", 4), accepted: count("zh", 2), percent: 50 };
     expect(said("zh", "board.truth.lastLine", last)).toBe("第三天 18:00在茶馆，到场四人，两人信了，占50%");
-    expect(said("zh", "board.statement.counts", { support: count("zh", 3), against: count("zh", 0) })).toBe("三条对得上，零条对不上");
+    expect(said("zh", "board.statement.counts", { support: count("zh", 3), against: count("zh", 0) })).toBe("三条支持，零条有出入");
   });
 
   test("put the measure word of the pole on the ledger's three counts, and leave English alone", () => {

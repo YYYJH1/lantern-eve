@@ -62,9 +62,9 @@ test.describe("a request", () => {
     await expect(page.getByTestId("request-confirm")).toHaveText("Go ahead");
     await expect(page.getByTestId("request-gives")).toHaveCount(0);
     // What stands in the way, in plain words, and how it looks, and why, are the core's.
-    await expect(page.getByTestId("request-blockers").locator("dt")).toHaveText("In the way");
+    await expect(page.getByTestId("request-blockers").locator("dt")).toHaveText("What stands in the way");
     await expect(page.getByTestId("request-blocker")).toHaveText("Granny Li has not dropped her objection");
-    await expect(page.getByTestId("request-odds").locator("dt")).toHaveText("Will it work");
+    await expect(page.getByTestId("request-odds").locator("dt")).toHaveText("Chance they'll agree");
     await expect(page.getByTestId("request-odds").locator("dd")).toHaveText("Hard to say");
     await expect(page.getByTestId("request-reasons").locator("li")).toHaveCount(2);
     expect(await fake.sentSoFar(page)).toEqual([]);
@@ -114,10 +114,10 @@ test.describe("a request", () => {
     await lantern.setLang("en");
     await page.getByTestId("request-cancel").click();
     await page.getByTestId("verb-entrust").click();
-    await expect(page.getByTestId("request-blockers").locator("dd")).toHaveText("Nothing in the way that you can see.");
+    await expect(page.getByTestId("request-blockers").locator("dd")).toHaveText("You can ask now.");
     await lantern.setLang("zh");
     await page.getByTestId("verb-entrust").click();
-    await expect(page.getByTestId("request-blockers").locator("dd")).toHaveText("眼下没看出有什么拦着。");
+    await expect(page.getByTestId("request-blockers").locator("dd")).toHaveText("眼下可以开口问。");
   });
 
   test("says that it has no preview when the host cannot give one, makes none up, and lets the player ask again", async ({ lantern }) => {
@@ -130,7 +130,7 @@ test.describe("a request", () => {
       await page.getByTestId("verb-entrust").click();
       const card = page.getByTestId("request-card");
       await expect(card).toHaveAttribute("data-phase", "failed");
-      await expect(page.getByTestId("request-failed")).toHaveText("That could not be worked out. Try again.");
+      await expect(page.getByTestId("request-failed")).toHaveText("Couldn't check the terms of this request. Select “Try again” to check them.");
       for (const id of ["request-confirm", "request-asks", "request-blockers", "request-odds"]) await expect(page.getByTestId(id)).toHaveCount(0);
       await page.getByTestId("request-cancel").click();
       await expect(card).toHaveCount(0);
@@ -169,13 +169,13 @@ test.describe("a request", () => {
     await expect(card).toHaveAttribute("data-mark", "same");
     await expect(page.getByTestId("request-result")).toHaveText("Granny Li agreed.");
     await expect(page.getByTestId("request-reply")).toHaveText("Agreed. It will be at the bridge by morning.");
-    await expect(page.getByTestId("request-facts")).toHaveText("Granny Li says yes and will see to it shortly.");
+    await expect(page.getByTestId("request-facts")).toHaveText("Granny Li agreed to help. You'll have to wait to hear how it goes.");
     // After the act the card says how long it took, and the buttons never did.
     await expect(page.getByTestId("request-spent")).toHaveText("That took 20 minutes.");
     await expect(page.getByTestId("request-follow")).toHaveCount(0);
-    await expect(page.getByTestId("talk-line").first()).toHaveText("You ask Granny Li to bring the bamboo to the bridge");
+    await expect(page.getByTestId("talk-line").first()).toHaveText("Would you bring this load to the bridge for us?");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("talk-line").first()).toHaveText("你请李老太把竹料送到桥边");
+    await expect(page.getByTestId("talk-line").first()).toHaveText("能劳烦你把这批料送到桥边吗？");
     await expect(page.getByTestId("request-result")).toHaveText("李老太答应了。");
     await page.getByTestId("request-close").click();
     await expect(card).toHaveCount(0);
@@ -193,14 +193,14 @@ test.describe("a request", () => {
     await fake.answerPreview(page, { ...fake.PREVIEW, version: 51 });
     await fake.feedFrame(page, {}, [{ kind: "action_ack", tick: 4, action_id: first, result: "rejected", reason: "stale" }]);
     await expect(page.getByTestId("request-card")).toHaveAttribute("data-phase", "preview");
-    await expect(page.getByTestId("request-stale")).toHaveText("Things have changed. Have another look");
+    await expect(page.getByTestId("request-stale")).toHaveText("Things have changed since you opened this. Check the terms again before asking.");
     await expect(page.getByTestId("game-note")).toHaveCount(0);
     await page.getByTestId("request-confirm").click();
     expect(await lastId(page)).not.toBe(first);
     expect((await fake.sentSoFar(page)).at(-1)).toMatchObject({ type: "entrust", version: 51 });
     await lantern.setLang("zh");
     await fake.feedFrame(page, {}, [{ kind: "action_ack", tick: 5, action_id: await lastId(page), result: "rejected", reason: "stale" }]);
-    await expect(page.getByTestId("request-stale")).toHaveText("情况变了，再看一遍");
+    await expect(page.getByTestId("request-stale")).toHaveText("情形跟方才不一样了，重新看一眼条件再开口。");
   });
 
   test("shows a refusal as the result, with the reason, in both languages, and not as a note over the map", async ({ lantern }) => {
@@ -262,17 +262,17 @@ test.describe("the other requests", () => {
     await expect(page.getByTestId("entrust-more")).toHaveCount(0);
     // What can be promised is in the list of the others, so that a promise can be made without having been turned down first.
     await talkKeys(page, { give: { preferred: WANTS.offer, more: [], ways: [] } });
-    await expect(page.getByTestId("entrust-more")).toHaveText("Others");
+    await expect(page.getByTestId("entrust-more")).toHaveText("Other favours");
     await talkKeys(page, { asks_more: OTHERS });
     await page.getByTestId("entrust-more").click();
     const list = page.getByTestId("picker-entrust");
     await expect(list).toBeVisible();
     await expect(list.getByTestId("picker-option")).toHaveCount(5);
-    await expect(list.locator('[data-group="give"] .picker-heading')).toHaveText("Promise Granny Li something");
+    await expect(list.locator('[data-group="give"] .picker-heading')).toHaveText("What would you promise Granny Li?");
     await expect(list.locator('[data-group="give"] [data-testid="picker-option"]')).toHaveText(["Promise Granny Li the honour of lighting the main lantern"]);
     // Each says where it stands, except one that has not been asked for.
     await expect(list.locator('[data-id="join"] .picker-badge')).toHaveCount(0);
-    await expect(list.locator('[data-id="persuade:li_da"] .picker-badge')).toHaveText("Agreed, to be done");
+    await expect(list.locator('[data-id="persuade:li_da"] .picker-badge')).toHaveText("Agreed, not yet done");
     await expect(list.locator('[data-id="persuade:li_er"] .picker-badge')).toHaveText("Turned down today");
     await expect(list.locator('[data-id="testify"] .picker-badge')).toHaveText("Done");
     // The ones that ask someone to talk another round are under a heading of their own.
@@ -280,7 +280,7 @@ test.describe("the other requests", () => {
     // The language switch is in the menu, and a press outside the list puts the list away: it is opened again.
     await lantern.setLang("zh");
     await page.getByTestId("entrust-more").click();
-    await expect(list.locator('[data-id="persuade:li_da"] .picker-badge')).toHaveText("已答应，等着办");
+    await expect(list.locator('[data-id="persuade:li_da"] .picker-badge')).toHaveText("答应了，还没办");
     await lantern.setLang("en");
     await page.getByTestId("entrust-more").click();
     // A request that is turned down today can be asked again from here: its preview is the core's.
@@ -356,12 +356,12 @@ test.describe("what the person asks in return, and what is left to keep or promi
     const context = page.getByTestId("talk-context");
     await expect(context).toHaveAttribute("data-kind", "answer");
     await expect(context).toHaveAttribute("data-count", "3");
-    await expect(page.getByTestId("answer-ask")).toHaveText("Granny Li wants something in return before doing this.");
+    await expect(page.getByTestId("answer-ask")).toHaveText("Granny Li is willing to discuss the favour, and wants to know what you can offer in return.");
     await expect(page.getByTestId("answer-offer")).toHaveText("Promise Granny Li the honour of lighting the main lantern");
-    await expect(page.getByTestId("answer-for")).toHaveText("For: Ask Granny Li to lend the bamboo for the bridge");
+    await expect(page.getByTestId("answer-for")).toHaveText("You asked for “Ask Granny Li to lend the bamboo for the bridge”");
     await expect(page.getByTestId("context-more")).toHaveText("2 more");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("answer-ask")).toHaveText("李老太想先要点回报，才肯办这件事。");
+    await expect(page.getByTestId("answer-ask")).toHaveText("忙可以商量，李老太想先听听你愿意拿什么来换。");
     await expect(page.getByTestId("context-more")).toHaveText("还有两件");
     await expect(page.getByTestId("answer-yes")).toHaveText("答应");
     await expect(page.getByTestId("answer-no")).toHaveText("不答应");
@@ -389,7 +389,7 @@ test.describe("what the person asks in return, and what is left to keep or promi
       { kind: "pledged", tick: 6, npc: "li_laotai", pledge: "k1", what: "role", item: "t_honor_light", amount: 0, due: 3 },
       { kind: "action_ack", tick: 6, action_id: await lastId(page), result: "applied", reason: null },
     ]);
-    await expect(page.getByTestId("request-result")).toHaveText("You gave your word to Granny Li.");
+    await expect(page.getByTestId("request-result")).toHaveText("You've given Granny Li your word. Remember to keep it by the agreed time.");
     // The core no longer lists what was asked in return: the frame has no wants, and the request turned down is on offer again.
     await talkKeys(page, { wants: null, queue: [KEEP, { kind: "give" }] });
     await expect(page.getByTestId("answer-line")).toHaveCount(0);
@@ -482,9 +482,9 @@ test.describe("what the person asks in return, and what is left to keep or promi
     await fake.startTalk(page, "li_laotai");
     await talkKeys(page, { wants: null, keep: null, queue: [{ kind: "give" }], give: { preferred: null, more: [], ways: ["clear_truth", "gift", "ask_others"] } });
     await page.getByTestId("verb-context").click();
-    await expect(page.getByTestId("give-none")).toHaveText("Nothing is left to promise. You can still try these.");
+    await expect(page.getByTestId("give-none")).toHaveText("Everything you can promise is already spoken for. Try another way.");
     await expect(page.getByTestId("give-ways").locator("li")).toHaveCount(3);
-    await expect(page.locator('[data-way="clear_truth"]')).toContainText("Set the truth straight in public, where Granny Li will hear it");
+    await expect(page.locator('[data-way="clear_truth"]')).toContainText("Set the record straight in public while Granny Li is there");
     await expect(page.locator('[data-way="ask_others"]')).toContainText("Ask someone else to help");
     // The way of the gift has its button, which opens the small things.
     await page.getByTestId("give-way-gift").click();
@@ -507,7 +507,7 @@ test.describe("a look that was turned down", () => {
     await page.getByTestId("picker-look").getByTestId("picker-option").first().click();
     expect((await fake.sentSoFar(page)).at(-1)).toMatchObject({ type: "look", at: "t_he_boat" });
     await fake.feedFrame(page, {}, [{ kind: "action_ack", tick: 5, action_id: await lastId(page), result: "rejected", reason: "refused" }]);
-    await expect(page.getByTestId("game-note").last()).toHaveText("You hardly know each other, so they will not let you look.");
+    await expect(page.getByTestId("game-note").last()).toHaveText("They don't know you well enough to let you see it yet.");
     // In the talk with him the promise is put forward, though nothing was asked: no question, and the one he wants is first.
     await fake.startTalk(page, "old_he");
     await talkKeys(page, { ask_for: null, asks_more: [], wants: null, keep: null, queue: [{ kind: "give" }], give: { preferred: { id: "wage:10", label: n("许李老太十文工钱", "Promise Granny Li 10 coins in wages"), body: { op: "make", what: "wage", amount: 10, due: 3 } }, more: [], ways: [] } });
@@ -522,7 +522,7 @@ test.describe("a look that was turned down", () => {
       { kind: "pledged", tick: 6, npc: "old_he", pledge: "k1", what: "wage", item: "", amount: 10, due: 3 },
       { kind: "action_ack", tick: 6, action_id: await lastId(page), result: "applied", reason: null },
     ]);
-    await expect(page.getByTestId("request-result")).toHaveText("You gave your word to Boatman He.");
+    await expect(page.getByTestId("request-result")).toHaveText("You've given Boatman He your word. Remember to keep it by the agreed time.");
     // Out of the talk, the look is made again.
     await page.getByTestId("verb-leave").click();
     await fake.feedFrame(page, { player: { ...(await fake.playerOf(page)), talk: null, look: ["t_he_boat"] }, hud: { verbs: ["move", "look"] } }, [{ kind: "talk_end", tick: 7, npc: "old_he", reason: "left" }]);
@@ -544,8 +544,8 @@ test.describe("telling", () => {
     await expect(tell).toBeVisible();
     await expect(tell.getByTestId("picker-option")).toHaveCount(4);
     // Each says how it reached the manager, in the words people use, with no count of hands.
-    await expect(tell.locator('[data-id="n_scrape"] .picker-badge')).toHaveText("You saw it");
-    await expect(tell.locator('[data-id="n_clerk"] .picker-badge')).toHaveText("Zhou's Clerk says they saw it");
+    await expect(tell.locator('[data-id="n_scrape"] .picker-badge')).toHaveText("You saw it yourself");
+    await expect(tell.locator('[data-id="n_clerk"] .picker-badge')).toHaveText("Zhou's Clerk says they saw it themselves");
     await expect(tell.locator('[data-id="n_broke"] .picker-badge')).toHaveText("Teahouse Keeper says they heard it from Shopkeeper Zhou");
     expect(await tell.innerText()).not.toMatch(/hand|第[一二三四]手/i);
     await tell.locator('[data-id="n_scrape"]').click();
@@ -565,11 +565,11 @@ test.describe("telling", () => {
     await expect(page.getByTestId("say-line")).toHaveText("Li Er was at the bridge last night.");
     await expect(page.getByTestId("tell-faithful")).toHaveText("Tell it as it is");
     await expect(page.getByTestId("tell-as_seen")).toHaveText("Say I saw it myself");
-    await expect(page.getByTestId("say-risk")).toHaveText("You did not see this yourself, so saying so is a lie. If you are caught, Granny Li will trust you less.");
+    await expect(page.getByTestId("say-risk")).toHaveText("You didn't see this happen. If Granny Li catches you making it up, they'll trust you less.");
     // Nothing is sent by choosing the line.
     expect((await fake.sentSoFar(page)).filter((s) => s.type === "tell")).toEqual([]);
     await lantern.setLang("zh");
-    await expect(page.getByTestId("tell-faithful")).toHaveText("照实说");
+    await expect(page.getByTestId("tell-faithful")).toHaveText("照原话说");
     await expect(page.getByTestId("tell-as_seen")).toHaveText("说成我亲眼看见的");
     await expect(page.getByTestId("tell-back")).toHaveText("换一条");
     // Back to the list, and the other line, told the other way.
@@ -592,7 +592,7 @@ test.describe("telling", () => {
     await fake.openFirstDay(lantern);
     await fake.startTalk(page, "li_laotai", { notebook: [] });
     await page.getByTestId("verb-tell").click();
-    await expect(page.getByTestId("picker-tell").getByTestId("picker-empty")).toHaveText("You have noted nothing to tell yet.");
+    await expect(page.getByTestId("picker-tell").getByTestId("picker-empty")).toHaveText("Write down something you saw or heard before passing it on.");
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("picker-tell")).toHaveCount(0);
   });
@@ -619,7 +619,7 @@ test.describe("a gift", () => {
     await expect(panel.locator('[data-id="tea"] .picker-badge')).toHaveText("Granny Li likes it");
     await expect(panel.locator('[data-id="wine"] .picker-badge')).toHaveText("Granny Li does not care for it");
     await expect(panel.locator('[data-id="pastry"] .picker-badge')).toHaveCount(0);
-    await expect(page.getByTestId("gift-note")).toHaveText("You can give one gift a day, whoever it is for. One person takes at most two.");
+    await expect(page.getByTestId("gift-note")).toHaveText("You can give one gift per day. Each person can accept at most two.");
     // No minutes are written on it, and none are spent: the act is not one of those that have a cost.
     expect(await panel.innerText()).not.toMatch(/min|分钟/);
     await lantern.setLang("zh");
@@ -687,14 +687,14 @@ test.describe("the hearts", () => {
     await expect(page.getByTestId("hearts-favours")).toHaveText("Granny Li owes you a favour.");
     await expect(page.getByTestId("hearts-you-promised").getByTestId("hearts-promise")).toHaveText("10 coins in wages, due by Day 3");
     await expect(page.getByTestId("hearts-promised-you").getByTestId("hearts-owed")).toContainText("Bring 4 poles of bamboo to the Stone Bridge");
-    await expect(page.getByTestId("hearts-waiting")).toHaveText("Waiting for people they know to come first, 2 more to go");
+    await expect(page.getByTestId("hearts-waiting")).toHaveText("Waiting for 2 more people they know to join first");
     await expect(page.getByTestId("hearts-change")).toHaveCount(3);
     await expect(page.getByTestId("hearts-change").nth(1)).toContainText("+a heart");
     await expect(page.getByTestId("hearts-change").nth(1)).toContainText("you kept a promise");
     await expect(page.getByTestId("hearts-change").nth(2)).toContainText("−half a heart");
     await expect(page.getByTestId("hearts-change").nth(2)).toContainText("your lie was caught");
-    await expect(page.getByTestId("hearts-closer-text")).toHaveText("Help Granny Li out and keep your promises on time. Give Granny Li things they like. Do not lie. A lie that is caught costs hearts.");
-    await expect(page.getByTestId("hearts-likes")).toHaveText("You do not know what Granny Li likes yet. Try a gift, or ask around.");
+    await expect(page.getByTestId("hearts-closer-text")).toHaveText("Keep your promises to Granny Li, help when you can, and choose gifts Granny Li likes. Getting caught in a lie costs you trust.");
+    await expect(page.getByTestId("hearts-likes")).toHaveText("You don't know what Granny Li likes yet. Ask around.");
     expect(await sheet.innerText()).not.toMatch(/hand|第[一二三四]手|把握/);
     // The world is held while the card is up, and it is put away by its word, its corner and Escape.
     await expect.poll(() => page.evaluate(() => window.__lantern.client.state.paused)).toBe(true);
@@ -707,7 +707,7 @@ test.describe("the hearts", () => {
     await lantern.setLang("zh");
     await page.getByTestId("talk-head").getByTestId("hearts").click();
     await expect(page.getByTestId("hearts-trust")).toHaveText("李老太信得过你。");
-    await expect(page.getByTestId("hearts-waiting")).toHaveText("想等熟人先来，还差两个");
+    await expect(page.getByTestId("hearts-waiting")).toHaveText("还等两个熟人先来");
     await expect(page.getByTestId("hearts-change").nth(1)).toContainText("你兑现了答应的事");
     await page.getByTestId("hearts-x").click();
     expect(lantern.pageErrors).toEqual([]);
@@ -836,7 +836,7 @@ test.describe("time in a talk", () => {
     for (const verb of acts) await expect(page.getByTestId(`verb-${verb}`)).toBeDisabled();
     await expect(page.getByTestId("verb-leave")).toBeEnabled();
     await expect(page.getByTestId("talk-time-note")).toHaveAttribute("data-paying", "true");
-    await expect(page.getByTestId("talk-time-note")).toHaveText("Time is moving on. You can go on when it stands still again.");
+    await expect(page.getByTestId("talk-time-note")).toHaveText("That action took some time. You can continue once the clock stops.");
     await expect(page.getByTestId("gift-open")).toBeEnabled();
     await lantern.setLang("zh");
     await expect(badge.getByTestId("talk-passing")).toHaveText("时间在走");
@@ -909,16 +909,17 @@ test.describe("a small window", () => {
 
   test("have the phrase that turns a list of requests that runs past its foot, and none where the list is all in view", async ({ lantern }) => {
     const page = lantern.page;
-    await page.setViewportSize({ width: 1200, height: 600 });
+    await page.setViewportSize({ width: 1200, height: 720 });
     await fake.openFirstDay(lantern);
     await fake.startTalk(page, "li_laotai");
     const asks = PEOPLE.map(([id, zh, en]) => ({ id: `persuade:${id}`, label: n(`请李老太去劝${zh}`, `Ask Granny Li to talk ${en} round`), body: { kind: "persuade", target: id }, status: "open" }));
-    // Two requests are all in view, and there is no phrase.
+    // Both requests fit under the clock at this height, so the footer stays hidden.
     await talkKeys(page, { asks_more: asks.slice(0, 1), give: { preferred: null, more: [], ways: [] } });
     await page.getByTestId("entrust-more").click();
     await expect(page.getByTestId("picker-entrust")).toBeVisible();
     await expect(page.getByTestId("picker-turn")).toHaveCount(0);
-    // Six more are not, and the phrase turns the list to the last of them. It is the same phrase in both languages' words.
+    // At the minimum height, the footer lets the player reach the last request.
+    await page.setViewportSize({ width: 1200, height: 600 });
     await talkKeys(page, { asks_more: asks, give: { preferred: WANTS.offer, more: [], ways: [] } });
     await expect(page.getByTestId("picker-entrust")).toBeVisible();
     await expect(page.getByTestId("picker-turn")).toHaveText("More below");
@@ -937,7 +938,15 @@ test.describe("a small window", () => {
     await page.getByTestId("verb-ask").click();
     await expect(page.getByTestId("topic-chips")).toBeVisible();
     await page.getByTestId("ask-more").click();
-    await turns(page, "chips-turn", page.getByTestId("topic-chip").last(), ".chips");
+    const last = page.getByTestId("topic-chip").last();
+    await last.click({ trial: true });
+
+    // With more space for the footer, use it to reach the same topic.
+    await page.setViewportSize({ width: 1200, height: 660 });
+    await page.getByTestId("verb-ask").click();
+    await page.getByTestId("verb-ask").click();
+    await page.getByTestId("ask-more").click();
+    await turns(page, "chips-turn", last, ".chips");
     expect(lantern.pageErrors).toEqual([]);
   });
 

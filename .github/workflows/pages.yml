@@ -1,9 +1,7 @@
 name: Pages
 
-# Builds the web client and publishes it to GitHub Pages at https://yyyjh1.github.io/lantern-eve/. It runs on
-# every push to main and when someone starts it, and only in YYYJH1/lantern-eve, so that a fork does not try to
-# deploy. The repository's Pages setting must be "GitHub Actions" (Settings, Pages, Build and deployment,
-# Source).
+# Publish the web client from main in YYYJH1/lantern-eve. In the repository's Pages settings,
+# choose GitHub Actions as the source.
 on:
   push:
     branches: [main]
@@ -14,7 +12,7 @@ permissions:
   pages: write
   id-token: write
 
-# One deployment at a time. A deployment that is running is allowed to finish and the newest waiting one follows.
+# Finish the current deployment before the newest waiting run starts.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -38,8 +36,7 @@ jobs:
         with:
           node-version: "22"
       - run: npm ci
-      # Copies the Pyodide runtime from node_modules, builds the core wheel, type-checks, builds the page and
-      # copies the licence texts of what the page carries into dist/licenses.
+      # Package the core, Pyodide, and dependency licences with the production build.
       - run: npm run build
       - uses: actions/upload-pages-artifact@v5
         with:

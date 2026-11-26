@@ -269,10 +269,10 @@ def test_the_card_names_the_family_with_nobody_yet_and_the_words_carry_the_numbe
     helpers = tasks_of(frame_now(game))["t_helpers"]
     assert helpers["action"] == {"verb": "rally"}
     assert helpers["why"] == {
-        "zh": "修桥要五个帮手，李家、周家至少各出一个。",
-        "en": "The bridge takes 5 helpers, at least one from each family.",
+        "zh": "桥边得凑够五个人，李家和周家至少各有一个人到场才行。",
+        "en": "You'll need 5 people at the bridge, with at least one from each family.",
     }
-    assert helpers["next"]["en"] == "Call for helpers first, and those who are willing will come."
+    assert helpers["next"]["en"] == "Put out a call and see who comes to help at the bridge."
     act(game, "rally")  # one person comes, of the Zhou family
     helpers = tasks_of(frame_now(game))["t_helpers"]
     assert helpers["next"] == {
@@ -440,8 +440,9 @@ def test_the_detour_is_offered_on_the_morning_of_the_fourth_day_and_leads_to_the
     detour = tasks_of(frame_now(game))["t_detour"]
     assert detour["state"] == "open" and detour["kind"] == "need" and detour["job"] == "bridge"
     assert detour["action"] == {"verb": "entrust", "npc": KEEPER, "request": "lane"}
-    # the night cannot be a full success, said without the name of an ending
-    assert "算不上圆满" in detour["why"]["zh"] and "cannot be perfect" in detour["why"]["en"]
+    # the card points to the route the parade can use
+    assert "游灯队伍可以改走庙后的夹道" in detour["why"]["zh"]
+    assert "The parade can take the lane behind the temple" in detour["why"]["en"]
     assert "勉强" not in detour["why"]["zh"] and "Just enough" not in detour["why"]["en"]
     assert detour["next"] == {
         "zh": "请庙祝打开庙后的夹道。",
@@ -471,7 +472,7 @@ def test_the_detour_is_offered_on_the_morning_of_the_fourth_day_and_leads_to_the
     assert {"lane_opened", "lamps_hung", "detour_done"} <= set(flags(game))
     assert tasks_of(frame_now(game))["t_detour"]["state"] == "done"
     assert not mended(game)
-    # and the festival ends as the card said it would: the way is open, the rest was left undone
+    # the festival can use the detour, with the other goals still open
     ending = None
     while game.tick < at(5, 21) + 5 and ending is None:
         out = json.loads(game.step())
@@ -524,8 +525,8 @@ def test_the_detour_is_offered_when_the_rain_keeps_the_work_behind():
     work = tasks_of(frame_now(game))["t_work_3"]
     assert work["state"] == "blocked"
     assert work["blocker"] == {
-        "zh": "今天下大雨，桥上开不了工",
-        "en": "Heavy rain today, so there is no work on the bridge",
+        "zh": "大雨误了开工",
+        "en": "Heavy rain has halted work",
     }
     assert work["window"] is None  # no time is offered for a morning with no work in it
     assert work["action"] is None  # there is nothing to go and see in the rain
@@ -559,14 +560,14 @@ def test_five_helpers_need_two_mornings_and_the_task_of_each_says_how_far_the_wo
     assert work["state"] == "open" and work["action"] == {"verb": "move", "place": "p_bridge"}
     assert work["window"] == {"day": 3, "from": 8, "to": 12, "place": "p_bridge"}
     # an hour each: ten hours at five a morning, said in mornings (the hours are on the board)
-    assert work["why"]["en"] == "With these helpers, two more mornings and the bridge is done."
-    assert work["why"]["zh"] == "照这几个帮手，再干两个早上桥就修完了。"
+    assert work["why"]["en"] == "This crew can finish the bridge in two more mornings."
+    assert work["why"]["zh"] == "这几个人再干两个早上，就能把桥修好。"
     run_to(game, at(3, 13) + 2)
     assert state_of(game)["goals"]["metrics"]["work_progress"] == 50  # five hours of ten
     tasks = tasks_of(frame_now(game))
     assert tasks["t_work_3"]["state"] == "stale" and tasks["t_work_4"]["state"] == "open"
     # five of the ten are done, and the last morning, tomorrow's, does the rest
-    assert tasks["t_work_4"]["why"]["zh"] == "明早是最后一个早上。照这几个帮手，明早就能把桥修完。"
+    assert tasks["t_work_4"]["why"]["zh"] == "明早是最后一次开工，眼下的人手够把桥修好。"
     assert tasks["t_work_4"]["window"] == {"day": 4, "from": 8, "to": 12, "place": "p_bridge"}
     assert "t_detour" not in tasks  # five hours more on the last morning is enough
     run_to(game, at(4, 13) + 2)
@@ -615,8 +616,8 @@ def test_the_board_and_the_cards_of_the_bridge_say_the_same_numbers_at_every_ste
                     assert said["en"] in task["why"]["en"] and said["zh"] in task["why"]["zh"]
                 else:  # whether the last morning finishes it, at that pace
                     done = left <= facts["morning"]
-                    assert ("the bridge will be done" in task["why"]["en"]) == done
-                    assert ("能把桥修完" in task["why"]["zh"]) == done
+                    assert ("this crew can finish in time" in task["why"]["en"]) == done
+                    assert ("人手够把桥修好" in task["why"]["zh"]) == done
     assert tasks_of(frame_now(game))["t_work_4"]["state"] == "done"
 
 

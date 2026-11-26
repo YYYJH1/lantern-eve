@@ -133,7 +133,7 @@ test.describe("pairing in the notebook", () => {
       await expect(button.locator(".answer-eg")).toHaveText(en[`pairing.eg.${relation}`]);
     }
     await lantern.setLang("zh");
-    await expect(page.getByTestId("ans-unsupported").locator(".answer-name")).toHaveText("撑不起这句话");
+    await expect(page.getByTestId("ans-unsupported").locator(".answer-name")).toHaveText("不足以证明");
     await expect(page.getByTestId("ans-contradicts").locator(".answer-name")).toHaveText("和这句话相反");
     await expect(page.getByTestId("ans-mismatch").locator(".answer-name")).toHaveText("传走样了");
     await expect(page.getByTestId("ans-unsupported").locator(".answer-eg")).toHaveText(zh["pairing.eg.unsupported"]);
@@ -201,7 +201,7 @@ test.describe("pairing in the notebook", () => {
     // It gives no answer: nothing in the words says which is right.
     expect(en["pairing.wrong"]).not.toMatch(/unsupported|carry|opposite|passed on/i);
     await lantern.setLang("zh");
-    await expect(outcome).toHaveText("不对。再想想，这两句能不能都对？");
+    await expect(outcome).toHaveText("先念清这两句各说了什么。若怀疑话传错了，也看看两句各是谁说的。");
     // Another answer for the same two lines is another try.
     await page.getByTestId("ans-unsupported").click();
     expect((await fake.sentSoFar(page)).filter((m) => m.type === "judge")).toHaveLength(2);
@@ -262,7 +262,7 @@ test.describe("pairing in the notebook", () => {
     await openNotebook(page);
     await page.getByTestId("notebook-hint").click();
     await fake.feedFrame(page, { hint: { a: "n_clerk", b: "n_broke" } }, [ack(await lastId(page), "applied", null, 6)]);
-    await expect(page.getByTestId("hint-line")).toContainText("Compare these two:");
+    await expect(page.getByTestId("hint-line")).toContainText("Check “Li Er broke the bridge railing last night” against “Li Er was at the bridge last night”.");
     await page.getByTestId("notebook-hint").click();
     await fake.feedFrame(page, { hint: { a: "n_clerk", b: "n_broke", relation: "unsupported" } }, [ack(await lastId(page), "applied", null, 7)]);
     // When the core says how they stand, the page says it in the same plain words as the answers.

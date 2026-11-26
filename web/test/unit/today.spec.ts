@@ -27,9 +27,9 @@ test.describe("the line of the morning that says what to do today", () => {
     const slice = sliceOf(fake.laterTasks("t_bamboo_more"));
     expect(todayTask(slice)?.id).toBe("t_bamboo_more");
     setLang("en");
-    expect(todayLine(slice, SCENE, "en")).toBe("Today: Ask Li Da for another batch of bamboo, Li Family House, Day 2 08:00 to 17:00");
+    expect(todayLine(slice, SCENE, "en")).toBe("First up today, “Ask Li Da for another batch of bamboo” (Li Family House, Day 2 08:00 to 17:00)");
     setLang("zh");
-    expect(todayLine(slice, SCENE, "zh")).toBe("今天：再请李大送一批竹料，李家宅，第二天 辰时 08:00 到 17:00");
+    expect(todayLine(slice, SCENE, "zh")).toBe("今天先办「再请李大送一批竹料」，李家宅，第二天 辰时 08:00 到 17:00");
   });
 
   test("names the most urgent task that is open when none is followed, or the one that is followed has been done", () => {
@@ -46,8 +46,8 @@ test.describe("the line of the morning that says what to do today", () => {
 
   test("leaves the time and the place out for a task that has none, and the line out when there is no task", () => {
     setLang("en");
-    expect(todayLine(sliceOf(fake.laterTasks("t_timber")), SCENE, "en")).toBe("Today: Ask Shopkeeper Zhou for the timber");
-    expect(todayLine(sliceOf(fake.laterTasks("t_bamboo_more")), null, "en")).toBe("Today: Ask Li Da for another batch of bamboo, Day 2 08:00 to 17:00");
+    expect(todayLine(sliceOf(fake.laterTasks("t_timber")), SCENE, "en")).toBe("First up today, “Ask Shopkeeper Zhou for the timber”");
+    expect(todayLine(sliceOf(fake.laterTasks("t_bamboo_more")), null, "en")).toBe("First up today, “Ask Li Da for another batch of bamboo” (Day 2 08:00 to 17:00)");
     const every = Object.fromEntries((fake.laterTasks().tasks as Array<{ id: string }>).map((task) => [task.id, "done"]));
     expect(todayLine(sliceOf(fake.laterTasks(null, every)), SCENE, "en")).toBeNull();
     expect(todayLine(sliceOf({}), SCENE, "en")).toBeNull();

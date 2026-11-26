@@ -289,7 +289,7 @@ def test_the_card_must_be_filled_in_and_there_must_be_a_town_to_hear_it():
     card = frame(game)
     assert (card["can_state"], card["why_not"]["en"]) == (
         False,
-        "The three parts are not all filled in",
+        "Fill in all three parts of your statement",
     )
     assert acks(state_it(game)) == [("rejected", "incomplete")]
     fill(game)
@@ -317,7 +317,7 @@ def test_a_statement_takes_the_time_of_a_speech_and_there_is_one_a_day():
     assert acks(out) == [("applied", None)]
     assert state_of(game)["clock"]["debt"] > 0  # the 30 minutes of a speech, owed
     assert frame(game)["used_today"] is True and frame(game)["can_state"] is False
-    assert frame(game)["why_not"]["en"] == "A statement has been made today already"
+    assert frame(game)["why_not"]["en"] == "You've already given a statement today"
     assert acks(state_it(game)) == [("rejected", "stated_today")]
     assert len(state_of(game)["player"]["public"]["speeches"]) == 1
     run_to(game, at(5, 17, 30))  # the next day is another
@@ -557,11 +557,11 @@ def test_a_part_fails_as_contradicted_unseen_or_unsourced_from_the_notebook_alon
     words = statement.failure_words(world_of(game), ["cause", "contradicted", "xiao_man"])
     assert words == {  # the part, then what was wrong with it
         "zh": "「桥是怎么坏的」这一条，和小满亲眼看见的不一样",
-        "en": "The part “How the bridge broke” goes against what Xiaoman saw with their own eyes",
+        "en": "The part “How the bridge broke” doesn't match what Xiaoman saw with their own eyes",
     }
     own = statement.failure_words(world_of(game), ["cause", "contradicted", PLAYER])
     assert own["en"] == (
-        "The part “How the bridge broke” goes against what you saw with your own eyes"
+        "The part “How the bridge broke” doesn't match what you saw with your own eyes"
     )
     assert own["zh"] == "「桥是怎么坏的」这一条，和你亲眼看见的不一样"
 

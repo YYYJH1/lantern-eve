@@ -138,9 +138,9 @@ test.describe("the notebook as the core sends it", () => {
   test("says where each line came from the way a person says it, in both languages, and never by a number of hands", () => {
     const heard = (how: "saw" | "heard" | "unsure", via: ReturnType<typeof n> | null) => ({ kind: "heard" as const, who: n("周家伙计", "Zhou's Clerk"), whoId: "zhou_huoji", how, via });
     const lines: Array<[string, string, string]> = [
-      ["saw", "周家伙计说，是亲眼看见的", "Zhou's Clerk says they saw it"],
-      ["heard", "周家伙计说，是听茶馆老板娘说的", "Zhou's Clerk says they heard it from Teahouse Keeper"],
-      ["unsure", "周家伙计说，记不清是听谁说的", "Zhou's Clerk cannot say who told them"],
+      ["saw", "周家伙计说自己亲眼见过", "Zhou's Clerk says they saw it themselves"],
+      ["heard", "周家伙计说是听茶馆老板娘讲的", "Zhou's Clerk says they heard it from Teahouse Keeper"],
+      ["unsure", "周家伙计说不清是听谁讲的", "Zhou's Clerk couldn't say who told them"],
     ];
     for (const [how, zhLine, enLine] of lines) {
       const source = heard(how as "saw" | "heard" | "unsure", how === "heard" ? n("茶馆老板娘", "Teahouse Keeper") : null);
@@ -152,11 +152,11 @@ test.describe("the notebook as the core sends it", () => {
       expect(enLine).not.toMatch(/\bhands?\b|\b(he|she)\b/i);
     }
     // A teller who says they heard it but names nobody is one who cannot say from whom.
-    expect(sourceWords({ kind: "heard", who: n("周家伙计", "Zhou's Clerk"), whoId: "", how: "heard", via: null }, "en")).toBe("Zhou's Clerk cannot say who told them");
+    expect(sourceWords({ kind: "heard", who: n("周家伙计", "Zhou's Clerk"), whoId: "", how: "heard", via: null }, "en")).toBe("Zhou's Clerk couldn't say who told them");
     setLang("zh");
-    expect(sourceWords({ kind: "seen" }, "zh")).toBe("你亲眼看见的");
+    expect(sourceWords({ kind: "seen" }, "zh")).toBe("亲眼所见");
     setLang("en");
-    expect(sourceWords({ kind: "unknown" }, "en")).toBe("Nobody can say who said it");
+    expect(sourceWords({ kind: "unknown" }, "en")).toBe("Source unknown");
   });
 });
 
@@ -329,8 +329,8 @@ test.describe("the words of the people", () => {
   });
 
   test("have the six people and the more to meet on the page of the first six", () => {
-    expect(zh["people.opening.more"]).toBe("镇上还有十来位，见了面再认识。");
-    expect(zh["people.opening.title"]).toBe("这几个人");
-    expect(en["people.opening.title"]).toBe("Six people to know");
+    expect(zh["people.opening.more"]).toBe("进了镇，跟谁说过话，往后就在人物谱里找谁。");
+    expect(zh["people.opening.title"]).toBe("镇上的人");
+    expect(en["people.opening.title"]).toBe("People in town");
   });
 });

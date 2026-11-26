@@ -25,14 +25,14 @@
 
     <div class="node solid" id="client">
       <h3><span class="en">Web client</span><span class="zh">网页客户端</span></h3>
-      <p><span class="en">One page for both hosts: a PixiJS map and a Preact interface, in Chinese and English, light and dark. It draws the frames it is sent and sends the player's actions back.</span>
-         <span class="zh">两种宿主共用一个页面。地图用 PixiJS 画，界面用 Preact 写，语言有中英两种，主题有深浅两套。页面画出收到的帧，把玩家的动作发回去。</span></p>
+      <p><span class="en">Both hosts serve the same page. PixiJS draws the map and Preact shows the controls. The page reads game frames and sends back player actions.</span>
+         <span class="zh">两种宿主共用一个页面。PixiJS 画地图，Preact 显示控件。页面接收游戏帧，把玩家的操作发给宿主。</span></p>
     </div>
 
     <div class="node" id="browser">
       <h3><span class="en">Browser host</span><span class="zh">浏览器宿主</span></h3>
-      <p><span class="en">A module Web Worker runs the core in Pyodide and keeps saves in IndexedDB. Model calls go from the worker to the provider the player picks.</span>
-         <span class="zh">核心跑在一个模块 Web Worker 里，用的是 Pyodide。存档放在 IndexedDB 里。模型调用从 worker 发往玩家选的提供方。</span></p>
+      <p><span class="en">A Web Worker runs the core in Pyodide and saves games in IndexedDB. If the player connects a model, the worker sends requests directly to the selected provider.</span>
+         <span class="zh">Web Worker 用 Pyodide 跑核心，把存档写入 IndexedDB。玩家接入模型后，请求从 worker 直接发给所选服务。</span></p>
     </div>
     <div class="node" id="server">
       <h3><span class="en">Server host</span><span class="zh">服务端宿主</span></h3>
@@ -41,9 +41,9 @@
     </div>
 
     <div class="node accent" id="core">
-      <h3><span class="mono">lantern_core</span><span class="en">, one Python core</span><span class="zh">：同一份 Python 核心</span></h3>
-      <p><span class="en">A pure state machine on the standard library alone. One call per tick: the inputs of that tick go in as JSON, and the frame, the events and the model requests come out as JSON. Nothing in it reads a clock, a file or the network, and its state hash is the same under CPython and under Pyodide.</span>
-         <span class="zh">核心是一台只用标准库的纯状态机。宿主每拍调用它一次，把这一拍的输入以 JSON 交进去，再以 JSON 拿回帧、事件和模型请求。核心不读时钟，不读文件，也不联网。它的状态哈希在 CPython 和 Pyodide 下完全一样。</span></p>
+      <h3><span class="mono">lantern_core</span></h3>
+      <p><span class="en">Both hosts call this Python state machine. Each tick takes JSON inputs and returns a frame, events and any model requests. The same inputs produce the same state hash in both runtimes.</span>
+         <span class="zh">两种宿主调用同一份 Python 状态机。每拍传入 JSON，拿回游戏帧、事件和模型请求。输入相同，两边算出的状态哈希就相同。</span></p>
     </div>
 
     <div class="node" id="rec">

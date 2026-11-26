@@ -1,8 +1,7 @@
 name: CI
 
-# Every push to main and every pull request runs the three jobs, and so does a start by hand. Once a week
-# the browser job runs alone, so that a new browser or runner image shows up without a push. A job runs in
-# YYYJH1/lantern-eve, or when someone starts the workflow by hand: a fork spends no minutes of its own.
+# The public repository runs all three jobs on main pushes and pull requests. The weekly run checks
+# Chromium on its own. Use Run workflow to run all three jobs in a fork.
 on:
   push:
     branches: [main]
@@ -27,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 3.14 because the browser runs the core in Pyodide 314, which is Python 3.14.
+        # Pyodide 314 runs Python 3.14 in the browser.
         python-version: ["3.12", "3.14"]
     steps:
       - uses: actions/checkout@v7
@@ -56,9 +55,8 @@ jobs:
           node-version: "22"
       - run: npm ci --prefix tests/cross_host
       - run: uv sync
-      # Skipping here would mean the browser's interpreter was never checked, so a skip fails.
-      # test_host_replay also reads a server replay with the browser's own code under Pyodide.
-      - name: Every call hashes the same under both interpreters
+      # Check the same game step by step in both runtimes, and play a server replay in Pyodide.
+      - name: Compare game hashes and replays
         run: |
           set -euo pipefail
           uv run pytest -q -rs -n 4 tests/cross_host tests/host_server/test_host_replay.py | tee cross_host.txt
@@ -75,15 +73,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # The browser specs are listed in web/test/groups: fake.txt holds the ones that drive the page with a
-        # fake host and real.txt the ones that play the real core, and each list is cut into parts that take
-        # about the same time on the two cores of a runner (web/README.md says how). A runner takes one part.
-        # Playwright's --shard splits by the number of tests, and the specs that play whole games would fill one
-        # runner. The first part of fake also runs the unit tests, which take seconds.
+        # Run one list from web/test/groups per runner. The lists balance short UI tests against
+        # tests that play through the game. fake-1 also runs the unit tests.
         group: [fake-1, fake-2, fake-3, fake-4, fake-5, real-1, real-2, real-3]
     env:
-      # The limits in the tests are those of a development machine, and the two cores of a runner are slower
-      # (web/test/support/time-scale.ts).
+      # Allow more time for the two-core runner than for a local test.
       LANTERN_TIME_SCALE: "3"
     defaults:
       run:
@@ -100,14 +94,11 @@ jobs:
       - run: uv sync
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      # Type check, the production build and the test build, then the unit tests in the first part of fake and
-      # the specs of this runner's part. The specs that drive the page with a fake host run two at a time, one
-      # to a core, and the specs that play the real core run one at a time, since some of them time how the page
-      # keeps the clock.
+      # Build both variants. Run real-game specs in series to keep timing checks stable.
       - run: npm run build && npm run build:e2e
       - run: npx playwright test --project=unit
         if: matrix.group == 'fake-1'
-      - name: Browser specs of ${{ matrix.group }}
+      - name: Run browser tests for ${{ matrix.group }}
         run: |
           set -euo pipefail
           case "${{ matrix.group }}" in
@@ -116,8 +107,7 @@ jobs:
           esac
           files=$(sed 's|^|test/e2e/|' "test/groups/${{ matrix.group }}.txt")
           npx playwright test --project=chromium --workers="$workers" $files
-      # A failed test leaves its page as it stood (error-context.md) and a screenshot in test-results, next to the
-      # replays and reports the tests write. Uploaded only when a step above failed, and kept for a week.
+      # Keep screenshots, page context and replays from failures for one week.
       - uses: actions/upload-artifact@v7
         if: failure()
         with:

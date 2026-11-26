@@ -3,17 +3,17 @@
 # what the hall decided and not as articles, and says less the angrier he gets.
 person: zuzhang
 voice:
-  zh: 族长，自称老夫，但不是句句都带。说话慢，一句是一句，不抢话，不提高嗓门。讲规矩时说「祠堂里定下的」，不背条文。最在乎两家别再闹，灯会照常办，自己拍板请来的总管别出岔子。不想说的事就说「这事老夫心里有数，你先去办你的」。真动了气话反而更少，只说「不行」。对总管说「你」。叫李老太「李家老太太」，李大、李二直呼其名，叫船夫老何「老何」。
-  en: The clan elder. Slow, one sentence at a time, never interrupts or raises his voice. Speaks of the rules as what the hall decided. Cares that the two families stop quarrelling, that the festival goes ahead and that the manager he chose does not let him down. Says less, not more, when angry, just "No".
+  zh: "族长在祠堂主理镇上的事，尤其看重两家能不能坐下来好好说。听人来陈情时通常会让对方先说完，给准话时把谁来办、何时办说明白。用「老夫」的时候有长辈的分量，平日也自称「我」。"
+  en: "The elder oversees affairs at the Ancestral Hall and cares about getting the two families to sit down together. When hearing a request, he normally lets the other person finish. A decision states who will act and when. He can speak with the weight of age while using I in everyday conversation."
 call:
   li_laotai: {zh: 李家老太太, en: Granny Li}
   old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "唔……祠堂的香……该续了……（睡熟了）", en: "Mm... the incense in the hall... needs tending... (fast asleep)"}
-    - {zh: "呼……两家……都坐下说……（睡熟了）", en: "Zzz... both houses... sit down and talk... (fast asleep)"}
+    - {zh: "族长睡得正熟。", en: "The elder is fast asleep."}
+    - {zh: "族长没有醒。", en: "The elder stays asleep."}
   busy:
-    - {zh: "这会儿在议事，你晚些再来。", en: "I'm in council just now. Come back later."}
+    - {zh: "祠堂还有事没议完，这会儿不好走开，劳你等一等。", en: "There's business at the hall that still needs settling. Give me a little longer."}
     - {zh: "族里的事还没议完，你先回吧。", en: "The clan business isn't finished yet. Go on for now."}
   timeout:
     - {zh: "时辰到了，我得回祠堂。", en: "It's time. I must get back to the hall."}
@@ -22,7 +22,7 @@ lines:
     - {zh: "这事我没听说过。", en: "I haven't heard of this."}
     - {zh: "没人跟我提过这个。", en: "Nobody has mentioned it to me."}
   evade:
-    - {zh: "这事老夫心里有数，你先去办你的。", en: "I know what I need to about that. Go and get on with your own work."}
+    - {zh: "这事我有分寸，你先去忙要紧的，等能讲的时候我会告诉你。", en: "I know how to handle it. Go and see to what's urgent. I'll tell you when I can."}
     - {zh: "这个不该由我来讲。", en: "That's not mine to speak of."}
   not_said:
     - {zh: "老夫没说过这话。", en: "I said no such thing."}
@@ -43,7 +43,7 @@ lines:
     - {zh: "我听到的可不一样。", en: "What I heard was otherwise."}
     - {zh: "这和我知道的对不上。", en: "That doesn't agree with what I know."}
   caught:
-    - {zh: "你骗了老夫。往后你的话，我要掂量着听。", en: "You lied to me. From now on I'll weigh every word you say."}
+    - {zh: "我原是信你才听你把话说完，往后你再来开口，老夫总得多想一想了。", en: "I heard you out because I trusted you. Next time you'll find me slower to believe you."}
     - {zh: "原来是假话。我记住了。", en: "So it was a lie. I won't forget it."}
   deal:
     - {zh: "好，我应了。", en: "Very well. I agree."}
@@ -52,7 +52,7 @@ lines:
     - {zh: "光说不做，老夫见得多了。", en: "I've seen plenty of talk with no doing behind it."}
     - {zh: "等你办成了，再来说。", en: "Come and tell me once it's done."}
   kept_thanks:
-    - {zh: "你说到做到，老夫记下这份情。", en: "You did what you said. I'll remember that."}
+    - {zh: "当初你既然应下了，今日也的确办到了，这份情我记得。", en: "You gave your word and made good on it. I'll remember that."}
     - {zh: "答应的事办成了，好。", en: "What you promised got done. Good."}
   will_do:
     - {zh: "好，我来办。", en: "Good. I'll see to it."}
@@ -77,7 +77,7 @@ lines:
     - {zh: "我什么也没看见，说不上话。", en: "I didn't see anything, so I can't speak to it."}
   testified:
     - {zh: "这是老夫亲眼看见的，别的不讲。", en: "I saw this myself, and that is all I'm telling you."}
-    - {zh: "没亲眼见过的，我不讲。", en: "If I didn't see it, I don't say it."}
+    - {zh: "老夫开这个口，是因为当时就在场。", en: "I'm speaking up because I was there when it happened."}
   too_late:
     - {zh: "天晚了，明天一早再来。", en: "It's late. Come back first thing tomorrow."}
     - {zh: "夜深了，有事明天再议。", en: "It's late at night. Whatever it is can wait till tomorrow."}
@@ -85,8 +85,8 @@ lines:
     - {zh: "好，我去跟那边说。", en: "Good. I'll speak to them."}
     - {zh: "这话老夫替你带到。", en: "I'll take your word to them."}
   will_call:
-    - {zh: "好，这就叫族人到祠堂来。", en: "Good. I'll call the clan to the hall now."}
-    - {zh: "我让人去敲钟，叫大家都到祠堂。", en: "I'll have the bell rung. Everyone is to come to the hall."}
+    - {zh: "成，我去把人叫到祠堂，你等大伙儿到了再说。", en: "Very well. I'll call the town to the hall. Wait till they're there to speak."}
+    - {zh: "人我来叫，到了祠堂，你当着大伙儿的面说。", en: "I'll call them together. Once we're at the hall, you can tell everyone in person."}
   hard_hc_li_bamboo:
     - {zh: "那个谣言没当众说清楚，这事不谈。", en: "Until that rumour is cleared up in public, this is not up for discussion."}
     - {zh: "先当着众人把话说清楚，再来议这个。", en: "First clear it up in front of everyone. Then we can discuss this."}
@@ -95,13 +95,13 @@ lines:
     - {zh: "谣言还没平，你也不开口。我不能答应。", en: "The rumour hasn't died down, and you won't speak. I can't agree."}
   hard_other:
     - {zh: "这事不必再提。", en: "There's no need to raise this again."}
-    - {zh: "这个断然不行。", en: "That will not happen."}
+    - {zh: "这事老夫不能准。", en: "I can't allow that."}
   elder_yes:
-    - {zh: "明白了。就这么定吧。", en: "I've heard enough. Let it be settled."}
-    - {zh: "说得在理，老夫准了。", en: "That's reasonable. I approve."}
+    - {zh: "前后都听明白了，这件事就照你说的办。", en: "I've heard it through. We'll go ahead as you say."}
+    - {zh: "你刚才说的前后对得上，这件事我准了。", en: "What you've just said holds together. I'll allow it."}
   elder_no:
-    - {zh: "光凭这些，我还不能拍板。", en: "On this alone, I can't decide yet."}
-    - {zh: "话还没说透，我再想想。", en: "It hasn't been said through yet. I'll think it over."}
+    - {zh: "你这几句话还没把来龙去脉讲清，我得再听听。", en: "That doesn't explain how it all came about. I'll need to hear more."}
+    - {zh: "我还有一处拿不准，事情得再问清楚才好定。", en: "There's still something I'm unsure of. We should ask around before we decide."}
   objection_withdrawn:
     - {zh: "事情说清楚了，我不再拦着。", en: "It's been made clear. I won't stand in the way any longer."}
     - {zh: "既然当众讲明了，我没有话说。", en: "Since it was made plain in front of everyone, I have nothing against it."}
@@ -121,10 +121,10 @@ lines:
     - {zh: "桥边的{item}已经够了，别再往那儿送。", en: "There's enough {item} at the bridge. Send no more there."}
     - {zh: "{item}已经够数了。", en: "The {item} is enough already."}
   point_heard:
-    - {zh: "这事我不知道。听{name}说起过，你去问问。", en: "I don't know about this. I heard {name} speak of it, so go and ask."}
-    - {zh: "没听说过。不过{name}好像知道一些，你去问吧。", en: "I haven't heard of it. But I believe {name} knows something, so go and ask."}
+    - {zh: "我听{name}提起过，可也不知道事情的始末，你若要问，得去找说话的人。", en: "I heard {name} bring it up, but I don't know what came before or after. You'll need to ask the one who told it."}
+    - {zh: "我只听{name}说了几句。去问问吧。", en: "I only heard a little from {name}. Go and ask."}
   point_hub:
-    - {zh: "这事我不清楚。镇上的消息，你去问{name}。", en: "I'm not sure of this. For the news of the town, ask {name}."}
+    - {zh: "这件事我说不上来，你要打听街上的事，可以去问{name}。", en: "I couldn't tell you about that. For word from the streets, you can ask {name}."}
     - {zh: "我不好乱讲。街坊的事，去问{name}。", en: "I won't guess. For what the neighbours say, go and ask {name}."}
   gift_like:
     - {zh: "{item}，这个我收下了。有心了。", en: "Some {item}. I'll accept them. That's thoughtful."}
@@ -137,11 +137,11 @@ lines:
     - {zh: "{item}就不必了。拿去给用得上的人吧。", en: "No need for {item}. Give it to someone who can use it."}
 frames:
   seen:
-    - {zh: "老夫亲眼看见的。{line}。", en: "I saw with my own eyes that {line}."}
+    - {zh: "{line}，这是老夫亲眼所见，记得很清楚。", en: "{line}. I saw it myself and remember it well."}
     - {zh: "{line}。我亲眼看着的。", en: "{line}. I saw it myself."}
   heard:
-    - {zh: "这是{teller}跟我讲的。说{line}。", en: "{teller} told me this, that {line}."}
-    - {zh: "{teller}跟我提过。说是{line}。", en: "{teller} brought it up with me, saying {line}."}
+    - {zh: "老夫是从{teller}那儿听来的，说{line}。", en: "I got word of this from {teller}, who said {line}."}
+    - {zh: "我听{teller}讲过此事，说是{line}。", en: "I heard the story from {teller}: {line}."}
   unknown:
     - {zh: "族里有人在传。说{line}。", en: "Some in the clan are saying that {line}."}
     - {zh: "这话我是听来的，谁先说的不知道。说{line}。", en: "I only heard this, and I don't know who said it first. The word is that {line}."}
@@ -150,22 +150,22 @@ frames:
     - {zh: "想来想去，{line}。", en: "I've turned it over, and I think {line}."}
   guess_own:
     - {zh: "这事还说不准。{hedge}{line}。", en: "Nothing is certain yet. {hedge} {line}."}
-    - {zh: "只是这么一说。{hedge}{line}。", en: "It's only a thought. {hedge} {line}."}
+    - {zh: "{hedge}{line}。这事还得弄明白。", en: "{hedge} {line}. That's something we still need to clear up."}
   guess_heard:
     - {zh: "{teller}提过一句。{hedge}{line}。", en: "{teller} said something about it. {hedge} {line}."}
-    - {zh: "{teller}没把话说全。{hedge}{line}。", en: "{teller} didn't say all of it. {hedge} {line}."}
+    - {zh: "{teller}提起这事，{hedge}{line}。", en: "After hearing about it from {teller}, {hedge} {line}."}
   guess_unknown:
     - {zh: "不知是谁传出来的。{hedge}{line}。", en: "Who started this I don't know. {hedge} {line}."}
-    - {zh: "这话没个来处。{hedge}{line}。", en: "This talk came from nowhere I know of. {hedge} {line}."}
+    - {zh: "也没人说清是打哪儿听来的，{hedge}{line}。", en: "I couldn't tell you where that came from, but {hedge} {line}."}
   rival:
-    - {zh: "不过{teller}跟我说的不是这样。说{line}。", en: "But {teller} told me otherwise, that {line}."}
-    - {zh: "{teller}那里又是一个说法。说是{line}。", en: "{teller} has another account, that {line}."}
+    - {zh: "不过我也听{teller}讲过，另有一种说法，说{line}。", en: "But I also heard a different account from {teller}: {line}."}
+    - {zh: "{teller}还跟老夫说过，说{line}。这件事得再问问。", en: "There's what I heard from {teller}: {line}. We should ask around."}
   known:
     - {zh: "{line}。镇上无人不晓。", en: "{line}. There is no one in town who does not know it."}
     - {zh: "{line}，这是人人都知道的。", en: "{line}. That is known to everyone."}
 hedges:
-  - {zh: "多半", en: "I would think"}
-  - {zh: "想来", en: "I would infer"}
+  - {zh: 多半, en: "I'd say"}
+  - {zh: 想来, en: I think}
 # What he says by the state of the game (world/bridge/roles.py): a greeting as a talk opens, a last
 # word as the manager leaves, and the epilogue of the ending page. The first entry whose conditions
 # all hold is the one. He wants both families over the bridge together, so his greeting follows how
@@ -174,7 +174,7 @@ greet:
   - id: new
     when: [{kind: acquainted, is: new}]
     lines:
-      - {zh: "你就是我请来的总管？老夫是族长。坐吧，有话慢慢说。", en: "So you're the Manager I sent for? I am the clan elder. Sit down and take your time."}
+      - {zh: "你就是请来办灯会的总管吧？来坐一坐，有什么话咱们慢慢说。", en: "Are you the Manager we asked to run the festival? Come and sit. We've time to talk."}
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
@@ -186,7 +186,7 @@ greet:
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
-      - {zh: "两家坐到一张桌上了。祖宗也该安心了。", en: "The two houses have sat down at one table. The ancestors can rest easy."}
+      - {zh: "等了这些日子，总算等到李、周两家肯坐下来，在一张桌上吃这顿饭。", en: "After all this time, the Li and Zhou families have finally agreed to sit down and share a meal."}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
@@ -194,7 +194,7 @@ greet:
   - id: called
     when: [{kind: called}]
     lines:
-      - {zh: "族人都在祠堂等着了。你要说什么，现在说吧。", en: "The clan is waiting in the hall. Whatever you have to say, say it now."}
+      - {zh: "族人都到了，在祠堂等你。你有什么要当着大伙儿讲的，这就去讲吧。", en: "The clan is all here and waiting for you at the hall. Say what you came to tell them."}
   - id: kept
     when: [{kind: promised, state: kept}]
     lines:
@@ -210,7 +210,7 @@ greet:
       - {zh: "还有别的事？", en: "Something more?"}
   - id: plain
     lines:
-      - {zh: "两家能一起提灯过桥，这灯会才算办成了。", en: "Only when both families cross the bridge with lanterns together will this festival have been worth holding."}
+      - {zh: "等两家都肯提灯过桥，这桩事就算办妥了。", en: "When both families are willing to cross the bridge with their lanterns, the job will be done."}
       - {zh: "祠堂里清静，有话慢慢说。", en: "It's quiet in the hall. Say what you need to, and take your time."}
 chat:
   - id: broken
@@ -241,9 +241,9 @@ epilogue:
     text: {zh: "族长看着灯过了桥。桥的事讲明白了，两家却还是各走各的。", en: "The elder watched the lanterns cross. The bridge business was settled, but the two families still went their own ways."}
   - id: bridge
     when: [{kind: flag, flag: bridge_fixed}]
-    text: {zh: "桥通了，族长却笑不出来。栏杆是怎么断的，族里到底没有定论。", en: "The bridge was open, but the elder could not smile. The clan never settled how the railing broke."}
+    text: {zh: "灯虽从修好的桥上过去了，族里还是没人说得准栏杆是怎么断的。", en: "The lanterns crossed the repaired bridge, though nobody in the clan had settled how the railing broke."}
   - id: detour
     when: [{kind: flag, flag: detour_done}]
     text: {zh: "桥没修好，族长领着族人走了庙后的夹道。", en: "The bridge was not mended, so the elder led the clan through the lane behind the temple."}
   - id: apart
-    text: {zh: "桥没通，夹道也没备好。族长在祠堂里坐到很晚，没有点灯。", en: "No bridge and no lane. The elder sat in the hall till late and lit no lamp."}
+    text: {zh: "桥没有通，夹道也没收拾出来，族长在祠堂坐到很晚，殿里始终没点灯。", en: "The bridge was shut and the lane wasn't ready. The elder sat in the hall until late, with the lamps still unlit."}

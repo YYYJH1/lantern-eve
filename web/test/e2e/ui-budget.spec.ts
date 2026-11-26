@@ -48,23 +48,23 @@ test.describe("the budget in the side column", () => {
 
     await budget(page, { spent: 2_200_000, held: 0, cap: CAP, stage: 1, cloud: true, local: false });
     await expect(page.getByTestId("budget")).toHaveAttribute("data-stage", "1");
-    await expect(page.getByTestId("budget-notes")).toHaveText("70% of the budget is spent or held, so the strong model is off. The cheap model answers instead. At 90%, every cloud model stops.");
+    await expect(page.getByTestId("budget-notes")).toHaveText("Spending and reservations have reached 70% of the budget. Replies now use cheaper cloud models. All cloud models stop at 90%.");
     await expect(page.getByTestId("stat-cost")).toContainText("of ¥3.00, strong model off");
 
     await budget(page, { spent: 2_800_000, held: 0, cap: CAP, stage: 2, cloud: true, local: false });
     await expect(page.getByTestId("budget")).toHaveAttribute("data-stage", "2");
-    await expect(page.getByTestId("budget-notes")).toHaveText("90% of the budget is spent or held, so the cloud models are off.Lines from the script answer instead.");
+    await expect(page.getByTestId("budget-notes")).toHaveText("Spending and reservations have reached 90% of your budget. Cloud models are off.Using scripted lines instead.");
     await expect(page.getByTestId("stat-cost")).toContainText("cloud models off");
 
     // With a local model, it is the local model that answers.
     await budget(page, { spent: 2_800_000, held: 0, cap: CAP, stage: 2, cloud: true, local: true });
-    await expect(page.getByTestId("budget-notes")).toHaveText("90% of the budget is spent or held, so the cloud models are off.A local model answers instead.");
+    await expect(page.getByTestId("budget-notes")).toHaveText("Spending and reservations have reached 90% of your budget. Cloud models are off.A local model answers instead.");
     await expect(page.getByTestId("budget")).toHaveAttribute("data-local", "true");
 
     // The cloud can be off with the budget untouched: the host said it cannot be reached.
     await budget(page, { spent: 300_000, held: 0, cap: CAP, stage: 0, cloud: false, local: false });
     await expect(page.getByTestId("budget")).toHaveAttribute("data-cloud", "false");
-    await expect(page.getByTestId("budget-notes")).toHaveText("The cloud cannot be reached.Lines from the script answer instead.");
+    await expect(page.getByTestId("budget-notes")).toHaveText("The cloud cannot be reached.Using scripted lines instead.");
     await budget(page, { spent: 300_000, held: 0, cap: CAP, stage: 0, cloud: false, local: true });
     await expect(page.getByTestId("budget-notes")).toHaveText("The cloud cannot be reached.A local model answers instead.");
   });
@@ -88,9 +88,9 @@ test.describe("the budget in the side column", () => {
         ],
       });
     }, call);
-    await expect(page.getByTestId("budget-moved")).toHaveText("2 calls have moved down so far, and written lines answered 1 of them.");
+    await expect(page.getByTestId("budget-moved")).toHaveText("2 calls switched to another source. Of those, 1 used scripted lines.");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("budget-moved")).toHaveText("已有 2 次调用降了档，其中 1 次是台词库答的。");
+    await expect(page.getByTestId("budget-moved")).toHaveText("有 2 次调用换了回答方式，其中 1 次改用台词库。");
   });
 
   test("says the same in Chinese", async ({ lantern }) => {
@@ -101,11 +101,11 @@ test.describe("the budget in the side column", () => {
     await budget(page, { spent: 750_000, held: 0, cap: CAP, stage: 0 });
     await expect(page.getByTestId("budget-notes")).toHaveText("所有模型都开着。");
     await budget(page, { spent: 2_200_000, held: 0, cap: CAP, stage: 1 });
-    await expect(page.getByTestId("budget-notes")).toHaveText("预算已用或已预留到 70%，强档停了。改由便宜档回答。用到 90% 时，云端模型全停。");
+    await expect(page.getByTestId("budget-notes")).toHaveText("已用和预留的费用合计达到预算的 70%。现在使用便宜档，到 90% 时停用所有云端模型。");
     await budget(page, { spent: 2_800_000, held: 0, cap: CAP, stage: 2, local: true });
-    await expect(page.getByTestId("budget-notes")).toHaveText("预算已用或已预留到 90%，云端模型都停了。改由本机模型回答。");
+    await expect(page.getByTestId("budget-notes")).toHaveText("已用和预留的费用合计到了预算的 90%。云端模型已停用。改由本机模型回答。");
     await budget(page, { spent: 2_800_000, held: 0, cap: CAP, stage: 0, cloud: false });
-    await expect(page.getByTestId("budget-notes")).toHaveText("连不上云端。改用台词库里的话回答。");
+    await expect(page.getByTestId("budget-notes")).toHaveText("连不上云端。改用台词库里的话。");
     await expect(page.getByTestId("budget-gauge")).toHaveAttribute("aria-label", "预算已用或已预留 93%");
   });
 

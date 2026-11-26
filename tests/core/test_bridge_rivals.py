@@ -53,8 +53,8 @@ BOAT, LI_ER, FLOOD, DALANG = (
     "pr_flood_damaged",
     "pr_dalang_damaged",
 )
-PLAIN_ENGLISH = "But Shopkeeper Zhou told me that Li Er broke the bridge railing last night."
-PLAIN_CHINESE = "可周掌柜跟我说的是，李二昨晚把栏杆弄坏了。"
+PLAIN_ENGLISH = "But Shopkeeper Zhou told me that Li Er broke the bridge railing that night."
+PLAIN_CHINESE = "不过我听周掌柜说，李二出事那晚把栏杆弄坏了。"
 
 
 class Recorder:
@@ -548,8 +548,8 @@ def test_the_card_shows_the_rival_when_the_person_said_it_to_the_player():
     assert stance["text"]["zh"].startswith("船夫老何")
     assert stance["rival"] == {
         "text": {
-            "zh": "李二昨晚把栏杆弄坏了。",
-            "en": "Li Er broke the bridge railing last night.",
+            "zh": "李二出事那晚把栏杆弄坏了。",
+            "en": "Li Er broke the bridge railing that night.",
         },
         "who": {"zh": "周掌柜", "en": "Shopkeeper Zhou", "id": "zhou_zhanggui"},
     }

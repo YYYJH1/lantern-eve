@@ -29,8 +29,8 @@ _VOICES = r"""
         "id": "broken",
         "lines": [
           {
-            "en": "I haven't told anyone about that... only three tables.",
-            "zh": "那件事我可没往外说……也就说了三桌。"
+            "en": "People are starting to ask about that thing you promised.",
+            "zh": "您应下那件事，茶桌上已经有人问起来了。"
           }
         ],
         "when": [{"kind": "promised", "state": "broken"}]
@@ -46,8 +46,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "I'll be telling this one for a year, and every word of it true.",
-            "zh": "这回的事我能讲上一年，句句都是真的。"
+            "en": "Next time someone asks what happened to the bridge, I'll tell them what came out in public.",
+            "zh": "再有人问桥是怎么坏的，我就照当众说的那一回讲。"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -56,8 +56,8 @@ _VOICES = r"""
         "id": "peace",
         "lines": [
           {
-            "en": "One pot of tea and the two families look like one.",
-            "zh": "一壶茶喝下来，两家人倒像一家了。"
+            "en": "Both families sat at the same table and finished the pot today. They stayed till the end.",
+            "zh": "这一壶茶两家同桌喝完了，今儿总算坐得住。"
           }
         ],
         "when": [{"flag": "reconcile_seen", "kind": "flag"}]
@@ -66,8 +66,8 @@ _VOICES = r"""
         "id": "plain",
         "lines": [
           {
-            "en": "Take care. If you hear anything, come and tell me.",
-            "zh": "慢走。听到什么新消息，记得来讲给我听。"
+            "en": "Take care out there. If you hear anything else, come and tell me when you have time.",
+            "zh": "您路上慢些，要是又打听到什么，得空来讲给我听。"
           },
           {"en": "Come back for tea sometime.", "zh": "回头再来喝茶。"}
         ],
@@ -90,8 +90,8 @@ _VOICES = r"""
       {
         "id": "truth",
         "text": {
-          "en": "The teahouse keeper told the bridge story over and over. This time all of it was true.",
-          "zh": "茶馆老板娘把桥的事讲了一遍又一遍。这一回讲的都是真的。"
+          "en": "Someone asked over tea how the bridge had broken, and the teahouse keeper set down the pot to tell the story again as it had come out in public.",
+          "zh": "有人端着茶问桥是怎么坏的，老板娘放下壶，把那天当众讲清的经过又说了一遍。"
         },
         "when": [{"flag": "truth_told", "kind": "flag"}]
       },
@@ -106,8 +106,8 @@ _VOICES = r"""
       {
         "id": "bridge",
         "text": {
-          "en": "The teahouse keeper set up a tea stall by the bridge. Every family's guesses went round that stall.",
-          "zh": "茶馆老板娘在桥边摆了个茶摊。各家怎么猜的，都在茶摊上传了一遍。"
+          "en": "The teahouse keeper set up a stall by the bridge. As people sat down for tea, they went over the families' guesses about how it broke all over again.",
+          "zh": "茶馆老板娘在桥边摆了摊子，来客一坐下喝茶，各家的猜法又从头讲了一遍。"
         },
         "when": [{"flag": "bridge_fixed", "kind": "flag"}]
       },
@@ -133,10 +133,13 @@ _VOICES = r"""
       ],
       "guess_own": [
         {
-          "en": "This is just my guess, so keep it to yourself. {hedge} {line}.",
-          "zh": "这是我瞎猜的，您可别往外说。{hedge}{line}。"
+          "en": "{hedge} {line}. Please keep it to yourself.",
+          "zh": "{hedge}{line}。您可别往外传。"
         },
-        {"en": "It's only a guess. {hedge} {line}.", "zh": "我也就是这么一猜。{hedge}{line}。"}
+        {
+          "en": "{hedge} {line}. Just between us for now.",
+          "zh": "{hedge}{line}。您先听听就好。"
+        }
       ],
       "guess_unknown": [
         {
@@ -150,12 +153,12 @@ _VOICES = r"""
       ],
       "heard": [
         {
-          "en": "{teller} told it over tea in here, and the story was that {line}.",
-          "zh": "{teller}在我这儿喝茶时讲的。说{line}。"
+          "en": "Come to think of it, {teller} told me {line}.",
+          "zh": "说到这事，{teller}倒跟我提过，说{line}。"
         },
         {
-          "en": "I had this from {teller}, who said {line}.",
-          "zh": "这话是{teller}跟我讲的。说是{line}。"
+          "en": "I got this from {teller}, who told me that {line}.",
+          "zh": "这话是{teller}告诉我的，说是{line}。"
         }
       ],
       "known": [
@@ -166,34 +169,31 @@ _VOICES = r"""
         }
       ],
       "own": [
-        {
-          "en": "I worked this out on my own, and I think {line}.",
-          "zh": "这是我自己琢磨的。{line}。"
-        },
+        {"en": "Here's how I see it: {line}.", "zh": "这话是我自己琢磨的，{line}。"},
         {"en": "If you want my opinion, {line}.", "zh": "要我说呀，{line}。"}
       ],
       "rival": [
         {
-          "en": "But {teller} told me something different, that {line}.",
-          "zh": "不过{teller}跟我讲的又不一样。说是{line}。"
+          "en": "But I've also heard from {teller}, who says that {line}.",
+          "zh": "可我又听{teller}说起过这事，说{line}。"
         },
         {
-          "en": "{teller} had it another way in here, saying {line}.",
-          "zh": "{teller}在这儿讲过另一个样。说{line}。"
+          "en": "Then there's the account I heard from {teller}, that {line}.",
+          "zh": "还有{teller}那边的说法。{line}。"
         }
       ],
       "seen": [
-        {"en": "{line}. I saw that with my own eyes.", "zh": "{line}。这个我亲眼看见的。"},
         {
-          "en": "This isn't hearsay. I saw for myself that {line}.",
-          "zh": "这可不是听来的，我亲眼看见的。{line}。"
-        }
+          "en": "I was there at the time and witnessed that {line}.",
+          "zh": "我那时就在跟前，亲眼瞧见{line}。"
+        },
+        {"en": "I was right there when I saw that {line}.", "zh": "我就在那儿看着呢，{line}。"}
       ],
       "unknown": [
-        {"en": "It's going round all the tables that {line}.", "zh": "茶桌上都这么传。说{line}。"},
+        {"en": "Someone told me that {line}.", "zh": "我听人讲过，说是{line}。"},
         {
-          "en": "Some customer said it and I can't remember who. The talk was that {line}.",
-          "zh": "来喝茶的客人讲的，是谁我记不清了。说是{line}。"
+          "en": "Who was it that told me? What I heard was that {line}.",
+          "zh": "是谁跟我说的来着？说是{line}。"
         }
       ]
     },
@@ -202,8 +202,8 @@ _VOICES = r"""
         "id": "new",
         "lines": [
           {
-            "en": "You'll be the new Manager? I keep this teahouse. Sit down and I'll pour you a bowl of tea.",
-            "zh": "您就是新来的总管吧？我是这茶馆的老板娘。先坐，我给您倒碗茶。"
+            "en": "Are you the new Manager? Come and sit down. I'll pour you a bowl of tea.",
+            "zh": "您就是新来的总管吧？别站着，过来坐，我给您倒碗茶。"
           }
         ],
         "when": [{"is": "new", "kind": "acquainted"}]
@@ -232,8 +232,8 @@ _VOICES = r"""
         "id": "peace",
         "lines": [
           {
-            "en": "The two family heads drank tea at one table, right here. I'll be telling that one for years!",
-            "zh": "两家当家的在我这儿同桌喝茶了。这事我能讲上好几年！"
+            "en": "I've poured tea for those two families for years, and at last I've seen Granny Li and Shopkeeper Zhou at the same table.",
+            "zh": "我在这儿给两家倒了这么多年的茶，今儿可算见着李家老太太跟周掌柜坐一张桌了。"
           }
         ],
         "when": [{"flag": "reconcile_seen", "kind": "flag"}]
@@ -242,8 +242,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "The bridge business is cleared up. I always thought there was something odd about it.",
-            "zh": "桥的事说清楚了。我早觉得里头有蹊跷。"
+            "en": "You finally cleared up what happened at the bridge. I felt something was off, but I couldn't put my finger on it.",
+            "zh": "您可把桥的事讲明白了，我先前只觉着不对劲，可真说不出哪儿不对。"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -252,8 +252,8 @@ _VOICES = r"""
         "id": "kept",
         "lines": [
           {
-            "en": "You keep your word, Manager, and I've told every table so.",
-            "zh": "总管说话算数，这话我跟每桌客人都讲了。"
+            "en": "When the customers ask after that promise of yours, I can tell them you kept it.",
+            "zh": "客人问您答应的事办了没有，我这下也好告诉人家，您把事办成了。"
           }
         ],
         "when": [{"kind": "promised", "state": "kept"}]
@@ -291,17 +291,11 @@ _VOICES = r"""
         "when": []
       }
     ],
-    "hedges": {"en": ["I'll wager", "I'd think"], "zh": ["八成", "我看多半"]},
+    "hedges": {"en": ["I reckon", "I'd say"], "zh": ["八成", "我看多半"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... the water's boiling... whose tea is this... (fast asleep)",
-          "zh": "呼……水开了……谁的茶……（睡熟了）"
-        },
-        {
-          "en": "Mm... mustn't tell anyone this... (fast asleep)",
-          "zh": "唔……这个可不能往外讲……（睡熟了）"
-        }
+        {"en": "You call out. No answer.", "zh": "喊了一声，没应。"},
+        {"en": "The teahouse keeper is asleep.", "zh": "老板娘睡着了。"}
       ],
       "bamboo_arrived": [
         {
@@ -319,8 +313,8 @@ _VOICES = r"""
       ],
       "busy": [
         {
-          "en": "A roomful of customers is waiting for hot water and I can't get away just now. Come back a bit later.",
-          "zh": "一屋子客人等着添水，我这会儿走不开。您晚点再来。"
+          "en": "Please give me a moment. I've a room full of people waiting for their tea and can't get away just now.",
+          "zh": "劳您等一等，满屋子客人都等着续水，我这会儿实在腾不出手。"
         },
         {
           "en": "The water in the back isn't boiling yet and another table just sat down out front. You go on with your day.",
@@ -339,12 +333,12 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "So you made that up. From now on I'll take whatever you say with a pinch of salt.",
-          "zh": "原来那话是你编的。往后你说什么，我都得先打个折扣。"
+          "en": "I thought you'd told me in earnest. It turns out you fobbed me off with a lie. I'll ask a few more questions next time.",
+          "zh": "我还当您是认认真真跟我说的，原来拿了句假话打发我。以后您再说什么，我总得多问两句。"
         },
         {
-          "en": "Well! And I passed it round half the room for you. I won't repeat a word of yours again.",
-          "zh": "好啊，我还替你传了好几桌！往后你的话我可不敢再往外讲了。"
+          "en": "It was a lie? I passed it around to the other tables.",
+          "zh": "那话是假的？我还替你传过几桌呢。"
         }
       ],
       "closed": [
@@ -355,14 +349,14 @@ _VOICES = r"""
         }
       ],
       "deal": [
-        {
-          "en": "It's a deal. I'll keep you a seat by the window.",
-          "zh": "说定了。回头我给您留个靠窗的座。"
-        },
+        {"en": "All right, we've got a deal.", "zh": "好，就这么定吧。"},
         {"en": "All right, we'll do it your way.", "zh": "行，就照您说的办。"}
       ],
       "doubted": [
-        {"en": "That doesn't match what I heard at the tables.", "zh": "跟我在茶桌上听的对不上。"},
+        {
+          "en": "I've heard another account over tea. Who did you get yours from?",
+          "zh": "茶桌上还有别的说法，您这话是跟谁问来的？"
+        },
         {
           "en": "That's not right. What I heard in here was different.",
           "zh": "不对呀，我这儿听来的是另一个样。"
@@ -374,7 +368,7 @@ _VOICES = r"""
       ],
       "elder_yes": [
         {"en": "Now I follow. Let's do it that way.", "zh": "这下我听明白了，就这么办吧。"},
-        {"en": "Put like that, I know where I stand.", "zh": "您这么一讲，我心里就有底了。"}
+        {"en": "I follow now. Go ahead.", "zh": "这回我听懂了。您接着办吧。"}
       ],
       "empty": [
         {
@@ -492,7 +486,10 @@ _VOICES = r"""
         }
       ],
       "not_said": [
-        {"en": "I never put it like that.", "zh": "我可没这么讲过。"},
+        {
+          "en": "I didn't pass that around. Where did you hear it?",
+          "zh": "这句话不是我传出去的，您是在哪儿听见的？"
+        },
         {"en": "Those words never left my mouth.", "zh": "这话不是从我嘴里出去的。"}
       ],
       "not_so": [
@@ -515,12 +512,12 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I couldn't tell you. I heard {name} mention it, so go and ask.",
-          "zh": "这个我说不上来。我听{name}提过一嘴，您去问问。"
+          "en": "I couldn't tell you much myself, but I heard {name} say something about it. If you want the full story, try asking there.",
+          "zh": "这事我也说不上来，倒听{name}讲过几句。您真想问清楚，不妨去找找。"
         },
         {
-          "en": "I'm not sure about that. But {name} talked about it in here, so go and ask.",
-          "zh": "这事我不清楚。倒是{name}在我这儿说起过，您去问问。"
+          "en": "The bit I heard came from {name}. You'd better ask there for the whole of it.",
+          "zh": "我那半句是从{name}那里听来的，您要听全了，还是去问问吧。"
         }
       ],
       "point_hub": [
@@ -548,14 +545,8 @@ _VOICES = r"""
         {"en": "I told you that already. Think back.", "zh": "这个我说过了，您再想想。"}
       ],
       "testified": [
-        {
-          "en": "This is what I saw myself, not something somebody told me.",
-          "zh": "这是我亲眼看见的，不是听谁讲的。"
-        },
-        {
-          "en": "This time I didn't hear it from anyone. I saw it myself.",
-          "zh": "这回不是听来的，是我自己看见的。"
-        }
+        {"en": "I got a good look.", "zh": "那一眼我可看清了。"},
+        {"en": "I was there this time. Saw it plain.", "zh": "这回我就在场。看得真真的。"}
       ],
       "timeout": [
         {
@@ -578,8 +569,14 @@ _VOICES = r"""
         }
       ],
       "took_in": [
-        {"en": "Is that so? That's the first I've heard of it.", "zh": "是吗？这我还头一回听说。"},
-        {"en": "So that's how it was. I'll remember that.", "zh": "原来是这么回事，我可记住了。"}
+        {
+          "en": "Now that I've heard your account, I understand.",
+          "zh": "这回听你从头说了一遍，我总算弄明白了。"
+        },
+        {
+          "en": "That makes sense now. Next time someone asks, I'll know what to say.",
+          "zh": "这就说得通了，下回有人问起来，我也知道该怎么答。"
+        }
       ],
       "turned_down": [
         {"en": "Sorry, that's one I can't agree to.", "zh": "对不住，这个我不能应。"},
@@ -587,10 +584,7 @@ _VOICES = r"""
       ],
       "unknown": [
         {"en": "Nobody has ever brought that up in here.", "zh": "这个还真没人在我这儿说起过。"},
-        {
-          "en": "I haven't heard of it, and nobody's raised it at the tables either.",
-          "zh": "这事我没听说，茶桌上也没人提。"
-        }
+        {"en": "Nobody's mentioned it in here.", "zh": "我这儿还没人说起过。"}
       ],
       "will_ask": [
         {"en": "All right, I'll go and sound them out for you.", "zh": "行，我去替您探探口风。"},
@@ -619,8 +613,8 @@ _VOICES = r"""
       "witness_in_public": [
         {"en": "That's all I saw. I won't add a word to it.", "zh": "我就看见这些，多一句我也不添。"},
         {
-          "en": "I've said what I saw. What I didn't see, I won't make up.",
-          "zh": "看见的我都说了，没看见的我不编。"
+          "en": "I can give you the part I saw. I won't fill in the rest.",
+          "zh": "我先说看见的那一段，别的我可不敢补。"
         }
       ]
     }
@@ -642,8 +636,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "It's told straight, so this drink goes down easy.",
-            "zh": "说清了，这口酒才咽得下去。"
+            "en": "Now that the bridge business is settled, I can have a drink in peace.",
+            "zh": "桥的事说清了，我也能安心喝一口了。"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -661,8 +655,8 @@ _VOICES = r"""
       {
         "id": "heard_kept",
         "text": {
-          "en": "The watchman struck the gong at the head of the lantern parade. The Manager kept every promise, and that night people listened to the watchman too.",
-          "zh": "更夫敲着锣走在游灯最前头。总管应的事办了，这一夜更夫的话也有人听了。"
+          "en": "The Night Watchman led the parade with the gong. The Manager kept the promise, and that night people stopped to hear the watchman's account.",
+          "zh": "更夫打着锣走在游灯队前头。总管应的事办到了，这一夜也有人停下来听更夫说话。"
         },
         "when": [
           {"flag": "truth_told", "kind": "flag"},
@@ -672,8 +666,8 @@ _VOICES = r"""
       {
         "id": "heard",
         "text": {
-          "en": "The watchman struck the gong at the head of the lantern parade. That night nobody said any more that a watchman's word was worth half.",
-          "zh": "更夫敲着锣走在游灯最前头。这一夜，没有人再说更夫的话要打折扣。"
+          "en": "The Night Watchman led the parade with the gong. When the watchman spoke about the bridge that night, nobody cut in.",
+          "zh": "更夫打着锣走在游灯队前头。这一夜讲起桥的事，没人再打岔了。"
         },
         "when": [{"flag": "truth_told", "kind": "flag"}]
       },
@@ -709,64 +703,58 @@ _VOICES = r"""
           "zh": "{teller}含含糊糊提了一嘴。{hedge}{line}。"
         },
         {
-          "en": "You could tell from {teller}'s face. {hedge} {line}.",
-          "zh": "看{teller}那脸色就知道。{hedge}{line}。"
+          "en": "From what {teller} said, {hedge} {line}.",
+          "zh": "听完{teller}那句话，{hedge}{line}。"
         }
       ],
       "guess_own": [
         {"en": "Can't be sure. {hedge} {line}.", "zh": "拿不准。{hedge}{line}。"},
         {
-          "en": "That's the drink talking, so don't take it seriously. {hedge} {line}.",
-          "zh": "酒后的话，别当真。{hedge}{line}。"
+          "en": "{hedge} {line}. Don't pass that on just yet.",
+          "zh": "{hedge}{line}。先别往下传。"
         }
       ],
       "guess_unknown": [
         {"en": "No idea who said it. {hedge} {line}.", "zh": "不知哪个说的。{hedge}{line}。"},
         {
-          "en": "Words on the night wind. {hedge} {line}.",
-          "zh": "夜风里飘来的话。{hedge}{line}。"
+          "en": "I only caught a few words, and {hedge} {line}.",
+          "zh": "就听人提了一嘴，{hedge}{line}。"
         }
       ],
       "heard": [
-        {"en": "Got it from {teller}, that {line}.", "zh": "{teller}嘴里听来的。说{line}。"},
-        {"en": "{teller} let slip that {line}.", "zh": "{teller}漏过一句。说{line}。"}
+        {
+          "en": "The word I had from {teller} was that {line}.",
+          "zh": "我听{teller}讲过，说是{line}。"
+        },
+        {
+          "en": "That's a bit I heard from {teller}, who said that {line}.",
+          "zh": "这句是{teller}讲给我听的，说是{line}。"
+        }
       ],
       "known": [
         {"en": "{line}. Everyone knows.", "zh": "{line}。谁都晓得。"},
         {"en": "{line}. Even a night watchman knows that...", "zh": "{line}，打更的都知道……"}
       ],
       "own": [
-        {"en": "If you ask a watchman, {line}.", "zh": "要问打更的，{line}。"},
-        {"en": "Plain truth is, {line}.", "zh": "说句实在话，{line}。"}
+        {"en": "I see it this way: {line}.", "zh": "我想了想，{line}。"},
+        {"en": "If you're asking me, {line}.", "zh": "要我讲，{line}。"}
       ],
       "rival": [
+        {"en": "But I heard {teller} say that {line}.", "zh": "{teller}没这么讲，倒说{line}。"},
         {
-          "en": "Though {teller} muttered something different, that {line}.",
-          "zh": "可{teller}嘟囔过一句不一样的。说{line}。"
-        },
-        {
-          "en": "{teller} tells it another way, that {line}.",
-          "zh": "{teller}那边又是一个说法。说{line}。"
+          "en": "Then there's {teller}'s account, that {line}. It doesn't fit.",
+          "zh": "还有{teller}讲的我可对不上，说是{line}。"
         }
       ],
       "seen": [
-        {
-          "en": "{line}. I'm out walking at night, so I'd know.",
-          "zh": "{line}。夜里我在外头转，这个清楚。"
-        },
-        {
-          "en": "Nobody told me this one... I saw that {line}.",
-          "zh": "这个不是听人说的……{line}。"
-        }
+        {"en": "{line}. That part I saw clearly.", "zh": "{line}，这一段我看清楚了。"},
+        {"en": "What I saw at the time was that {line}.", "zh": "我那时候瞧见了。{line}。"}
       ],
       "unknown": [
+        {"en": "What got to me was that {line}.", "zh": "我听人讲过，{line}。"},
         {
-          "en": "Somebody was going on about it in the street, saying {line}.",
-          "zh": "街上有人在嚷嚷。说{line}。"
-        },
-        {
-          "en": "I heard some muttering one night and couldn't see who it was. The gist was that {line}.",
-          "zh": "夜里听人嘀咕，是谁没看清。说{line}。"
+          "en": "I heard someone say that {line}. Didn't catch who.",
+          "zh": "有人这么讲，说{line}。是谁没留意。"
         }
       ]
     },
@@ -775,8 +763,8 @@ _VOICES = r"""
         "id": "new",
         "lines": [
           {
-            "en": "The Manager? Hm. I'm the watchman. Night business, ask at night.",
-            "zh": "总管？嗯。我是打更的。夜里的事，夜里问。"
+            "en": "Were you looking for me, Manager? They call me the Night Watchman. If it's about the night, ask away.",
+            "zh": "总管找我？镇上人叫我更夫，你若要打听夜里的事，就直说吧。"
           }
         ],
         "when": [{"is": "new", "kind": "acquainted"}]
@@ -805,8 +793,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "The bridge business is told plainly. Even a watchman breathes easier.",
-            "zh": "桥的事说明白了。打更的也松了口气。"
+            "en": "Now that people know what happened, I'll have an answer if it comes up on my rounds.",
+            "zh": "大伙儿既然都听明白了，夜里再有人议论，我也有话答。"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -815,8 +803,8 @@ _VOICES = r"""
         "id": "bridge",
         "lines": [
           {
-            "en": "The bridge is mended. On my round at night, it feels much steadier underfoot.",
-            "zh": "桥修好了。夜里巡过去，脚底下踏实多了。"
+            "en": "I used to watch every step near the bridge on my rounds. With it mended, I can walk there easy.",
+            "zh": "从前夜里走到桥边，我总得留神脚下。这会儿桥修好了，巡起夜来也踏实。"
           }
         ],
         "when": [{"flag": "bridge_fixed", "kind": "flag"}]
@@ -825,8 +813,8 @@ _VOICES = r"""
         "id": "kept",
         "lines": [
           {
-            "en": "You did what you promised. I remember a kindness.",
-            "zh": "你应的办到了。我这人记情。"
+            "en": "You did what you said you'd do, and I appreciate it.",
+            "zh": "你答应的事都办妥了，这份情我领。"
           }
         ],
         "when": [{"kind": "promised", "state": "kept"}]
@@ -861,14 +849,11 @@ _VOICES = r"""
         "when": []
       }
     ],
-    "hedges": {"en": ["I'd lay money", "I suppose"], "zh": ["我寻思", "没准"]},
+    "hedges": {"en": ["I figure", "I'd guess"], "zh": ["我琢磨", "没准"]},
     "lines": {
       "asleep": [
-        {"en": "Zzz... hic... wine... (fast asleep)", "zh": "呼……嗝……酒……（睡熟了）"},
-        {
-          "en": "Snore... third watch... time to strike... (fast asleep)",
-          "zh": "呼噜……三更了……该敲了……（睡熟了）"
-        }
+        {"en": "A quiet snore.", "zh": "一阵轻鼾。"},
+        {"en": "You call out. The Night Watchman sleeps on.", "zh": "喊了也没醒。"}
       ],
       "bamboo_arrived": [
         {"en": "Bamboo's at the bridge.", "zh": "竹子到桥边了。"},
@@ -880,18 +865,30 @@ _VOICES = r"""
       ],
       "busy": [
         {"en": "I'm on duty. Later.", "zh": "我正当着值，回头再说。"},
-        {"en": "Don't get in the way. I've this round to finish.", "zh": "别挡道，我还得巡这一圈。"}
+        {
+          "en": "Let me finish this round. I'll hear you when I get back.",
+          "zh": "你让我先巡完这一圈，有话等我回头再讲。"
+        }
       ],
       "cannot": [
         {"en": "Can't help you there.", "zh": "这个我帮不了。"},
         {"en": "Not something I can do.", "zh": "我做不来。"}
       ],
       "caught": [
-        {"en": "You lied to me. I won't listen to you again.", "zh": "你骗我。往后你的话，我不听了。"},
-        {"en": "Lies... I can tell even after a drink.", "zh": "撒谎……我喝了酒也看得出来。"}
+        {
+          "en": "I believed what you told me. Next time I'll think twice.",
+          "zh": "我原先信了你的话，往后再听见可得先掂量掂量。"
+        },
+        {
+          "en": "No wonder the more I thought about it, the less it fit. You made it up.",
+          "zh": "难怪这话越想越不对，原来是你编的。"
+        }
       ],
       "closed": [
-        {"en": "Not now. Later on.", "zh": "这会儿不行，晚点。"},
+        {
+          "en": "I can't stop right now. We'll talk when I'm free.",
+          "zh": "这会儿走不开，等我得了空再说。"
+        },
         {"en": "I sleep in the morning. Come in the afternoon.", "zh": "上午我得睡觉，下午再来。"}
       ],
       "deal": [
@@ -899,8 +896,14 @@ _VOICES = r"""
         {"en": "All right, that's how it'll be.", "zh": "好，就这么着。"}
       ],
       "doubted": [
-        {"en": "That can't be right. That's not what I heard.", "zh": "不对吧，我听的不是这样。"},
-        {"en": "Odd. That's far from what I heard.", "zh": "怪了，跟我听来的差得远。"}
+        {
+          "en": "Wait a minute. That's not the same account I heard.",
+          "zh": "等等，你讲的跟我听见的不是一回事。"
+        },
+        {
+          "en": "That's the part I'm wondering about. Where did you hear it?",
+          "zh": "我就奇怪这一点，你打哪儿听来的？"
+        }
       ],
       "elder_no": [
         {"en": "Just that? Not enough.", "zh": "光这些？不够。"},
@@ -977,14 +980,17 @@ _VOICES = r"""
         {"en": "Won't do it.", "zh": "不干。"}
       ],
       "keeper_no": [
-        {"en": "We don't know each other. Not this.", "zh": "咱们不熟，这个不给。"},
+        {
+          "en": "We've only met a few times. I can't show you this yet.",
+          "zh": "咱俩才见过几面，这东西还不能给你看。"
+        },
         {"en": "Strangers don't ask. That's the rule.", "zh": "生人别问，这是规矩。"}
       ],
       "kept_thanks": [
         {"en": "You played it straight. I'll remember.", "zh": "你没糊弄人，我记着。"},
         {
-          "en": "You did what you said. One day I'll... stand you a drink.",
-          "zh": "你说到做到了，回头……请你喝一杯。"
+          "en": "I thought you were just saying it, but you really did see it through.",
+          "zh": "原想着你只是一说，你倒真把事办了。"
         }
       ],
       "knew": [
@@ -997,10 +1003,7 @@ _VOICES = r"""
       ],
       "not_said": [
         {"en": "That wasn't me talking.", "zh": "我可没讲过这话。"},
-        {
-          "en": "I didn't say it. Not even with a drink in me.",
-          "zh": "这话不是我说的，喝了酒也没说过。"
-        }
+        {"en": "Those words never came out of my mouth.", "zh": "这话没从我嘴里出去过。"}
       ],
       "not_so": [
         {"en": "Nah, that's not it.", "zh": "不是那么回事。"},
@@ -1019,18 +1022,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "Didn't hear it. But I heard {name} muttering about it, so go and ask.",
-          "zh": "我没听见。倒是听{name}嘀咕过，你去问问。"
+          "en": "I heard a word from {name} but didn't ask for the details. You'd best ask there.",
+          "zh": "我听{name}提过一嘴，也没问个明白，你自己去问吧。"
         },
         {
-          "en": "Didn't notice it. I think I heard {name} talk about it one night... go and ask.",
-          "zh": "这事我没留意。夜里好像听{name}说起过……你去问问。"
+          "en": "I didn't ask for details. I heard it from {name}. Try asking there.",
+          "zh": "我没细问，是{name}跟我提的，你去问问吧。"
         }
       ],
       "point_hub": [
         {
-          "en": "Don't know. Ask {name}, who hears a lot.",
-          "zh": "不清楚。去找{name}问问，那边消息多。"
+          "en": "I couldn't tell you much about that. Try {name}. More of the town's talk gets there.",
+          "zh": "这事我说不明白，你去找{name}问问，镇上的话那里听得多。"
         },
         {
           "en": "I don't know... for town talk, ask {name}.",
@@ -1053,7 +1056,10 @@ _VOICES = r"""
       ],
       "testified": [
         {"en": "I saw it at night with my own eyes. It's true.", "zh": "夜里我亲眼看见的，不假。"},
-        {"en": "I saw it on my round, and that's all.", "zh": "我打更时看见的，就这些。"}
+        {
+          "en": "You asked what I saw on my round. This is all I saw.",
+          "zh": "你问我打更时看见什么，我只瞧见这些。"
+        }
       ],
       "timeout": [
         {"en": "Time to strike the watch. Got to go.", "zh": "该敲更了，得走了。"},
@@ -1064,7 +1070,10 @@ _VOICES = r"""
         {"en": "It's nearly dawn. Ask me in the morning.", "zh": "天快亮了，明早再说。"}
       ],
       "took_in": [
-        {"en": "Right. I'll keep an eye out.", "zh": "行，我留个心。"},
+        {
+          "en": "Right. I'll bear what you said in mind on my rounds.",
+          "zh": "成，你刚才说的，我巡夜时留个心。"
+        },
         {"en": "Got it. I'll watch more closely at night.", "zh": "知道了，夜里我多看着点。"}
       ],
       "turned_down": [
@@ -1120,12 +1129,22 @@ _VOICES = r"""
       },
       {
         "id": "truth",
-        "lines": [{"en": "It's all out in the open now. Good.", "zh": "话说开了，好。"}],
+        "lines": [
+          {
+            "en": "Now that it's out in the open, I can go home and tell Mother.",
+            "zh": "这回话都说开了，我回去也好跟娘说。"
+          }
+        ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
       },
       {
         "id": "bamboo",
-        "lines": [{"en": "Come to me if you need more bamboo.", "zh": "还要竹料，再来找我。"}],
+        "lines": [
+          {
+            "en": "Use what's at the bridge for now. If you need more, come to me.",
+            "zh": "桥边那批先用着，还要竹料就来找我。"
+          }
+        ],
         "when": [
           {"by": "li_da", "item": "bamboo", "kind": "commitment", "state": "delivered"}
         ]
@@ -1143,8 +1162,8 @@ _VOICES = r"""
       {
         "id": "word_broken",
         "text": {
-          "en": "Li Da went on counting bamboo and never raised the promise that was not kept.",
-          "zh": "李大照旧点着竹料，再没提那句没兑现的话。"
+          "en": "Li Da went on counting the bamboo and didn't bring up the Manager's promise again.",
+          "zh": "李大照旧点竹料，没再提起总管答应过的事。"
         },
         "when": [{"kind": "promised", "state": "broken"}]
       },
@@ -1225,7 +1244,10 @@ _VOICES = r"""
           "en": "I wouldn't swear to it, but {hedge} {line}.",
           "zh": "我不敢打包票，{hedge}{line}。"
         },
-        {"en": "I've no proof, but {hedge} {line}.", "zh": "没凭没据的，{hedge}{line}。"}
+        {
+          "en": "{hedge} {line}. That's as far as I'd go.",
+          "zh": "{hedge}{line}。我只能这么说。"
+        }
       ],
       "guess_unknown": [
         {
@@ -1235,8 +1257,11 @@ _VOICES = r"""
         {"en": "It's only talk, but {hedge} {line}.", "zh": "只是听人讲，{hedge}{line}。"}
       ],
       "heard": [
-        {"en": "I had it from {teller} that {line}.", "zh": "{teller}说的，{line}。"},
-        {"en": "I heard {teller} say that {line}.", "zh": "听{teller}讲，{line}。"}
+        {
+          "en": "{teller} told me about it once and said {line}.",
+          "zh": "{teller}跟我讲过一回，说{line}。"
+        },
+        {"en": "I had it from {teller} that {line}.", "zh": "照{teller}说的，{line}。"}
       ],
       "known": [
         {"en": "{line}. The whole town knows that.", "zh": "{line}，镇上人都知道。"},
@@ -1244,27 +1269,27 @@ _VOICES = r"""
       ],
       "own": [
         {"en": "As far as I can tell, {line}.", "zh": "我看哪，{line}。"},
-        {"en": "My thinking is that {line}.", "zh": "照我想，{line}。"}
+        {"en": "I've thought it over. My view is that {line}.", "zh": "这个我想过，{line}。"}
       ],
       "rival": [
         {
-          "en": "But {teller} told me something else, that {line}.",
-          "zh": "不过{teller}说得不一样，说{line}。"
+          "en": "Yet {teller} had a different story: {line}.",
+          "zh": "可{teller}那头讲的不同，说{line}。"
         },
         {
-          "en": "But {teller} had it otherwise, that {line}.",
-          "zh": "{teller}说的可是另一样，说{line}。"
+          "en": "But the word I got from {teller} was that {line}.",
+          "zh": "我在{teller}那儿还听见一句，说{line}。"
         }
       ],
       "seen": [
         {"en": "{line}. I saw that myself.", "zh": "{line}，我亲眼看见的。"},
-        {"en": "{line}. I saw it clear as day.", "zh": "{line}。这个我看得清清楚楚。"}
+        {"en": "{line}, and I had a clear view of it.", "zh": "{line}，我当时看得分明。"}
       ],
       "unknown": [
-        {"en": "That's the talk going round, that {line}.", "zh": "外头都这么传，说{line}。"},
+        {"en": "The word going round is that {line}.", "zh": "外头传过这么一句，说{line}。"},
         {
-          "en": "People say that {line}. Who started it, I don't know.",
-          "zh": "听人讲的，说是{line}。谁讲的我不知道。"
+          "en": "I heard someone say that {line}. Couldn't tell you who.",
+          "zh": "有人讲过{line}。问谁说的我就不知道了。"
         }
       ]
     },
@@ -1273,8 +1298,8 @@ _VOICES = r"""
         "id": "new",
         "lines": [
           {
-            "en": "You're the Manager? I'm Li Da. I look after the family's bamboo.",
-            "zh": "你是总管？我是李大，家里的竹料归我管。"
+            "en": "You're the Manager? I'm Li Da. If you need bamboo from our family, ask me.",
+            "zh": "总管是吧？我是李大。要找李家的竹料，问我就行。"
           }
         ],
         "when": [{"is": "new", "kind": "acquainted"}]
@@ -1283,8 +1308,8 @@ _VOICES = r"""
         "id": "broken",
         "lines": [
           {
-            "en": "You promised me and it wasn't done. Mother has asked twice.",
-            "zh": "你答应我的事没办成。娘问过两回了。"
+            "en": "Mother has asked me twice about what you promised. How's it coming along?",
+            "zh": "娘已经问过我两回了，你上回答应的事，眼下办得怎么样？"
           }
         ],
         "when": [{"kind": "promised", "state": "broken"}]
@@ -1303,8 +1328,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "How the bridge broke has been told. Mother needn't avoid people any more.",
-            "zh": "桥怎么坏的说清了。娘也不用再躲着人了。"
+            "en": "Now that people know how the bridge broke, Mother doesn't have to keep out of their way.",
+            "zh": "桥怎么坏的，总算说清了，娘也不用再躲着人走。"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -1313,8 +1338,8 @@ _VOICES = r"""
         "id": "bridge",
         "lines": [
           {
-            "en": "The bridge is mended. Our bamboo is in the railing.",
-            "zh": "桥修好了。栏杆里有我家的竹子。"
+            "en": "Have a look at the new railing. Some of the bamboo I brought over is in there.",
+            "zh": "你看新栏杆，里头就有我送来的竹子。"
           }
         ],
         "when": [{"flag": "bridge_fixed", "kind": "flag"}]
@@ -1328,8 +1353,8 @@ _VOICES = r"""
         "id": "bamboo",
         "lines": [
           {
-            "en": "The bamboo is counted and at the bridge. Tell me how much is still short.",
-            "zh": "竹子都点过了，在桥边。还缺多少，你说。"
+            "en": "I've counted the bamboo by the bridge. If you're still short, give me a number.",
+            "zh": "桥边那批竹子我都点过了，要是还缺，你给我个数。"
           }
         ],
         "when": [
@@ -1340,8 +1365,8 @@ _VOICES = r"""
         "id": "cleared",
         "lines": [
           {
-            "en": "I hear the talk was cleared up in public. People will stop talking behind my brother's back now.",
-            "zh": "听说那些闲话当众说清了，老二总算不用被人戳脊梁骨了。"
+            "en": "I heard you set it straight in front of everyone. My brother needn't take that blame any more.",
+            "zh": "听说你当着大伙儿把话说开了，老二也不用白受这口气。"
           }
         ],
         "when": [{"kind": "knows", "props": ["pr_set_straight"]}]
@@ -1349,7 +1374,10 @@ _VOICES = r"""
       {
         "id": "again",
         "lines": [
-          {"en": "Back again? Go on.", "zh": "又来了？说吧。"},
+          {
+            "en": "You're back. Was there something else last time?",
+            "zh": "回来了？上回的话还没说完？"
+          },
           {"en": "Anything else?", "zh": "还有什么事？"}
         ],
         "when": [{"is": "today", "kind": "acquainted"}]
@@ -1358,8 +1386,8 @@ _VOICES = r"""
         "id": "plain",
         "lines": [
           {
-            "en": "Say what you need. On the bamboo, I go by my mother's word.",
-            "zh": "有事就说。竹子的事，我得听我娘的。"
+            "en": "If it's the bamboo you're after, let me speak to my mother before I give you an answer.",
+            "zh": "你要是来问竹料，我得先跟我娘商量，再给你回话。"
           },
           {"en": "Tell me, then. I'm listening.", "zh": "你说吧，我听着呢。"}
         ],
@@ -1369,37 +1397,34 @@ _VOICES = r"""
     "hedges": {"en": ["I figure", "I reckon"], "zh": ["我估摸", "八成是"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Mm... the east slope... ready for cutting... (fast asleep)",
-          "zh": "唔……东坡那片……该砍了……（睡熟了）"
-        },
-        {
-          "en": "Zzz... thirty poles... stacked straight... (fast asleep)",
-          "zh": "呼……三十根……码齐了……（睡熟了）"
-        }
+        {"en": "Li Da is asleep.", "zh": "李大睡着了。"},
+        {"en": "Li Da doesn't answer.", "zh": "李大没有应声。"}
       ],
       "bamboo_arrived": [
         {
-          "en": "The bamboo is at the bridge. Count it if you like.",
-          "zh": "竹子送到桥边了，你点一点。"
+          "en": "The bamboo I promised is by the bridge now. Go and count it.",
+          "zh": "答应你的竹子搁在桥边了，你过去点一点。"
         },
         {
-          "en": "The bamboo is stacked by the bridge, not a pole short.",
-          "zh": "竹料都码在桥边了，一根不少。"
+          "en": "The bamboo we agreed on is stacked by the bridge, every pole of it.",
+          "zh": "说好的竹料都码在桥边了，一根不少。"
         }
       ],
       "batch_promised": [
         {
-          "en": "All right. I'll have the bamboo at the bridge tomorrow morning.",
-          "zh": "行，明早我把竹子送到桥边。"
+          "en": "You can count on me. I'll carry the bamboo over in the morning and leave it by the bridge.",
+          "zh": "你放心，明早我就扛竹子过去，搁在桥边。"
         },
         {
-          "en": "Agreed. I'll carry it over at first light tomorrow.",
-          "zh": "说定了，明早天一亮我就扛过去。"
+          "en": "All you need to do is be there for it. I'll bring the bamboo to the bridge first thing tomorrow.",
+          "zh": "你等着收料就是，明早天一亮我就把竹子扛到桥边。"
         }
       ],
       "busy": [
-        {"en": "I've work in hand. Later.", "zh": "手上有活，回头再说。"},
+        {
+          "en": "I haven't finished this yet. Let's talk once I'm done.",
+          "zh": "手上的活还没做完，你等我忙完了再说吧。"
+        },
         {"en": "My hands are full just now. Come back later.", "zh": "这会儿腾不出手，你晚点再来。"}
       ],
       "cannot": [
@@ -1408,8 +1433,8 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "You lied to me. Whatever you say from now on, I won't believe it.",
-          "zh": "你骗我。往后你说什么，我都不信了。"
+          "en": "I thought I could take the Manager's word for it. From now on I'll ask around first.",
+          "zh": "我想着你是总管，总不会拿瞎话糊弄人，往后我可得多问一声了。"
         },
         {
           "en": "You made that up? Then don't come to me again.",
@@ -1490,16 +1515,16 @@ _VOICES = r"""
       ],
       "hard_hc_li_bamboo_rumour": [
         {
-          "en": "The whole town says my brother broke the bridge, and you say nothing. I won't lend the bamboo.",
-          "zh": "镇上都说老二弄坏了桥，你一声不吭。竹子我不借。"
+          "en": "The town is still blaming my brother, and Mother is waiting for you to speak. What will you tell the neighbours, Manager?",
+          "zh": "镇上还在怪我家老二，娘等你说句话。总管，你打算怎么跟街坊说？"
         },
         {
-          "en": "The talk is all over town and you keep quiet, Manager. My mother won't agree, and neither will I.",
-          "zh": "闲话满镇传，总管也不出声。我娘不点头，我也不借。"
+          "en": "Manager, the bamboo is Mother's to lend. She won't agree while that talk is still going round.",
+          "zh": "总管，借竹子得先问我娘。外头那些话还没说清，娘不会点头。"
         }
       ],
       "hard_other": [
-        {"en": "No point talking about it.", "zh": "这个免谈。"},
+        {"en": "You've had my answer. Leave it.", "zh": "到我这儿就别谈了。"},
         {"en": "No. Don't bring it up again.", "zh": "不行，别再提了。"}
       ],
       "keeper_no": [
@@ -1511,8 +1536,8 @@ _VOICES = r"""
       ],
       "kept_thanks": [
         {
-          "en": "You did what you promised. I'll tell my mother.",
-          "zh": "答应的事你办了，我娘那边我会说。"
+          "en": "You kept your word, so now I can go home and tell my mother.",
+          "zh": "你把答应的事办了，我也好回去跟我娘说一声。"
         },
         {"en": "You kept your word. The family won't forget.", "zh": "你没食言，我们家记着。"}
       ],
@@ -1529,7 +1554,7 @@ _VOICES = r"""
       ],
       "not_said": [
         {"en": "I never put it that way.", "zh": "我没这么说过。"},
-        {"en": "That wasn't me talking. Here's what I know.", "zh": "这话不是我说的，我知道的就这些。"}
+        {"en": "Who told you that? It didn't come from me.", "zh": "你听谁说的？这话我没讲过。"}
       ],
       "not_so": [
         {"en": "Don't say such things.", "zh": "这话别乱讲。"},
@@ -1551,13 +1576,10 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I don't know. I heard {name} bring it up, so go and ask.",
-          "zh": "我不清楚。听{name}提过，你去问问。"
+          "en": "I only heard {name} mention it in passing. If you want the whole story, ask there.",
+          "zh": "我只听{name}顺口提过这事，真要问明白，你还得找那边。"
         },
-        {
-          "en": "That wasn't my business. I think {name} spoke of it, so ask there.",
-          "zh": "这事我没经手。{name}好像说过，你去找找。"
-        }
+        {"en": "Try {name}. I only heard a bit of it.", "zh": "你找{name}再问问。我就听了几句。"}
       ],
       "point_hub": [
         {
@@ -1583,8 +1605,8 @@ _VOICES = r"""
       "testified": [
         {"en": "I only tell what I saw.", "zh": "看见的我才说。"},
         {
-          "en": "What I didn't see I won't tell. What I saw, I'll tell in full.",
-          "zh": "没看见的我不说，看见的一句不漏。"
+          "en": "I had a good look myself. That's why I'm speaking up.",
+          "zh": "我是亲眼看清了才敢开口。"
         }
       ],
       "timeout": [
@@ -1599,8 +1621,14 @@ _VOICES = r"""
         {"en": "It's dark already. Come in the morning.", "zh": "天黑了，明天一早来。"}
       ],
       "took_in": [
-        {"en": "Oh. I'll keep that in mind.", "zh": "哦，我记下了。"},
-        {"en": "All right. Got it.", "zh": "行，我晓得了。"}
+        {
+          "en": "So that's what happened. I'll tell Mother when I get home.",
+          "zh": "原来是这么回事，我回去也跟娘说一声。"
+        },
+        {
+          "en": "I follow now. If anyone asks me outside, I'll have an answer.",
+          "zh": "这回我听明白了，出去再有人问，我有话答了。"
+        }
       ],
       "turned_down": [
         {"en": "I can't say yes to you on that.", "zh": "这事我不能答应你。"},
@@ -1645,7 +1673,7 @@ _VOICES = r"""
     "chat": [
       {
         "id": "broken",
-        "lines": [{"en": "No trouble at all, I'll wait.", "zh": "没事没事，我等着。"}],
+        "lines": [{"en": "I won't press you about it for now.", "zh": "这事我先不催你。"}],
         "when": [{"kind": "promised", "state": "broken"}]
       },
       {
@@ -1655,7 +1683,12 @@ _VOICES = r"""
       },
       {
         "id": "truth",
-        "lines": [{"en": "It's good to have it said.", "zh": "说开了真好。"}],
+        "lines": [
+          {
+            "en": "Next time someone asks about the bridge, I've got an answer.",
+            "zh": "往后再有人问桥的事，就有话回了。"
+          }
+        ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
       },
       {
@@ -1679,8 +1712,8 @@ _VOICES = r"""
       {
         "id": "full",
         "text": {
-          "en": "The lanterns Li Er pasted led the parade. Nobody spoke of the rumour any more.",
-          "zh": "李二糊的灯排在游灯最前头。再没有人提起毁桥的闲话。"
+          "en": "Li Er's lanterns led the parade. Along the route, nobody brought up the story that Li Er broke the bridge.",
+          "zh": "李二糊的灯排在游灯队前头。路边再没人提李二弄坏桥的那桩闲话。"
         },
         "when": [
           {"kind": "cleared"},
@@ -1735,8 +1768,8 @@ _VOICES = r"""
           "zh": "听{teller}那口气，{hedge}{line}。"
         },
         {
-          "en": "{teller} was only saying, but {hedge} {line}.",
-          "zh": "{teller}也是随口一说，{hedge}{line}。"
+          "en": "Going by what {teller} said, {hedge} {line}.",
+          "zh": "照{teller}那句说的，{hedge}{line}。"
         }
       ],
       "guess_own": [
@@ -1749,16 +1782,19 @@ _VOICES = r"""
           "zh": "不知道谁讲的，{hedge}{line}。"
         },
         {
-          "en": "It's just talk going round, but {hedge} {line}.",
-          "zh": "就是听人瞎传，{hedge}{line}。"
+          "en": "I only caught a little, but {hedge} {line}.",
+          "zh": "我也就听了一耳朵，{hedge}{line}。"
         }
       ],
       "heard": [
         {
-          "en": "I got it from {teller}, who said {line}.",
-          "zh": "我是听{teller}讲的，说{line}。"
+          "en": "If you want to know where I heard it, {teller} told me that {line}.",
+          "zh": "你问我从哪儿听来的，我听{teller}讲过，说{line}。"
         },
-        {"en": "{teller} was telling me that {line}.", "zh": "{teller}跟我讲，说是{line}。"}
+        {
+          "en": "I remember how {teller} put it: {line}.",
+          "zh": "{teller}说起过这个，说是{line}。"
+        }
       ],
       "known": [
         {"en": "{line}. Ask anyone.", "zh": "{line}，这谁不知道啊。"},
@@ -1766,7 +1802,7 @@ _VOICES = r"""
       ],
       "own": [
         {"en": "If you want my take, {line}.", "zh": "我觉着吧，{line}。"},
-        {"en": "My two cents, {line}.", "zh": "要我说，{line}。"}
+        {"en": "If you ask me, I'd say {line}.", "zh": "要问我呢，{line}。"}
       ],
       "rival": [
         {
@@ -1774,13 +1810,16 @@ _VOICES = r"""
           "zh": "不过{teller}跟我说的又不一样，说{line}。"
         },
         {
-          "en": "{teller} told it another way, that {line}. Now I'm not sure.",
-          "zh": "{teller}说的又是另一样，说{line}。我也拿不准了。"
+          "en": "There's another version too. I heard from {teller} that {line}.",
+          "zh": "可还有一种讲法，我听{teller}说是{line}。"
         }
       ],
       "seen": [
-        {"en": "I'll level with you, {line}.", "zh": "实话跟你讲，{line}。"},
-        {"en": "{line}. Nobody knows that better than me.", "zh": "{line}，这个我最清楚。"}
+        {"en": "I was there myself and saw that {line}.", "zh": "我当时就在那儿，{line}。"},
+        {
+          "en": "{line}, and I was there to see that part myself.",
+          "zh": "{line}，这一段我在场，看得清楚。"
+        }
       ],
       "unknown": [
         {"en": "That's what's going round, that {line}.", "zh": "都这么传，说{line}。"},
@@ -1795,8 +1834,8 @@ _VOICES = r"""
         "id": "new",
         "lines": [
           {
-            "en": "I'm Li Er. I paste lanterns at the workshop. You'll have heard what the town says about me?",
-            "zh": "我是李二，在扎灯坊糊灯的。镇上怎么说我，你该听说了吧？"
+            "en": "You've come to ask about the bridge, have you? I'm Li Er. Go ahead and ask.",
+            "zh": "你是来问石桥的吧？我是李二，有什么话你就问。"
           }
         ],
         "when": [{"is": "new", "kind": "acquainted"}]
@@ -1825,8 +1864,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "The bridge business is out in the open. I can hold my head up at last.",
-            "zh": "桥的事说开了。我这脸，总算抬得起来了。"
+            "en": "Now that people know what happened to the bridge, I can look them in the eye again.",
+            "zh": "现在桥的事说清了，我也能抬头见人了。"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -1835,8 +1874,8 @@ _VOICES = r"""
         "id": "peace",
         "lines": [
           {
-            "en": "The two houses sat down to eat together. I feel lighter for it.",
-            "zh": "两家能坐一桌吃饭了，我心里也敞亮多了。"
+            "en": "The two families finally sat down to eat. I can stop worrying now.",
+            "zh": "两家总算吃上了这桌饭。我这下放心了。"
           }
         ],
         "when": [{"flag": "reconcile_seen", "kind": "flag"}]
@@ -1845,8 +1884,8 @@ _VOICES = r"""
         "id": "kept",
         "lines": [
           {
-            "en": "You did what you promised. Heh, I owe you one.",
-            "zh": "你答应我的事办了。嘿，我欠你一回。"
+            "en": "You came through for me. I owe you one this time.",
+            "zh": "你真把答应我的事办了，我这回可欠你个人情。"
           }
         ],
         "when": [{"kind": "promised", "state": "kept"}]
@@ -1855,8 +1894,8 @@ _VOICES = r"""
         "id": "cleared",
         "lines": [
           {
-            "en": "I was only looking for my lantern that night, and folks finally believe it. It wasn't easy.",
-            "zh": "我那晚只是找灯笼，大伙儿总算信了。不容易啊。"
+            "en": "I went there that night to look for the lantern. You spoke up, or people would still be guessing.",
+            "zh": "我那晚本来就是去找灯笼的，要不是你肯开口，大家还不知要猜到几时。"
           }
         ],
         "when": [{"kind": "cleared"}]
@@ -1881,17 +1920,11 @@ _VOICES = r"""
         "when": []
       }
     ],
-    "hedges": {"en": ["I'd guess", "I'd wager"], "zh": ["我猜", "没准是"]},
+    "hedges": {"en": ["I'd guess", "I figure"], "zh": ["我猜", "没准是"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Heh... the lantern... got it out... (fast asleep)",
-          "zh": "嘿……灯笼……捞上来了……（睡熟了）"
-        },
-        {
-          "en": "Zzz... the paste... don't dry... (fast asleep)",
-          "zh": "呼……糨糊……别干……（睡熟了）"
-        }
+        {"en": "Li Er rolls over and goes on sleeping.", "zh": "李二翻了个身，接着睡。"},
+        {"en": "Li Er doesn't wake.", "zh": "李二没醒。"}
       ],
       "bamboo_arrived": [
         {
@@ -1915,7 +1948,7 @@ _VOICES = r"""
       ],
       "busy": [
         {"en": "My hands are full right now. Give me a minute.", "zh": "我手上正忙着呢，你等我一下。"},
-        {"en": "Can't stop just now. Let's talk later.", "zh": "这会儿走不开，回头再聊。"}
+        {"en": "Let's talk when I've finished up here.", "zh": "等手上的活做完，咱们再聊。"}
       ],
       "cannot": [
         {"en": "I really can't help with that one.", "zh": "这个我真帮不上。"},
@@ -1923,8 +1956,8 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "So you were stringing me along too. And I took you for a decent sort.",
-          "zh": "原来你也拿话哄我。我还当你是好人呢。"
+          "en": "I thought someone was finally speaking straight to me. Why did you lie to me too?",
+          "zh": "我还想着总算有人肯好好跟我说话，怎么连你也拿瞎话哄我？"
         },
         {"en": "You lied to me! And I trusted you.", "zh": "你骗我！亏我还信你。"}
       ],
@@ -1938,10 +1971,13 @@ _VOICES = r"""
       ],
       "doubted": [
         {
-          "en": "That doesn't sound right. It's not what I heard.",
-          "zh": "不对吧，我听的可不是这样。"
+          "en": "Hang on. The part I heard doesn't match what you said.",
+          "zh": "等等，我听的那一段跟你说的不一样。"
         },
-        {"en": "That's not quite how I heard it.", "zh": "我听的好像不是这么回事。"}
+        {
+          "en": "That's not the version I heard. Who did you ask?",
+          "zh": "我听来的可不是这一回事，你是跟谁问的？"
+        }
       ],
       "elder_no": [
         {"en": "That alone doesn't settle it for me.", "zh": "光这些，我还是拿不准。"},
@@ -2018,7 +2054,10 @@ _VOICES = r"""
         {"en": "Nothing to talk about, sorry.", "zh": "没得谈，对不住啊。"}
       ],
       "keeper_no": [
-        {"en": "We've only just met. Next time.", "zh": "咱们才刚认识，下回吧。"},
+        {
+          "en": "We've only just met. Ask me again when we know each other a little better.",
+          "zh": "咱们刚打上照面，等熟了些，你再来问我。"
+        },
         {
           "en": "That's... not something I show to people I hardly know.",
           "zh": "这个……我不好给不熟的人看。"
@@ -2026,12 +2065,12 @@ _VOICES = r"""
       ],
       "kept_thanks": [
         {
-          "en": "You really did what you said. I'll remember this one.",
-          "zh": "你还真说到做到了。这回我记着。"
+          "en": "You saw it through after all. I was afraid I'd made trouble for you.",
+          "zh": "你还真把事办成了，我先前还怕给你添了麻烦。"
         },
         {
-          "en": "You kept your word. The Li family owes you one.",
-          "zh": "说到做到啊，李家欠你一个人情。"
+          "en": "You've done my family a good turn. I'll remember it.",
+          "zh": "帮了我们家这么个忙，我忘不了。"
         }
       ],
       "knew": [
@@ -2069,12 +2108,12 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "Well, now... I don't know. I did hear {name} mention it, though. Why not ask?",
-          "zh": "这个嘛……我不清楚。不过听{name}提起过，你去问问？"
+          "en": "I just heard {name} mention it in passing. Ask there if you want to get to the bottom of it.",
+          "zh": "我就听{name}随口提了几句，你真想弄明白，就去问问吧。"
         },
         {
-          "en": "I really don't know. I think {name} talked about it, so go and ask.",
-          "zh": "我真不知道啊。好像{name}说起过，你去问问吧。"
+          "en": "I heard it from {name}. You'll get a better answer there if you have more questions.",
+          "zh": "我是听{name}说的，后头要问什么，找那边比问我强。"
         }
       ],
       "point_hub": [
@@ -2103,10 +2142,10 @@ _VOICES = r"""
       ],
       "testified": [
         {
-          "en": "Every word of it is true. I haven't made up a thing.",
-          "zh": "我说的句句是实话，一句没编。"
+          "en": "If you want what I saw myself, I'll tell you straight.",
+          "zh": "你问的是我亲眼看见的，我照实给你说。"
         },
-        {"en": "I don't make things up. I tell what I saw.", "zh": "我不瞎编，看见什么讲什么。"}
+        {"en": "Ask what I saw and I'll tell you straight.", "zh": "你问我看见什么，我就照实说。"}
       ],
       "timeout": [
         {"en": "The paste will dry. I have to get back.", "zh": "糨糊要干了，我得回去了。"},
@@ -2117,8 +2156,11 @@ _VOICES = r"""
         {"en": "It's dark already. Find me tomorrow morning.", "zh": "天都黑了，明早再来找我。"}
       ],
       "took_in": [
-        {"en": "Oh, I see. I'll keep that in mind.", "zh": "哦，原来是这样。我记着了。"},
-        {"en": "Right, got it.", "zh": "好嘞，我晓得了。"}
+        {
+          "en": "I couldn't make sense of it before. It makes more sense the way you tell it.",
+          "zh": "难怪这事听着蹊跷，照你这么说就顺了。"
+        },
+        {"en": "Right, I'll remember what you just told me.", "zh": "嗯，你刚才说的我记住了。"}
       ],
       "turned_down": [
         {"en": "That one really won't do. Sorry.", "zh": "这个真不行，对不住。"},
@@ -2129,7 +2171,7 @@ _VOICES = r"""
       ],
       "unknown": [
         {"en": "Well, now... I really don't know.", "zh": "这个嘛……我还真不知道。"},
-        {"en": "No idea about that, sorry.", "zh": "这我哪知道啊。"}
+        {"en": "I haven't heard about that one.", "zh": "这事我还真没听过。"}
       ],
       "will_ask": [
         {"en": "Okay, I'll go and have a word for you.", "zh": "行，我去帮你说说看。"},
@@ -2196,7 +2238,10 @@ _VOICES = r"""
         "id": "plain",
         "lines": [
           {"en": "Go on, and don't neglect the work.", "zh": "去吧，别误了正事。"},
-          {"en": "Mind how you go. I won't see you out.", "zh": "慢走。老婆子不送了。"}
+          {
+            "en": "Take care on your way. I won't see you to the door.",
+            "zh": "慢着点儿走，老婆子就不送你出门了。"
+          }
         ],
         "when": []
       }
@@ -2205,8 +2250,8 @@ _VOICES = r"""
       {
         "id": "word_broken",
         "text": {
-          "en": "Granny Li never forgot what the Manager had promised and not done. However lively the festival, the old woman only stood a while at the Li doorway.",
-          "zh": "李老太一直记着总管答应了却没办的那件事。灯会再热闹，老人家也只在李家门口站了站。"
+          "en": "The Manager's promise went unkept. During the parade Granny Li came out to the door for a moment and went no farther.",
+          "zh": "总管应下的事一直没办。游灯时李老太只在自家门口站了一会儿。"
         },
         "when": [{"kind": "promised", "state": "broken"}]
       },
@@ -2295,8 +2340,8 @@ _VOICES = r"""
     "frames": {
       "guess_heard": [
         {
-          "en": "{teller} was guessing too, and {hedge} {line}.",
-          "zh": "{teller}自己也是猜的，{hedge}{line}。"
+          "en": "Hearing that from {teller}, {hedge} {line}.",
+          "zh": "{teller}这么一说，{hedge}{line}。"
         },
         {
           "en": "The way {teller} put it, {hedge} {line}.",
@@ -2305,7 +2350,10 @@ _VOICES = r"""
       ],
       "guess_own": [
         {"en": "I won't swear to it, but {hedge} {line}.", "zh": "我不敢说准，{hedge}{line}。"},
-        {"en": "Nobody can be sure. {hedge} {line}.", "zh": "说不准的事。{hedge}{line}。"}
+        {
+          "en": "{hedge} {line}. We'll leave it there for now.",
+          "zh": "{hedge}{line}。这话先搁这儿吧。"
+        }
       ],
       "guess_unknown": [
         {
@@ -2318,10 +2366,13 @@ _VOICES = r"""
         }
       ],
       "heard": [
-        {"en": "{teller} came and told me that {line}.", "zh": "{teller}跟我讲，说{line}。"},
         {
-          "en": "I had it from {teller}, who said that {line}.",
-          "zh": "是{teller}跟我说的。说是{line}。"
+          "en": "{teller} brought it up with me and said {line}.",
+          "zh": "{teller}跟我提过这事，说{line}。"
+        },
+        {
+          "en": "This is all I know. I heard from {teller} that {line}.",
+          "zh": "我知道的就这么多。听{teller}说，{line}。"
         }
       ],
       "known": [
@@ -2333,7 +2384,7 @@ _VOICES = r"""
       ],
       "own": [
         {"en": "As I see it, {line}.", "zh": "要我看哪，{line}。"},
-        {"en": "At my age I can tell that {line}.", "zh": "老婆子活了这把年纪，看得出{line}。"}
+        {"en": "I've given it some thought, and I say {line}.", "zh": "老婆子想过了，{line}。"}
       ],
       "rival": [
         {
@@ -2341,19 +2392,22 @@ _VOICES = r"""
           "zh": "可{teller}跟我讲的不一样，说{line}。"
         },
         {
-          "en": "{teller} has another version, that {line}.",
-          "zh": "{teller}那儿还有个说法，说是{line}。"
+          "en": "Yet what I heard from {teller} was that {line}.",
+          "zh": "我听{teller}讲过另一句，说{line}。"
         }
       ],
       "seen": [
-        {"en": "{line}. These old eyes saw it.", "zh": "{line}。这是老婆子亲眼看见的。"},
+        {
+          "en": "{line}, and this old woman saw it herself.",
+          "zh": "{line}，我这个老婆子可亲眼看见了。"
+        },
         {"en": "{line}, and these eyes of mine watched it.", "zh": "{line}，我这双眼睛看着的。"}
       ],
       "unknown": [
         {"en": "There's talk going round that {line}.", "zh": "外头有人传，说{line}。"},
         {
-          "en": "Word is that {line}. Who said it first, I can't remember.",
-          "zh": "说是{line}。谁先说的，我记不得了。"
+          "en": "I don't know who started it. What people are saying is that {line}.",
+          "zh": "也不知是谁先传的，说是{line}。"
         }
       ]
     },
@@ -2362,8 +2416,8 @@ _VOICES = r"""
         "id": "new",
         "lines": [
           {
-            "en": "So you're the Manager the elder sent for? I'm Granny Li, and in the Li house my word goes.",
-            "zh": "你就是族长请来的总管？老婆子姓李，李家的事我说了算。"
+            "en": "Are you the Manager the elder sent to see to the festival? I speak for the Li household. What have you come about?",
+            "zh": "族长托你来办灯会的吧？李家的事我能做主，你有什么事就同我说。"
           }
         ],
         "when": [{"is": "new", "kind": "acquainted"}]
@@ -2372,8 +2426,8 @@ _VOICES = r"""
         "id": "broken",
         "lines": [
           {
-            "en": "You promised me and didn't do it. I haven't forgotten.",
-            "zh": "答应我的事，你没办。老婆子记着呢。"
+            "en": "You haven't done what you promised last time. I've been waiting to hear from you.",
+            "zh": "你上回应我的事还没办，老婆子可一直等着你的回话。"
           }
         ],
         "when": [{"kind": "promised", "state": "broken"}]
@@ -2382,8 +2436,8 @@ _VOICES = r"""
         "id": "festival",
         "lines": [
           {
-            "en": "The lanterns go round tonight. I hung the one at my door first thing this morning.",
-            "zh": "今晚游灯了。我门口的灯，一早就挂上了。"
+            "en": "There you are. The lantern walk is tonight. I hung mine by the door first thing.",
+            "zh": "你来了。今晚要游灯，我门口那盏一早就挂好了。"
           }
         ],
         "when": [{"day": 5, "hour": 15, "kind": "after"}]
@@ -2392,8 +2446,8 @@ _VOICES = r"""
         "id": "peace",
         "lines": [
           {
-            "en": "That Zhou shopkeeper sat down at one table with us. I can breathe easier at last.",
-            "zh": "周家那个掌柜肯跟我们坐一桌了。这口气，总算顺了。"
+            "en": "Since Shopkeeper Zhou was willing to sit down and eat with us, I've no reason to go on quarrelling.",
+            "zh": "周家那个掌柜既肯坐下来跟我们吃饭，老婆子也就没什么好争的了。"
           }
         ],
         "when": [{"flag": "reconcile_seen", "kind": "flag"}]
@@ -2402,8 +2456,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "Everyone knows now how the bridge broke. The Li family can walk with their heads up again.",
-            "zh": "桥是怎么坏的，大家都听明白了。李家人不用再低着头走路了。"
+            "en": "Everyone knows how the bridge broke now. My family can go out with their heads up again.",
+            "zh": "大伙儿现在都晓得桥是怎么坏的，李家人也能抬着头出门了。"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -2434,8 +2488,8 @@ _VOICES = r"""
         "id": "cleared",
         "lines": [
           {
-            "en": "That talk was cleared up in front of everyone. I feel a little easier.",
-            "zh": "那些闲话当众说清了，我心里松快些了。"
+            "en": "Now that it's been set straight in front of everyone, I can breathe a little easier.",
+            "zh": "那几句话既然已经当众说清了，老婆子也能缓口气了。"
           }
         ],
         "when": [{"kind": "knows", "props": ["pr_set_straight"]}]
@@ -2443,7 +2497,10 @@ _VOICES = r"""
       {
         "id": "again",
         "lines": [
-          {"en": "Back again, Manager. Go on.", "zh": "总管又来了。说吧。"},
+          {
+            "en": "Something we haven't finished with? Go on, then.",
+            "zh": "还有件事没说完？你接着讲。"
+          },
           {"en": "Something more? I'm listening.", "zh": "还有事？我听着呢。"}
         ],
         "when": [{"is": "today", "kind": "acquainted"}]
@@ -2451,7 +2508,10 @@ _VOICES = r"""
       {
         "id": "plain",
         "lines": [
-          {"en": "You've come, Manager? Say what you came to say.", "zh": "总管来了？有话就说。"},
+          {
+            "en": "You've come to see me, Manager. What's on your mind?",
+            "zh": "总管来找我，是有什么事要说？"
+          },
           {"en": "Sit down. Take your time.", "zh": "坐吧，有话慢慢说。"}
         ],
         "when": []
@@ -2460,17 +2520,14 @@ _VOICES = r"""
     "hedges": {"en": ["I'd say", "I suspect"], "zh": ["多半是", "我寻思"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Mm... my youngest... don't go out... (fast asleep)",
-          "zh": "唔……老二……别出门……（睡熟了）"
-        },
-        {
-          "en": "Zzz... the bamboo... not to anyone... (fast asleep)",
-          "zh": "呼……竹子……谁也不借……（睡熟了）"
-        }
+        {"en": "Granny Li is fast asleep and doesn't hear you.", "zh": "李老太睡着了，没听见。"},
+        {"en": "Granny Li sleeps through your call.", "zh": "没叫醒李老太。"}
       ],
       "bamboo_arrived": [
-        {"en": "The bamboo is at the bridge. I keep my word.", "zh": "竹料到桥边了。我说话算数。"},
+        {
+          "en": "The bamboo we promised is at the bridge now. Go and have a look.",
+          "zh": "说好送到桥边的竹料已经到了，你去看看。"
+        },
         {"en": "The Li bamboo is there, every pole of it.", "zh": "李家的竹子送到了，一根不少。"}
       ],
       "batch_promised": [
@@ -2493,10 +2550,10 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "So you were feeding me lies. I won't believe another word of yours.",
-          "zh": "原来你拿瞎话哄我。往后你的话，我一句也不信。"
+          "en": "So you thought you could lie to an old woman. How do you expect me to trust you after that?",
+          "zh": "原来你拿句瞎话哄老婆子，我往后还怎么信你？"
         },
-        {"en": "So you'd lie even to an old woman!", "zh": "好啊，连老婆子你也敢骗！"}
+        {"en": "So that's what you said to fool an old woman.", "zh": "原来你拿这话哄老婆子呢。"}
       ],
       "closed": [
         {"en": "This isn't a good time. Come at another hour.", "zh": "这会儿不方便，换个时辰来吧。"},
@@ -2507,8 +2564,11 @@ _VOICES = r"""
         {"en": "Then that's settled.", "zh": "那就这么定了。"}
       ],
       "doubted": [
-        {"en": "That isn't what I was told.", "zh": "我听来的不是这么回事。"},
-        {"en": "That doesn't fit what I heard.", "zh": "这跟我听来的对不上。"}
+        {"en": "Hold on. That isn't the story I heard.", "zh": "等等，我听来的可不是这么回事。"},
+        {
+          "en": "That's your account, but I was told something different.",
+          "zh": "你说的是这么回事，可我听见的是另一番话。"
+        }
       ],
       "elder_no": [
         {
@@ -2574,22 +2634,22 @@ _VOICES = r"""
       ],
       "hard_hc_li_bamboo": [
         {
-          "en": "Until that talk is cleared up in front of everyone, not one pole of Li bamboo goes out.",
-          "zh": "那些闲话一天不当众说清，李家的竹子一根也不借。"
+          "en": "If you want the bamboo, you'll have to set that talk straight in front of everyone before the Li family can agree.",
+          "zh": "你要借竹料，先当着大伙的面把那些闲话说清，李家才能点头。"
         },
         {
-          "en": "Clear it up in front of everyone first. Until then, forget the bamboo.",
-          "zh": "先当着大家把话说清楚。不然竹子你别想。"
+          "en": "Let's leave the bamboo for now. Come back when you've set the story straight in front of everyone.",
+          "zh": "借竹料的事先放一放，等你当众把那些话说明白了再来找我。"
         }
       ],
       "hard_hc_li_bamboo_rumour": [
         {
-          "en": "The whole town says my youngest broke the bridge. You haven't said a word, Manager, so no bamboo.",
-          "zh": "满镇都说我家老二弄坏了桥。你这个总管一声不吭，竹子我不借。"
+          "en": "You've come for bamboo, but people blame my youngest for the bridge. You haven't said a word for us, Manager. How can I lend it?",
+          "zh": "你来借竹，可外头都说桥是老二弄坏的。总管，你连句话都没替我们说，我怎么借？"
         },
         {
-          "en": "All the talk has landed on my youngest, and you say nothing. No bamboo.",
-          "zh": "闲话都落在老二头上了，你一句也不说。竹子不借。"
+          "en": "The bamboo can wait. Everyone is blaming my youngest. What are you going to tell them, Manager?",
+          "zh": "借竹料的事先放一放。街上都在怪我家老二，你这个总管打算怎么跟大伙儿说？"
         }
       ],
       "hard_other": [
@@ -2605,8 +2665,8 @@ _VOICES = r"""
       ],
       "kept_thanks": [
         {
-          "en": "You did what you said. I won't forget your kindness.",
-          "zh": "你说到做到。老婆子记着你的好。"
+          "en": "You did what you promised. I'll remember that kindness.",
+          "zh": "你把答应的事办了，这份好老婆子记在心里。"
         },
         {
           "en": "You did what you promised. The Li house won't forget it.",
@@ -2625,8 +2685,8 @@ _VOICES = r"""
         {"en": "Without the elder's nod, I won't say yes.", "zh": "族长不点头，我不敢应。"}
       ],
       "not_said": [
-        {"en": "No such word ever passed my lips.", "zh": "我可没说过这话。"},
-        {"en": "Those weren't my words. This is what I know.", "zh": "这话不是我说的。我只知道这个。"}
+        {"en": "You didn't hear that from me.", "zh": "这话可不是从我嘴里出去的。"},
+        {"en": "I never said that. I only know this much.", "zh": "这句我可没说过，我知道的就那一点。"}
       ],
       "not_so": [
         {"en": "Nothing of the sort.", "zh": "哪有这种事。"},
@@ -2641,28 +2701,28 @@ _VOICES = r"""
       ],
       "objection_withdrawn": [
         {
-          "en": "Since it's been cleared up in front of everyone, I won't stand in the way.",
-          "zh": "既然当众说清了，我就不拦着了。"
+          "en": "Everyone here heard who said what. You can go and talk to my eldest about the bamboo now.",
+          "zh": "方才大伙儿都在，谁说了什么，也都听见了。借竹料的事，你去跟老大说吧。"
         },
         {
-          "en": "It's been cleared up. For the bamboo, go and see my eldest.",
-          "zh": "话说清楚了。竹子的事，你去找老大吧。"
+          "en": "Now that it's been said plainly in front of everyone, I won't stand in the way of the loan. Go see my eldest.",
+          "zh": "这些话既然当众说明白了，借竹子的事我就不拦了，找老大去吧。"
         }
       ],
       "point_heard": [
         {
-          "en": "I don't know about that. I did hear {name} say a few words on it, so go and ask.",
-          "zh": "这个我不清楚。倒是听{name}提过几句，你去问问。"
+          "en": "I only heard a few words myself. You'll need to ask {name} for the whole story.",
+          "zh": "我也是听了几句，若要问前因后果，你得去找{name}。"
         },
         {
-          "en": "I paid it no mind, but {name} spoke of it. Go and ask.",
-          "zh": "我没留心这事。{name}说起过，你问问去。"
+          "en": "I didn't pay it much mind, but {name} mentioned it. Try asking there.",
+          "zh": "这事我没留心，不过{name}提起过，你不如去问问。"
         }
       ],
       "point_hub": [
         {
-          "en": "I don't go after gossip. For the news of the town, ask {name}.",
-          "zh": "老婆子不打听闲事。镇上的消息，你去问{name}。"
+          "en": "I don't usually ask about such things. For news of the town, try {name}.",
+          "zh": "我平日少打听这些，你要问镇上的事，倒可以去找{name}。"
         },
         {
           "en": "I don't know. People come and go all day at {name}'s, so ask there.",
@@ -2675,8 +2735,8 @@ _VOICES = r"""
           "zh": "我答应过了，{when}送{amount}根{item}到桥边。"
         },
         {
-          "en": "What's settled stays settled. It's {amount} poles of {item} at the bridge {when}.",
-          "zh": "说定的事不改。{when}，{amount}根{item}送到桥边。"
+          "en": "We've agreed on it. You'll have {amount} poles of {item} at the bridge {when}.",
+          "zh": "这笔竹料咱们说定了，{when}送{amount}根{item}到桥边。"
         }
       ],
       "said_already": [
@@ -2689,18 +2749,18 @@ _VOICES = r"""
       ],
       "timeout": [
         {"en": "It's getting on. I have to go.", "zh": "时候不早了，我得走了。"},
-        {
-          "en": "I must be going. The rest can wait for another day.",
-          "zh": "我得走了。有话改天再说。"
-        }
+        {"en": "We'll leave it there. I have to get home.", "zh": "话先搁这儿吧，我得回去了。"}
       ],
       "too_late": [
         {"en": "It's late. Come again in the morning.", "zh": "天晚了，明早再来吧。"},
         {"en": "It's dark now. We'll talk first thing tomorrow.", "zh": "夜深了，明天一早再说。"}
       ],
       "took_in": [
-        {"en": "So that's how it was.", "zh": "原来是这么回事。"},
-        {"en": "Hm. I've taken in what you said.", "zh": "嗯，你的话我听进去了。"}
+        {"en": "Now I understand.", "zh": "这样我就听明白了。"},
+        {
+          "en": "Now that you've explained it, I know where things stand.",
+          "zh": "听你这么一说，我这心里就有数了。"
+        }
       ],
       "turned_down": [
         {"en": "That I can't agree to.", "zh": "这事老婆子不能答应。"},
@@ -2719,7 +2779,7 @@ _VOICES = r"""
         {"en": "I'll gather them all at the hall.", "zh": "我去把人都叫到祠堂。"}
       ],
       "will_do": [
-        {"en": "Very well. I'll agree to it.", "zh": "行。这事我应下了。"},
+        {"en": "Leave this one with me. I'll see to it.", "zh": "这件事你交给我，我来办。"},
         {"en": "Good. Leave it with me.", "zh": "好，交给我吧。"}
       ],
       "witness_in_public": [
@@ -2744,12 +2804,12 @@ _VOICES = r"""
           "zh": "{teller}好像提过，{hedge}{line}。"
         },
         {
-          "en": "{teller} was guessing as well, so {hedge} {line}.",
-          "zh": "{teller}也是猜的，{hedge}{line}。"
+          "en": "It came up with {teller}, and {hedge} {line}.",
+          "zh": "我听{teller}提过，{hedge}{line}。"
         }
       ],
       "guess_own": [
-        {"en": "I'm not sure, but {hedge} {line}.", "zh": "我也不确定，{hedge}{line}。"},
+        {"en": "{hedge} {line}. Hard to say, though.", "zh": "{hedge}{line}。我也说不好。"},
         {
           "en": "I can't be certain of it, but {hedge} {line}.",
           "zh": "这我可拿不准，{hedge}{line}。"
@@ -2766,8 +2826,11 @@ _VOICES = r"""
         }
       ],
       "heard": [
-        {"en": "I heard from {teller} that {line}.", "zh": "听{teller}讲的，说{line}。"},
-        {"en": "{teller} told me once that {line}.", "zh": "{teller}跟我说过呢，{line}。"}
+        {
+          "en": "I remember {teller} bringing it up once and saying that {line}.",
+          "zh": "我记得{teller}提过一回，说是{line}。"
+        },
+        {"en": "{line}. That's what {teller} told me.", "zh": "{line}。这是{teller}告诉我的。"}
       ],
       "known": [
         {"en": "{line}. Everybody knows that, you know.", "zh": "{line}，大家都知道的呀。"},
@@ -2775,20 +2838,26 @@ _VOICES = r"""
       ],
       "own": [
         {"en": "I think that {line}.", "zh": "我是这么想的，{line}。"},
-        {"en": "If you ask what I think, {line}.", "zh": "依我看呀，{line}。"}
+        {
+          "en": "I've turned it over and I still think {line}.",
+          "zh": "我想来想去，还是觉得{line}。"
+        }
       ],
       "rival": [
         {
-          "en": "But {teller} told me another thing, that {line}.",
-          "zh": "不过{teller}跟我说的不一样呢，说{line}。"
+          "en": "There's one part that's different. I heard from {teller} that {line}.",
+          "zh": "还有个地方不一样，我听{teller}说{line}。"
         },
         {
-          "en": "And {teller} said it was different, that {line}.",
-          "zh": "{teller}说的可不一样，说{line}。"
+          "en": "But I'd heard {teller} say that {line}.",
+          "zh": "不过我记得{teller}还说过，{line}。"
         }
       ],
       "seen": [
-        {"en": "{line}. I was right nearby.", "zh": "{line}。我当时就在旁边。"},
+        {
+          "en": "{line}, that much I can say. I was standing right there.",
+          "zh": "{line}，这个我敢说，当时我就在旁边。"
+        },
         {"en": "{line}, and I saw it myself.", "zh": "{line}，我自己看见的。"}
       ],
       "unknown": [
@@ -2802,14 +2871,8 @@ _VOICES = r"""
     "hedges": {"en": ["I suppose", "I'd imagine"], "zh": ["我想", "说不定是"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Mm... don't... someone will see... (fast asleep)",
-          "zh": "嗯……别……让人看见……（睡熟了）"
-        },
-        {
-          "en": "Zzz... this lantern... so pretty... (fast asleep)",
-          "zh": "呼……这盏灯……真好看……（睡熟了）"
-        }
+        {"en": "You call twice. No answer.", "zh": "叫了两声，没应。"},
+        {"en": "Xiaomei is still asleep.", "zh": "小妹还睡着。"}
       ],
       "bamboo_arrived": [
         {"en": "The bamboo's at the bridge. How wonderful.", "zh": "竹子到桥边啦，太好了。"},
@@ -2831,8 +2894,14 @@ _VOICES = r"""
         {"en": "Sorry, I can't manage that.", "zh": "对不起，我做不到。"}
       ],
       "caught": [
-        {"en": "You lied to me. And I trusted you so.", "zh": "你骗我。我还那么信你。"},
-        {"en": "So you were lying all along. That's too much.", "zh": "原来你一直在说谎，太过分了。"}
+        {
+          "en": "I trusted you. It never occurred to me you'd lie to me about that.",
+          "zh": "我原先那么信你，哪想到你会拿这话来骗我。"
+        },
+        {
+          "en": "I thought you were telling me the truth. Shows what I knew.",
+          "zh": "我还当你说的是真的。结果哪。"
+        }
       ],
       "closed": [
         {"en": "It's not a good time. Come at another time.", "zh": "现在不方便，换个时候来吧。"},
@@ -2844,7 +2913,10 @@ _VOICES = r"""
       ],
       "doubted": [
         {"en": "That's not what I was told.", "zh": "跟我听说的不一样。"},
-        {"en": "That doesn't sound right. I heard otherwise.", "zh": "不太对吧，我听的不是这样。"}
+        {
+          "en": "One part sounds different from what I heard. Could you say it again?",
+          "zh": "可我先前听见的有一处不一样，你再说一遍好不好？"
+        }
       ],
       "elder_no": [
         {"en": "That alone isn't enough.", "zh": "光这样还不行呢。"},
@@ -2918,12 +2990,18 @@ _VOICES = r"""
         {"en": "There's no talking it over.", "zh": "没办法商量呢。"}
       ],
       "keeper_no": [
-        {"en": "We don't know each other well yet. Next time.", "zh": "咱们还不熟呢，下次吧。"},
+        {
+          "en": "We've only just met. I don't feel right showing you this yet.",
+          "zh": "咱们才认识，我还不大好把这个给你看。"
+        },
         {"en": "I can't just show this to anybody.", "zh": "这个不好随便给人看。"}
       ],
       "kept_thanks": [
         {"en": "You really kept your word. Thank you.", "zh": "你真的说话算数，谢谢你。"},
-        {"en": "You did it. I'll remember this.", "zh": "你做到了，我会记住的。"}
+        {
+          "en": "I was worrying over what to do. You went and took care of it for me.",
+          "zh": "这事我原先还发愁，不知道怎么办才好，你倒替我办妥了。"
+        }
       ],
       "knew": [
         {
@@ -2957,18 +3035,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I really don't know. But I heard {name} talking about it, so you could ask.",
-          "zh": "我真不知道。不过听{name}说起过，你去问问吧。"
+          "en": "I really don't know myself, but {name} did mention it. Could you ask there?",
+          "zh": "我自己是真不知道，倒是听{name}提起过，你去问问好不好？"
         },
         {
-          "en": "I haven't heard anything... I think {name} knows a little. Why not ask?",
-          "zh": "我没听说呢……好像{name}知道一点，要不你去问问？"
+          "en": "I only heard {name} mention it in passing. Why not ask?",
+          "zh": "我只听{name}提起过一点，要不你去问问？"
         }
       ],
       "point_hub": [
         {
-          "en": "I don't know about that. Try asking {name}.",
-          "zh": "这个我不清楚，你去问问{name}看。"
+          "en": "I'm not sure. Try asking {name}. You might find out that way.",
+          "zh": "我不大清楚，你去找{name}问问，兴许能问出来。"
         },
         {
           "en": "I don't know. Go and find {name}, who knows all the town's business.",
@@ -2991,12 +3069,15 @@ _VOICES = r"""
       ],
       "testified": [
         {"en": "All I say is what I saw myself.", "zh": "我说的全是亲眼看见的。"},
-        {"en": "I never make things up. I only tell what I saw.", "zh": "我才不乱说呢，看见了才讲。"}
+        {
+          "en": "I was standing nearby. If you're asking about then, I can tell you.",
+          "zh": "我当时就在旁边，你要问的是那会儿的事，我答得出来。"
+        }
       ],
       "timeout": [
         {
-          "en": "The shades at the workshop aren't done, the paper isn't cut... I have to go.",
-          "zh": "坊里的灯面还没糊完，纸也还没裁……我得走了。"
+          "en": "I've still got lanterns to paste at the workshop. And the paper to cut. I have to go.",
+          "zh": "坊里还有灯面没糊。纸也没裁呢，我得走了。"
         },
         {
           "en": "I can't stay. They're waiting for me at the workshop.",
@@ -3008,8 +3089,14 @@ _VOICES = r"""
         {"en": "It's very late. Shall we talk tomorrow?", "zh": "已经很晚啦，明天再说好吗？"}
       ],
       "took_in": [
-        {"en": "Oh, so that's how it is. I'll remember.", "zh": "原来是这样啊，我记住了。"},
-        {"en": "Mm, I understand.", "zh": "嗯，我明白了。"}
+        {
+          "en": "Now that you've told it from the beginning, I understand.",
+          "zh": "听你从头这么一说，我就懂了。"
+        },
+        {
+          "en": "I understand now. If anyone asks me, I'll know what to say.",
+          "zh": "我听明白啦，往后有人问我，我也知道怎么答。"
+        }
       ],
       "turned_down": [
         {"en": "I'm so sorry. I can't agree to this.", "zh": "真对不起，这件事我不能答应。"},
@@ -3058,7 +3145,10 @@ _VOICES = r"""
           "en": "One shouldn't be too sure. {hedge} {line}.",
           "zh": "这话不好说死。{hedge}{line}。"
         },
-        {"en": "It's only a feeling. {hedge} {line}.", "zh": "我心里有这么个念头。{hedge}{line}。"}
+        {
+          "en": "{hedge} {line}. I've kept that to myself.",
+          "zh": "{hedge}{line}。我没敢往外讲。"
+        }
       ],
       "guess_unknown": [
         {
@@ -3066,18 +3156,18 @@ _VOICES = r"""
           "zh": "也不晓得是谁传出来的。{hedge}{line}。"
         },
         {
-          "en": "I only caught it on the wind. {hedge} {line}.",
-          "zh": "风里听来的。{hedge}{line}。"
+          "en": "I forget where I heard it, but {hedge} {line}.",
+          "zh": "哪儿听来的也记不清了，{hedge}{line}。"
         }
       ],
       "heard": [
         {
-          "en": "{teller} told me while praying here, that {line}.",
-          "zh": "{teller}来上香时跟我讲的。说{line}。"
+          "en": "I remember {teller} saying that {line}.",
+          "zh": "我记得{teller}说过，说是{line}。"
         },
         {
-          "en": "I heard {teller} speak of it, saying {line}.",
-          "zh": "我听{teller}说起过。说是{line}。"
+          "en": "I heard this part from {teller}, who said that {line}.",
+          "zh": "这句是我听{teller}提起的，说是{line}。"
         }
       ],
       "known": [
@@ -3090,40 +3180,31 @@ _VOICES = r"""
       ],
       "rival": [
         {
-          "en": "{teller} told me another version, that {line}.",
-          "zh": "{teller}跟我讲过另一种说法。说{line}。"
+          "en": "But when I heard {teller} speak of it, the account was that {line}.",
+          "zh": "不过我听{teller}讲起这事，倒说{line}。"
         },
         {
-          "en": "Only {teller} told it differently, that {line}.",
-          "zh": "只是{teller}讲的不是这样。说是{line}。"
+          "en": "The version I heard from {teller} differs a little: {line}.",
+          "zh": "只是{teller}讲的略有不同，说是{line}。"
         }
       ],
       "seen": [
-        {
-          "en": "As heaven sees me, I saw with my own eyes that {line}.",
-          "zh": "这是我亲眼看见的，菩萨在上。{line}。"
-        },
+        {"en": "I was there then and watched as {line}.", "zh": "当时我也在场，瞧见{line}。"},
         {"en": "{line}. I saw it myself, and I don't lie.", "zh": "{line}。我亲眼看见的，不说假话。"}
       ],
       "unknown": [
+        {"en": "I've heard it said that {line}, too.", "zh": "这话我也听人讲过，说是{line}。"},
         {
-          "en": "People who come to pray have been saying that {line}.",
-          "zh": "来上香的人在说。说{line}。"
-        },
-        {
-          "en": "Someone at the temple gate said it, and I didn't notice who. The story was that {line}.",
-          "zh": "庙门口有人讲，是谁我没留意。说是{line}。"
+          "en": "I couldn't tell you who said it. All I heard was that {line}.",
+          "zh": "也不晓得是谁讲的，说{line}。"
         }
       ]
     },
-    "hedges": {"en": ["I feel", "I sense"], "zh": ["我感觉", "许是"]},
+    "hedges": {"en": ["I think", "I'd say"], "zh": ["我想", "许是"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... the incense... light another... (fast asleep)",
-          "zh": "呼……香……该续了……（睡熟了）"
-        },
-        {"en": "Mm... heaven keep us... (fast asleep)", "zh": "唔……菩萨保佑……（睡熟了）"}
+        {"en": "The temple keeper is fast asleep.", "zh": "庙祝睡沉了。"},
+        {"en": "No answer from inside.", "zh": "没听见里头应声。"}
       ],
       "bamboo_arrived": [
         {
@@ -3141,8 +3222,8 @@ _VOICES = r"""
       ],
       "busy": [
         {
-          "en": "I'm in the middle of the incense. Wait a little, please.",
-          "zh": "我正上着香，您稍等一会儿。"
+          "en": "Give me a moment to set this incense in place, and then I'll hear you out.",
+          "zh": "您稍等，容我把这炷香插上，再听您慢慢说。"
         },
         {
           "en": "The lamps in the shrine still need oil. Come another day, please.",
@@ -3155,8 +3236,8 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "You told a lie even before the shrine. I can't believe your words any more.",
-          "zh": "您在菩萨跟前也说假话。往后您的话，我不敢再信了。"
+          "en": "I believed what you told me. Looking back, I should have asked another question.",
+          "zh": "我先前信了您的话，如今想来，当时就该多问一声。"
         },
         {
           "en": "So you were deceiving me all along. My heart sinks.",
@@ -3174,11 +3255,14 @@ _VOICES = r"""
         }
       ],
       "deal": [
-        {"en": "Good. It's agreed, before the shrine.", "zh": "好，菩萨面前说定了。"},
+        {"en": "All right. You can count on me.", "zh": "好，我应下这件事。"},
         {"en": "Then let's do that.", "zh": "那就这么办吧。"}
       ],
       "doubted": [
-        {"en": "That's not what reached me.", "zh": "我听来的不是这样。"},
+        {
+          "en": "What I heard differs a little from your account. Where did you hear it?",
+          "zh": "我听到的跟您讲的有点不同，您是在哪儿听的？"
+        },
         {"en": "That's different from what I heard.", "zh": "这跟我听到的不一样。"}
       ],
       "elder_no": [
@@ -3194,7 +3278,7 @@ _VOICES = r"""
         {"en": "Saying isn't enough. It has to be done.", "zh": "光说没用，得做出来。"}
       ],
       "evade": [
-        {"en": "Heaven knows about that. It's not for me to say.", "zh": "这事菩萨知道，我不好讲。"},
+        {"en": "I'd best keep that to myself.", "zh": "这话我不便讲。"},
         {"en": "Please don't ask me that one.", "zh": "这个您就别问我了。"}
       ],
       "gift_dislike": [
@@ -3260,7 +3344,10 @@ _VOICES = r"""
         {"en": "This key isn't for someone I barely know.", "zh": "这钥匙不能随便给不熟的人。"}
       ],
       "kept_thanks": [
-        {"en": "You keep your word, and heaven sees it.", "zh": "您说话算数，菩萨看着呢。"},
+        {
+          "en": "You gave me your word and saw it through yourself. You have my thanks.",
+          "zh": "您既应下这件事，又亲自办妥了，我得好好谢您。"
+        },
         {"en": "You kept faith. Thank you.", "zh": "您守了信，我谢谢您。"}
       ],
       "knew": [
@@ -3276,7 +3363,7 @@ _VOICES = r"""
       ],
       "not_said": [
         {"en": "Those aren't my words.", "zh": "这话不是我讲的。"},
-        {"en": "I never said that, as heaven is my witness.", "zh": "我没这么说过，菩萨在上。"}
+        {"en": "You can't lay those words at my door.", "zh": "这句话不能算到我头上。"}
       ],
       "not_so": [
         {"en": "No, it wasn't like that. You've got it mixed up.", "zh": "不是这样的，您弄岔了。"},
@@ -3295,18 +3382,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I couldn't say. I heard {name} mention it while praying here, so go and ask.",
-          "zh": "这个我说不上。{name}来上香时提起过，您去问问。"
+          "en": "I only heard the outline from {name}. If you want the details, you'd best ask in person.",
+          "zh": "我只听{name}说了个大概，您若要问仔细，还得亲自去一趟。"
         },
         {
-          "en": "I'm not sure. I did hear {name} say a few words about it, so go and ask.",
-          "zh": "我不清楚。倒是听{name}说过几句，您去问问吧。"
+          "en": "I can't say for sure, but {name} did bring it up. You might ask there.",
+          "zh": "我说不准，倒是{name}提起过，您可去问问。"
         }
       ],
       "point_hub": [
         {
-          "en": "I don't know. People come and go at the teahouse, so ask {name}.",
-          "zh": "这事我不知道。茶馆里人来人往，您去问问{name}。"
+          "en": "I spend most days at the temple. For news of the street, try {name}. The teahouse sees more people.",
+          "zh": "平日我都在庙里，街上的事您不如问问{name}，茶馆来往的人多。"
         },
         {
           "en": "It's quiet here and I don't hear much. Go and find {name}.",
@@ -3329,8 +3416,8 @@ _VOICES = r"""
       ],
       "testified": [
         {
-          "en": "What I tell you I saw myself. I don't lie before the shrine.",
-          "zh": "我说的都是亲眼看见的，菩萨跟前不说假话。"
+          "en": "I was there for the part you asked about. I can tell you what I saw myself.",
+          "zh": "您问的那段我人在场，能讲的都是亲眼瞧见的。"
         },
         {"en": "I won't speak of what I didn't see.", "zh": "没看见的我不会说。"}
       ],
@@ -3349,8 +3436,14 @@ _VOICES = r"""
         {"en": "It's late at night. We'll talk tomorrow.", "zh": "夜深了，明天再说。"}
       ],
       "took_in": [
-        {"en": "So that's how it was. I'll keep it in mind.", "zh": "原来是这样，我记在心里了。"},
-        {"en": "Thank you for telling me.", "zh": "多谢您告诉我。"}
+        {
+          "en": "Hearing you tell it that way, I can see what happened.",
+          "zh": "听您这么一讲，我就明白是怎么回事了。"
+        },
+        {
+          "en": "Thank you for telling me. Now I know how to answer if anyone asks.",
+          "zh": "承您相告，有人再问我，也好回话了。"
+        }
       ],
       "turned_down": [
         {"en": "Forgive me, I can't agree to this.", "zh": "对不住，这件事我不能应。"},
@@ -3389,8 +3482,8 @@ _VOICES = r"""
     "frames": {
       "guess_heard": [
         {
-          "en": "{teller} gave me the start of it. {hedge} {line}.",
-          "zh": "{teller}起了个头。{hedge}{line}。"
+          "en": "From the bit I heard from {teller}, {hedge} {line}.",
+          "zh": "听{teller}提了个头，{hedge}{line}。"
         },
         {
           "en": "I've weighed {teller}'s words. {hedge} {line}.",
@@ -3399,8 +3492,8 @@ _VOICES = r"""
       ],
       "guess_own": [
         {
-          "en": "No proof, just a guess. {hedge} {line}.",
-          "zh": "没凭没据，瞎猜的。{hedge}{line}。"
+          "en": "{hedge} {line}. Keep it in mind for now.",
+          "zh": "{hedge}{line}。先这么听着吧。"
         },
         {
           "en": "Take this for what it's worth. {hedge} {line}.",
@@ -3410,18 +3503,18 @@ _VOICES = r"""
       "guess_unknown": [
         {"en": "No idea who started it. {hedge} {line}.", "zh": "不知谁起的头。{hedge}{line}。"},
         {
-          "en": "It blew in from somewhere. {hedge} {line}.",
-          "zh": "风里刮来的。{hedge}{line}。"
+          "en": "All I heard was a bit here and there. {hedge} {line}.",
+          "zh": "我就听到几句，{hedge}{line}。"
         }
       ],
       "heard": [
         {
-          "en": "{teller} passed the word to me, that {line}.",
-          "zh": "{teller}给我递过话。说{line}。"
+          "en": "I got word from {teller} that {line}.",
+          "zh": "这话是{teller}传给我的，说是{line}。"
         },
         {
-          "en": "{teller} told me to my face that {line}.",
-          "zh": "{teller}当面跟我讲的。说是{line}。"
+          "en": "I heard it straight from {teller} that {line}.",
+          "zh": "{teller}亲口讲的，说{line}。"
         }
       ],
       "known": [
@@ -3434,40 +3527,37 @@ _VOICES = r"""
       ],
       "rival": [
         {
-          "en": "Only {teller} told it otherwise, that {line}.",
-          "zh": "可{teller}说的不是这样。说{line}。"
+          "en": "That's odd. I heard {teller} say that {line}.",
+          "zh": "这就怪了，我听{teller}说过，{line}。"
         },
         {
-          "en": "{teller} told me to my face it was different, that {line}.",
-          "zh": "{teller}当面讲的是另一个样。说{line}。"
+          "en": "But I heard a different account from {teller}, that {line}.",
+          "zh": "可我还听{teller}讲过另一句，说是{line}。"
         }
       ],
       "seen": [
         {
-          "en": "I saw with my own eyes, nothing added, that {line}.",
-          "zh": "我亲眼看见的，不掺假。{line}。"
+          "en": "{line}. I was close enough to see for myself.",
+          "zh": "{line}，我当时就在跟前，看得清。"
         },
-        {"en": "{line}. I was right there and saw it.", "zh": "{line}。我就在跟前看着。"}
+        {
+          "en": "I was right beside it, and I saw that {line}.",
+          "zh": "我当时就在跟前，看着{line}。"
+        }
       ],
       "unknown": [
         {"en": "Some in town say {line}.", "zh": "镇上有人这么讲。说{line}。"},
         {
-          "en": "I heard people going on about it and didn't ask who. The story is that {line}.",
-          "zh": "听人念叨的，谁说的我没问。说是{line}。"
+          "en": "Someone said {line}. I didn't ask who started it.",
+          "zh": "听人讲{line}。我没问是谁先说的。"
         }
       ]
     },
-    "hedges": {"en": ["I'd judge", "I judge"], "zh": ["看样子", "约莫"]},
+    "hedges": {"en": ["I'd say", "I reckon"], "zh": ["看样子", "约莫"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... the ink line... snapped crooked... (fast asleep)",
-          "zh": "呼……墨线……弹歪了……（睡熟了）"
-        },
-        {
-          "en": "Mm... this board... needs more planing... (fast asleep)",
-          "zh": "唔……这块料……还得刨……（睡熟了）"
-        }
+        {"en": "The carpenter doesn't wake.", "zh": "木匠没醒。"},
+        {"en": "Steady breathing. Still asleep.", "zh": "呼吸匀匀的，还睡着。"}
       ],
       "bamboo_arrived": [
         {
@@ -3484,8 +3574,11 @@ _VOICES = r"""
         {"en": "It'll be there in the morning, not one short.", "zh": "明早送到，一根不少。"}
       ],
       "busy": [
-        {"en": "My hands are full. Later.", "zh": "手上的活没完，回头再说。"},
-        {"en": "The plane is running nicely. Don't stop me now.", "zh": "刨子正顺手，别打断我。"}
+        {
+          "en": "I've work in hand. Tell me what you need once I have a moment.",
+          "zh": "我手上的活还没做完，你有话等我得空了再讲。"
+        },
+        {"en": "Let me finish this pass with the plane.", "zh": "这一下先让我刨完。"}
       ],
       "cannot": [
         {"en": "I can't do that job.", "zh": "这活我干不了。"},
@@ -3493,10 +3586,10 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "You fooled me. I won't believe a word you say from now on.",
-          "zh": "你糊弄我。往后你的话，我一句不信。"
+          "en": "I took it seriously because I trusted you, and you went and told me a lie.",
+          "zh": "我信了你的话才当回事，你倒好，拿个假的来糊弄我。"
         },
-        {"en": "Even timber doesn't lie, and you lied to me.", "zh": "木头都不骗人，你倒骗我。"}
+        {"en": "That was a lie. And I took you at your word.", "zh": "你那话是假的。亏我当了真。"}
       ],
       "closed": [
         {
@@ -3506,12 +3599,15 @@ _VOICES = r"""
         {"en": "Not now. Try another hour.", "zh": "现在不行，换个时辰。"}
       ],
       "deal": [
-        {"en": "Right, that's nailed down.", "zh": "行，就这么钉死了。"},
-        {"en": "Good. That's hammered home.", "zh": "好，一锤定音。"}
+        {"en": "All right. Let's settle it.", "zh": "行，定下来吧。"},
+        {"en": "Then we'll do as we agreed.", "zh": "那就按说好的办。"}
       ],
       "doubted": [
         {"en": "No. What I heard was different.", "zh": "不对，我听来的不是这样。"},
-        {"en": "That doesn't sound right.", "zh": "听着不对路。"}
+        {
+          "en": "I heard that part differently. Where did you ask?",
+          "zh": "这段我听的是另一个样，你上哪儿问的？"
+        }
       ],
       "elder_no": [
         {"en": "This alone isn't enough. It won't stand up.", "zh": "光这些还不够，立不住。"},
@@ -3580,10 +3676,13 @@ _VOICES = r"""
         {"en": "This isn't for strangers.", "zh": "这东西不给生人。"}
       ],
       "kept_thanks": [
-        {"en": "Your word holds. I'll remember that.", "zh": "你说话作数，我记着。"},
         {
-          "en": "You did that solidly. If you ever need work done, just ask.",
-          "zh": "你这事办得牢靠。往后有活尽管开口。"
+          "en": "You did what you'd said. I'll feel easier dealing with you from here on.",
+          "zh": "你答应了就照办，往后跟你打交道我也就放心了。"
+        },
+        {
+          "en": "You did a good job. If you need me for anything, ask.",
+          "zh": "这事办得牢靠。有用得着我的地方就说。"
         }
       ],
       "knew": [
@@ -3618,18 +3717,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I never handled it. But I heard {name} talk about it, so go and ask.",
-          "zh": "这事我没经手。不过听{name}说过，你去问问。"
+          "en": "It wasn't my work, but I heard {name} mention it. You'll find out more if you ask.",
+          "zh": "这事我没经手，倒听{name}说起过，你去问问就知道。"
         },
         {
-          "en": "Timber I know, not this. I think {name} mentioned it, so ask.",
-          "zh": "木头我懂，这个不懂。{name}好像提过，去问问吧。"
+          "en": "I only heard the gist. Ask {name} if you need the rest.",
+          "zh": "我也只听了个大概，你找{name}再问问。"
         }
       ],
       "point_hub": [
         {
-          "en": "I'm not sure. For town news, going to {name} is quickest.",
-          "zh": "我不清楚。镇上的事，找{name}最快。"
+          "en": "I can't help you there. If you want to know what's going on in town, your best bet is {name}.",
+          "zh": "这方面我帮不上，你想打听镇上的事，去问{name}稳妥些。"
         },
         {
           "en": "That's beyond me. Ask {name}. People come and go at that teahouse all day.",
@@ -3672,8 +3771,11 @@ _VOICES = r"""
         {"en": "No saw or chisel at this hour. Tomorrow.", "zh": "这时辰不动刀锯了，明天吧。"}
       ],
       "took_in": [
-        {"en": "Right, I'll keep that.", "zh": "好，这话我收着。"},
-        {"en": "I see. I'll remember.", "zh": "知道了，我记着。"}
+        {
+          "en": "The way you put it, I can see how one thing led to the next.",
+          "zh": "你这么一说，前后的事我就连得上了。"
+        },
+        {"en": "I'll remember what you've just told me.", "zh": "你刚才说的话，我记着了。"}
       ],
       "turned_down": [
         {"en": "Sorry, I can't take this job.", "zh": "对不住，这活我不能接。"},
@@ -3681,7 +3783,7 @@ _VOICES = r"""
       ],
       "unknown": [
         {"en": "I never had a hand in it, so I don't know.", "zh": "这事我没经手，不清楚。"},
-        {"en": "I know timber. This I don't know.", "zh": "木头我懂，这个我不懂。"}
+        {"en": "Couldn't tell you. I don't know.", "zh": "甭问我，我不知道。"}
       ],
       "will_ask": [
         {"en": "Right, I'll carry the message.", "zh": "好，我去捎个话。"},
@@ -3696,7 +3798,7 @@ _VOICES = r"""
       ],
       "will_do": [
         {"en": "Good, I'll take the job.", "zh": "好，这活我接了。"},
-        {"en": "Right, I'll get my hands on it.", "zh": "行，我来动手。"}
+        {"en": "I can take that job. I'll get to work on it.", "zh": "这活我能接，回头就动手。"}
       ],
       "witness_in_public": [
         {"en": "What I saw, I'll say. What I didn't, I won't.", "zh": "看见的我说，没看见的不说。"},
@@ -3724,7 +3826,7 @@ _VOICES = r"""
       },
       {
         "id": "truth",
-        "lines": [{"en": "Good it's out.", "zh": "说开了就好。"}],
+        "lines": [{"en": "Good. It's settled.", "zh": "好。说开就好。"}],
         "when": [{"flag": "truth_told", "kind": "flag"}]
       },
       {
@@ -3769,8 +3871,8 @@ _VOICES = r"""
       {
         "id": "idle",
         "text": {
-          "en": "With the bridge open the ferry was quiet. Boatman He still sat at the landing and shipped the oars only at dark.",
-          "zh": "桥通了，渡船冷清了。老何还守在渡口，天黑才收桨。"
+          "en": "After the bridge reopened, fewer people took the ferry. Boatman He still waited at the landing until dark before putting the oars away.",
+          "zh": "桥通了，坐船的人少了。老何照旧在渡口等到天黑才收桨。"
         },
         "when": [{"flag": "bridge_fixed", "kind": "flag"}]
       },
@@ -3796,15 +3898,15 @@ _VOICES = r"""
       ],
       "guess_own": [
         {"en": "Hard to say. {hedge} {line}.", "zh": "说不好。{hedge}{line}。"},
-        {"en": "A guess. {hedge} {line}.", "zh": "猜的。{hedge}{line}。"}
+        {"en": "{hedge} {line}. Leave it there.", "zh": "{hedge}{line}。先这么听。"}
       ],
       "guess_unknown": [
         {"en": "Who said it, no idea. {hedge} {line}.", "zh": "不知谁讲的。{hedge}{line}。"},
         {"en": "Just heard it. {hedge} {line}.", "zh": "听来的。{hedge}{line}。"}
       ],
       "heard": [
-        {"en": "{teller} said {line}.", "zh": "{teller}讲的。说{line}。"},
-        {"en": "{teller} says {line}.", "zh": "{teller}说，{line}。"}
+        {"en": "{teller} once mentioned that {line}.", "zh": "{teller}跟我提过一回，说{line}。"},
+        {"en": "I heard {teller} say {line}.", "zh": "{teller}说，{line}。"}
       ],
       "known": [
         {"en": "{line}. Everyone knows that.", "zh": "{line}。都知道。"},
@@ -3812,31 +3914,36 @@ _VOICES = r"""
       ],
       "own": [
         {"en": "Way I see it, {line}.", "zh": "我看，{line}。"},
-        {"en": "I say {line}.", "zh": "照我说，{line}。"}
+        {"en": "My take is that {line}.", "zh": "我看就这么回事。{line}。"}
       ],
       "rival": [
         {
-          "en": "{teller} told it different, that {line}.",
-          "zh": "{teller}讲的不一样，说{line}。"
+          "en": "What I heard instead, from {teller}, was that {line}.",
+          "zh": "可我听{teller}讲过另一句。{line}。"
         },
-        {
-          "en": "{teller} has it another way, that {line}.",
-          "zh": "{teller}另有说法。说{line}。"
-        }
+        {"en": "But {teller} said {line}.", "zh": "{teller}却说{line}。"}
       ],
       "seen": [
-        {"en": "{line}. No mistake.", "zh": "{line}。错不了。"},
-        {"en": "I know for sure that {line}.", "zh": "我清楚。{line}。"}
+        {
+          "en": "I saw for myself that {line}. I'm sure about that much.",
+          "zh": "我亲眼看见{line}，这一点错不了。"
+        },
+        {"en": "{line}. That much I saw clearly.", "zh": "{line}，这一点我看清了。"}
       ],
       "unknown": [
-        {"en": "Folk say {line}.", "zh": "有人讲。{line}。"},
+        {"en": "Word is {line}.", "zh": "听说是{line}。"},
         {"en": "Talk going round says {line}.", "zh": "传的话，说{line}。"}
       ]
     },
     "greet": [
       {
         "id": "new",
-        "lines": [{"en": "Ferry. Boatman He. Crossing?", "zh": "摆渡的。老何。过河？"}],
+        "lines": [
+          {
+            "en": "Looking for the ferry? I'm Boatman He. Give me a word if you need to cross.",
+            "zh": "你找摆渡的？我叫老何，要过河就跟我说一声。"
+          }
+        ],
         "when": [{"is": "new", "kind": "acquainted"}]
       },
       {
@@ -3848,24 +3955,37 @@ _VOICES = r"""
       },
       {
         "id": "festival",
-        "lines": [{"en": "No ferry tonight. Watching the lanterns.", "zh": "今晚船不开。看灯。"}],
+        "lines": [
+          {
+            "en": "There's no ferry tonight. If you're looking for me, I'll be out watching the lanterns.",
+            "zh": "今晚不摆渡，你要是找我，我也去看灯了。"
+          }
+        ],
         "when": [{"day": 5, "hour": 15, "kind": "after"}]
       },
       {
         "id": "truth",
-        "lines": [{"en": "Said it all? Good.", "zh": "说完了？好。"}],
+        "lines": [{"en": "The bridge business. It's settled?", "zh": "桥的事，讲清了？"}],
         "when": [{"flag": "truth_told", "kind": "flag"}]
       },
       {
         "id": "peace",
         "lines": [
-          {"en": "The families made peace. Quiet in the boat too.", "zh": "两家和了。船上也清静。"}
+          {
+            "en": "Now the families have made peace, people can take the ferry in peace too.",
+            "zh": "两家总算和了，坐船的人也能清清静静地过河了。"
+          }
         ],
         "when": [{"flag": "reconcile_seen", "kind": "flag"}]
       },
       {
         "id": "bridge",
-        "lines": [{"en": "Bridge is open. Boat's idle.", "zh": "桥通了。船闲了。"}],
+        "lines": [
+          {
+            "en": "Since the bridge opened, more people go that way, and my boat's gone quiet.",
+            "zh": "自打桥通了，走桥的人多，我这条船倒闲下来了。"
+          }
+        ],
         "when": [{"flag": "bridge_fixed", "kind": "flag"}]
       },
       {
@@ -3880,7 +4000,12 @@ _VOICES = r"""
       },
       {
         "id": "rain",
-        "lines": [{"en": "Heavy rain. Boat stays out of the water.", "zh": "雨大。船不下水。"}],
+        "lines": [
+          {
+            "en": "The rain's coming down hard. I'm keeping the boat out of the water today.",
+            "zh": "雨这么大，今儿这条船先不下水。"
+          }
+        ],
         "when": [{"is": "heavy_rain", "kind": "weather"}]
       },
       {
@@ -3900,8 +4025,8 @@ _VOICES = r"""
     "hedges": {"en": ["I'd guess", "I figure"], "zh": ["兴许", "怕是"]},
     "lines": {
       "asleep": [
-        {"en": "Zzz... boat... (fast asleep)", "zh": "呼……船……（睡熟了）"},
-        {"en": "Mm... water... (fast asleep)", "zh": "唔……水……（睡熟了）"}
+        {"en": "Boatman He is asleep.", "zh": "老何睡着了。"},
+        {"en": "Nobody answers.", "zh": "没人应。"}
       ],
       "bamboo_arrived": [
         {"en": "Bamboo's here.", "zh": "竹到了。"},
@@ -3911,20 +4036,38 @@ _VOICES = r"""
         {"en": "I'll bring it in the morning.", "zh": "明早送。"},
         {"en": "There at first light.", "zh": "天亮到。"}
       ],
-      "busy": [{"en": "Busy.", "zh": "忙。"}, {"en": "Got a fare.", "zh": "船上有人。"}],
+      "busy": [
+        {"en": "Come back once I'm done here.", "zh": "等我把手头的事做完，你再来。"},
+        {
+          "en": "There's someone waiting on the boat. I can't talk just now.",
+          "zh": "船上还有人等着，我这会儿跟你说不了话。"
+        }
+      ],
       "cannot": [
         {"en": "No help from me.", "zh": "帮不上。"},
         {"en": "Can't do that.", "zh": "这个不会。"}
       ],
       "caught": [
-        {"en": "You lied. Done with you.", "zh": "骗我。不信了。"},
-        {"en": "Liar.", "zh": "骗子。"}
+        {
+          "en": "I took you at your word. I won't be so quick to do that again.",
+          "zh": "我当你那话是真的，往后可没那么好信了。"
+        },
+        {
+          "en": "So you made that up. How am I supposed to trust you now?",
+          "zh": "这话原来是你编的，你还让我怎么信你？"
+        }
       ],
-      "closed": [{"en": "Not now.", "zh": "这会儿不行。"}, {"en": "Later.", "zh": "过会儿。"}],
+      "closed": [
+        {"en": "I'm tied up just now. Come back later.", "zh": "这会儿没空，你晚点再来。"},
+        {"en": "Give it a while. I'm busy now.", "zh": "再等一阵，眼下还顾不上。"}
+      ],
       "deal": [{"en": "Done.", "zh": "行。"}, {"en": "Fine.", "zh": "成。"}],
       "doubted": [
-        {"en": "Doesn't sound right.", "zh": "不像。"},
-        {"en": "Heard different.", "zh": "听的不一样。"}
+        {"en": "Wait. That's different from what I heard.", "zh": "等等，我听来的可不一样。"},
+        {
+          "en": "I heard the story before. It didn't go like that.",
+          "zh": "这话我听人讲过，讲的不是你这个样。"
+        }
       ],
       "elder_no": [{"en": "Not enough.", "zh": "不够。"}, {"en": "Not yet.", "zh": "还不行。"}],
       "elder_yes": [
@@ -3935,7 +4078,13 @@ _VOICES = r"""
         {"en": "Empty talk.", "zh": "空话。"},
         {"en": "Don't believe it.", "zh": "不信。"}
       ],
-      "evade": [{"en": "Not saying.", "zh": "不说。"}, {"en": "Don't ask.", "zh": "别问。"}],
+      "evade": [
+        {"en": "I'd sooner leave that alone. Ask someone else.", "zh": "这事我不想讲，你问旁人去。"},
+        {
+          "en": "If that's what you're asking, I've nothing to tell you.",
+          "zh": "你要问这个，我就没什么跟你讲的了。"
+        }
+      ],
       "gift_dislike": [
         {"en": "Some {item}. Not for me.", "zh": "{item}。不吃。"},
         {"en": "Some {item}... no need.", "zh": "{item}……不用。"}
@@ -3965,16 +4114,25 @@ _VOICES = r"""
         {"en": "Not a chance.", "zh": "休想。"}
       ],
       "keeper_no": [
-        {"en": "Don't know you.", "zh": "不熟。"},
-        {"en": "Not for strangers.", "zh": "生人不给。"}
+        {
+          "en": "We've only met a few times. I can't show you yet.",
+          "zh": "你我拢共才见了几回，这会儿还不便给你看。"
+        },
+        {"en": "Ask me again when we know each other better.", "zh": "等咱们熟了些，你再来问吧。"}
       ],
       "kept_thanks": [
-        {"en": "You kept your word. Good.", "zh": "说到做到。好。"},
-        {"en": "I'll remember.", "zh": "记着了。"}
+        {
+          "en": "You did just what you said you would. I'll remember that.",
+          "zh": "你答应了就真去做，我记着呢。"
+        },
+        {
+          "en": "I thought I'd be waiting a while yet. You've already done it.",
+          "zh": "我还当要再等一阵，没想到你已经办妥了。"
+        }
       ],
       "knew": [{"en": "Knew it.", "zh": "早知道。"}, {"en": "Known.", "zh": "晓得。"}],
       "needs_nod": [
-        {"en": "Ask the elder.", "zh": "问族长。"},
+        {"en": "That's the elder's to decide.", "zh": "这事得族长说了才算。"},
         {"en": "Not mine to say.", "zh": "我做不了主。"}
       ],
       "not_said": [
@@ -3987,15 +4145,24 @@ _VOICES = r"""
         {"en": "Nothing.", "zh": "没话。"}
       ],
       "objection_withdrawn": [
-        {"en": "It's cleared. I won't block it.", "zh": "说清了。不拦。"},
+        {"en": "That's clear. I'll give way.", "zh": "说开了。我让步。"},
         {"en": "Fine. Go ahead.", "zh": "行。过吧。"}
       ],
       "point_heard": [
-        {"en": "Heard {name} talk of it. Ask.", "zh": "{name}讲过。问去。"},
-        {"en": "Ask {name}. Mentioned it.", "zh": "{name}提过。"}
+        {
+          "en": "I heard {name} mention it once. I didn't get the whole story, so ask there.",
+          "zh": "这事{name}提过一回，我没听全，你得去问清楚。"
+        },
+        {
+          "en": "I heard it from {name}. Ask there for the rest.",
+          "zh": "我是听{name}提起的，剩下的你去问吧。"
+        }
       ],
       "point_hub": [
-        {"en": "Ask {name}.", "zh": "问{name}去。"},
+        {
+          "en": "How would I know all that? If you want the town's news, ask {name}.",
+          "zh": "我哪晓得这许多？要打听镇上的事，你问{name}。"
+        },
         {"en": "Don't deal in gossip. See {name}.", "zh": "不管闲话。找{name}。"}
       ],
       "promise_open": [
@@ -4013,18 +4180,27 @@ _VOICES = r"""
         {"en": "Told you.", "zh": "讲过。"}
       ],
       "testified": [
-        {"en": "I saw it.", "zh": "我看见的。"},
+        {
+          "en": "I was close by. I've told you everything I saw.",
+          "zh": "那会儿我在跟前，见到什么我都说了。"
+        },
         {"en": "Saw it myself.", "zh": "亲眼见的。"}
       ],
       "timeout": [
-        {"en": "Boat's waiting.", "zh": "船在等。"},
-        {"en": "Time to push off.", "zh": "该开船了。"}
+        {"en": "I've got to go. Tell me the rest next time.", "zh": "我得走了，你还有话下回再说。"},
+        {
+          "en": "I've got a boat to look after. Let's leave it there.",
+          "zh": "我还得照看那条船，就说到这儿吧。"
+        }
       ],
       "too_late": [
         {"en": "Late. Morning.", "zh": "晚了。明早。"},
         {"en": "Dark. Tomorrow.", "zh": "天黑了。明天。"}
       ],
-      "took_in": [{"en": "Noted.", "zh": "记下了。"}, {"en": "Heard.", "zh": "知道了。"}],
+      "took_in": [
+        {"en": "I'll keep that in mind.", "zh": "这事我记得了。"},
+        {"en": "Right, I see what you mean now.", "zh": "成，这下我听懂了。"}
+      ],
       "turned_down": [
         {"en": "Won't agree.", "zh": "不答应。"},
         {"en": "No go.", "zh": "不成。"}
@@ -4070,15 +4246,21 @@ _VOICES = r"""
       ],
       "guess_own": [
         {"en": "I'm just saying, okay. {hedge} {line}.", "zh": "我随便说的哦，{hedge}{line}。"},
-        {"en": "Might be wrong. {hedge} {line}.", "zh": "不一定对，{hedge}{line}。"}
+        {
+          "en": "{hedge} {line}. Don't tell anyone I said it.",
+          "zh": "{hedge}{line}。可别说是我讲的。"
+        }
       ],
       "guess_unknown": [
         {"en": "Somebody said so. {hedge} {line}.", "zh": "有人这么说过，{hedge}{line}。"},
         {"en": "I forgot who said it. {hedge} {line}.", "zh": "我忘了谁说的，{hedge}{line}。"}
       ],
       "heard": [
-        {"en": "{teller} told me {line}.", "zh": "{teller}告诉我的，说{line}。"},
-        {"en": "I heard {teller} say {line}.", "zh": "我听{teller}说，{line}。"}
+        {
+          "en": "It was {teller} who told me that {line}.",
+          "zh": "是{teller}跟我说的呀，说{line}。"
+        },
+        {"en": "Well, I heard {teller} say {line}.", "zh": "我就是听{teller}说的，说{line}。"}
       ],
       "known": [
         {"en": "{line}. Everybody knows that!", "zh": "{line}，大家都知道！"},
@@ -4086,32 +4268,35 @@ _VOICES = r"""
       ],
       "own": [
         {"en": "I think {line}.", "zh": "我心里想，{line}。"},
-        {"en": "What I think is {line}.", "zh": "我想的是，{line}。"}
+        {"en": "Well, I think {line}.", "zh": "我觉得嘛，{line}。"}
       ],
       "rival": [
         {
-          "en": "But {teller} says it's not like that, that {line}.",
-          "zh": "可是{teller}说不是这样，{line}。"
+          "en": "But I heard it another way. I heard {teller} say {line}.",
+          "zh": "可是{teller}说{line}。"
         },
         {
-          "en": "{teller} said something different, that {line}.",
-          "zh": "{teller}说的跟这个不一样，说{line}。"
+          "en": "But when I asked {teller}, I heard that {line}.",
+          "zh": "可我问过{teller}呀，那时候听见说{line}。"
         }
       ],
       "seen": [
-        {"en": "{line}. I saw it, really.", "zh": "{line}。我看见的，真的。"},
-        {"en": "Really and truly, {line}.", "zh": "真的，{line}。"}
+        {"en": "{line}. I saw it clear as anything.", "zh": "{line}，我看得清清楚楚。"},
+        {"en": "{line}. I really saw it!", "zh": "{line}，真的，我都瞧见啦！"}
       ],
       "unknown": [
-        {"en": "I heard the grown-ups say {line}.", "zh": "我听大人说，{line}。"},
-        {"en": "Everybody's saying {line}.", "zh": "大家都在说，{line}。"}
+        {"en": "I heard someone say {line} once.", "zh": "我听过一句，说{line}。"},
+        {
+          "en": "I heard that {line}. I didn't ask who said it first.",
+          "zh": "有人讲{line}。我没问谁先说的。"
+        }
       ]
     },
     "hedges": {"en": ["I guess", "I think"], "zh": ["我猜", "好像是"]},
     "lines": {
       "asleep": [
-        {"en": "Zzz... five more minutes... (fast asleep)", "zh": "呼……再玩一会儿……（睡熟了）"},
-        {"en": "Mm... horsey... run faster... (fast asleep)", "zh": "唔……竹马……跑快点……（睡熟了）"}
+        {"en": "Shitou is sound asleep.", "zh": "石头睡得正沉。"},
+        {"en": "Shitou is still asleep and doesn't stir.", "zh": "石头没理会。还睡着。"}
       ],
       "bamboo_arrived": [
         {"en": "The bamboo's here, at the bridge!", "zh": "竹子到啦，在桥边！"},
@@ -4122,7 +4307,10 @@ _VOICES = r"""
         {"en": "Pinky promise. It'll be there tomorrow morning.", "zh": "拉钩，明早一定到。"}
       ],
       "busy": [
-        {"en": "I'm busy. In a bit.", "zh": "我在忙呢，等会儿。"},
+        {
+          "en": "I'm in the middle of a game. Just wait a bit.",
+          "zh": "我正玩到一半呢，你等我一下就好。"
+        },
         {"en": "Don't bother me. I'm playing.", "zh": "别烦我，我正玩着呢。"}
       ],
       "cannot": [
@@ -4130,8 +4318,8 @@ _VOICES = r"""
         {"en": "I can't.", "zh": "我办不到啦。"}
       ],
       "caught": [
-        {"en": "You lied! I'm not talking to you anymore.", "zh": "你骗人！我不理你了。"},
-        {"en": "Big liar. I'll never believe you again.", "zh": "大骗子，我再也不信你了。"}
+        {"en": "I believed you just now. You lied to me!", "zh": "我刚才还信了你的话，原来你骗我！"},
+        {"en": "You still want me to believe you?", "zh": "你还想让我信你啊？"}
       ],
       "closed": [
         {"en": "Not now. Wait a bit.", "zh": "现在不行，等一会儿。"},
@@ -4143,7 +4331,10 @@ _VOICES = r"""
       ],
       "doubted": [
         {"en": "Nope. That's not what I heard.", "zh": "不对，我听的不是这样。"},
-        {"en": "That's not what they told me.", "zh": "跟我听的不一样。"}
+        {
+          "en": "That's not what I heard. Can you say it again?",
+          "zh": "可我听到的不是这句呀，你再说一遍？"
+        }
       ],
       "elder_no": [
         {"en": "Still not enough. I don't believe it.", "zh": "还是不够，我不信。"},
@@ -4151,7 +4342,7 @@ _VOICES = r"""
       ],
       "elder_yes": [
         {"en": "I get it now. That's that.", "zh": "我听懂啦，就这样。"},
-        {"en": "You're right. I believe you.", "zh": "你说的对，我信。"}
+        {"en": "Oh. In that case, I believe you.", "zh": "哦，那我信。"}
       ],
       "empty": [
         {"en": "You haven't given me anything. Fibber.", "zh": "你什么都没给我，骗人。"},
@@ -4211,11 +4402,14 @@ _VOICES = r"""
         {"en": "I said no!", "zh": "说了不行啦！"}
       ],
       "keeper_no": [
-        {"en": "I don't know you. I won't show you.", "zh": "我不认识你，不给你看。"},
+        {"en": "I don't even know you. Why should I show you?", "zh": "我又不认得你，怎么能给你看呀？"},
         {"en": "Granny says not to show strangers.", "zh": "奶奶说不能给生人看。"}
       ],
       "kept_thanks": [
-        {"en": "You kept your promise. Thank you.", "zh": "你说话算话，谢谢你。"},
+        {
+          "en": "You said you'd do it, and you did. I'll believe you next time too.",
+          "zh": "你说会办就真办了，下回我还信你。"
+        },
         {"en": "You really did it!", "zh": "你真的做到啦！"}
       ],
       "knew": [
@@ -4244,18 +4438,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I dunno. I heard {name} say something, so go ask.",
-          "zh": "我不知道。我听{name}说过，你去问。"
+          "en": "I only heard {name} mention it once. Go ask there.",
+          "zh": "这我也说不好，我就听{name}提了一回，你自己去问嘛。"
         },
         {
-          "en": "Never heard it. I think {name} talked about it, so go ask.",
-          "zh": "没听过。{name}好像讲过，你去问吧。"
+          "en": "I heard it from {name}. If you want to know, go ask there.",
+          "zh": "是{name}跟我讲的，你要问去问那边嘛。"
         }
       ],
       "point_hub": [
         {
-          "en": "Dunno. Go ask {name}, who knows everything.",
-          "zh": "不知道。你去问{name}，什么都知道。"
+          "en": "Don't ask me. If you want to know what's happening in town, ask {name}.",
+          "zh": "你问我没用呀，镇上有什么事，你去问{name}。"
         },
         {"en": "For grown-up stuff, ask {name}.", "zh": "大人的事，去问{name}。"}
       ],
@@ -4275,7 +4469,10 @@ _VOICES = r"""
       ],
       "testified": [
         {"en": "I really saw it. Cross my heart.", "zh": "我真的看见了，骗你是小狗。"},
-        {"en": "I saw it with my own eyes.", "zh": "我是亲眼看到的。"}
+        {
+          "en": "I was right there when it happened. I saw it myself.",
+          "zh": "我那会儿就在边上，自个儿看到的。"
+        }
       ],
       "timeout": [
         {"en": "I have to go home for dinner.", "zh": "我要回家吃饭了。"},
@@ -4286,8 +4483,8 @@ _VOICES = r"""
         {"en": "It's too late. I'm going to bed.", "zh": "太晚了，我要睡觉了。"}
       ],
       "took_in": [
-        {"en": "Oh. Got it.", "zh": "哦，记住了。"},
-        {"en": "Uh-huh, I know now.", "zh": "嗯，知道啦。"}
+        {"en": "Oh, now I get it!", "zh": "哦，这下我听懂啦！"},
+        {"en": "So that's what you mean. I'll remember.", "zh": "你说的是这回事，我记住了。"}
       ],
       "turned_down": [
         {"en": "No way. I won't.", "zh": "不行，我才不答应。"},
@@ -4295,7 +4492,7 @@ _VOICES = r"""
       ],
       "unknown": [
         {"en": "Dunno.", "zh": "我不知道呀。"},
-        {"en": "Never heard it. Really.", "zh": "没听过，真的。"}
+        {"en": "I really haven't heard.", "zh": "真的没听过。"}
       ],
       "will_ask": [
         {"en": "Okay, I'll go and tell them.", "zh": "好，我去跟人说。"},
@@ -4307,7 +4504,7 @@ _VOICES = r"""
       ],
       "will_do": [
         {"en": "Okay, I'll go.", "zh": "好，我去。"},
-        {"en": "Okay, I'll do it.", "zh": "行，我来。"}
+        {"en": "All right, then. Let me do it.", "zh": "好嘛，那就让我来。"}
       ],
       "witness_in_public": [
         {"en": "That's all I saw. I didn't see anything else.", "zh": "我就看见这些，别的没看到。"},
@@ -4327,24 +4524,24 @@ _VOICES = r"""
           "zh": "{teller}没说清楚。{hedge}{line}。"
         },
         {
-          "en": "{teller} mentioned it, though without much detail. {hedge} {line}.",
-          "zh": "{teller}提过，可惜语焉不详。{hedge}{line}。"
+          "en": "Based on what {teller} told me, {hedge} {line}.",
+          "zh": "从{teller}说的那几句看，{hedge}{line}。"
         }
       ],
       "guess_own": [
         {
-          "en": "This is no more than a guess. {hedge} {line}.",
-          "zh": "这只是在下的推测。{hedge}{line}。"
+          "en": "{hedge} {line}. That still needs checking.",
+          "zh": "{hedge}{line}。还得查过才好说。"
         },
         {
-          "en": "It hasn't been checked, so I can't be sure. {hedge} {line}.",
-          "zh": "还没查实，不好说定。{hedge}{line}。"
+          "en": "{hedge} {line}. I'll have to look into it.",
+          "zh": "{hedge}{line}。回头得查一查。"
         }
       ],
       "guess_unknown": [
         {
-          "en": "Nobody knows where it came from. {hedge} {line}.",
-          "zh": "出处不明。{hedge}{line}。"
+          "en": "I haven't found who said it, but {hedge} {line}.",
+          "zh": "说这话的人还没找着，{hedge}{line}。"
         },
         {
           "en": "It's only street talk. {hedge} {line}.",
@@ -4353,12 +4550,12 @@ _VOICES = r"""
       ],
       "heard": [
         {
-          "en": "I heard it from {teller}, who said {line}.",
-          "zh": "{teller}跟我说过。说是{line}。"
+          "en": "I heard {teller}'s account in person. It was that {line}.",
+          "zh": "此事我听{teller}亲口讲过，说{line}。"
         },
         {
-          "en": "I had it from {teller}, and I haven't checked it yet. The account was that {line}.",
-          "zh": "我是听{teller}讲的，还没查实。说是{line}。"
+          "en": "I heard from {teller} that {line}. It still needs checking.",
+          "zh": "我听{teller}讲过，说{line}。这还得核一核。"
         }
       ],
       "known": [
@@ -4369,22 +4566,28 @@ _VOICES = r"""
         {"en": "{line}. It's known to everyone in town.", "zh": "{line}。这是镇上人人都知道的。"}
       ],
       "own": [
-        {"en": "In my humble view, {line}.", "zh": "以在下之见，{line}。"},
+        {"en": "From what I know of the matter, {line}.", "zh": "依我手头知道的情形看，{line}。"},
         {"en": "I've thought it through, and I believe {line}.", "zh": "我前后想过了，{line}。"}
       ],
       "rival": [
         {
-          "en": "The account {teller} gave me is different, though. It has it that {line}.",
-          "zh": "{teller}的说法却不一样。说是{line}。"
+          "en": "I heard a different account from {teller}, namely that {line}.",
+          "zh": "我还听{teller}讲过另一种说法，说是{line}。"
         },
         {
-          "en": "There's another account, from {teller}, that {line}.",
-          "zh": "另有一种说法，是{teller}讲的。说{line}。"
+          "en": "There's another account to check. I heard {teller} say {line}.",
+          "zh": "还有一条得对一对。{teller}说{line}。"
         }
       ],
       "seen": [
-        {"en": "I was there and saw that {line}.", "zh": "这是在下亲眼所见。{line}。"},
-        {"en": "{line}. This I saw with my own eyes.", "zh": "{line}。这是我亲眼所见。"}
+        {
+          "en": "I happened to be there and saw for myself that {line}.",
+          "zh": "那时我恰在场，亲眼看见{line}。"
+        },
+        {
+          "en": "I was present at the time and saw that {line}.",
+          "zh": "那时我人在场，亲眼见到{line}。"
+        }
       ],
       "unknown": [
         {
@@ -4392,19 +4595,16 @@ _VOICES = r"""
           "zh": "镇上有这么个说法。说{line}。"
         },
         {
-          "en": "I haven't found out who said it first. The story is that {line}.",
-          "zh": "这话是谁先说的，我还没查到。说是{line}。"
+          "en": "I haven't found who said it. The account I heard was that {line}.",
+          "zh": "这话还没查出是谁说的，说{line}。"
         }
       ]
     },
-    "hedges": {"en": ["I surmise", "I presume"], "zh": ["想必", "大概"]},
+    "hedges": {"en": ["I'd say", "I think"], "zh": ["照我看", "大概"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... this issue... still one piece short... (fast asleep)",
-          "zh": "呼……这一期……还缺一篇……（睡熟了）"
-        },
-        {"en": "Mm... learn, and practise it... (fast asleep)", "zh": "唔……学而时习之……（睡熟了）"}
+        {"en": "The schoolmaster is sound asleep.", "zh": "先生睡熟了。"},
+        {"en": "No answer from the schoolmaster.", "zh": "私塾先生没应声。"}
       ],
       "bamboo_arrived": [
         {
@@ -4428,8 +4628,8 @@ _VOICES = r"""
       ],
       "busy": [
         {
-          "en": "I'm proofreading the Gazette. Come another day, please.",
-          "zh": "我正校着《镇报》，您改日再来。"
+          "en": "I've a little more of the Town Gazette to proofread. Please let me finish it first.",
+          "zh": "这期《镇报》还差一点没校完，您容我先把手头的事做了。"
         },
         {"en": "The pupils are reading and I can't leave them.", "zh": "学生在念书，我走不开。"}
       ],
@@ -4439,8 +4639,8 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "So you made it up. I nearly printed that in the Gazette.",
-          "zh": "原来是你编的。这样的话，我差点登上报。"
+          "en": "If I'd printed what you said in the Gazette without checking, wouldn't I have passed the lie on myself?",
+          "zh": "我若信了您刚才的说法，稀里糊涂往报上一登，岂不连我也成了传假话的人？"
         },
         {
           "en": "You lied to me. From now on I'll check what you say before I believe it.",
@@ -4455,14 +4655,17 @@ _VOICES = r"""
         {"en": "It isn't convenient just now. Let's talk later.", "zh": "眼下不方便，晚些再谈。"}
       ],
       "deal": [
-        {"en": "Agreed. I've written it down.", "zh": "一言为定，我记下了。"},
+        {"en": "Agreed. We'll stick to that.", "zh": "好，照这个约定来。"},
         {"en": "Good. We'll do it like that.", "zh": "好，就照这么办。"}
       ],
       "doubted": [
-        {"en": "What I heard was not the same.", "zh": "我听到的跟这个不一样。"},
         {
-          "en": "That doesn't fit what I know. It needs checking.",
-          "zh": "这和我知道的对不上，还得再查。"
+          "en": "I heard a different account before. Could you tell me whom you asked?",
+          "zh": "我先前听的说法不同，能请您讲讲问的是谁吗？"
+        },
+        {
+          "en": "The two accounts differ. That part still needs checking.",
+          "zh": "两种说法有出入，这一处还要再查。"
         }
       ],
       "elder_no": [
@@ -4477,10 +4680,10 @@ _VOICES = r"""
       ],
       "elder_yes": [
         {
-          "en": "That makes sense, and the proof fits. I'm convinced.",
-          "zh": "说得在理，证据也对得上。我信服。"
+          "en": "That makes sense. It fits what we know, point by point.",
+          "zh": "说得通。拿这些事一件件对，也都对得上。"
         },
-        {"en": "I understand now, and I accept it fully.", "zh": "我听明白了，心服口服。"}
+        {"en": "You've explained it. I have no objection.", "zh": "您讲明白了。我没有异议。"}
       ],
       "empty": [
         {
@@ -4549,14 +4752,17 @@ _VOICES = r"""
       ],
       "hard_other": [
         {"en": "There's no room to bargain on this.", "zh": "这事没有商量的余地。"},
-        {"en": "That is quite impossible.", "zh": "断无可能。"}
+        {"en": "There's nothing more to discuss on that.", "zh": "这事不用再商量了。"}
       ],
       "keeper_no": [
         {"en": "We've only just met. That can wait.", "zh": "你我刚认识，这个以后再说。"},
         {"en": "I don't show that to people lightly.", "zh": "这东西我不轻易给人看。"}
       ],
       "kept_thanks": [
-        {"en": "You did what you said. That's rare.", "zh": "您说到做到，难得。"},
+        {
+          "en": "Now that you've kept your word, I wanted to thank you the next time we met.",
+          "zh": "您把答应的事办成了，我想着下回遇见您，总该当面道一声谢。"
+        },
         {"en": "What you promised got done. Thank you.", "zh": "答应的事办到了，多谢。"}
       ],
       "knew": [
@@ -4572,8 +4778,8 @@ _VOICES = r"""
       ],
       "not_said": [
         {
-          "en": "Those aren't my words. That's not what I said.",
-          "zh": "这话不是我说的，我说的不是这个。"
+          "en": "That differs from what I said. Who passed it on to you?",
+          "zh": "这句话与我说过的有出入，您是听谁转述的？"
         },
         {"en": "I never said it that way.", "zh": "我从没这样讲过。"}
       ],
@@ -4591,24 +4797,24 @@ _VOICES = r"""
           "zh": "事情既然说明白了，我不再阻拦。"
         },
         {
-          "en": "The misunderstanding is cleared up. I have no objection.",
-          "zh": "误会解开了，我没有异议。"
+          "en": "That misunderstanding's been cleared up. I can let it go now.",
+          "zh": "这个误会已经解开了。我可以放心了。"
         }
       ],
       "point_heard": [
         {
-          "en": "I haven't heard of it. But I heard {name} talking about it, so you might ask.",
-          "zh": "这件事我没听说过。不过听{name}谈起过，您去问问。"
+          "en": "I heard a little from {name}. As I don't know the whole story, you might ask in person.",
+          "zh": "我从{name}那里听见几句，原委尚不清楚，您不妨亲自去问一问。"
         },
         {
-          "en": "I'm not sure. I remember {name} mentioning it, so ask there.",
-          "zh": "我不清楚。记得{name}说起过，可以去问问。"
+          "en": "I only heard {name} mention it. You might ask for the full account there.",
+          "zh": "我也只听{name}提过，您不妨问问原委。"
         }
       ],
       "point_hub": [
         {
-          "en": "I've no way of knowing. For the town's news, ask {name}.",
-          "zh": "这件事我无从知道。镇上的消息，问{name}最全。"
+          "en": "I haven't looked into that. If you want to know how it came about, try asking {name} first.",
+          "zh": "这事我还没细问，您若想弄清来龙去脉，可以先去找{name}。"
         },
         {
           "en": "I won't guess. If you want the talk of the street, ask {name}.",
@@ -4653,8 +4859,8 @@ _VOICES = r"""
       "took_in": [
         {"en": "I see. I'll note it down.", "zh": "原来如此，我记下了。"},
         {
-          "en": "Thank you for telling me. I'll need to check it.",
-          "zh": "多谢相告。这事我得核一核。"
+          "en": "Thank you for coming to tell me. I've noted what you said.",
+          "zh": "多谢相告，您刚才说的我记下了。"
         }
       ],
       "turned_down": [
@@ -4663,10 +4869,7 @@ _VOICES = r"""
       ],
       "unknown": [
         {"en": "Nobody has spoken to me about this.", "zh": "这件事我没听人说过。"},
-        {
-          "en": "I don't know, and nobody has sent word of it to the Gazette.",
-          "zh": "这个我不知道，也没人往报上递过话。"
-        }
+        {"en": "Nobody's sent this in to the paper.", "zh": "还没人往报上递过这件事。"}
       ],
       "will_ask": [
         {"en": "Very well. I'll go and explain it for you.", "zh": "好，我去替您说明。"},
@@ -4712,55 +4915,61 @@ _VOICES = r"""
         }
       ],
       "guess_own": [
-        {"en": "I'm a bit sleepy. {hedge} {line}.", "zh": "我有点困。{hedge}{line}。"},
+        {
+          "en": "{hedge} {line}. I can't think of anything else.",
+          "zh": "{hedge}{line}。我想不出别的了。"
+        },
         {"en": "I'm not really sure. {hedge} {line}.", "zh": "我不太确定。{hedge}{line}。"}
       ],
       "guess_unknown": [
-        {"en": "I heard it in the night. {hedge} {line}.", "zh": "半夜听到的。{hedge}{line}。"},
+        {
+          "en": "Can't remember who said it. {hedge} {line}.",
+          "zh": "忘了是谁讲的，{hedge}{line}。"
+        },
         {"en": "I only heard a bit. {hedge} {line}.", "zh": "只听到一点点。{hedge}{line}。"}
       ],
       "heard": [
         {
-          "en": "It was {teller} who told me that {line}.",
-          "zh": "是{teller}告诉我的。说{line}。"
+          "en": "{teller} told me about it and said {line}.",
+          "zh": "我听{teller}讲过这事，说{line}。"
         },
-        {"en": "{teller} told me about it, that {line}.", "zh": "{teller}跟我讲过。说{line}。"}
+        {"en": "{line}. I heard that from {teller}.", "zh": "{line}，是我听{teller}说的呀。"}
       ],
       "known": [
         {"en": "{line}. Everyone knows it.", "zh": "{line}。这个谁都知道。"},
         {"en": "{line}... I know that too.", "zh": "{line}……这个我也知道。"}
       ],
       "own": [
-        {"en": "I think it's that {line}.", "zh": "我觉得，{line}。"},
-        {"en": "My own idea is that {line}.", "zh": "我自己想的。{line}。"}
+        {
+          "en": "I've been thinking about it, and I think {line}.",
+          "zh": "我想了一会儿，觉得{line}。"
+        },
+        {"en": "The way I see it, {line}.", "zh": "我自己想嘛，{line}。"}
       ],
       "rival": [
         {
-          "en": "But {teller} said something else, that {line}.",
-          "zh": "可是{teller}说的不一样。说{line}。"
+          "en": "But I heard {teller} tell it this way: {line}.",
+          "zh": "可{teller}跟我说过，{line}。"
         },
         {
-          "en": "{teller} said it a different way, that {line}.",
-          "zh": "{teller}说的不是这样。说是{line}。"
+          "en": "But {teller} told it differently and said that {line}.",
+          "zh": "可是{teller}讲的不一样，说{line}。"
         }
       ],
       "seen": [
-        {"en": "{line}. Really.", "zh": "{line}。真的。"},
-        {"en": "{line}. I was there, so I know.", "zh": "{line}。我在那儿，我知道。"}
+        {"en": "{line}, and I really did see it myself.", "zh": "{line}，真的是我自己看见的。"},
+        {"en": "{line}, and I was close enough to see.", "zh": "{line}，我就在那儿，看得见呀。"}
       ],
       "unknown": [
         {"en": "I think someone said {line}.", "zh": "好像听谁说过。说{line}。"},
-        {"en": "The grown-ups say {line}.", "zh": "大人们在说。说{line}。"}
+        {"en": "I heard somebody say {line}.", "zh": "我听见有人说{line}。"}
       ]
     },
-    "hedges": {"en": ["I guess", "I believe"], "zh": ["大概是", "我觉得是"]},
+    "hedges": {"en": ["I guess", "I think"], "zh": ["大概是", "我觉得是"]},
     "lines": {
       "asleep": [
-        {"en": "Zzz... a bite... (fast asleep)", "zh": "呼……鱼上钩了……（睡熟了）"},
-        {
-          "en": "Mm... the moon fell in the water... (fast asleep)",
-          "zh": "唔……月亮掉水里了……（睡熟了）"
-        }
+        {"en": "Xiaoman is asleep.", "zh": "小满睡着了。"},
+        {"en": "Xiaoman stirs without waking.", "zh": "小满迷迷糊糊，没醒。"}
       ],
       "bamboo_arrived": [
         {"en": "There's bamboo at the bridge now.", "zh": "桥边有竹子了。"},
@@ -4771,16 +4980,25 @@ _VOICES = r"""
         {"en": "It'll be at the bridge when it gets light.", "zh": "天亮就送到桥边。"}
       ],
       "busy": [
-        {"en": "I'm fishing. Don't scare the fish.", "zh": "我在钓鱼。别吓跑鱼。"},
-        {"en": "The float's moving. Wait.", "zh": "浮子在动。等一下。"}
+        {
+          "en": "Don't come any closer just yet. I'm fishing, and footsteps will scare them away.",
+          "zh": "你先别过来，我还在钓鱼，脚步重了鱼就跑了。"
+        },
+        {"en": "Wait a moment. I saw the float move.", "zh": "你等一下嘛，我看见浮子在动了。"}
       ],
       "cannot": [
         {"en": "I don't know how.", "zh": "我不会。"},
         {"en": "I can't help you.", "zh": "我帮不了你。"}
       ],
       "caught": [
-        {"en": "You tricked me.", "zh": "你骗我。"},
-        {"en": "You lied. I won't talk to you any more.", "zh": "你说谎。以后不跟你说话了。"}
+        {
+          "en": "I thought it was true. Why did you lie to me?",
+          "zh": "我还当你说的是真的，你怎么骗我呀？"
+        },
+        {
+          "en": "You fooled me once. I'm not listening next time.",
+          "zh": "你都骗过我一回了，我下次就不听你的了。"
+        }
       ],
       "closed": [
         {"en": "Not now. Later.", "zh": "现在不要。等一下。"},
@@ -4792,7 +5010,10 @@ _VOICES = r"""
       ],
       "doubted": [
         {"en": "What I heard was different.", "zh": "我听到的不一样。"},
-        {"en": "That sounds wrong.", "zh": "好像不对。"}
+        {
+          "en": "Wait. That's not what I heard from the others.",
+          "zh": "等等，可我听别人说的不是这样呀。"
+        }
       ],
       "elder_no": [
         {"en": "Not enough yet.", "zh": "还不够。"},
@@ -4861,8 +5082,14 @@ _VOICES = r"""
         {"en": "Mum says don't show strangers.", "zh": "娘说不给生人看。"}
       ],
       "kept_thanks": [
-        {"en": "You kept your word.", "zh": "你说话算数。"},
-        {"en": "You did it. Thanks.", "zh": "你做到了。谢谢。"}
+        {
+          "en": "You really did it. I knew you'd keep your word.",
+          "zh": "你真把那件事办好了，我就知道你说话算数。"
+        },
+        {
+          "en": "I thought it'd take ages, and you've done it already.",
+          "zh": "我还以为得等好久呢，你已经办好了呀。"
+        }
       ],
       "knew": [
         {"en": "I know that.", "zh": "这个我知道。"},
@@ -4890,16 +5117,16 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I didn't see. But I heard {name} say something, so ask.",
-          "zh": "我没看见。不过听{name}说过，你去问。"
+          "en": "I didn't see it. I only heard {name} mention it, so ask there.",
+          "zh": "我没看见这事，只听{name}提过，你还是去那儿问吧。"
         },
         {
-          "en": "Nobody told me... I think {name} said something. Go and ask.",
-          "zh": "没人跟我说……{name}好像讲过，你去问吧。"
+          "en": "I heard it from {name}. Why don't you ask there?",
+          "zh": "我听{name}说过，你要不要去问问？"
         }
       ],
       "point_hub": [
-        {"en": "I don't know... ask {name}.", "zh": "我不知道……你去问{name}吧。"},
+        {"en": "How would I know? You could ask {name}.", "zh": "我哪知道这些？你去问问{name}吧。"},
         {
           "en": "I was asleep and didn't hear anything. Go and find {name}.",
           "zh": "我在睡觉，什么也没听到。你去找{name}。"
@@ -4921,19 +5148,19 @@ _VOICES = r"""
       ],
       "testified": [
         {"en": "That's what I saw.", "zh": "我看见的就是这样。"},
-        {"en": "I'm not lying. I saw it myself.", "zh": "我没骗人，是我亲眼看到的。"}
+        {"en": "I was right there. What do you want to ask?", "zh": "我当时就在旁边，你要问什么呀？"}
       ],
       "timeout": [
         {"en": "I'm sleepy. I'm going home to sleep.", "zh": "我困了，要回去睡了。"},
-        {"en": "The fish should be biting. I'm going.", "zh": "鱼该咬钩了。我走了。"}
+        {"en": "I'm about to get a bite.", "zh": "鱼快咬钩了。"}
       ],
       "too_late": [
         {"en": "It's really late. Come tomorrow.", "zh": "好晚了。明天再来。"},
         {"en": "I'm going to sleep. Tomorrow.", "zh": "我要睡了。明天吧。"}
       ],
       "took_in": [
-        {"en": "I'll remember.", "zh": "我记住了。"},
-        {"en": "Okay, I know now.", "zh": "我知道了。"}
+        {"en": "Oh, I think I understand now.", "zh": "哦，我这下想明白了。"},
+        {"en": "I'll remember what you just told me.", "zh": "你说的这个我记住了。"}
       ],
       "turned_down": [
         {"en": "No. I won't.", "zh": "不行，我不答应。"},
@@ -4974,15 +5201,15 @@ _VOICES = r"""
           "zh": "{teller}说得模模糊糊。{hedge}{line}。"
         },
         {
-          "en": "Going only on those few words of {teller}'s. {hedge} {line}.",
-          "zh": "就凭{teller}那几句话。{hedge}{line}。"
+          "en": "After hearing {teller} talk about it, {hedge} {line}.",
+          "zh": "听{teller}这么讲，{hedge}{line}。"
         }
       ],
       "guess_own": [
         {"en": "I can't be certain. {hedge} {line}.", "zh": "我也说不准。{hedge}{line}。"},
         {
-          "en": "I haven't seen it clearly. {hedge} {line}.",
-          "zh": "还没看真切。{hedge}{line}。"
+          "en": "{hedge} {line}. Someone should ask around.",
+          "zh": "{hedge}{line}。这事还得再问问。"
         }
       ],
       "guess_unknown": [
@@ -4991,18 +5218,18 @@ _VOICES = r"""
           "zh": "说不清是从哪来的。{hedge}{line}。"
         },
         {
-          "en": "Someone at the workshop mentioned it without saying who from. {hedge} {line}.",
-          "zh": "坊里有人提过一句，也没说是谁讲的。{hedge}{line}。"
+          "en": "Who said it, I couldn't tell you. {hedge} {line}.",
+          "zh": "听来的话没说是谁讲的，{hedge}{line}。"
         }
       ],
       "heard": [
         {
-          "en": "{teller} brought it up at the workshop, saying {line}.",
-          "zh": "{teller}来坊里时提起过。说{line}。"
+          "en": "I heard {teller} mention in passing that {line}.",
+          "zh": "我听{teller}带过一句，说{line}。"
         },
         {
-          "en": "{teller} spoke of it to me, and said {line}.",
-          "zh": "我是听{teller}说起的。说是{line}。"
+          "en": "{line}. That's the account I got from {teller}.",
+          "zh": "{line}，这话是{teller}讲给我听的。"
         }
       ],
       "known": [
@@ -5010,23 +5237,23 @@ _VOICES = r"""
         {"en": "{line}. The town knows it well.", "zh": "{line}。镇上的人都清楚。"}
       ],
       "own": [
-        {"en": "To my lantern maker's eye, {line}.", "zh": "拿我做灯的眼睛看，{line}。"},
+        {"en": "Here's where I landed: {line}.", "zh": "这是我想出来的，{line}。"},
         {"en": "I've puzzled over it, and I think {line}.", "zh": "我自己琢磨，{line}。"}
       ],
       "rival": [
         {
-          "en": "But {teller} told it another way, that {line}.",
-          "zh": "可{teller}讲的是另一个样。说{line}。"
+          "en": "What {teller} told me was a little different: {line}.",
+          "zh": "{teller}跟我说的不大一样，说{line}。"
         },
         {
-          "en": "{teller}'s version was cut from different paper, saying {line}.",
-          "zh": "{teller}讲的又不一样。说是{line}。"
+          "en": "I also heard another version from {teller}, who said that {line}.",
+          "zh": "我还听{teller}讲了个不同的说法。{line}。"
         }
       ],
       "seen": [
         {
-          "en": "I saw it myself, right in front of me, that {line}.",
-          "zh": "这是我亲眼瞧见的。{line}。"
+          "en": "I happened to be standing nearby and saw that {line}.",
+          "zh": "那会儿我刚好在边上，瞧见{line}。"
         },
         {
           "en": "{line}. I was right beside it and saw it clearly.",
@@ -5034,24 +5261,15 @@ _VOICES = r"""
         }
       ],
       "unknown": [
-        {
-          "en": "Everyone getting the festival ready says {line}.",
-          "zh": "张罗灯会的人都在说。说{line}。"
-        },
-        {
-          "en": "I heard it in idle talk, and who said it first I couldn't tell you. It was that {line}.",
-          "zh": "听人闲聊的，谁先说的不晓得。说是{line}。"
-        }
+        {"en": "I've heard people say that {line}.", "zh": "外面有人这么讲，说{line}。"},
+        {"en": "I heard someone say in passing that {line}.", "zh": "听见有人闲聊，说是{line}。"}
       ]
     },
-    "hedges": {"en": ["I would think", "I'd say"], "zh": ["我估摸着", "大约"]},
+    "hedges": {"en": ["I'd guess", "I'd say"], "zh": ["我估摸着", "大约"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... the frames... not bound yet... (fast asleep)",
-          "zh": "呼……灯骨……还没扎好……（睡熟了）"
-        },
-        {"en": "Mm... the great lantern's lit... (fast asleep)", "zh": "唔……主灯亮了……（睡熟了）"}
+        {"en": "The lantern maker is asleep.", "zh": "扎灯师傅睡着了。"},
+        {"en": "Still asleep when you call.", "zh": "叫不醒，还睡着。"}
       ],
       "bamboo_arrived": [
         {
@@ -5074,7 +5292,10 @@ _VOICES = r"""
         }
       ],
       "busy": [
-        {"en": "The paste isn't dry and I can't spare a hand.", "zh": "糨糊还没干，我腾不出手。"},
+        {
+          "en": "The paste hasn't dried through. I need to stay with the paper a little longer.",
+          "zh": "糨糊还没干透，这灯面离不得人，你等我一会儿。"
+        },
         {
           "en": "I'm pasting a lantern face. Let me finish this sheet.",
           "zh": "我正糊灯面呢，等我糊完这一张。"
@@ -5089,13 +5310,10 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "So you were lying to me all along. I won't believe anything you say now.",
-          "zh": "原来你一直在骗我。往后你说什么，我都不信了。"
+          "en": "I believed you at the time. I didn't think you'd try to fool me with a lie.",
+          "zh": "我先前还信了你那番话，没想到你也会拿假的来哄人。"
         },
-        {
-          "en": "You lied to me. And I'd saved a lantern for you.",
-          "zh": "你骗了我。亏我还给你留了一盏灯。"
-        }
+        {"en": "You made it up? And I fell for it.", "zh": "你编的？还真给你哄住了。"}
       ],
       "closed": [
         {"en": "The workshop's too busy just now. Come later.", "zh": "坊里这会儿顾不上，晚些来。"},
@@ -5105,14 +5323,14 @@ _VOICES = r"""
         }
       ],
       "deal": [
-        {"en": "Good, then it's tied tight.", "zh": "好，这事就这么扎紧了。"},
+        {"en": "Settled then. I'll do my part.", "zh": "说准了，我按这个办。"},
         {"en": "All right, it's settled. See you at the festival.", "zh": "行，说定了。灯会上见。"}
       ],
       "doubted": [
         {"en": "What I heard had it another way.", "zh": "我听来的不是这个样。"},
         {
-          "en": "That sounds off. It doesn't match what I heard.",
-          "zh": "听着不对，跟我听到的对不上。"
+          "en": "That part doesn't fit what I heard. Where did you get it?",
+          "zh": "这一段跟我听来的对不上，你是从哪儿听的？"
         }
       ],
       "elder_no": [
@@ -5121,7 +5339,7 @@ _VOICES = r"""
       ],
       "elder_yes": [
         {"en": "Clearly put. I'm convinced.", "zh": "说得明白，我服了。"},
-        {"en": "Now you say it like that, it's clear to me.", "zh": "你这么一说，我心里亮堂了。"}
+        {"en": "I see what you mean now.", "zh": "你这么一讲，这事我懂了。"}
       ],
       "empty": [
         {"en": "Talk without binding a lantern gives no light.", "zh": "光说不扎，灯是不会亮的。"},
@@ -5201,12 +5419,12 @@ _VOICES = r"""
       ],
       "kept_thanks": [
         {
-          "en": "You did as you said, and I'll remember the kindness.",
-          "zh": "你说到做到，我记着这份好。"
+          "en": "I thought the trouble wasn't over yet, and you've already seen it through. I'll remember what you did for me.",
+          "zh": "我原想着这事还得劳你费心，你倒已经办成了，我记着你的好。"
         },
         {
-          "en": "Thanks for keeping your word. I'll hang a good lantern for you at the festival.",
-          "zh": "多谢你守信，灯会上给你挂盏好灯。"
+          "en": "You got everything done as promised. I appreciate it.",
+          "zh": "答应我的事都办妥了。劳你费心。"
         }
       ],
       "knew": [
@@ -5224,10 +5442,7 @@ _VOICES = r"""
         }
       ],
       "not_said": [
-        {
-          "en": "I never said it. Don't paste those words on me.",
-          "zh": "我没讲过，别把话糊到我身上。"
-        },
+        {"en": "I never said anything of the sort.", "zh": "这话我可从没讲过。"},
         {"en": "Those aren't my words, really.", "zh": "这不是我的话。"}
       ],
       "not_so": [
@@ -5250,18 +5465,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I know lanterns, not this. But I heard {name} mention it, so go and ask.",
-          "zh": "灯里的事我懂，这个不懂。不过听{name}提起过，去问问吧。"
+          "en": "I heard of it from {name}. We were busy at the workshop and I didn't catch much, so ask there.",
+          "zh": "听{name}讲过这事，不过坊里那会儿忙，我没留心，你还是去问问吧。"
         },
         {
-          "en": "I didn't notice, with all these lanterns on my hands. I think {name} knows, so go and ask.",
-          "zh": "这事我没留意，手里的灯顾不过来。{name}好像知道，你去问问。"
+          "en": "I caught only part of it. You'd better ask {name}.",
+          "zh": "我只听了半截，你到{name}那儿问问吧。"
         }
       ],
       "point_hub": [
         {
-          "en": "I only paste lanterns and mind no gossip. For news of the town, see {name}.",
-          "zh": "我只管糊灯，不管闲话。镇上的消息，找{name}吧。"
+          "en": "I know what goes on in the workshop, but I don't hear much of the town's talk. Try asking {name}.",
+          "zh": "坊里的事我倒知道，镇上传些什么我听得少，你可以去问{name}。"
         },
         {
           "en": "I can't answer that. Folk come and go at the teahouse, so ask {name}.",
@@ -5284,7 +5499,10 @@ _VOICES = r"""
       ],
       "testified": [
         {"en": "What I tell you, I saw with my own two eyes.", "zh": "我讲的，都是自己亲眼看见的。"},
-        {"en": "What I didn't see, I won't say a word of.", "zh": "没见到的，我一个字都不说。"}
+        {
+          "en": "I can tell you the part I saw. Leave the rest aside for now.",
+          "zh": "我只能讲看见的那一段，旁的先别算上。"
+        }
       ],
       "timeout": [
         {
@@ -5304,8 +5522,14 @@ _VOICES = r"""
         }
       ],
       "took_in": [
-        {"en": "Good, I'll keep that in mind.", "zh": "好，这话我记下了。"},
-        {"en": "I see. Thanks for telling me.", "zh": "明白了，多谢你告诉我。"}
+        {
+          "en": "I see what happened now you've explained that part.",
+          "zh": "你把这段说明白了，我也就知道怎么回事了。"
+        },
+        {
+          "en": "Thank you for coming to tell me. I'll keep it in mind.",
+          "zh": "多谢你特地来讲，这事我记着。"
+        }
       ],
       "turned_down": [
         {"en": "Sorry, I can't promise that.", "zh": "对不住，这个我答应不了。"},
@@ -5313,10 +5537,7 @@ _VOICES = r"""
       ],
       "unknown": [
         {"en": "That one I really don't know.", "zh": "这个我还真不知道。"},
-        {
-          "en": "I know what goes into a lantern. This I don't know.",
-          "zh": "灯里的事我懂，这个我不懂。"
-        }
+        {"en": "I haven't been keeping up with that.", "zh": "我没留意这事。"}
       ],
       "will_ask": [
         {"en": "Good, I'll go and find out.", "zh": "好，我去问个明白。"},
@@ -5350,8 +5571,8 @@ _VOICES = r"""
     "frames": {
       "guess_heard": [
         {
-          "en": "{teller} let something slip. {hedge} {line}.",
-          "zh": "{teller}漏过一点口风。{hedge}{line}。"
+          "en": "After that word from {teller}, {hedge} {line}.",
+          "zh": "{teller}提过这事，{hedge}{line}。"
         },
         {
           "en": "I worked from what {teller} said. {hedge} {line}.",
@@ -5364,8 +5585,8 @@ _VOICES = r"""
           "zh": "这个查不了。{hedge}{line}。"
         },
         {
-          "en": "The books don't show it. {hedge} {line}.",
-          "zh": "账上看不出来。{hedge}{line}。"
+          "en": "{hedge} {line}. I'll leave it there until I have something to go on.",
+          "zh": "{hedge}{line}。没凭据的我先不往下说了。"
         }
       ],
       "guess_unknown": [
@@ -5379,13 +5600,10 @@ _VOICES = r"""
         }
       ],
       "heard": [
+        {"en": "As I recall it, {teller} said {line}.", "zh": "我记得{teller}这样讲过，{line}。"},
         {
-          "en": "I have it from {teller}, word for word, that {line}.",
-          "zh": "这是{teller}的原话，我照记着。说{line}。"
-        },
-        {
-          "en": "{teller} told me, and the words were that {line}.",
-          "zh": "{teller}跟我讲过。说是{line}。"
+          "en": "{line}. I got that account from {teller}.",
+          "zh": "{line}。我是向{teller}打听来的。"
         }
       ],
       "known": [
@@ -5396,42 +5614,39 @@ _VOICES = r"""
         {"en": "{line}. The books say so too.", "zh": "{line}，账上也是这么记的。"}
       ],
       "own": [
-        {"en": "By my reckoning, {line}.", "zh": "按我算下来，{line}。"},
+        {"en": "My reading is that {line}.", "zh": "照这样看，{line}。"},
         {"en": "I've checked it end to end, and {line}.", "zh": "我前后对过，{line}。"}
       ],
       "rival": [
         {
-          "en": "But {teller}'s account doesn't tally, saying {line}.",
-          "zh": "{teller}那儿的说法对不上。说{line}。"
+          "en": "We need to allow for what {teller} said as well, that {line}.",
+          "zh": "还得把{teller}讲的算上，说是{line}。"
         },
         {
-          "en": "{teller} told it differently, that {line}.",
-          "zh": "{teller}说的不一样。说是{line}。"
+          "en": "But I heard from {teller} that {line}. The two accounts don't match.",
+          "zh": "可我听{teller}说是{line}。这两句话对不上。"
         }
       ],
       "seen": [
-        {"en": "I saw for myself that {line}.", "zh": "我亲眼看过。{line}。"},
+        {
+          "en": "This much I can vouch for. I was there and saw that {line}.",
+          "zh": "这一笔我敢作证，当时我瞧见{line}。"
+        },
         {"en": "{line}. I saw it on the spot.", "zh": "{line}。这是我当场看见的。"}
       ],
       "unknown": [
-        {
-          "en": "There's a story going round, and who told it isn't on record. It goes that {line}.",
-          "zh": "有这么一种说法，谁说的账上没记。说{line}。"
-        },
+        {"en": "All I heard was someone saying that {line}.", "zh": "我只听到有人说{line}。"},
         {
           "en": "I heard it said, though I haven't looked into it, that {line}.",
           "zh": "听人讲的，没查过。说是{line}。"
         }
       ]
     },
-    "hedges": {"en": ["I estimate", "I presume"], "zh": ["我估计", "大概"]},
+    "hedges": {"en": ["I think", "I'd say"], "zh": ["我估计", "大概"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... three sevens, twenty-one... it tallies... (fast asleep)",
-          "zh": "呼……三七二十一……对上了……（睡熟了）"
-        },
-        {"en": "Mm... one coin short... (fast asleep)", "zh": "唔……还差一文……（睡熟了）"}
+        {"en": "The accountant is asleep and doesn't answer.", "zh": "账房睡了，没应声。"},
+        {"en": "The accountant sleeps through your call.", "zh": "没叫动账房。"}
       ],
       "bamboo_arrived": [
         {
@@ -5448,7 +5663,10 @@ _VOICES = r"""
         {"en": "The first batch comes tomorrow morning.", "zh": "头一批明天上午送到。"}
       ],
       "busy": [
-        {"en": "I'm going over the accounts. Come another day.", "zh": "我在对账，您改天再来。"},
+        {
+          "en": "I'm checking this page. If I stop halfway I'll have to start again, so please give me a moment.",
+          "zh": "我正对着这一页账，现在停笔就要从头算过，劳您等一会儿。"
+        },
         {
           "en": "This page isn't added up yet. I can't stop now.",
           "zh": "这页账还没算完，现在不能停。"
@@ -5460,8 +5678,8 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "What you told me wasn't true. I won't write down anything you say again.",
-          "zh": "您说的不是实情。往后您的话，我一概不记。"
+          "en": "I thought I could rely on what you said. Once a lie gets around, who can set it straight?",
+          "zh": "我原以为您说的可以当真，可假话传出去，往后谁说得清楚？"
         },
         {"en": "So it was a lie. I won't trust you again.", "zh": "原来您说的是瞎话。往后不信您了。"}
       ],
@@ -5471,11 +5689,14 @@ _VOICES = r"""
       ],
       "deal": [
         {"en": "Agreed. It's on the books.", "zh": "可以，我记上了。"},
-        {"en": "Done. I'll enter it.", "zh": "成交，这笔我记下。"}
+        {"en": "Fine. That's how I'll enter it.", "zh": "行，这一笔就这么记。"}
       ],
       "doubted": [
         {"en": "That doesn't match my records.", "zh": "跟我记的对不上。"},
-        {"en": "That's not right. What I heard was different.", "zh": "不对吧，我听到的不一样。"}
+        {
+          "en": "That differs from the account I got. Who else have you spoken to?",
+          "zh": "这处和我听来的不一样，您还问过谁？"
+        }
       ],
       "elder_no": [
         {"en": "On these few words alone, I won't accept it.", "zh": "就这几句，我不认。"},
@@ -5483,7 +5704,10 @@ _VOICES = r"""
       ],
       "elder_yes": [
         {"en": "I've worked it through. Go ahead that way.", "zh": "我算过了，就照这么办。"},
-        {"en": "It adds up that way. I've no objection.", "zh": "这么算下来对得上，我没意见。"}
+        {
+          "en": "The figures come out right that way. No objection.",
+          "zh": "这么算就对上了。我没意见。"
+        }
       ],
       "empty": [
         {"en": "Words without a record don't count.", "zh": "口说无凭，不算数。"},
@@ -5530,8 +5754,8 @@ _VOICES = r"""
       ],
       "hard_hc_li_bamboo_rumour": [
         {
-          "en": "The rumour has gone all round town and you still haven't said a word, Manager. I won't release this.",
-          "zh": "谣言传遍了全镇，总管到现在一句话没说。这笔我不放。"
+          "en": "The story's all over town. Until you clear it up, Manager, I'm holding back the money.",
+          "zh": "闲话传遍了，总管还没说清楚。这笔钱我不放。"
         },
         {
           "en": "The rumour stands and you've given no account of it, Manager. I won't do this.",
@@ -5543,18 +5767,21 @@ _VOICES = r"""
         {"en": "This item isn't negotiable.", "zh": "这一项没得商量。"}
       ],
       "keeper_no": [
-        {"en": "The ledger isn't for strangers.", "zh": "账本不给生人看。"},
+        {
+          "en": "I keep the ledger myself. We've only just met, so I'd rather leave it put away for now.",
+          "zh": "这账本平常由我收着，咱们才认识，您容我先不拿出来。"
+        },
         {
           "en": "We don't know each other yet. It stays put today.",
           "zh": "我们还不熟，今天不拿出来。"
         }
       ],
       "kept_thanks": [
-        {"en": "You did what you said. It's in the books.", "zh": "您说到做到，账上记着。"},
         {
-          "en": "What you said and what you did match. I'll remember that.",
-          "zh": "说的和做的对得上，我记着。"
-        }
+          "en": "You said you'd see to it, and now you've done exactly that. I'll remember it.",
+          "zh": "您上回说要办这件事，如今果然办妥了，这一笔我记得。"
+        },
+        {"en": "It's just as agreed. I've made a note.", "zh": "跟说好的一样。我记下了。"}
       ],
       "knew": [
         {"en": "I had that down already.", "zh": "这个我早记着了。"},
@@ -5569,10 +5796,7 @@ _VOICES = r"""
       ],
       "not_said": [
         {"en": "That sentence isn't mine.", "zh": "这句话不是我说的。"},
-        {
-          "en": "I never put it that way. What I said was different.",
-          "zh": "我没这么说过，我说的是另一句。"
-        }
+        {"en": "That doesn't match what I said.", "zh": "那话跟我说的对不上。"}
       ],
       "not_so": [
         {"en": "No. The figures don't match.", "zh": "不对，数对不上。"},
@@ -5587,25 +5811,22 @@ _VOICES = r"""
           "en": "It's been cleared up in public. I won't stand in the way.",
           "zh": "当众说清了，我不拦了。"
         },
-        {
-          "en": "The accounts are square. I won't block it any more.",
-          "zh": "账对清了，我不再拦着。"
-        }
+        {"en": "That settles it. Go ahead.", "zh": "这下对清了。您接着办吧。"}
       ],
       "point_heard": [
         {
-          "en": "That's not in the books. Ask {name}, who spoke of it.",
-          "zh": "账上没有这一条。{name}说起过，您去问问。"
+          "en": "I couldn't say for certain, but {name} did bring it up. You might ask there.",
+          "zh": "我这儿说不准，{name}倒提过这件事，您可以去问问。"
         },
         {
-          "en": "I'm not sure. Go and ask {name}, who brought it up.",
-          "zh": "这个我不清楚。{name}提起过，您去问吧。"
+          "en": "I only know that {name} brought it up. You might ask there for the details.",
+          "zh": "我只知道{name}说过此事，您可以去问得详细些。"
         }
       ],
       "point_hub": [
         {
-          "en": "The books don't show that. For the town's affairs, ask {name}.",
-          "zh": "账上查不到这个。镇上的事，去问{name}。"
+          "en": "I can't get to the bottom of it from what I have here. You may want to ask {name}.",
+          "zh": "这事凭我手头的东西查不出来，您不妨去问{name}。"
         },
         {
           "en": "I can't look that up. For what the street says, ask {name}.",
@@ -5643,7 +5864,10 @@ _VOICES = r"""
       ],
       "took_in": [
         {"en": "Right, I'll make a note of it.", "zh": "好，我记一笔。"},
-        {"en": "Fine. Now I know.", "zh": "行，知道了。"}
+        {
+          "en": "I followed your account. I'll make a note of that part.",
+          "zh": "我听清了，您说的这一段我会记下来。"
+        }
       ],
       "turned_down": [
         {
@@ -5654,10 +5878,7 @@ _VOICES = r"""
       ],
       "unknown": [
         {"en": "There's no entry for that in the books.", "zh": "账上没有这一笔。"},
-        {
-          "en": "I don't know, and I don't speak without something to go on.",
-          "zh": "这个我不知道，没凭据的事我不说。"
-        }
+        {"en": "I can't say for sure. I have nothing to go on.", "zh": "这事我说不准。手头没凭据。"}
       ],
       "will_ask": [
         {"en": "Right, I'll go and ask.", "zh": "好，我去问一声。"},
@@ -5672,7 +5893,10 @@ _VOICES = r"""
       ],
       "will_do": [
         {"en": "Fine, I'll handle it.", "zh": "行，我来办。"},
-        {"en": "Fine. I'll do it and report the figure.", "zh": "好，我去办。回头报个数。"}
+        {
+          "en": "I can see to it now. I'll let you know when I've checked the figures.",
+          "zh": "眼下就能办，我核过数再给您回话。"
+        }
       ],
       "witness_in_public": [
         {
@@ -5708,8 +5932,8 @@ _VOICES = r"""
         "id": "peace",
         "lines": [
           {
-            "en": "That's the end of the quarrel between the houses.",
-            "zh": "两家的事，到此为止。"
+            "en": "The two families sat down together. Leave it there.",
+            "zh": "两家吃过饭了。别再提了。"
           }
         ],
         "when": [{"flag": "reconcile_seen", "kind": "flag"}]
@@ -5785,7 +6009,7 @@ _VOICES = r"""
       ],
       "guess_own": [
         {"en": "Just saying, but {hedge} {line}.", "zh": "我随口一说，{hedge}{line}。"},
-        {"en": "Who knows, but {hedge} {line}.", "zh": "谁知道，{hedge}{line}。"}
+        {"en": "{hedge} {line}. I won't swear to it.", "zh": "{hedge}{line}。我可没跟你打包票。"}
       ],
       "guess_unknown": [
         {
@@ -5799,10 +6023,13 @@ _VOICES = r"""
       ],
       "heard": [
         {
-          "en": "That came out of {teller}'s mouth, that {line}.",
-          "zh": "{teller}那张嘴里说的是，{line}。"
+          "en": "{line}. I heard it from {teller}. You can ask if you don't believe me.",
+          "zh": "{line}，是{teller}跟我说的，你要不信就去问。"
         },
-        {"en": "{teller} went on at me that {line}.", "zh": "{teller}跟我嚷嚷过，说{line}。"}
+        {
+          "en": "You're asking me? I got it from {teller}, who said {line}.",
+          "zh": "你问我？我也是听{teller}说的，说{line}。"
+        }
       ],
       "known": [
         {"en": "{line}. Need you ask?", "zh": "{line}，这还用说？"},
@@ -5810,21 +6037,24 @@ _VOICES = r"""
       ],
       "own": [
         {"en": "I'm telling you straight, {line}.", "zh": "我告诉你，{line}。"},
-        {"en": "Frankly, {line}.", "zh": "老实说，{line}。"}
+        {"en": "I'm saying {line}.", "zh": "我说是{line}。"}
       ],
       "rival": [
         {
-          "en": "But {teller}'s mouth says different, that {line}.",
-          "zh": "可{teller}嘴里是另一套，说{line}。"
+          "en": "But {teller} told it differently, saying {line}.",
+          "zh": "可{teller}讲的跟这不一样。{line}。"
         },
-        {
-          "en": "Yet {teller} swore to something else, that {line}.",
-          "zh": "{teller}偏说是另一回事，说{line}。"
-        }
+        {"en": "But {teller} went and said {line}.", "zh": "可{teller}非说{line}。"}
       ],
       "seen": [
-        {"en": "I need nobody to tell me that {line}.", "zh": "这用不着听别人说，{line}。"},
-        {"en": "{line}. I know that well enough myself.", "zh": "{line}，我自己清楚得很。"}
+        {
+          "en": "I watched it happen myself, and I can tell you that {line}.",
+          "zh": "这事我从头就看在眼里，{line}。"
+        },
+        {
+          "en": "{line}, and yes, that's the part I actually saw.",
+          "zh": "{line}，你问这段我还真瞧见了。"
+        }
       ],
       "unknown": [
         {"en": "People are blabbing that {line}.", "zh": "外头瞎传，说{line}。"},
@@ -5839,8 +6069,8 @@ _VOICES = r"""
         "id": "new",
         "lines": [
           {
-            "en": "You're the Manager? I'm Zhou Dalang. I'm busy, so say it quick.",
-            "zh": "你就是总管？我是周家大郎。我忙着，有话快说。"
+            "en": "Are you the new Manager? I'm Zhou Dalang. Say what you came for. I've work to get back to.",
+            "zh": "你就是新来的总管？我叫周家大郎，有事你便说，我还得回去干活。"
           }
         ],
         "when": [{"is": "new", "kind": "acquainted"}]
@@ -5863,8 +6093,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "The bridge business is out in the open. Stop staring at me.",
-            "zh": "桥的事摆明了。别再拿眼睛盯着我。"
+            "en": "They've sorted out what happened to the bridge. What are you still looking at me for?",
+            "zh": "桥的事都说清了。还盯着我干什么？"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -5878,8 +6108,8 @@ _VOICES = r"""
         "id": "bridge",
         "lines": [
           {
-            "en": "The bridge is mended. Not one timber I hauled went missing.",
-            "zh": "桥修好了。我扛的木头，一根没少。"
+            "en": "The bridge is finally mended, and I didn't shirk my share of carrying the timber.",
+            "zh": "桥总算修好了，送到桥边的木头可没少我扛的那一份。"
           }
         ],
         "when": [{"flag": "bridge_fixed", "kind": "flag"}]
@@ -5898,8 +6128,8 @@ _VOICES = r"""
         "id": "cleared",
         "lines": [
           {
-            "en": "Li Er's business was cleared up in public. About time.",
-            "zh": "李家老二那事当众说清了，早该如此。"
+            "en": "They set the story about the Li boy straight in front of everyone. Could've done that sooner.",
+            "zh": "李家老二那事当众说清了。早说清不就完了。"
           }
         ],
         "when": [{"kind": "cleared"}]
@@ -5921,11 +6151,8 @@ _VOICES = r"""
     "hedges": {"en": ["I wouldn't be surprised if", "I bet"], "zh": ["保不齐", "我看八成"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Snore... go away... let me sleep... (fast asleep)",
-          "zh": "呼噜……走开……让我睡……（睡熟了）"
-        },
-        {"en": "Mm... wine... another bowl... (fast asleep)", "zh": "唔……酒……再来一碗……（睡熟了）"}
+        {"en": "Dalang doesn't wake.", "zh": "大郎没醒。"},
+        {"en": "Still snoring.", "zh": "还在打鼾。"}
       ],
       "bamboo_arrived": [
         {"en": "Bamboo's here. Get on with it.", "zh": "竹子到了，看着办吧。"},
@@ -5940,7 +6167,7 @@ _VOICES = r"""
       ],
       "busy": [
         {"en": "No time. Don't pester me.", "zh": "没空，别来烦我。"},
-        {"en": "I'm busy. It can wait.", "zh": "我忙着呢，等会儿再说。"}
+        {"en": "I can't talk now. It can wait.", "zh": "我这会儿顾不上你。有话等会儿说。"}
       ],
       "cannot": [
         {"en": "Can't do it. Ask somebody else.", "zh": "办不了，找别人去。"},
@@ -5948,10 +6175,10 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "You dare lie to me? I won't hear another word out of you.",
-          "zh": "你敢骗我？以后你的话我一句都不听。"
+          "en": "I thought I could take your word for it, and you've been feeding me lies!",
+          "zh": "我还当你说的话有准儿，原来也敢拿瞎话糊弄我！"
         },
-        {"en": "Lying wretch. Don't let me see you again.", "zh": "撒谎的东西，别让我再看见你。"}
+        {"en": "What else have you got to say to me? Go away.", "zh": "还跟我说什么？走开。"}
       ],
       "closed": [
         {"en": "Not now. Come later.", "zh": "现在不行，晚点来。"},
@@ -5962,7 +6189,10 @@ _VOICES = r"""
         {"en": "Right. Don't go back on it.", "zh": "好，别反悔。"}
       ],
       "doubted": [
-        {"en": "Rubbish. That's not what I heard.", "zh": "胡说，我听到的不是这样。"},
+        {
+          "en": "That part doesn't match what I heard. Who told you?",
+          "zh": "你说的这段跟我听的对不上，你是从谁那儿听来的？"
+        },
         {"en": "Something's off. It doesn't match what I heard.", "zh": "不对劲，跟我听的对不上。"}
       ],
       "elder_no": [
@@ -6019,20 +6249,29 @@ _VOICES = r"""
           "zh": "全镇都在传，你一声不吭。没得借，走人。"
         },
         {
-          "en": "Talk everywhere and you play dumb. Don't expect a nod from me.",
-          "zh": "闲话满天飞，你装哑巴。别指望我点头。"
+          "en": "After all that's been said, you're still keeping quiet? Don't count on me agreeing.",
+          "zh": "传成这样了你还不说话？别指望我点头。"
         }
       ],
       "hard_other": [
-        {"en": "Out of the question. Save your breath.", "zh": "免谈，别浪费口舌。"},
+        {"en": "No. Quit asking.", "zh": "没有。别再问了。"},
         {"en": "Not happening. Asking again changes nothing.", "zh": "办不到，再说也一样。"}
       ],
       "keeper_no": [
-        {"en": "I don't know you. Keep your distance.", "zh": "不熟，别凑过来。"},
-        {"en": "Who are you? Not today.", "zh": "你谁啊？今天不行。"}
+        {
+          "en": "We hardly know each other. Why ask me to show you that straight off?",
+          "zh": "你我又不熟，怎么一上来就找我要东西看？"
+        },
+        {
+          "en": "You've only just come around. I can't show you that yet.",
+          "zh": "你这才刚来，我还不能给你看。"
+        }
       ],
       "kept_thanks": [
-        {"en": "You keep your word, at least. I'll remember it.", "zh": "你还算讲信用，这事我记着。"},
+        {
+          "en": "Truth be told, I didn't expect you to keep your word. Since you did, I owe you one.",
+          "zh": "说实话，我原没打算信你，既然事情办成了，我也不赖你这份情。"
+        },
         {"en": "You did what you said. Fine, I owe you one.", "zh": "说到做到。行，欠你一回。"}
       ],
       "knew": [
@@ -6061,18 +6300,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "How should I know. I heard {name} talk about it, so go and ask yourself.",
-          "zh": "我怎么知道。听{name}讲过，自己去问。"
+          "en": "I only heard {name} say a word or two. How should I know the rest? Go and ask.",
+          "zh": "我就听{name}说过这么一嘴，旁的我哪晓得？你要问就去问。"
         },
         {
-          "en": "No idea. I heard {name} on about it, so go and find them.",
-          "zh": "不清楚。{name}讲过，自己去找。"
+          "en": "I only caught a bit. If you've got questions, take them to {name}.",
+          "zh": "我就听过一耳朵，你有话直接问{name}去。"
         }
       ],
       "point_hub": [
         {
-          "en": "Don't ask me. Go see {name}, who knows every piece of news in town.",
-          "zh": "别问我。去找{name}，镇上什么事那儿都知道。"
+          "en": "I've no time to ask around about that. Try {name} if you want the whole story.",
+          "zh": "我哪有空打听这些，你去问{name}，兴许还能听全了。"
         },
         {
           "en": "I've no time for idle talk. If you want news, ask {name}.",
@@ -6096,8 +6335,8 @@ _VOICES = r"""
       "testified": [
         {"en": "I say what I saw. Nothing else.", "zh": "我看到什么就说什么，别的没有。"},
         {
-          "en": "I don't speak of what I didn't see. What I saw is true.",
-          "zh": "没看见的我不说，看见的都是真的。"
+          "en": "I could see clearly what happened. I've told you all I can.",
+          "zh": "当时的情形我瞧得清楚，能说的就这些。"
         }
       ],
       "timeout": [
@@ -6110,7 +6349,10 @@ _VOICES = r"""
       ],
       "took_in": [
         {"en": "Hm. Got it.", "zh": "哦，知道了。"},
-        {"en": "Fine. I heard you.", "zh": "行，我听见了。"}
+        {
+          "en": "I get it now you've put it that way. I'll remember it.",
+          "zh": "你这么一说我就明白了，这话我记着。"
+        }
       ],
       "turned_down": [
         {"en": "No. When I say no, I mean no.", "zh": "不答应，我说不行就不行。"},
@@ -6162,8 +6404,8 @@ _VOICES = r"""
       "guess_own": [
         {"en": "I can't be certain, but {hedge} {line}.", "zh": "我说不太准，{hedge}{line}。"},
         {
-          "en": "It's only a guess of mine, but {hedge} {line}.",
-          "zh": "这只是我瞎猜，{hedge}{line}。"
+          "en": "{hedge} {line}. You might want to ask someone else, too.",
+          "zh": "{hedge}{line}。你再问问别人吧。"
         }
       ],
       "guess_unknown": [
@@ -6177,10 +6419,13 @@ _VOICES = r"""
         }
       ],
       "heard": [
-        {"en": "{teller} once told me that {line}.", "zh": "{teller}跟我提起过，说{line}。"},
         {
-          "en": "I learned from {teller} that {line}.",
-          "zh": "我是从{teller}那里听来的，说{line}。"
+          "en": "I first heard it from {teller}, who said {line}.",
+          "zh": "是{teller}先提的，说{line}。"
+        },
+        {
+          "en": "I once heard {teller} talk about this and say {line}.",
+          "zh": "这件事我听{teller}讲过，说{line}。"
         }
       ],
       "known": [
@@ -6193,17 +6438,20 @@ _VOICES = r"""
       ],
       "rival": [
         {
-          "en": "{teller} once told me something else, that {line}.",
-          "zh": "{teller}还跟我讲过另一种说法。说是{line}。"
+          "en": "I heard another account from {teller}, to the effect that {line}.",
+          "zh": "我还从{teller}那儿听过不同的说法，说是{line}。"
         },
         {
-          "en": "Though {teller} told it otherwise, that {line}. I should mention it.",
-          "zh": "不过{teller}说的不同，说{line}。我也不好不提。"
+          "en": "There's one more thing. I heard {teller} say {line}.",
+          "zh": "还有一件。我听{teller}说{line}。"
         }
       ],
       "seen": [
-        {"en": "{line}. I was there at the time.", "zh": "{line}，我当时就在那儿。"},
-        {"en": "To be honest with you, {line}.", "zh": "不瞒你说，{line}。"}
+        {
+          "en": "I was nearby at the time and can tell you I saw that {line}.",
+          "zh": "我那会儿正在旁边，{line}，确实是我自己看见的。"
+        },
+        {"en": "I remember seeing it myself: {line}.", "zh": "我记得当时看见过，{line}。"}
       ],
       "unknown": [
         {"en": "It's only something I heard, that {line}.", "zh": "我也是听来的，{line}。"},
@@ -6213,17 +6461,11 @@ _VOICES = r"""
         }
       ]
     },
-    "hedges": {"en": ["I fear", "I suspect"], "zh": ["怕是", "多半"]},
+    "hedges": {"en": ["I think", "I'd guess"], "zh": ["怕是", "多半"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... the lantern... don't go out... (fast asleep)",
-          "zh": "呼……灯……别灭……（睡熟了）"
-        },
-        {
-          "en": "Mm... tomorrow... up early, I promise... (fast asleep)",
-          "zh": "唔……明天……一定早起……（睡熟了）"
-        }
+        {"en": "Erlang hasn't woken.", "zh": "二郎还没醒。"},
+        {"en": "You call twice. All you hear is breathing.", "zh": "喊了两声，只听见呼吸。"}
       ],
       "bamboo_arrived": [
         {
@@ -6247,8 +6489,8 @@ _VOICES = r"""
       ],
       "busy": [
         {
-          "en": "Sorry, I can't get away just now. Can we talk a bit later?",
-          "zh": "对不住，我这会儿走不开。等会儿再说好吗？"
+          "en": "Forgive me, I've something I can't leave just now. Could we talk when I've finished?",
+          "zh": "对不住，我这会儿实在走不开，等手上的事办完了再跟您细说，好吗？"
         },
         {
           "en": "Please wait a moment, Manager. I have something in hand.",
@@ -6261,8 +6503,8 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "So you were deceiving me all along. I won't believe you again.",
-          "zh": "原来你一直在骗我。我不会再信你了。"
+          "en": "I took what you told me at face value. I never thought you'd lie to me.",
+          "zh": "您方才那番话，我原是当真的，没想到您会骗我。"
         },
         {"en": "You lied to me. I never expected it.", "zh": "你骗了我，我真没想到。"}
       ],
@@ -6274,11 +6516,14 @@ _VOICES = r"""
         {"en": "Sorry, not now. Please come again later.", "zh": "对不住，现在不行。晚点再来吧。"}
       ],
       "deal": [
-        {"en": "Good, then it's agreed.", "zh": "好，那就说定了。"},
+        {"en": "All right. That's settled between us.", "zh": "好，这就说好了。"},
         {"en": "Agreed. Thank you.", "zh": "一言为定，谢谢你。"}
       ],
       "doubted": [
-        {"en": "Forgive me, but that isn't quite what I heard.", "zh": "我听到的好像不是这样。"},
+        {
+          "en": "Forgive me, but one part differs from what I heard. Could you tell me a little more?",
+          "zh": "对不住，有一段跟我听的不一样，您可愿再说说？"
+        },
         {"en": "It differs a little from what I heard.", "zh": "跟我听到的有点不一样。"}
       ],
       "elder_no": [
@@ -6371,13 +6616,16 @@ _VOICES = r"""
         {"en": "There's no room to discuss it, I'm sorry.", "zh": "这件事没法商量，对不住。"}
       ],
       "keeper_no": [
-        {"en": "We've only just met. Another time.", "zh": "我们才刚认识，下次再说吧。"},
+        {
+          "en": "It wouldn't be right to bring that out the first time we meet.",
+          "zh": "您问的这个，我不好一见面就拿出来。"
+        },
         {"en": "I can't show this to someone I don't know.", "zh": "这个我不好给生人看。"}
       ],
       "kept_thanks": [
         {
-          "en": "You keep your word, Manager. I'll remember the kindness.",
-          "zh": "总管说话算话，我记着这份情。"
+          "en": "With all you've got to do, you still remembered your promise to me. Thank you.",
+          "zh": "您事情这样多，还记得答应我的这件，我得谢谢您。"
         },
         {"en": "You did as you said. Thank you so much.", "zh": "你说到做到，真谢谢你。"}
       ],
@@ -6387,7 +6635,10 @@ _VOICES = r"""
       ],
       "needs_nod": [
         {"en": "I'd need to ask my father first.", "zh": "这得先问过我爹。"},
-        {"en": "My father hasn't agreed, so I can't say yes.", "zh": "我爹没点头，我不好答应。"}
+        {
+          "en": "I'd better speak to my father before I give you an answer.",
+          "zh": "我得先跟父亲商量过，才好给您回话。"
+        }
       ],
       "not_said": [
         {"en": "I didn't say anything of the sort.", "zh": "我没有这样说过。"},
@@ -6419,18 +6670,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "Sorry, I really don't know about it. But I heard {name} mention it, so you might ask.",
-          "zh": "对不住，这件事我不清楚。不过听{name}提到过，你不妨去问问。"
+          "en": "I happened to hear {name} mention it. I'm not sure of the details myself, but you might find out more there.",
+          "zh": "我偶然听{name}提起过，自己也弄不明白，您去问问兴许能知道得详细些。"
         },
         {
-          "en": "I can't help, I'm afraid. I believe {name} spoke of it, so why not ask?",
-          "zh": "我帮不上忙。好像{name}说起过，要不你去问问？"
+          "en": "Why not ask {name}? That's where I heard about it.",
+          "zh": "要不你找{name}问问？这事我也是听来的。"
         }
       ],
       "point_hub": [
         {
-          "en": "I'm not sure. For the town's business, try asking {name}.",
-          "zh": "我不太清楚。镇上的事，去问问{name}吧。"
+          "en": "I don't know much about that. If you'd like to know more, you could ask {name}.",
+          "zh": "这件事我不大清楚，您要是还想问，可以找{name}打听一下。"
         },
         {
           "en": "I'm so sorry, I can't answer. News travels fast at the teahouse, so perhaps ask {name}.",
@@ -6453,7 +6704,10 @@ _VOICES = r"""
       ],
       "testified": [
         {"en": "What I've told you, I saw with my own eyes.", "zh": "我说的，都是亲眼看见的。"},
-        {"en": "I would never speak of what I haven't seen.", "zh": "没见过的事，我不会说。"}
+        {
+          "en": "I can vouch for the part I saw myself. I can't speak to the rest.",
+          "zh": "我只能作证哪一段亲眼见过，其余的还不敢说。"
+        }
       ],
       "timeout": [
         {"en": "Forgive me, I have to get on.", "zh": "不好意思，我得先去忙了。"},
@@ -6467,8 +6721,14 @@ _VOICES = r"""
         {"en": "It's too late. Please come tomorrow.", "zh": "时候太晚了，请明天再来。"}
       ],
       "took_in": [
-        {"en": "I see. Thank you for telling me.", "zh": "原来是这样，谢谢你告诉我。"},
-        {"en": "Understood. I'll keep it in mind.", "zh": "明白了，我记着。"}
+        {
+          "en": "Thank you for explaining. I understand what happened now.",
+          "zh": "多亏您肯说明白，我这回知道怎么回事了。"
+        },
+        {
+          "en": "I heard what you said, and I'll keep it in mind.",
+          "zh": "您刚才说的我都听见了，我会放在心上。"
+        }
       ],
       "turned_down": [
         {"en": "I'm so sorry, but I can't agree to this.", "zh": "实在对不住，这件事我不能答应。"},
@@ -6548,7 +6808,10 @@ _VOICES = r"""
       {
         "id": "plain",
         "lines": [
-          {"en": "I'll take my leave.", "zh": "小的告退。"},
+          {
+            "en": "Take care on your way. I'd better get back to work.",
+            "zh": "您慢走，小的先回去干活了。"
+          },
           {"en": "Mind your step. I have work to do.", "zh": "您慢走，我还有活。"}
         ],
         "when": []
@@ -6558,8 +6821,8 @@ _VOICES = r"""
       {
         "id": "word_broken",
         "text": {
-          "en": "Zhou's Clerk remembered the promise that was not kept. Asked about it later, the clerk would only say that the master decides.",
-          "zh": "周家伙计记着总管没兑现的话。再有人问起，伙计只说「掌柜的说了算」。"
+          "en": "The Manager's promise went unkept. After that, Zhou's clerk sent anyone who came asking to the shopkeeper.",
+          "zh": "总管应的话没兑现。后来再来打听，周家伙计只让人去问掌柜的。"
         },
         "when": [{"kind": "promised", "state": "broken"}]
       },
@@ -6582,8 +6845,8 @@ _VOICES = r"""
       {
         "id": "hiding",
         "text": {
-          "en": "Zhou's Clerk kept to the back of the shop and looked at the floor whenever the bridge came up.",
-          "zh": "周家伙计躲在铺子后头。一听有人提起桥，就低下头去。"
+          "en": "Zhou's clerk still kept to the back of the shop and looked down at the floor whenever anyone brought up the bridge.",
+          "zh": "周家伙计仍躲在铺子后头，听见有人提到桥，就低下头去。"
         },
         "when": []
       }
@@ -6604,7 +6867,10 @@ _VOICES = r"""
           "en": "I can't be sure of it, but {hedge} {line}.",
           "zh": "我不敢肯定，{hedge}{line}。"
         },
-        {"en": "I may be wrong, but {hedge} {line}.", "zh": "我可能说错了，{hedge}{line}。"}
+        {
+          "en": "{hedge} {line}. Best wait until we're sure.",
+          "zh": "{hedge}{line}。也不好一口咬定。"
+        }
       ],
       "guess_unknown": [
         {
@@ -6617,10 +6883,13 @@ _VOICES = r"""
         }
       ],
       "heard": [
-        {"en": "{teller} said to me that {line}.", "zh": "{teller}跟我提过，说{line}。"},
         {
-          "en": "I only heard it from {teller}, that {line}.",
-          "zh": "小的是听{teller}说的。说是{line}。"
+          "en": "That part came from {teller}, who said that {line}.",
+          "zh": "这句是{teller}提的，说是{line}。"
+        },
+        {
+          "en": "As for that part, I heard from {teller} that {line}.",
+          "zh": "至于这句，小的是听{teller}说的，说是{line}。"
         }
       ],
       "known": [
@@ -6629,23 +6898,26 @@ _VOICES = r"""
       ],
       "own": [
         {"en": "As I see it, if I may, {line}.", "zh": "依小的看，{line}。"},
-        {"en": "If I may be so bold, {line}.", "zh": "斗胆说一句，{line}。"}
+        {"en": "Here's how it looks to me: {line}.", "zh": "小的是这么想的，{line}。"}
       ],
       "rival": [
         {
-          "en": "Only, I also heard something else from {teller}, that {line}.",
-          "zh": "不过我也听{teller}说过别的，说是{line}。"
+          "en": "I heard a different account from {teller}, who said {line}.",
+          "zh": "小的还听过{teller}另一番话，说{line}。"
         },
         {
-          "en": "I won't hide that {teller} also said something different, that {line}.",
-          "zh": "不敢瞒您。{teller}还说过另一回事，说{line}。"
+          "en": "I heard another account from {teller}, who said that {line}.",
+          "zh": "小的还听过另一句，是{teller}说的，说是{line}。"
         }
       ],
       "seen": [
-        {"en": "{line}. I saw it with my own eyes.", "zh": "{line}，小的亲眼看着的。"},
         {
-          "en": "{line}. I saw that myself, and I wouldn't make it up.",
-          "zh": "{line}。这是我亲眼看见的，不敢瞎说。"
+          "en": "I was right nearby and saw for myself that {line}.",
+          "zh": "小的当时在跟前，亲眼瞧见{line}。"
+        },
+        {
+          "en": "What I saw with my own eyes was that {line}.",
+          "zh": "小的亲眼看的是这件事，{line}。"
         }
       ],
       "unknown": [
@@ -6664,8 +6936,8 @@ _VOICES = r"""
         "id": "new",
         "lines": [
           {
-            "en": "You are the new Manager? I clerk at the Zhou shop... I have done nothing wrong.",
-            "zh": "您是新来的总管吧？小的在周家铺子当伙计……我什么都没做错。"
+            "en": "Are you the new Manager, may I ask? I work for the Zhou shop. Did you want the shopkeeper, or is there something you'd like to ask me?",
+            "zh": "敢问您是新来的总管吗？小的在周家铺子帮忙，您要见掌柜的，还是有事问我？"
           }
         ],
         "when": [{"is": "new", "kind": "acquainted"}]
@@ -6674,8 +6946,8 @@ _VOICES = r"""
         "id": "broken",
         "lines": [
           {
-            "en": "You made me a promise. I don't dare mention it, and I don't dare forget it.",
-            "zh": "您答应过的事，我不敢提。可也不敢忘。"
+            "en": "I haven't forgotten your promise, but I didn't dare come and ask you about it again.",
+            "zh": "上回您答应的事，小的一直记着，就是没敢再来问。"
           }
         ],
         "when": [{"kind": "promised", "state": "broken"}]
@@ -6684,8 +6956,8 @@ _VOICES = r"""
         "id": "festival",
         "lines": [
           {
-            "en": "The master has me minding the shop tonight. Go and see the lanterns yourself.",
-            "zh": "今晚掌柜的让我看铺子。您自己去看灯吧。"
+            "en": "Go and see the lanterns. The shopkeeper asked me to stay and mind the shop tonight.",
+            "zh": "您去看灯吧，掌柜的叫小的今晚留下来看铺子。"
           }
         ],
         "when": [{"day": 5, "hour": 15, "kind": "after"}]
@@ -6694,8 +6966,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "The bridge business is told plainly. I truly said nothing wrong back then.",
-            "zh": "桥的事讲明白了。小的当初真没乱说。"
+            "en": "Now that everyone's heard what happened at the bridge, you know I told it as I saw it.",
+            "zh": "如今桥的事当众说清了，您也知道小的当初是照实讲的。"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -6721,8 +6993,8 @@ _VOICES = r"""
         "id": "cleared",
         "lines": [
           {
-            "en": "All I ever said was that I saw Li Er by the bridge. Everyone heard it.",
-            "zh": "我只说过看见李家老二在桥边，就这一句。大伙儿都听见了。"
+            "en": "All I said was that I saw Li Er at the bridge. Now everyone's heard what I actually said.",
+            "zh": "小的当初只说看见李家老二在桥边，如今大伙儿也听清那句了。"
           }
         ],
         "when": [{"kind": "knows", "props": ["pr_set_straight"]}]
@@ -6739,8 +7011,8 @@ _VOICES = r"""
         "id": "plain",
         "lines": [
           {
-            "en": "The master decides. Whatever you ask, I must ask the master first.",
-            "zh": "掌柜的说了算。您要问什么，我得先问过掌柜的。"
+            "en": "Tell me what you need. If there's a decision to make, it still goes through the shopkeeper.",
+            "zh": "您跟小的说吧，要拿主意，还得找掌柜的。"
           },
           {"en": "I'm slow with words. Please ask slowly.", "zh": "小的嘴笨，您慢慢问。"}
         ],
@@ -6750,14 +7022,8 @@ _VOICES = r"""
     "hedges": {"en": ["I would say", "I imagine"], "zh": ["兴许是", "说不准"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... master... the goods are counted... (fast asleep)",
-          "zh": "呼……掌柜的……货点好了……（睡熟了）"
-        },
-        {
-          "en": "Mm... right away... right away... (fast asleep)",
-          "zh": "唔……这就去……这就去……（睡熟了）"
-        }
+        {"en": "The clerk is sound asleep.", "zh": "伙计睡得沉。"},
+        {"en": "Your call doesn't wake the clerk.", "zh": "没能叫醒伙计。"}
       ],
       "bamboo_arrived": [
         {"en": "The bamboo is at the bridge. I've had a look.", "zh": "竹料到桥边了，我去看过了。"},
@@ -6774,7 +7040,10 @@ _VOICES = r"""
         }
       ],
       "busy": [
-        {"en": "I've work in hand. Could you come back later.", "zh": "手上有活，您晚些再来。"},
+        {
+          "en": "The shopkeeper gave me work and is waiting to hear from me. May I finish that first? Could you come back a little later?",
+          "zh": "掌柜的交代了事，还等着我回话呢。我先去把活做完，您晚些再来行吗？"
+        },
         {
           "en": "The master's errand isn't done yet. I daren't dawdle.",
           "zh": "掌柜的吩咐的活还没干完，不敢耽搁。"
@@ -6786,10 +7055,13 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "So what you said was false. I daren't believe your words again.",
-          "zh": "原来您说的是假话。往后您的话，小的不敢再信了。"
+          "en": "I didn't dare question what you told me. You had me almost taking it for the truth.",
+          "zh": "小的哪敢疑心您说的话，没承想叫您这么一哄，差点还当了真。"
         },
-        {"en": "You lied to me, and I believed it.", "zh": "您骗了我，我还当真了呢。"}
+        {
+          "en": "You lied to me. I was ready to believe the whole thing.",
+          "zh": "您骗了我，我差点就信到底了。"
+        }
       ],
       "closed": [
         {
@@ -6803,7 +7075,10 @@ _VOICES = r"""
         {"en": "Very well, very well. It's agreed.", "zh": "好的好的，说定了。"}
       ],
       "doubted": [
-        {"en": "What I heard... wasn't like that.", "zh": "我听到的……不是这样。"},
+        {
+          "en": "That's new to me. What I was told went differently.",
+          "zh": "您这话小的还没听过，先前听来的可不是这一句。"
+        },
         {"en": "That's not quite what I was told.", "zh": "这和我听的不太一样。"}
       ],
       "elder_no": [
@@ -6891,7 +7166,10 @@ _VOICES = r"""
         {"en": "The master said strangers aren't to look.", "zh": "掌柜的吩咐过，生人不能看。"}
       ],
       "kept_thanks": [
-        {"en": "You really did it. Thank you kindly.", "zh": "您真办到了，谢谢您。"},
+        {
+          "en": "I didn't dare ask you about it again. I'm grateful you remembered and saw it through.",
+          "zh": "我原不敢再来问您，没想到总管一直记着，真把事办到了。"
+        },
         {"en": "You keep your word, Manager. I'll remember.", "zh": "总管说话算数，我记着。"}
       ],
       "knew": [
@@ -6904,10 +7182,13 @@ _VOICES = r"""
       ],
       "not_said": [
         {
-          "en": "Those weren't my words. Please don't blame me for them.",
-          "zh": "这话不是小的说的，您可别冤枉人。"
+          "en": "If you mean that story, please don't put it down to me.",
+          "zh": "您要问那句话，可别算在小的头上。"
         },
-        {"en": "I never said that. This is all I said.", "zh": "我没那么说过，我只说过这个。"}
+        {
+          "en": "Is that what you heard? That's not what I said.",
+          "zh": "您听来的是那句？小的没那么说。"
+        }
       ],
       "not_so": [
         {"en": "No, that's not it. You've misunderstood.", "zh": "不是的，您误会了。"},
@@ -6919,25 +7200,25 @@ _VOICES = r"""
       ],
       "objection_withdrawn": [
         {
-          "en": "It has been cleared up in public, and I daren't stand in the way.",
-          "zh": "既然当众说清了，我哪还敢拦。"
+          "en": "Now that everyone understands what was said, I won't stand in your way.",
+          "zh": "大伙儿既然把话听明白了，小的就不拦您了。"
         },
         {"en": "The master has agreed. I'll get out of the way.", "zh": "掌柜的点了头，我这就让开。"}
       ],
       "point_heard": [
         {
-          "en": "I wouldn't know. I heard {name} mention it, so please ask there.",
-          "zh": "这事我不清楚。听{name}提过，您去问问吧。"
+          "en": "I just heard {name} mention it once. You might get a clearer account if you ask in person.",
+          "zh": "小的只听见{name}提过一回，具体是怎么回事，您亲自问问兴许就清楚了。"
         },
         {
-          "en": "I've really not heard of it, so please don't blame me. I think {name} spoke of it.",
-          "zh": "我真没听说，您别怪我。{name}好像讲过。"
+          "en": "You might ask {name}. I only heard the gist.",
+          "zh": "您找{name}问问看。我只听了个大概。"
         }
       ],
       "point_hub": [
         {
-          "en": "I daren't say. Please ask {name}, who has the most news.",
-          "zh": "小的不敢乱说。您去问{name}吧，那儿消息最多。"
+          "en": "I know too little to risk telling you wrong. Try {name}. More of the town's news gets there.",
+          "zh": "小的知道得少，怕跟您说岔了。您去找{name}问问，那儿听来的消息多。"
         },
         {
           "en": "I can't answer, so please don't blame me. For the town's business, {name} is the one to ask.",
@@ -7005,12 +7286,12 @@ _VOICES = r"""
       ],
       "witness_in_public": [
         {
-          "en": "All I saw was Li Er at the bridge looking for a lantern. That's all.",
-          "zh": "小的只看见李家老二在桥边找灯笼，就这些。"
+          "en": "I can tell you what I saw for myself. For the rest, you'll have to ask whoever told it.",
+          "zh": "小的说的是亲眼瞧见的，听别人讲的那些，您还得找说话的人问。"
         },
         {
-          "en": "I saw nothing else. I only saw Li Er at the bridge, looking for a lantern.",
-          "zh": "别的我都没看见，只看见李家老二在桥边找灯笼。"
+          "en": "I can vouch for what I saw myself. I can't speak to what others have said.",
+          "zh": "您要问亲眼见的，小的能作证。旁人讲的那些，小的可不敢认。"
         }
       ]
     }
@@ -7038,8 +7319,8 @@ _VOICES = r"""
       ],
       "guess_own": [
         {
-          "en": "I'm only guessing here, but {hedge} {line}.",
-          "zh": "我也是瞎琢磨，{hedge}{line}。"
+          "en": "{hedge} {line}. If the neighbors ask, keep it to yourself for now.",
+          "zh": "{hedge}{line}。街坊问起来，你也先别往外说。"
         },
         {
           "en": "Don't spread it about, but {hedge} {line}.",
@@ -7052,18 +7333,18 @@ _VOICES = r"""
           "zh": "也不知谁先说的，{hedge}{line}。"
         },
         {
-          "en": "The word's all muddled, but {hedge} {line}.",
-          "zh": "风声传得乱，{hedge}{line}。"
+          "en": "Who I heard it from, don't ask me, but {hedge} {line}.",
+          "zh": "谁讲的我可不知道，{hedge}{line}。"
         }
       ],
       "heard": [
         {
-          "en": "{teller} told me so in person, that {line}.",
-          "zh": "{teller}亲口跟我讲的，说{line}。"
+          "en": "I got it straight from {teller}, who said {line}.",
+          "zh": "我可是听{teller}亲口说的，说{line}。"
         },
         {
-          "en": "I had it straight from {teller} that {line}.",
-          "zh": "我是从{teller}嘴里听来的，说{line}。"
+          "en": "I remember this bit. I heard from {teller} that {line}.",
+          "zh": "这句我记得，是{teller}说的，说是{line}。"
         }
       ],
       "known": [
@@ -7079,18 +7360,18 @@ _VOICES = r"""
       ],
       "rival": [
         {
-          "en": "{teller} told another story too, that {line}.",
-          "zh": "{teller}还讲过另一套呢，说{line}。"
+          "en": "You might also want to hear what {teller} told me, that {line}.",
+          "zh": "您也听听我从{teller}那儿听来的，说是{line}。"
         },
         {
-          "en": "But {teller} told it otherwise, that {line}.",
-          "zh": "可{teller}不是这么说的，说{line}。"
+          "en": "But I'm sure I heard {teller} say {line}.",
+          "zh": "可我明明听{teller}说过，{line}。"
         }
       ],
       "seen": [
         {
-          "en": "{line}. I was standing right there watching.",
-          "zh": "{line}，我就站在旁边看着呢。"
+          "en": "I was standing right there and saw for myself that {line}.",
+          "zh": "我就站在旁边呢，亲眼瞧见{line}。"
         },
         {"en": "With my own two eyes I saw that {line}.", "zh": "我可是亲眼瞧见的，{line}。"}
       ],
@@ -7102,17 +7383,11 @@ _VOICES = r"""
         }
       ]
     },
-    "hedges": {"en": ["I'd lay odds", "I'll bet"], "zh": ["八成是", "我看多半是"]},
+    "hedges": {"en": ["I'll bet", "I'd say"], "zh": ["八成是", "我看多半是"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... the house next door... tomorrow... (fast asleep)",
-          "zh": "呼……隔壁那家……明天再说……（睡熟了）"
-        },
-        {
-          "en": "Mm... whose house... quarrelling again... (fast asleep)",
-          "zh": "唔……谁家……又吵起来了……（睡熟了）"
-        }
+        {"en": "Madam Zhou has gone to sleep.", "zh": "周娘子已经睡了。"},
+        {"en": "Madam Zhou sleeps right through it.", "zh": "周娘子没醒过来。"}
       ],
       "bamboo_arrived": [
         {"en": "The bamboo's at the bridge. I just saw it.", "zh": "竹子到桥边啦，我刚瞧见的。"},
@@ -7126,7 +7401,10 @@ _VOICES = r"""
         }
       ],
       "busy": [
-        {"en": "I've a hundred things in hand. Come by later.", "zh": "这会儿手里一堆事，晚点再来吧。"},
+        {
+          "en": "I've more to do than I can get through just now. Come back a little later and we can talk properly.",
+          "zh": "手里这么多事一时做不完，你晚些来找我，到时候咱们好好说。"
+        },
         {"en": "I'm talking with someone. Wait a moment.", "zh": "我正跟人说话呢，你等等。"}
       ],
       "cannot": [
@@ -7135,10 +7413,13 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "So it was all lies. From now on I won't believe anything you say.",
-          "zh": "原来你满嘴瞎话。往后你说什么，我都不信了。"
+          "en": "Did you think I was that easy to fool? I believed you just now. Don't count on it next time.",
+          "zh": "你当我真好哄呢？刚才我信了你的话，下回你可别指望还有这么容易。"
         },
-        {"en": "Well! So you'd lie even to me!", "zh": "好哇，连我也敢骗！"}
+        {
+          "en": "Why'd you tell me that? I took it for the truth.",
+          "zh": "你哄我干什么？我还当真了。"
+        }
       ],
       "closed": [
         {"en": "Not a good time now. Come at some other hour.", "zh": "这会儿不方便，换个时辰来。"},
@@ -7149,10 +7430,13 @@ _VOICES = r"""
         {"en": "All right, that's a deal.", "zh": "行，一言为定。"}
       ],
       "doubted": [
-        {"en": "That's not how I heard it at all.", "zh": "我听来的可不是这么回事。"},
         {
-          "en": "That's not what I was told. Who told you that?",
-          "zh": "跟我听说的不一样呀，你听谁讲的？"
+          "en": "That differs from what I heard. Where did you ask about it?",
+          "zh": "我听来的有些出入，您是在哪儿打听的？"
+        },
+        {
+          "en": "There's another account of it. Let me hear a little more.",
+          "zh": "这事还有别的说法，容我再听听。"
         }
       ],
       "elder_no": [
@@ -7164,7 +7448,7 @@ _VOICES = r"""
       ],
       "elder_yes": [
         {"en": "I understand. Let's settle it so.", "zh": "我听明白了，就这么定吧。"},
-        {"en": "That makes sense. I'm convinced.", "zh": "说得有道理，我服气。"}
+        {"en": "Now I see what you mean. All right.", "zh": "这么一讲我就明白了。成。"}
       ],
       "empty": [
         {
@@ -7236,13 +7520,16 @@ _VOICES = r"""
         {"en": "Forget it.", "zh": "这个免了吧。"}
       ],
       "keeper_no": [
-        {"en": "We've only just met. Another day.", "zh": "咱们才见头一回，改日吧。"},
+        {
+          "en": "We've only just met. Let's leave that until we know one another a little better.",
+          "zh": "咱们才刚认得，这个还是等熟了再说吧。"
+        },
         {"en": "That isn't for strangers to look at.", "zh": "这个可不好给生人看。"}
       ],
       "kept_thanks": [
         {
-          "en": "You really do keep your word, Manager. I'll remember this.",
-          "zh": "总管真是说话算话，这份情我记着。"
+          "en": "You've plenty to see to, Manager, and you still kept your promise to me. I won't forget it.",
+          "zh": "总管手里的事那么多，还想着把答应我的给办了，这份情我自然记着。"
         },
         {"en": "You did it. Ask if you ever need anything.", "zh": "你办到了呀，往后有事尽管开口。"}
       ],
@@ -7290,18 +7577,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I haven't heard that one. But {name} must have talked of it, so go and ask.",
-          "zh": "这个我没听过。可{name}准说起过，去问问。"
+          "en": "I only caught the start of it. If you want to know, you might as well go straight to {name}.",
+          "zh": "我只听了个开头，你既然想知道，索性找{name}问个明白。"
         },
         {
-          "en": "That I don't know. But I heard {name} gossiping about it, so go and ask.",
-          "zh": "这我不晓得。不过我听{name}嚼过舌头，你去问问。"
+          "en": "I only heard a few words from {name}. You'll have to ask there to get to the bottom of it.",
+          "zh": "我只听{name}说了几句，您得问那边才知道究竟。"
         }
       ],
       "point_hub": [
         {
-          "en": "I can't say. Let me tell you, {name} is the one to find.",
-          "zh": "这事我不清楚。我跟你讲，找{name}准没错。"
+          "en": "I haven't heard the whole thing. If you want it straight, you'll do better asking {name}.",
+          "zh": "这话我可没听全，你要问清楚，去找{name}总比问我强。"
         },
         {
           "en": "I wouldn't know. If it's gossip you're after, ask {name}.",
@@ -7324,7 +7611,7 @@ _VOICES = r"""
       ],
       "testified": [
         {"en": "Everything I tell you, I saw with my own eyes.", "zh": "我讲的可都是亲眼看见的。"},
-        {"en": "If I didn't see it myself, I wouldn't say it.", "zh": "没亲眼看见的，我才不瞎说。"}
+        {"en": "I was standing right there at the time.", "zh": "我当时就站在那儿呢。"}
       ],
       "timeout": [
         {"en": "I've a pot on the stove. I have to get back.", "zh": "灶上还炖着东西呢，我得回去了。"},
@@ -7338,8 +7625,14 @@ _VOICES = r"""
         {"en": "It's pitch dark. We'll talk tomorrow.", "zh": "天都黑透了，明天再说。"}
       ],
       "took_in": [
-        {"en": "So that's how it is. I'll remember.", "zh": "原来是这样，我记着了。"},
-        {"en": "Really? Now that's news to me.", "zh": "是吗？这我还真是头一回听说。"}
+        {
+          "en": "Now that you've explained it, I know where I stand.",
+          "zh": "你这么一解释，我心里就有数了。"
+        },
+        {
+          "en": "If anyone asks me about it, I'll know what to say now.",
+          "zh": "要是还有人来问，我也知道该怎么开口了。"
+        }
       ],
       "turned_down": [
         {
@@ -7349,7 +7642,7 @@ _VOICES = r"""
         {"en": "No, I'm afraid that won't do.", "zh": "这个真不行。"}
       ],
       "unknown": [
-        {"en": "That one I really haven't heard.", "zh": "这事我还真没听说。"},
+        {"en": "That one hasn't made it to me.", "zh": "这件事倒没人跟我提过。"},
         {"en": "Nobody's said a word of it to me.", "zh": "这我哪晓得，没人跟我讲过。"}
       ],
       "will_ask": [
@@ -7401,7 +7694,10 @@ _VOICES = r"""
       {
         "id": "peace",
         "lines": [
-          {"en": "The old account between the houses is closed.", "zh": "两家的旧账，翻过去了。"}
+          {
+            "en": "We've shared a meal with the Lis. Let's leave it at that.",
+            "zh": "跟李家吃过那顿饭，这事就搁下吧。"
+          }
         ],
         "when": [{"flag": "reconcile_seen", "kind": "flag"}]
       },
@@ -7490,8 +7786,8 @@ _VOICES = r"""
       {
         "id": "detour",
         "text": {
-          "en": "Shopkeeper Zhou walked the lane, reckoning up the timber that was never used.",
-          "zh": "周掌柜走过夹道，一边走一边盘算那批没用上的木料。"
+          "en": "Shopkeeper Zhou took the lane too. The timber sent for the bridge still lay unused.",
+          "zh": "周掌柜也从夹道过去了。送去修桥的那批木料还没用上。"
         },
         "when": [{"flag": "detour_done", "kind": "flag"}]
       },
@@ -7521,8 +7817,8 @@ _VOICES = r"""
           "zh": "不敢说是真的，{hedge}{line}。"
         },
         {
-          "en": "I have nothing to prove it, but {hedge} {line}.",
-          "zh": "没有凭据，{hedge}{line}。"
+          "en": "{hedge} {line}. I wouldn't put much stock in it yet.",
+          "zh": "{hedge}{line}。光凭这点话可不作数。"
         }
       ],
       "guess_unknown": [
@@ -7531,13 +7827,19 @@ _VOICES = r"""
           "zh": "不知道是谁传的，{hedge}{line}。"
         },
         {
-          "en": "That talk has no known source, but {hedge} {line}.",
-          "zh": "来路不明的话，{hedge}{line}。"
+          "en": "Couldn't tell you who said it, but {hedge} {line}.",
+          "zh": "谁讲的我说不上来，{hedge}{line}。"
         }
       ],
       "heard": [
-        {"en": "According to {teller}, {line}.", "zh": "{teller}跟我讲的，说是{line}。"},
-        {"en": "{teller} mentioned to me that {line}.", "zh": "这是{teller}跟我提的，说{line}。"}
+        {
+          "en": "I heard {teller} mention it in these terms: {line}.",
+          "zh": "这件事我听{teller}提过，说是{line}。"
+        },
+        {
+          "en": "It came up with {teller}. The story I heard was that {line}.",
+          "zh": "{teller}跟我说起过，说{line}。"
+        }
       ],
       "known": [
         {"en": "{line}. That's out in the open.", "zh": "{line}。这是明面上的事。"},
@@ -7545,20 +7847,23 @@ _VOICES = r"""
       ],
       "own": [
         {"en": "As I reckon it, {line}.", "zh": "照我估量，{line}。"},
-        {"en": "From where I sit, {line}.", "zh": "依我这生意人的眼光，{line}。"}
+        {"en": "I've weighed it up, and I'd say {line}.", "zh": "我掂量过，{line}。"}
       ],
       "rival": [
         {
-          "en": "But what {teller} says is different, that {line}.",
-          "zh": "不过{teller}那边的说法不一样，说是{line}。"
+          "en": "I heard what you said, but {teller}'s account was that {line}.",
+          "zh": "您说的我听见了，不过{teller}说{line}。"
         },
         {
-          "en": "{teller} has another account, that {line}. I'm still weighing it.",
-          "zh": "{teller}另有一个说法，说{line}。我还在掂量。"
+          "en": "There's the version from {teller}: {line}. I'm still weighing it up.",
+          "zh": "还有{teller}那头的说法，说{line}。我还在掂量。"
         }
       ],
       "seen": [
-        {"en": "{line}. I saw it myself, nothing added.", "zh": "{line}。我亲眼见的，不掺水分。"},
+        {
+          "en": "I was close by and saw for myself that {line}.",
+          "zh": "我当时就在跟前，{line}，这是我亲眼看见的。"
+        },
         {"en": "I saw plainly that {line}.", "zh": "我亲眼瞧见，{line}。"}
       ],
       "unknown": [
@@ -7574,8 +7879,8 @@ _VOICES = r"""
         "id": "new",
         "lines": [
           {
-            "en": "You're the new Manager? I run the Zhou shop, and the timber for the bridge is in my store.",
-            "zh": "你就是新来的总管？我是周家铺子的掌柜，修桥的木料在我库里。"
+            "en": "You must be the new Manager. If you need timber for the bridge, I've some in my storehouse. Tell me how much.",
+            "zh": "想必您就是新来的总管。若是为修桥的木料来的，我库里有，您说个数。"
           }
         ],
         "when": [{"is": "new", "kind": "acquainted"}]
@@ -7584,8 +7889,8 @@ _VOICES = r"""
         "id": "broken",
         "lines": [
           {
-            "en": "You didn't do what you promised. The shop hasn't forgotten.",
-            "zh": "你答应的事没办，铺子还记着呢。"
+            "en": "You didn't do what you said you would. I'll bear that in mind.",
+            "zh": "上回你应下的事没办。这我得记着。"
           }
         ],
         "when": [{"kind": "promised", "state": "broken"}]
@@ -7614,8 +7919,8 @@ _VOICES = r"""
         "id": "truth",
         "lines": [
           {
-            "en": "The bridge business is out on the counter. The accounts are clear, and I'm glad of it.",
-            "zh": "桥的事摆到了明面上。账目清楚，我也痛快。"
+            "en": "They cleared it up in front of everyone. Good. That ought to put a stop to the guessing.",
+            "zh": "当着大伙的面把桥的事说清了。好，省得街上再猜。"
           }
         ],
         "when": [{"flag": "truth_told", "kind": "flag"}]
@@ -7624,8 +7929,8 @@ _VOICES = r"""
         "id": "timber",
         "lines": [
           {
-            "en": "The timber is at the bridge and counted. Whatever is owed, I have noted.",
-            "zh": "木料送到桥边，点清了。该记的，我都记着。"
+            "en": "I've had the timber delivered and counted. Go by the bridge and see for yourself when you can.",
+            "zh": "木料已经送到桥边，数也点清了，您有空过去看一眼就是。"
           }
         ],
         "when": [
@@ -7641,8 +7946,8 @@ _VOICES = r"""
         "id": "kept",
         "lines": [
           {
-            "en": "You keep your terms. That makes good business, and the next talk will be easy.",
-            "zh": "你守约，这是桩好买卖。往后好谈。"
+            "en": "You did as you promised. Next time you've got business, come see me.",
+            "zh": "你应的事办到了。下回有什么买卖，尽管来谈。"
           }
         ],
         "when": [{"kind": "promised", "state": "kept"}]
@@ -7669,8 +7974,8 @@ _VOICES = r"""
         "id": "plain",
         "lines": [
           {
-            "en": "Timber is trade and favours are favours. Lay out what you want first.",
-            "zh": "木料是买卖，人情是人情。想要什么，先摆出来。"
+            "en": "How much timber do you need? Let's start with that.",
+            "zh": "你要多少木料？先把数说清楚。"
           },
           {
             "en": "Say it plainly. I have no taste for going round the houses.",
@@ -7683,26 +7988,23 @@ _VOICES = r"""
     "hedges": {"en": ["I'd bet", "I'd reckon"], "zh": ["十有八九", "我估计"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Zzz... twenty-four... not one short... (fast asleep)",
-          "zh": "呼……二十四根……一根都不能少……（睡熟了）"
-        },
-        {
-          "en": "Mm... this account... once more on the abacus... (fast asleep)",
-          "zh": "唔……这笔账……再拨一遍……（睡熟了）"
-        }
+        {"en": "Shopkeeper Zhou is asleep and doesn't answer.", "zh": "周掌柜没应，睡着了。"},
+        {"en": "Your call doesn't wake Shopkeeper Zhou.", "zh": "喊不醒周掌柜。"}
       ],
       "bamboo_arrived": [
         {
           "en": "The Li bamboo is here. My timber won't fall short either.",
           "zh": "李家的竹料到了，我这边木料也不会少。"
         },
-        {"en": "The bamboo is in, and counted.", "zh": "竹料到了，点过了。"}
+        {
+          "en": "I've counted the bamboo that came in at the bridge.",
+          "zh": "送到桥边的竹料我已经点过了。"
+        }
       ],
       "batch_promised": [
         {
-          "en": "Deal. The timber will be at the bridge tomorrow morning.",
-          "zh": "成交，明早木料送到桥边。"
+          "en": "That settles it. The timber will be at the bridge tomorrow morning.",
+          "zh": "这笔说定了，明早木料就送到桥边。"
         },
         {
           "en": "The goods come in the morning, and the count will be right.",
@@ -7710,7 +8012,10 @@ _VOICES = r"""
         }
       ],
       "busy": [
-        {"en": "The shop keeps me busy. Another day.", "zh": "铺子里正忙，有事改天说。"},
+        {
+          "en": "The shop's in the middle of business. Could we talk when it's quieter?",
+          "zh": "铺子里正忙着做生意，您看能不能等我清闲些再谈？"
+        },
         {
           "en": "I'm in the middle of the accounts. Come later.",
           "zh": "手上这笔账还没算完，你晚些来。"
@@ -7722,12 +8027,12 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "You took me for a fool. From now on I won't believe a word of yours.",
-          "zh": "你竟敢蒙我。往后你的话，一个字我也不信。"
+          "en": "If you can fob me off with that, Manager, I'll have to ask a few questions next time you tell me something.",
+          "zh": "既然这一句都能拿来糊弄我，往后总管再开口，我可得先问明白了。"
         },
         {
-          "en": "Lying is the worst thing in trade. I've put this one in the books.",
-          "zh": "做生意最忌骗人。这笔账，我记下了。"
+          "en": "So you made it up. We're done talking for now.",
+          "zh": "原来这事是你编的。咱们先谈到这儿。"
         }
       ],
       "closed": [
@@ -7735,14 +8040,17 @@ _VOICES = r"""
         {"en": "The shop isn't receiving now. Come later.", "zh": "铺子这会儿不接待，晚些再来。"}
       ],
       "deal": [
-        {"en": "Good. The deal is struck.", "zh": "好，这笔买卖成交。"},
+        {"en": "All right. I'll take the deal.", "zh": "好，这笔生意我接。"},
         {"en": "Fine. Agreed.", "zh": "行，说定了。"}
       ],
       "doubted": [
-        {"en": "That doesn't match what I was told.", "zh": "这和我听来的不一样。"},
         {
-          "en": "That doesn't tally. What I heard is different.",
-          "zh": "对不上，我听到的是另一个说法。"
+          "en": "I heard a different account. Who did you speak to?",
+          "zh": "我听来的是另一番话。你这么说，是问过谁？"
+        },
+        {
+          "en": "That's different from what I heard. Where did you get it?",
+          "zh": "这就和我听的不一样了，你是从哪儿打听来的？"
         }
       ],
       "elder_no": [
@@ -7822,8 +8130,8 @@ _VOICES = r"""
       ],
       "kept_thanks": [
         {
-          "en": "You keep your word, Manager. We'll do business well.",
-          "zh": "总管讲信用，往后好打交道。"
+          "en": "It was done just as agreed. I can rest easier dealing with a Manager who keeps their word.",
+          "zh": "果然照说好的办成了，能跟总管这样说话作数的人打交道，我也省心。"
         },
         {
           "en": "You did what you said. I'll remember that kindness.",
@@ -7855,29 +8163,29 @@ _VOICES = r"""
       ],
       "objection_withdrawn": [
         {
-          "en": "It's been made plain. I won't hold it up on my side.",
-          "zh": "话说明白了，我这边不卡着了。"
+          "en": "You've made your case clear. I won't quarrel with you over it.",
+          "zh": "你把话说明白了，我也不跟你争这件事。"
         },
-        {
-          "en": "The matter is square now. I won't stand in the way.",
-          "zh": "理摆正了，我不再拦。"
-        }
+        {"en": "It's out in the open now. I'll give way.", "zh": "话都在明面上了。我让一步。"}
       ],
       "point_heard": [
         {
-          "en": "I don't know. I heard {name} mention it, so ask for yourself.",
-          "zh": "这事我不清楚。听{name}提过，你自己去问。"
+          "en": "I only heard of it in passing from {name}. You'd better ask there for the particulars.",
+          "zh": "我只听{name}提了提，里头的事我也说不上来，您可以跟那边问清楚。"
         },
         {
-          "en": "Nobody at the shop mentioned it. I hear {name} may know something, so go and find out.",
-          "zh": "铺子里没人说起过。听说{name}知道点什么，你去打听打听。"
+          "en": "I only heard a little. If you want the full story, ask {name}.",
+          "zh": "我只听了几句。想问清楚就去找{name}。"
         }
       ],
       "point_hub": [
-        {"en": "Not my trade. For town news, see {name}.", "zh": "这行当我不熟，镇上的消息找{name}。"},
         {
-          "en": "I don't hand out news for free. Ask {name}. Plenty of mouths talk in that teahouse.",
-          "zh": "我不白送消息。你去问{name}，茶馆里人多嘴杂。"
+          "en": "I don't know the matter well, but {name} hears a lot of the town's news. It might be worth asking there.",
+          "zh": "对这事我不大熟，倒是{name}常听人讲镇上的事，您去问一声也好。"
+        },
+        {
+          "en": "If you want that kind of news, try asking {name}.",
+          "zh": "这种事你去找{name}打听。"
         }
       ],
       "promise_open": [
@@ -7910,8 +8218,14 @@ _VOICES = r"""
         {"en": "We're closing. Come in the morning.", "zh": "打烊了，明早再来。"}
       ],
       "took_in": [
-        {"en": "Ah. So that's the way of it.", "zh": "哦，是这么回事。"},
-        {"en": "Noted. That's useful.", "zh": "记下了，这话有用。"}
+        {
+          "en": "Now the story hangs together. I'll remember what you told me.",
+          "zh": "这样前后就对得上了，您说的我记着。"
+        },
+        {
+          "en": "I understand now. Next time someone asks, I'll know how to answer.",
+          "zh": "这回听明白了，下次再有人问我也有个说法。"
+        }
       ],
       "turned_down": [
         {"en": "Not at this price. I can't agree.", "zh": "这个价，我不能答应。"},
@@ -8031,8 +8345,8 @@ _VOICES = r"""
       {
         "id": "bridge",
         "text": {
-          "en": "The bridge was open, but the elder could not smile. The clan never settled how the railing broke.",
-          "zh": "桥通了，族长却笑不出来。栏杆是怎么断的，族里到底没有定论。"
+          "en": "The lanterns crossed the repaired bridge, though nobody in the clan had settled how the railing broke.",
+          "zh": "灯虽从修好的桥上过去了，族里还是没人说得准栏杆是怎么断的。"
         },
         "when": [{"flag": "bridge_fixed", "kind": "flag"}]
       },
@@ -8047,8 +8361,8 @@ _VOICES = r"""
       {
         "id": "apart",
         "text": {
-          "en": "No bridge and no lane. The elder sat in the hall till late and lit no lamp.",
-          "zh": "桥没通，夹道也没备好。族长在祠堂里坐到很晚，没有点灯。"
+          "en": "The bridge was shut and the lane wasn't ready. The elder sat in the hall until late, with the lamps still unlit.",
+          "zh": "桥没有通，夹道也没收拾出来，族长在祠堂坐到很晚，殿里始终没点灯。"
         },
         "when": []
       }
@@ -8060,13 +8374,16 @@ _VOICES = r"""
           "zh": "{teller}提过一句。{hedge}{line}。"
         },
         {
-          "en": "{teller} didn't say all of it. {hedge} {line}.",
-          "zh": "{teller}没把话说全。{hedge}{line}。"
+          "en": "After hearing about it from {teller}, {hedge} {line}.",
+          "zh": "{teller}提起这事，{hedge}{line}。"
         }
       ],
       "guess_own": [
         {"en": "Nothing is certain yet. {hedge} {line}.", "zh": "这事还说不准。{hedge}{line}。"},
-        {"en": "It's only a thought. {hedge} {line}.", "zh": "只是这么一说。{hedge}{line}。"}
+        {
+          "en": "{hedge} {line}. That's something we still need to clear up.",
+          "zh": "{hedge}{line}。这事还得弄明白。"
+        }
       ],
       "guess_unknown": [
         {
@@ -8074,15 +8391,18 @@ _VOICES = r"""
           "zh": "不知是谁传出来的。{hedge}{line}。"
         },
         {
-          "en": "This talk came from nowhere I know of. {hedge} {line}.",
-          "zh": "这话没个来处。{hedge}{line}。"
+          "en": "I couldn't tell you where that came from, but {hedge} {line}.",
+          "zh": "也没人说清是打哪儿听来的，{hedge}{line}。"
         }
       ],
       "heard": [
-        {"en": "{teller} told me this, that {line}.", "zh": "这是{teller}跟我讲的。说{line}。"},
         {
-          "en": "{teller} brought it up with me, saying {line}.",
-          "zh": "{teller}跟我提过。说是{line}。"
+          "en": "I got word of this from {teller}, who said {line}.",
+          "zh": "老夫是从{teller}那儿听来的，说{line}。"
+        },
+        {
+          "en": "I heard the story from {teller}: {line}.",
+          "zh": "我听{teller}讲过此事，说是{line}。"
         }
       ],
       "known": [
@@ -8098,16 +8418,19 @@ _VOICES = r"""
       ],
       "rival": [
         {
-          "en": "But {teller} told me otherwise, that {line}.",
-          "zh": "不过{teller}跟我说的不是这样。说{line}。"
+          "en": "But I also heard a different account from {teller}: {line}.",
+          "zh": "不过我也听{teller}讲过，另有一种说法，说{line}。"
         },
         {
-          "en": "{teller} has another account, that {line}.",
-          "zh": "{teller}那里又是一个说法。说是{line}。"
+          "en": "There's what I heard from {teller}: {line}. We should ask around.",
+          "zh": "{teller}还跟老夫说过，说{line}。这件事得再问问。"
         }
       ],
       "seen": [
-        {"en": "I saw with my own eyes that {line}.", "zh": "老夫亲眼看见的。{line}。"},
+        {
+          "en": "{line}. I saw it myself and remember it well.",
+          "zh": "{line}，这是老夫亲眼所见，记得很清楚。"
+        },
         {"en": "{line}. I saw it myself.", "zh": "{line}。我亲眼看着的。"}
       ],
       "unknown": [
@@ -8123,8 +8446,8 @@ _VOICES = r"""
         "id": "new",
         "lines": [
           {
-            "en": "So you're the Manager I sent for? I am the clan elder. Sit down and take your time.",
-            "zh": "你就是我请来的总管？老夫是族长。坐吧，有话慢慢说。"
+            "en": "Are you the Manager we asked to run the festival? Come and sit. We've time to talk.",
+            "zh": "你就是请来办灯会的总管吧？来坐一坐，有什么话咱们慢慢说。"
           }
         ],
         "when": [{"is": "new", "kind": "acquainted"}]
@@ -8153,8 +8476,8 @@ _VOICES = r"""
         "id": "peace",
         "lines": [
           {
-            "en": "The two houses have sat down at one table. The ancestors can rest easy.",
-            "zh": "两家坐到一张桌上了。祖宗也该安心了。"
+            "en": "After all this time, the Li and Zhou families have finally agreed to sit down and share a meal.",
+            "zh": "等了这些日子，总算等到李、周两家肯坐下来，在一张桌上吃这顿饭。"
           }
         ],
         "when": [{"flag": "reconcile_seen", "kind": "flag"}]
@@ -8173,8 +8496,8 @@ _VOICES = r"""
         "id": "called",
         "lines": [
           {
-            "en": "The clan is waiting in the hall. Whatever you have to say, say it now.",
-            "zh": "族人都在祠堂等着了。你要说什么，现在说吧。"
+            "en": "The clan is all here and waiting for you at the hall. Say what you came to tell them.",
+            "zh": "族人都到了，在祠堂等你。你有什么要当着大伙儿讲的，这就去讲吧。"
           }
         ],
         "when": [{"kind": "called"}]
@@ -8211,8 +8534,8 @@ _VOICES = r"""
         "id": "plain",
         "lines": [
           {
-            "en": "Only when both families cross the bridge with lanterns together will this festival have been worth holding.",
-            "zh": "两家能一起提灯过桥，这灯会才算办成了。"
+            "en": "When both families are willing to cross the bridge with their lanterns, the job will be done.",
+            "zh": "等两家都肯提灯过桥，这桩事就算办妥了。"
           },
           {
             "en": "It's quiet in the hall. Say what you need to, and take your time.",
@@ -8222,17 +8545,11 @@ _VOICES = r"""
         "when": []
       }
     ],
-    "hedges": {"en": ["I would think", "I would infer"], "zh": ["多半", "想来"]},
+    "hedges": {"en": ["I'd say", "I think"], "zh": ["多半", "想来"]},
     "lines": {
       "asleep": [
-        {
-          "en": "Mm... the incense in the hall... needs tending... (fast asleep)",
-          "zh": "唔……祠堂的香……该续了……（睡熟了）"
-        },
-        {
-          "en": "Zzz... both houses... sit down and talk... (fast asleep)",
-          "zh": "呼……两家……都坐下说……（睡熟了）"
-        }
+        {"en": "The elder is fast asleep.", "zh": "族长睡得正熟。"},
+        {"en": "The elder stays asleep.", "zh": "族长没有醒。"}
       ],
       "bamboo_arrived": [
         {"en": "The bamboo is at the bridge. Good.", "zh": "竹料到桥边了，好。"},
@@ -8249,7 +8566,10 @@ _VOICES = r"""
         {"en": "First thing tomorrow, it goes to the bridge.", "zh": "明天一早，送到桥边。"}
       ],
       "busy": [
-        {"en": "I'm in council just now. Come back later.", "zh": "这会儿在议事，你晚些再来。"},
+        {
+          "en": "There's business at the hall that still needs settling. Give me a little longer.",
+          "zh": "祠堂还有事没议完，这会儿不好走开，劳你等一等。"
+        },
         {
           "en": "The clan business isn't finished yet. Go on for now.",
           "zh": "族里的事还没议完，你先回吧。"
@@ -8261,8 +8581,8 @@ _VOICES = r"""
       ],
       "caught": [
         {
-          "en": "You lied to me. From now on I'll weigh every word you say.",
-          "zh": "你骗了老夫。往后你的话，我要掂量着听。"
+          "en": "I heard you out because I trusted you. Next time you'll find me slower to believe you.",
+          "zh": "我原是信你才听你把话说完，往后你再来开口，老夫总得多想一想了。"
         },
         {"en": "So it was a lie. I won't forget it.", "zh": "原来是假话。我记住了。"}
       ],
@@ -8285,15 +8605,24 @@ _VOICES = r"""
         {"en": "That doesn't agree with what I know.", "zh": "这和我知道的对不上。"}
       ],
       "elder_no": [
-        {"en": "On this alone, I can't decide yet.", "zh": "光凭这些，我还不能拍板。"},
         {
-          "en": "It hasn't been said through yet. I'll think it over.",
-          "zh": "话还没说透，我再想想。"
+          "en": "That doesn't explain how it all came about. I'll need to hear more.",
+          "zh": "你这几句话还没把来龙去脉讲清，我得再听听。"
+        },
+        {
+          "en": "There's still something I'm unsure of. We should ask around before we decide.",
+          "zh": "我还有一处拿不准，事情得再问清楚才好定。"
         }
       ],
       "elder_yes": [
-        {"en": "I've heard enough. Let it be settled.", "zh": "明白了。就这么定吧。"},
-        {"en": "That's reasonable. I approve.", "zh": "说得在理，老夫准了。"}
+        {
+          "en": "I've heard it through. We'll go ahead as you say.",
+          "zh": "前后都听明白了，这件事就照你说的办。"
+        },
+        {
+          "en": "What you've just said holds together. I'll allow it.",
+          "zh": "你刚才说的前后对得上，这件事我准了。"
+        }
       ],
       "empty": [
         {
@@ -8304,8 +8633,8 @@ _VOICES = r"""
       ],
       "evade": [
         {
-          "en": "I know what I need to about that. Go and get on with your own work.",
-          "zh": "这事老夫心里有数，你先去办你的。"
+          "en": "I know how to handle it. Go and see to what's urgent. I'll tell you when I can.",
+          "zh": "这事我有分寸，你先去忙要紧的，等能讲的时候我会告诉你。"
         },
         {"en": "That's not mine to speak of.", "zh": "这个不该由我来讲。"}
       ],
@@ -8356,14 +8685,17 @@ _VOICES = r"""
       ],
       "hard_other": [
         {"en": "There's no need to raise this again.", "zh": "这事不必再提。"},
-        {"en": "That will not happen.", "zh": "这个断然不行。"}
+        {"en": "I can't allow that.", "zh": "这事老夫不能准。"}
       ],
       "keeper_no": [
         {"en": "We've only met a few times. That can wait.", "zh": "你我才见过几面，这个以后再说。"},
         {"en": "I don't bring that out for just anyone.", "zh": "这东西我不轻易拿出来。"}
       ],
       "kept_thanks": [
-        {"en": "You did what you said. I'll remember that.", "zh": "你说到做到，老夫记下这份情。"},
+        {
+          "en": "You gave your word and made good on it. I'll remember that.",
+          "zh": "当初你既然应下了，今日也的确办到了，这份情我记得。"
+        },
         {"en": "What you promised got done. Good.", "zh": "答应的事办成了，好。"}
       ],
       "knew": [
@@ -8401,18 +8733,18 @@ _VOICES = r"""
       ],
       "point_heard": [
         {
-          "en": "I don't know about this. I heard {name} speak of it, so go and ask.",
-          "zh": "这事我不知道。听{name}说起过，你去问问。"
+          "en": "I heard {name} bring it up, but I don't know what came before or after. You'll need to ask the one who told it.",
+          "zh": "我听{name}提起过，可也不知道事情的始末，你若要问，得去找说话的人。"
         },
         {
-          "en": "I haven't heard of it. But I believe {name} knows something, so go and ask.",
-          "zh": "没听说过。不过{name}好像知道一些，你去问吧。"
+          "en": "I only heard a little from {name}. Go and ask.",
+          "zh": "我只听{name}说了几句。去问问吧。"
         }
       ],
       "point_hub": [
         {
-          "en": "I'm not sure of this. For the news of the town, ask {name}.",
-          "zh": "这事我不清楚。镇上的消息，你去问{name}。"
+          "en": "I couldn't tell you about that. For word from the streets, you can ask {name}.",
+          "zh": "这件事我说不上来，你要打听街上的事，可以去问{name}。"
         },
         {
           "en": "I won't guess. For what the neighbours say, go and ask {name}.",
@@ -8438,7 +8770,10 @@ _VOICES = r"""
           "en": "I saw this myself, and that is all I'm telling you.",
           "zh": "这是老夫亲眼看见的，别的不讲。"
         },
-        {"en": "If I didn't see it, I don't say it.", "zh": "没亲眼见过的，我不讲。"}
+        {
+          "en": "I'm speaking up because I was there when it happened.",
+          "zh": "老夫开这个口，是因为当时就在场。"
+        }
       ],
       "timeout": [
         {"en": "It's time. I must get back to the hall.", "zh": "时辰到了，我得回祠堂。"},
@@ -8474,10 +8809,13 @@ _VOICES = r"""
         {"en": "I'll take your word to them.", "zh": "这话老夫替你带到。"}
       ],
       "will_call": [
-        {"en": "Good. I'll call the clan to the hall now.", "zh": "好，这就叫族人到祠堂来。"},
         {
-          "en": "I'll have the bell rung. Everyone is to come to the hall.",
-          "zh": "我让人去敲钟，叫大家都到祠堂。"
+          "en": "Very well. I'll call the town to the hall. Wait till they're there to speak.",
+          "zh": "成，我去把人叫到祠堂，你等大伙儿到了再说。"
+        },
+        {
+          "en": "I'll call them together. Once we're at the hall, you can tell everyone in person.",
+          "zh": "人我来叫，到了祠堂，你当着大伙儿的面说。"
         }
       ],
       "will_do": [

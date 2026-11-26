@@ -114,7 +114,7 @@ test.describe("the riddle lantern at the door of the workshop", () => {
     const wrong = (RIDDLE_RIGHT[1] as number) === 0 ? 1 : 0;
     await page.getByTestId(`riddle-answer-${wrong}`).click();
     await expect(sheet).toHaveAttribute("data-state", "wrong");
-    await expect(page.getByTestId("riddle-line")).toHaveText("Not this time, and no harm done. It was the night watchman. I'll paste up a new one tomorrow.");
+    await expect(page.getByTestId("riddle-line")).toHaveText("It was “the night watchman”. Come back tomorrow and I'll have another for you.");
     await expect(sheet.locator("svg.tick")).toHaveCount(0);
     expect((await lanternAt(page)).level).toBe(0);
     expect(await page.evaluate(() => window.__lantern.play.eggs.riddles.guessed)).toBe(1);
@@ -131,7 +131,7 @@ test.describe("the riddle lantern at the door of the workshop", () => {
     await expect(sheet).toHaveAttribute("data-riddle", "5");
     const last = (RIDDLE_RIGHT[4] as number) === 0 ? 1 : 0;
     await page.getByTestId(`riddle-answer-${last}`).click();
-    await expect(page.getByTestId("riddle-line")).toHaveText("Not this time, and no harm done. It was the Town Gazette. The festival is tonight, and every lantern is hung.");
+    await expect(page.getByTestId("riddle-line")).toHaveText("It was “the Town Gazette”. Come back and look once the lanterns are lit tonight.");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -148,7 +148,7 @@ test.describe("the riddle lantern at the door of the workshop", () => {
     await expect(page.getByTestId("riddle-answer-0")).toHaveText("渡船");
     await expect(page.getByTestId("riddle-hint")).toHaveText(zh["egg.riddle.hint"]);
     await page.getByTestId("riddle-answer-0").click();
-    await expect(page.getByTestId("riddle-line")).toHaveText("没猜中，不碍事。谜底是「石桥」。明天我糊条新的，再来猜。");
+    await expect(page.getByTestId("riddle-line")).toHaveText("谜底是「石桥」。明儿再来，给你换一个。");
     await expect(page.getByTestId("riddle-said").locator(".riddle-maker")).toHaveText("扎灯师傅");
     // a switch of the language with the slip up says it in the other language, with the same answer picked
     await lantern.setLang("en");
@@ -253,7 +253,7 @@ test.describe("the riddles on the ending page", () => {
     const page = lantern.page;
     await endedWith(lantern, GUESSED);
     const line = page.getByTestId("ending-riddles");
-    await expect(line).toHaveText("You guessed three of the riddles.");
+    await expect(line).toHaveText("You solved three of the lantern riddles.");
     await expect(line).toHaveAttribute("data-right", "3");
     expect(lantern.pageErrors).toEqual([]);
   });
@@ -261,15 +261,15 @@ test.describe("the riddles on the ending page", () => {
   test("say it in Chinese too", async ({ lantern }) => {
     const page = lantern.page;
     await endedWith(lantern, GUESSED, "zh");
-    await expect(page.getByTestId("ending-riddles")).toHaveText("灯谜猜中了三条。");
+    await expect(page.getByTestId("ending-riddles")).toHaveText("你猜对了三条灯谜。");
   });
 
   test("have a line for none and for all five", async ({ lantern }) => {
     const page = lantern.page;
     await endedWith(lantern, { riddles: { opened: true, guesses: {} } });
-    await expect(page.getByTestId("ending-riddles")).toHaveText("You guessed none of the riddles.");
+    await expect(page.getByTestId("ending-riddles")).toHaveText("You didn't solve any lantern riddles this time.");
     await endedWith(lantern, { riddles: { opened: true, guesses: Object.fromEntries(RIDDLE_RIGHT.map((right, i) => [String(i + 1), right])) } }, "zh");
-    await expect(page.getByTestId("ending-riddles")).toHaveText("五条灯谜全猜中了。");
+    await expect(page.getByTestId("ending-riddles")).toHaveText("五条灯谜，你全猜中了。");
   });
 
   test("say nothing for a player who never opened the lantern", async ({ lantern }) => {
@@ -296,7 +296,7 @@ test.describe("the riddles on the ending page", () => {
       eggs.riddles.guess(1, 2);
       window.__lantern.play.touch();
     });
-    await expect(page.getByTestId("ending-riddles")).toHaveText("You guessed one of the riddles.");
+    await expect(page.getByTestId("ending-riddles")).toHaveText("You solved one of the lantern riddles.");
   });
 });
 
@@ -369,8 +369,9 @@ test.describe("the watchman's verse", () => {
       await clicks(page, spot, 3);
       expect(await speakers(page), `${hour}:${minute}`).toEqual([]);
     }
-    // at night, clicks that take more than two seconds for the three
+    // Clear the daytime clicks before trying three slow clicks at night.
     await later(page, 1, 23, 0, 5);
+    await clicks(page, { x: 20, y: 20 }, 1);
     await clicks(page, spot, 3, 1_100);
     expect(await speakers(page)).toEqual([]);
     // two clicks on him and one on the ground between (the two slow ones before are not counted with them)

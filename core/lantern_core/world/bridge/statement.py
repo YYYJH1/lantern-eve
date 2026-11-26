@@ -75,24 +75,24 @@ KINDS = (CONTRADICTED, UNSEEN, UNSOURCED)
 
 # why a full statement cannot be made now (the reasons of the rejections of the speech too)
 WHY_NOT = {
-    "talking": {"zh": "先跟人告辞", "en": "Finish the talk first"},
-    "busy": {"zh": "手上的事还没做完", "en": "Finish what you are doing first"},
+    "talking": {"zh": "先告辞，再当众说", "en": "End your conversation first"},
+    "busy": {"zh": "先把手上的事做完", "en": "Finish what you're doing first"},
     "stated_today": {
         "zh": "今天已经照讲稿说过一回",
-        "en": "A statement has been made today already",
+        "en": "You've already given a statement today",
     },
-    "incomplete": {"zh": "讲稿的三条还没写全", "en": "The three parts are not all filled in"},
+    "incomplete": {"zh": "先把讲稿的三条写全", "en": "Fill in all three parts of your statement"},
     "no_venue": {
-        "zh": "傍晚去茶馆说，或者等族长把族人召到祠堂",
-        "en": "Go to the teahouse in the evening, or the hall once the elder has called the clan",
+        "zh": "可以等傍晚去茶馆当众说，也可以等族长把人召到祠堂",
+        "en": "Speak at the teahouse in the evening or at the hall once the elder calls a meeting",
     },
     "not_evening": {
-        "zh": "茶馆要到傍晚才有人听",
-        "en": "The teahouse has an audience only in the evening",
+        "zh": "傍晚再来茶馆说",
+        "en": "Come back to the teahouse in the evening",
     },
     "no_meeting": {
-        "zh": "族长还没有召集族人，祠堂没有开",
-        "en": "The elder has not called the clan, so the hall is closed",
+        "zh": "等族长召集族人，再到祠堂说",
+        "en": "Wait for the elder to call a meeting at the hall",
     },
     "empty_room": {"zh": "这里没有人听", "en": "Nobody is here to hear it"},
     "few_present": {
@@ -105,17 +105,23 @@ ORDINALS = {
     "en": ("first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"),
 }
 PROOF = {
-    "zh": "每一条都对，可你的凭据分不出是哪种说法",
-    "en": "Every part holds, but what you hold cannot tell one story from the others",
+    "zh": "手头的凭据和你讲的三条对得上，换一种经过也说得通。要分清是哪一种，还得再查",
+    "en": (
+        "All three parts fit the evidence, and so does a different account. "
+        "Look further for something that tells them apart"
+    ),
 }
 # what was wrong with a part, said after the part: 「桥是怎么坏的」这一条，和更夫亲眼看见的不一样
 FAILURE = {
     CONTRADICTED: {
         "zh": "和{who}亲眼看见的不一样",
-        "en": "goes against what {who} saw with {own} own eyes",
+        "en": "doesn't match what {who} saw with {own} own eyes",
     },
-    UNSEEN: {"zh": "没有人亲眼看见", "en": "rests on nothing anyone saw"},
-    UNSOURCED: {"zh": "话传走样了", "en": "rests on talk that changed as it was passed on"},
+    UNSEEN: {"zh": "没有目击者能证实", "en": "has no eyewitness to back it up"},
+    UNSOURCED: {
+        "zh": "是从传走样的话里来的",
+        "en": "comes from a story that changed as it was passed on",
+    },
 }
 PART = {"zh": "「{title}」这一条，{text}", "en": "The part “{title}” {text}"}
 

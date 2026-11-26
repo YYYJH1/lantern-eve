@@ -38,7 +38,7 @@ const EN = {
   issue: "Day 2, morning",
   today: "The rest of the bamboo",
   when: "Stone Bridge, 06:00 to 09:00",
-  next: "Next: Be at the bridge at the agreed time and see the bamboo arrive.",
+  next: "Next up, “Be at the bridge at the agreed time and see the bamboo arrive.”",
   more: "Tell the town how the bridge broke",
   moreWhen: "Teahouse, 17:00 to 19:00",
 } as const;
@@ -46,12 +46,12 @@ const EN = {
 const ZH = {
   head: "李大答应的四根竹料，已经送到石桥。",
   news: ["李老太撤回了阻拦。", "李大答应送来四根竹料。"],
-  talk: ["街上都在说灯会。哪家挂几盏灯，已经有人在数了。", "街上分成了两拨，一拨向着李家，一拨向着周家。谁也说不服谁。"],
+  talk: ["街坊议起灯会，已经有人在数各家门前挂几盏灯。", "街上分成了两拨，一拨向着李家，一拨向着周家。谁也说不服谁。"],
   title: "镇报",
   issue: "第二天，清晨",
   today: "凑齐竹料",
   when: "石桥，卯时 06:00 到 09:00",
-  next: "下一步：按约好的时间去桥边，看竹料送到没有。",
+  next: "接着办「按约好的时间去桥边，看竹料送到没有。」",
   more: "当众把桥的事说清楚",
   moreWhen: "茶馆，酉时 17:00 到 19:00",
 } as const;
@@ -156,9 +156,9 @@ test.describe("the paper of the morning", () => {
     await expect(page.getByTestId("gazette-item")).toHaveCount(0);
     await expect(page.getByTestId("gazette-talk-line")).toHaveCount(0);
     await expect(page.getByTestId("gazette-chance")).toHaveCount(0);
-    await expect(page.getByTestId("gazette-today-none")).toHaveText("Nothing is set for today. Walk the town, or ask the clan elder.");
+    await expect(page.getByTestId("gazette-today-none")).toHaveText("No work is scheduled today. Ask the elder what needs doing next.");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("gazette-today-none")).toHaveText("今天没有定下的事。可以在镇上走走，也可以去问问族长。");
+    await expect(page.getByTestId("gazette-today-none")).toHaveText("今日暂无差事排定。要问接下来做什么，请到族长那里打听。");
     await expect(page.getByTestId("gazette-done")).toBeVisible();
     expect(lantern.pageErrors).toEqual([]);
   });
@@ -209,7 +209,7 @@ const NIGHT_EN = {
   blocker: "Shopkeeper Zhou has not agreed yet",
   step: "Get the first load of bamboo from the Li family",
   when: "Stone Bridge, 06:00 to 07:00",
-  none: ["Nothing stands in your way for now.", "Nothing is set for tomorrow."],
+  none: ["No tasks are held up tonight.", "Check in tomorrow morning to see what needs doing."],
   done: "Rest for the night",
 } as const;
 
@@ -220,7 +220,7 @@ const NIGHT_ZH = {
   blocker: "周掌柜还没松口",
   step: "借到李家的第一批竹料",
   when: "石桥，卯时 06:00 到 07:00",
-  none: ["眼下没有什么拦着你。", "明天没有定下的事。"],
+  none: ["今天没有哪件差事卡住。", "明天起来，再看看有什么事要办。"],
   done: "去歇着",
 } as const;
 

@@ -159,43 +159,43 @@ REASONS: dict[str, tuple[dict[str, str], dict[str, str]]] = {
     "done": (
         {
             "zh": "「{old}」办成了，接着办「{new}」",
-            "en": "“{old}” is done. Now on to “{new}”",
+            "en": "“{old}” is done. Next is “{new}”",
         },
         {
-            "zh": "「{old}」办成了，眼下没有别的事要办",
-            "en": "“{old}” is done. There is nothing else to do for now",
+            "zh": "「{old}」办成了。暂时没有别的事要办",
+            "en": "“{old}” is done. No other tasks are open right now",
         },
     ),
     "stale": (
         {
-            "zh": "「{old}」过了时候，改办「{new}」",
-            "en": "“{old}” has lapsed. Now on to “{new}”",
+            "zh": "「{old}」来不及了，先办「{new}」",
+            "en": "Time ran out for “{old}”. Next is “{new}”",
         },
         {
-            "zh": "「{old}」过了时候，眼下没有别的事要办",
-            "en": "“{old}” has lapsed. There is nothing else to do for now",
+            "zh": "「{old}」来不及了。眼下没有别的事要办",
+            "en": "Time ran out for “{old}”. No other tasks are open right now",
         },
     ),
-    "new": ({"zh": "添了一件事「{new}」", "en": "A new task: “{new}”"}, {"zh": "", "en": ""}),
+    "new": ({"zh": "新添了一件事「{new}」", "en": "New task: “{new}”"}, {"zh": "", "en": ""}),
     "chosen": ({"zh": "你先办「{new}」", "en": "You do “{new}” first"}, {"zh": "", "en": ""}),
     "waiting": (
         {
-            "zh": "「{old}」眼下只能等，先办「{new}」",
-            "en": "“{old}” has to wait for now. Now on to “{new}”",
+            "zh": "「{old}」还得等，先办「{new}」",
+            "en": "“{old}” has to wait. Do “{new}” first",
         },
         {"zh": "", "en": ""},
     ),
     "window": (
         {
-            "zh": "「{new}」的时间到了，先办这件",
-            "en": "It is time for “{new}”. On to it",
+            "zh": "该办「{new}」了",
+            "en": "It's time for “{new}”",
         },
         {"zh": "", "en": ""},
     ),
     "ready": (
         {
-            "zh": "「{new}」现在能办了，先办这件",
-            "en": "“{new}” can be done now. On to it",
+            "zh": "现在可以先办「{new}」",
+            "en": "You can do “{new}” first now",
         },
         {"zh": "", "en": ""},
     ),
@@ -677,7 +677,7 @@ def follow(env: Env, section: dict[str, Any], sim: Sim | None) -> None:
 # why the task of a promise that was not kept is no longer followed: what it cost (a sentence of
 # its own, with its stop), then the next
 LAPSED = (
-    {"zh": "{lapse}改办「{new}」", "en": "{lapse} Now on to “{new}”"},
+    {"zh": "{lapse}先办「{new}」", "en": "{lapse} Next is “{new}”"},
     {"zh": "{lapse}", "en": "{lapse}"},
 )
 

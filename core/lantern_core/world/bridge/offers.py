@@ -162,7 +162,7 @@ def _tell(world_state: dict[str, Any]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for entry in section["notebook"][-MAX_ENTRIES:]:
         text = notebook.sentence(view[entry["prop"]])
-        said = _label("照实说：" + text["zh"], "Tell it as it is: " + text["en"])
+        said = _label("照原话说：" + text["zh"], "Tell it as it is: " + text["en"])
         out.append(
             _offer(f"{entry['id']}:faithful", said, {"entry": entry["id"], "how": "faithful"})
         )
@@ -302,7 +302,9 @@ def speak(world_state: dict[str, Any]) -> list[dict[str, Any]]:
             {"kind": "statement"},
         )
     )
-    out.append(_offer("meal", _label("摆一桌和解饭", "Lay a table for peace"), {"kind": "meal"}))
+    out.append(
+        _offer("meal", _label("摆一桌和解饭", "Host a reconciliation meal"), {"kind": "meal"})
+    )
     return out
 
 

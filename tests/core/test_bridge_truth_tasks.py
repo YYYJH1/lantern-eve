@@ -187,7 +187,7 @@ def test_the_tasks_come_in_the_kinds_and_jobs_of_the_brief_with_their_titles():
     }
     assert BOOK[PEACE]["text"] == {"zh": "让两家和好", "en": "Make peace between the families"}
     assert BOOK[NIGHT]["text"] == {"zh": "灯会之夜", "en": "Festival night"}
-    assert BOOK[CALL]["text"] == {"zh": "请族长召集族人", "en": "Have the elder call the clan"}
+    assert BOOK[CALL]["text"] == {"zh": "请族长召集族人", "en": "Ask the elder to call a meeting"}
     assert ids.index(CALL) == len(ids) - 1  # the tasks of the elder's call are a block at the end
 
 
@@ -407,7 +407,7 @@ def test_following_the_cards_by_the_days_tells_the_truth_in_public_and_makes_the
     table = card(marks, "told", PEACE)
     assert table["action"] == {"verb": "speak", "kind": "meal"}
     assert table["next"]["en"] == words(PEACE, "next", TABLE["told"])
-    assert table["why"]["en"].startswith("The truth about the bridge is out. A meal now")
+    assert table["why"]["en"].startswith("Now that the town has heard how the railing broke,")
     assert (table["window"]["from"], table["window"]["to"]) == (17, 19)
     assert [card(marks, "fed", i)["state"] for i in (LEAD, TELL, PEACE)] == ["done"] * 3
     assert card(marks, "told", TELL)["state"] == "done"
@@ -748,8 +748,11 @@ def test_a_statement_with_the_parts_right_and_too_little_proof_says_so_and_asks_
         assert found["next"]["en"] == words(TELL, "next", SHORT_NEXT["proof"])
         last = frame_now(game)["board"]["truth"]["last"]
         assert last["why"] == {
-            "zh": "每一条都对，可你的凭据分不出是哪种说法",
-            "en": "Every part holds, but what you hold cannot tell one story from the others",
+            "zh": "手头的凭据和你讲的三条对得上，换一种经过也说得通。要分清是哪一种，还得再查",
+            "en": (
+                "All three parts fit the evidence, and so does a different account. "
+                "Look further for something that tells them apart"
+            ),
         }
         assert assembly.missed(state_of(game)) == "proof"
 
@@ -807,9 +810,10 @@ def test_after_the_elder_refused_a_whole_proof_the_card_has_the_manager_win_him_
     me(game)["evidence"].append("e_footprint")
     speak_row(game, at(4, 17, 40), TEAHOUSE, 9, 8, 1, 1, 0, [])
     found = tasks_of(frame_now(game))[TELL]
-    assert "did not nod" in found["why"]["en"] and "another account" in found["why"]["en"]
-    assert "trust" in found["next"]["en"] and "rules out the other account" in found["next"]["en"]
-    assert "没点头" in found["why"]["zh"]
+    assert "believe a different account" in found["why"]["en"]
+    assert "Talk to the elder" in found["next"]["en"]
+    assert "rules out the other account" in found["next"]["en"]
+    assert "也可能信不过你" in found["why"]["zh"]
     assert found["action"] == {"verb": "talk", "npc": "zuzhang"}
     # once they have talked that day, the next thing to do is the promise, where one can be made
     meet(game, "zuzhang")
@@ -895,7 +899,7 @@ def test_the_card_sends_the_manager_to_the_hall_while_the_clan_is_called_and_bac
     found = tasks_of(idle(game)["frame"])[TELL]
     assert found["action"] == {"verb": "move", "place": "p_clan_hall"}
     assert found["next"]["en"] == words(TELL, "next", NEXT_STATE["hall"])
-    assert "called the clan to the hall" in found["next"]["en"]
+    assert "at the Ancestral Hall" in found["next"]["en"]
     assert "召集到祠堂" in found["next"]["zh"]
     put(game, *hall)
     assert tasks_of(idle(game)["frame"])[TELL]["action"] == {"verb": "speak", "kind": "statement"}
@@ -1005,7 +1009,7 @@ def test_the_festival_night_comes_on_the_fifth_day_and_goes_when_the_lanterns_cr
     run_to(game, at(5, 17))
     assert tasks_of(idle(game)["frame"])[NIGHT]["action"] == {"verb": "move", "place": "p_bridge"}
     assert found["text"] == {"zh": "灯会之夜", "en": "Festival night"}
-    assert "three jobs" in found["why"]["en"]
+    assert "Both families will need a way to take their lanterns across" in found["why"]["en"]
     run_to(game, at(5, 20, 59))
     assert tasks_of(idle(game)["frame"])[NIGHT]["state"] == "open"
     run_to(game, at(5, 21, 5))

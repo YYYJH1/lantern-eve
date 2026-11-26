@@ -238,6 +238,8 @@ async function story(film, grab, keep, { untilNotebook = false, notes = [] } = {
   await grab(18);
   await film.click('[data-testid=tutorial-next]');
   await wait(gone('[data-testid=tutorial-card]'), 'the card to go');
+  await film.click('[data-testid=request-close]');
+  await grab(22);
   // What stands behind the hearts opens from the hearts.
   await film.click('[data-testid=hearts]');
   await wait(there('[data-testid=hearts-sheet]'), 'the sheet behind the hearts');
@@ -335,7 +337,7 @@ async function story(film, grab, keep, { untilNotebook = false, notes = [] } = {
 
   // 6. The afternoon comes, and the elder's last card says when and where the town will be at the teahouse.
   const minutes = '(() => { const t = window.__lantern.client.state.frame.time; return t.hour * 60 + t.minute; })()';
-  await film.stepUntil(step('evening'), 1800, 'the card of the evening');
+  await film.runUntil(step('evening'), 1800, 'the card of the evening');
   await grab(18);
   await film.click('[data-testid=tutorial-next]');
   await wait(gone('[data-testid=tutorial-card]'), 'the card to go');
@@ -343,7 +345,7 @@ async function story(film, grab, keep, { untilNotebook = false, notes = [] } = {
   // 7. The evening at the teahouse. The task that sets the rumour straight is followed, and its button walks the manager there, to the
   // people who have come by a quarter to six.
   await wait(`${q('[data-testid=task-card]')}?.getAttribute('data-id') === 't_clear_rumour'`, 'the task of the evening');
-  await film.stepUntil(`${minutes} >= 17 * 60 + 15`, 900, 'a quarter past five');
+  await film.runUntil(`${minutes} >= 17 * 60 + 15`, 900, 'a quarter past five');
   await press('[data-testid=task-do]');
   for (let used = 0; ; used += 40) {
     if (used > 900) throw new Error('the manager did not reach the teahouse');
@@ -380,10 +382,14 @@ async function story(film, grab, keep, { untilNotebook = false, notes = [] } = {
   await page.evaluate("document.querySelector('[data-testid=judgment-clarify]').click()");
   await wait(`window.__film.frames() > ${framesBefore}`, 'the host to answer the button that clears it up');
   await wait(there('[data-testid=clarify-sum]'), 'the people to answer', 60000);
+  await grab(14);
+  await film.click('[data-testid=clarify-follow]');
+  await wait(`${q('[data-testid=clarify-follow]')}?.closest('details')?.open`, 'the witness and the manager to reply');
+  await page.evaluate(`${q('[data-testid=clarify-answer]')}.scrollIntoView({ block: 'nearest' })`);
   await grab(22);
   await film.click('[data-testid=clarify-done]');
   await film.click('[data-testid=notebook-close]');
-  await film.stepUntil(`${minutes} >= ${spokeAt} + 30`, 400, 'the half hour of speaking');
+  await film.runUntil(`${minutes} >= ${spokeAt} + 30`, 400, 'the half hour of speaking');
 
   // 9. Li Da is asked for the bamboo. The button of the task walks the manager up to him, and the preview says what he would bring and by
   // when. He promises.
@@ -401,11 +407,11 @@ async function story(film, grab, keep, { untilNotebook = false, notes = [] } = {
   // 10. The night passes. At dusk the card that sums up the day is up and holds the world until it is put away (it comes at nine in the evening,
   // whatever the manager is doing, which is why the script steps to it and not past it). In the morning the bamboo is at the bridge: the pile is
   // on the map, and the paper of the morning is up.
-  await film.stepUntil(there('[data-testid=night]'), 2400, 'the summary of the day at dusk');
+  await film.runUntil(there('[data-testid=night]'), 2400, 'the summary of the day at dusk');
   await grab(22);
   await film.click('[data-testid=night-done]');
   await wait(gone('[data-testid=night]'), 'the summary of the day to go');
-  await film.stepUntil("window.__lantern.view.stats().pile === 'small'", 2400, 'the bamboo at the bridge');
+  await film.runUntil("window.__lantern.view.stats().pile === 'small'", 2400, 'the bamboo at the bridge');
   await film.stepUntil('window.__lantern.play.flows.state.recap !== null', 400, 'the paper of the morning');
   await closeElder();
   await wait(there('[data-testid=gazette]'), 'the paper of the morning');
@@ -666,9 +672,11 @@ async function storyIn(browser, origin, look, dir) {
     lang,
     theme,
     size: WINDOW,
-    scale: SCALE,
-    query: `pace=0.1&until=1`,
+    scale: parts.includes('notebook') ? SCALE : 1,
+    query: '',
   });
+  // Hold the opening without a one-shot tick limit, which would stop the first fast cut.
+  await film.page.evaluate('window.__film.pauseWorld(); window.__film.manualPace()');
   // A browser that composes in software can leave a hole in the map, where an opaque box of the page lies over it: a block of the colour of the page, or
   // of nothing, over the upper part of two houses in the English film at the paper of the morning. The canvas is drawn right; a canvas with a filter of its
   // own is composed in a pass of its own, and the hole does not come. (The page's policy does not let a style element in, so the property is set on the canvas.)

@@ -2,8 +2,8 @@
 # is on play, and grown-ups quarrelling frighten him.
 person: shitou
 voice:
-  zh: "李大的儿子，还是个孩子。话直，句子短，嗓门大，只用最简单的词，爱说「真的」「骗你是小狗」。心思都在玩上：河滩，竹马，有没有人陪着玩。大人一吵架就害怕。不想说就一句「我不说」。"
-  en: "Li Da's son, still a child. Blunt and loud, in short sentences and the simplest words, fond of saying really and cross my heart. His mind is on play: the riverbank, his bamboo horse, whether anyone will play with him. Grown-ups quarrelling frighten him. When he won't tell, he says so: I'm not telling."
+  zh: "石头是李大的儿子，在私塾读书。平日急着去玩，对大人追问有时不耐烦。见过的事会按照亲眼看到的次序讲，经常为了让人信而补一句自己的反应。被问到不愿说的话会当面拒绝。"
+  en: "Shitou is Li Da's son and goes to school. Eager to get back to playing, he sometimes runs out of patience with grown-ups' questions. When he saw something, he can tell what happened in the order he saw it and add what he thought to make himself believed. He refuses openly when he doesn't want to answer."
 call:
   fam_li: {zh: 我们家, en: our family}
   li_da: {zh: 爹, en: Dad}
@@ -13,17 +13,17 @@ call:
   old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "呼……再玩一会儿……（睡熟了）", en: "Zzz... five more minutes... (fast asleep)"}
-    - {zh: "唔……竹马……跑快点……（睡熟了）", en: "Mm... horsey... run faster... (fast asleep)"}
+    - {zh: "石头睡得正沉。", en: "Shitou is sound asleep."}
+    - {zh: "石头没理会。还睡着。", en: "Shitou is still asleep and doesn't stir."}
   busy:
-    - {zh: "我在忙呢，等会儿。", en: "I'm busy. In a bit."}
+    - {zh: "我正玩到一半呢，你等我一下就好。", en: "I'm in the middle of a game. Just wait a bit."}
     - {zh: "别烦我，我正玩着呢。", en: "Don't bother me. I'm playing."}
   timeout:
     - {zh: "我要回家吃饭了。", en: "I have to go home for dinner."}
     - {zh: "先生等着我背书呢，我走啦。", en: "Teacher's waiting for me to recite. I'm off."}
   unknown:
     - {zh: "我不知道呀。", en: "Dunno."}
-    - {zh: "没听过，真的。", en: "Never heard it. Really."}
+    - {zh: "真的没听过。", en: "I really haven't heard."}
   evade:
     - {zh: "我不说。", en: "I'm not telling."}
     - {zh: "不告诉你！", en: "Won't tell you!"}
@@ -34,20 +34,20 @@ lines:
     - {zh: "不对不对，不是这样。", en: "No, no. It's not like that."}
     - {zh: "你弄错啦。", en: "You got it wrong."}
   keeper_no:
-    - {zh: "我不认识你，不给你看。", en: "I don't know you. I won't show you."}
+    - {zh: "我又不认得你，怎么能给你看呀？", en: "I don't even know you. Why should I show you?"}
     - {zh: "奶奶说不能给生人看。", en: "Granny says not to show strangers."}
   took_in:
-    - {zh: "哦，记住了。", en: "Oh. Got it."}
-    - {zh: "嗯，知道啦。", en: "Uh-huh, I know now."}
+    - {zh: "哦，这下我听懂啦！", en: "Oh, now I get it!"}
+    - {zh: "你说的是这回事，我记住了。", en: "So that's what you mean. I'll remember."}
   knew:
     - {zh: "这个我早知道啦。", en: "I knew that ages ago."}
     - {zh: "我也知道这个。", en: "I know that too."}
   doubted:
     - {zh: "不对，我听的不是这样。", en: "Nope. That's not what I heard."}
-    - {zh: "跟我听的不一样。", en: "That's not what they told me."}
+    - {zh: "可我听到的不是这句呀，你再说一遍？", en: "That's not what I heard. Can you say it again?"}
   caught:
-    - {zh: "你骗人！我不理你了。", en: "You lied! I'm not talking to you anymore."}
-    - {zh: "大骗子，我再也不信你了。", en: "Big liar. I'll never believe you again."}
+    - {zh: "我刚才还信了你的话，原来你骗我！", en: "I believed you just now. You lied to me!"}
+    - {zh: "你还想让我信你啊？", en: "You still want me to believe you?"}
   deal:
     - {zh: "好，说定啦。", en: "Okay. It's a deal."}
     - {zh: "拉钩，说话算话！", en: "Pinky promise, no backing out!"}
@@ -55,11 +55,11 @@ lines:
     - {zh: "你什么都没给我，骗人。", en: "You haven't given me anything. Fibber."}
     - {zh: "光会说，我才不信。", en: "All you do is talk. I don't believe it."}
   kept_thanks:
-    - {zh: "你说话算话，谢谢你。", en: "You kept your promise. Thank you."}
+    - {zh: "你说会办就真办了，下回我还信你。", en: "You said you'd do it, and you did. I'll believe you next time too."}
     - {zh: "你真的做到啦！", en: "You really did it!"}
   will_do:
     - {zh: "好，我去。", en: "Okay, I'll go."}
-    - {zh: "行，我来。", en: "Okay, I'll do it."}
+    - {zh: "好嘛，那就让我来。", en: "All right, then. Let me do it."}
   cannot:
     - {zh: "这个我做不来。", en: "I can't do that."}
     - {zh: "我办不到啦。", en: "I can't."}
@@ -80,7 +80,7 @@ lines:
     - {zh: "那晚我睡着了，真的。", en: "I was asleep that night. Really."}
   testified:
     - {zh: "我真的看见了，骗你是小狗。", en: "I really saw it. Cross my heart."}
-    - {zh: "我是亲眼看到的。", en: "I saw it with my own eyes."}
+    - {zh: "我那会儿就在边上，自个儿看到的。", en: "I was right there when it happened. I saw it myself."}
   too_late:
     - {zh: "天黑啦，明天再来。", en: "It's dark. Come tomorrow."}
     - {zh: "太晚了，我要睡觉了。", en: "It's too late. I'm going to bed."}
@@ -101,7 +101,7 @@ lines:
     - {zh: "说了不行啦！", en: "I said no!"}
   elder_yes:
     - {zh: "我听懂啦，就这样。", en: "I get it now. That's that."}
-    - {zh: "你说的对，我信。", en: "You're right. I believe you."}
+    - {zh: "哦，那我信。", en: "Oh. In that case, I believe you."}
   elder_no:
     - {zh: "还是不够，我不信。", en: "Still not enough. I don't believe it."}
     - {zh: "我没听懂。", en: "I didn't get it."}
@@ -124,10 +124,10 @@ lines:
     - {zh: "桥边的{item}好多啦，够啦。", en: "There's so much {item} at the bridge. Enough."}
     - {zh: "不要了，{item}够啦。", en: "No more. That's enough {item}."}
   point_heard:
-    - {zh: "我不知道。我听{name}说过，你去问。", en: "I dunno. I heard {name} say something, so go ask."}
-    - {zh: "没听过。{name}好像讲过，你去问吧。", en: "Never heard it. I think {name} talked about it, so go ask."}
+    - {zh: "这我也说不好，我就听{name}提了一回，你自己去问嘛。", en: "I only heard {name} mention it once. Go ask there."}
+    - {zh: "是{name}跟我讲的，你要问去问那边嘛。", en: "I heard it from {name}. If you want to know, go ask there."}
   point_hub:
-    - {zh: "不知道。你去问{name}，什么都知道。", en: "Dunno. Go ask {name}, who knows everything."}
+    - {zh: "你问我没用呀，镇上有什么事，你去问{name}。", en: "Don't ask me. If you want to know what's happening in town, ask {name}."}
     - {zh: "大人的事，去问{name}。", en: "For grown-up stuff, ask {name}."}
   gift_like:
     - {zh: "{item}！给我的？真的？", en: "Some {item}! For me? Really?"}
@@ -140,20 +140,20 @@ lines:
     - {zh: "{item}是大人喝的。给奶奶吧。", en: "Those {item} are for grown-ups. Give them to Granny."}
 frames:
   seen:
-    - {zh: "{line}。我看见的，真的。", en: "{line}. I saw it, really."}
-    - {zh: "真的，{line}。", en: "Really and truly, {line}."}
+    - {zh: "{line}，我看得清清楚楚。", en: "{line}. I saw it clear as anything."}
+    - {zh: "{line}，真的，我都瞧见啦！", en: "{line}. I really saw it!"}
   heard:
-    - {zh: "{teller}告诉我的，说{line}。", en: "{teller} told me {line}."}
-    - {zh: "我听{teller}说，{line}。", en: "I heard {teller} say {line}."}
+    - {zh: "是{teller}跟我说的呀，说{line}。", en: "It was {teller} who told me that {line}."}
+    - {zh: "我就是听{teller}说的，说{line}。", en: "Well, I heard {teller} say {line}."}
   unknown:
-    - {zh: "我听大人说，{line}。", en: "I heard the grown-ups say {line}."}
-    - {zh: "大家都在说，{line}。", en: "Everybody's saying {line}."}
+    - {zh: "我听过一句，说{line}。", en: "I heard someone say {line} once."}
+    - {zh: "有人讲{line}。我没问谁先说的。", en: "I heard that {line}. I didn't ask who said it first."}
   own:
     - {zh: "我心里想，{line}。", en: "I think {line}."}
-    - {zh: "我想的是，{line}。", en: "What I think is {line}."}
+    - {zh: "我觉得嘛，{line}。", en: "Well, I think {line}."}
   guess_own:
     - {zh: "我随便说的哦，{hedge}{line}。", en: "I'm just saying, okay. {hedge} {line}."}
-    - {zh: "不一定对，{hedge}{line}。", en: "Might be wrong. {hedge} {line}."}
+    - {zh: "{hedge}{line}。可别说是我讲的。", en: "{hedge} {line}. Don't tell anyone I said it."}
   guess_heard:
     - {zh: "{teller}说过，{hedge}{line}。", en: "{teller} said something like it. {hedge} {line}."}
     - {zh: "听{teller}讲的，{hedge}{line}。", en: "{teller} said it, so {hedge} {line}."}
@@ -161,8 +161,8 @@ frames:
     - {zh: "有人这么说过，{hedge}{line}。", en: "Somebody said so. {hedge} {line}."}
     - {zh: "我忘了谁说的，{hedge}{line}。", en: "I forgot who said it. {hedge} {line}."}
   rival:
-    - {zh: "可是{teller}说不是这样，{line}。", en: "But {teller} says it's not like that, that {line}."}
-    - {zh: "{teller}说的跟这个不一样，说{line}。", en: "{teller} said something different, that {line}."}
+    - {zh: "可是{teller}说{line}。", en: "But I heard it another way. I heard {teller} say {line}."}
+    - {zh: "可我问过{teller}呀，那时候听见说{line}。", en: "But when I asked {teller}, I heard that {line}."}
   known:
     - {zh: "{line}，大家都知道！", en: "{line}. Everybody knows that!"}
     - {zh: "{line}。这个我早就知道了。", en: "{line}. I knew that ages ago."}

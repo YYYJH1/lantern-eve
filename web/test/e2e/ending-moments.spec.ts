@@ -164,17 +164,17 @@ test.describe("the row at the foot of the ending page", () => {
 
   const WORDS = {
     en: {
-      title: "Moments of this game",
-      words: ["What you said came back to you from Shopkeeper Zhou.", "Lanterns hang on both banks.", "People of the Li and Zhou families carry materials together for the first time."],
+      title: "Scenes from this game",
+      words: ["You heard your own words come back to you from Shopkeeper Zhou.", "Lanterns hang on both banks.", "For the first time, the Lis and the Zhous carried supplies together."],
       // tick 812 is 12:46 of the first day, 3200 is 15:25 of the second, 4490 is 08:55 of the third
       where: ["Zhou Family House, Day 1 12:46", "Stone Bridge, Day 2 15:25", "Stone Bridge, Day 3 08:55"],
-      alt: "The moment: What you said came back to you from Shopkeeper Zhou.",
+      alt: "Scene showing You heard your own words come back to you from Shopkeeper Zhou.",
     },
     zh: {
-      title: "这一局的几个时刻",
-      words: ["你说过的话，又从周掌柜那里传回来了。", "两岸都挂起了灯。", "李家和周家的人，第一次一起搬料。"],
+      title: "这几天的事",
+      words: ["你从周掌柜嘴里又听到了自己原先说的话。", "两岸都挂起了灯。", "李家和周家头一回一起搬料。"],
       where: ["周家宅，第一天 12:46", "石桥，第二天 15:25", "石桥，第三天 08:55"],
-      alt: "这一刻：你说过的话，又从周掌柜那里传回来了。",
+      alt: "场景图：你从周掌柜嘴里又听到了自己原先说的话。",
     },
   } as const;
 

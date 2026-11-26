@@ -93,8 +93,8 @@ def test_the_generated_module_is_the_one_the_bridge_world_reads():
         speaker="zhou_zhanggui",
     )
     assert said == {
-        "zh": "周家伙计跟我说，李二昨晚在桥边。",
-        "en": "Zhou's Clerk told me that Li Er was at the bridge last night.",
+        "zh": "我听周家伙计说过，李二出事那晚在桥边。",
+        "en": "I heard Zhou's Clerk say that Li Er was at the bridge that night.",
     }
 
 

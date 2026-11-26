@@ -3,8 +3,8 @@
 # blames him for the rail, and he smiles it off until he cannot.
 person: li_er
 voice:
-  zh: "李家老二，在扎灯坊糊灯。随和，爱拿自己打趣，被冤枉了也先笑一笑。拿不准时话会拖长：「这个嘛……」。手上总有活，糊灯，调糨糊。在乎别人怎么看自己，也在乎灯会的灯糊不糊得完。不想说就一句「我说了也没人信，你去问别人吧」。难得冒火，冒火也就一句：「我真没去桥那边！」"
-  en: "The second Li son, who pastes lanterns at the workshop. Easygoing, quick to make fun of himself, and even when wrongly blamed he smiles first. When unsure he draws his words out: well, now... His hands are always busy with paper and paste. He minds what people think of him, and whether the festival lanterns will be finished in time. When he would rather not answer: nobody believes me anyway, go and ask someone else. He seldom loses his temper, and then only to say: I really didn't go near the bridge!"
+  zh: "李二在扎灯坊糊灯，平日跟谁都说得上话，偶尔拿自己的笨拙开个玩笑。知道有人拿栏杆的事说嘴，初见总管也会惦记对方是不是来问这个。讲自己干过什么，情急也会把事情从头说清。不愿说时会把话推开。"
+  en: "Li Er pastes paper onto lanterns and usually gets on with people, sometimes joking at his own expense. A first meeting with the Manager makes him wonder whether the talk about the railing has brought them there. If asked what he did, he can give a full account even when pressed. He turns away questions he would rather leave alone."
 call:
   fam_li: {zh: 我们家, en: our family}
   li_da: {zh: 大哥, en: my brother}
@@ -13,17 +13,17 @@ call:
   old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "嘿……灯笼……捞上来了……（睡熟了）", en: "Heh... the lantern... got it out... (fast asleep)"}
-    - {zh: "呼……糨糊……别干……（睡熟了）", en: "Zzz... the paste... don't dry... (fast asleep)"}
+    - {zh: "李二翻了个身，接着睡。", en: "Li Er rolls over and goes on sleeping."}
+    - {zh: "李二没醒。", en: "Li Er doesn't wake."}
   busy:
     - {zh: "我手上正忙着呢，你等我一下。", en: "My hands are full right now. Give me a minute."}
-    - {zh: "这会儿走不开，回头再聊。", en: "Can't stop just now. Let's talk later."}
+    - {zh: "等手上的活做完，咱们再聊。", en: "Let's talk when I've finished up here."}
   timeout:
     - {zh: "糨糊要干了，我得回去了。", en: "The paste will dry. I have to get back."}
     - {zh: "到点了，我得走了。回头再聊啊。", en: "That's the time. I have to go. Talk later."}
   unknown:
     - {zh: "这个嘛……我还真不知道。", en: "Well, now... I really don't know."}
-    - {zh: "这我哪知道啊。", en: "No idea about that, sorry."}
+    - {zh: "这事我还真没听过。", en: "I haven't heard about that one."}
   evade:
     - {zh: "我说了也没人信，你去问别人吧。", en: "Nobody believes me anyway. Go and ask someone else."}
     - {zh: "这个就别问了吧。", en: "Let's leave that one alone."}
@@ -34,19 +34,19 @@ lines:
     - {zh: "不是的，不是那么回事。", en: "No, no, that's not it."}
     - {zh: "不对不对，你听反了。", en: "No, no. You've got it backwards."}
   keeper_no:
-    - {zh: "咱们才刚认识，下回吧。", en: "We've only just met. Next time."}
+    - {zh: "咱们刚打上照面，等熟了些，你再来问我。", en: "We've only just met. Ask me again when we know each other a little better."}
     - {zh: "这个……我不好给不熟的人看。", en: "That's... not something I show to people I hardly know."}
   took_in:
-    - {zh: "哦，原来是这样。我记着了。", en: "Oh, I see. I'll keep that in mind."}
-    - {zh: "好嘞，我晓得了。", en: "Right, got it."}
+    - {zh: "难怪这事听着蹊跷，照你这么说就顺了。", en: "I couldn't make sense of it before. It makes more sense the way you tell it."}
+    - {zh: "嗯，你刚才说的我记住了。", en: "Right, I'll remember what you just told me."}
   knew:
     - {zh: "这个啊，我早听说了。", en: "Oh, that. I'd heard already."}
     - {zh: "这事我也知道。", en: "I know that one already."}
   doubted:
-    - {zh: "不对吧，我听的可不是这样。", en: "That doesn't sound right. It's not what I heard."}
-    - {zh: "我听的好像不是这么回事。", en: "That's not quite how I heard it."}
+    - {zh: "等等，我听的那一段跟你说的不一样。", en: "Hang on. The part I heard doesn't match what you said."}
+    - {zh: "我听来的可不是这一回事，你是跟谁问的？", en: "That's not the version I heard. Who did you ask?"}
   caught:
-    - {zh: "原来你也拿话哄我。我还当你是好人呢。", en: "So you were stringing me along too. And I took you for a decent sort."}
+    - {zh: "我还想着总算有人肯好好跟我说话，怎么连你也拿瞎话哄我？", en: "I thought someone was finally speaking straight to me. Why did you lie to me too?"}
     - {zh: "你骗我！亏我还信你。", en: "You lied to me! And I trusted you."}
   deal:
     - {zh: "行啊，就这么说定了。", en: "Sure, that's a deal."}
@@ -55,8 +55,8 @@ lines:
     - {zh: "光说不做，谁信啊。", en: "All talk. Who'd believe that."}
     - {zh: "空口白话的，我可不上当。", en: "Just empty words. I won't fall for it."}
   kept_thanks:
-    - {zh: "你还真说到做到了。这回我记着。", en: "You really did what you said. I'll remember this one."}
-    - {zh: "说到做到啊，李家欠你一个人情。", en: "You kept your word. The Li family owes you one."}
+    - {zh: "你还真把事办成了，我先前还怕给你添了麻烦。", en: "You saw it through after all. I was afraid I'd made trouble for you."}
+    - {zh: "帮了我们家这么个忙，我忘不了。", en: "You've done my family a good turn. I'll remember it."}
   will_do:
     - {zh: "行，包在我身上。", en: "Sure, leave it to me."}
     - {zh: "好嘞，我这就去办。", en: "On it. I'll go and do it now."}
@@ -79,8 +79,8 @@ lines:
     - {zh: "我真没什么可说的。", en: "I honestly have nothing to say."}
     - {zh: "没啥可讲的，真的。", en: "Nothing to tell. Really."}
   testified:
-    - {zh: "我说的句句是实话，一句没编。", en: "Every word of it is true. I haven't made up a thing."}
-    - {zh: "我不瞎编，看见什么讲什么。", en: "I don't make things up. I tell what I saw."}
+    - {zh: "你问的是我亲眼看见的，我照实给你说。", en: "If you want what I saw myself, I'll tell you straight."}
+    - {zh: "你问我看见什么，我就照实说。", en: "Ask what I saw and I'll tell you straight."}
   too_late:
     - {zh: "太晚啦，明天早上再说吧。", en: "It's too late now. Let's do it tomorrow morning."}
     - {zh: "天都黑了，明早再来找我。", en: "It's dark already. Find me tomorrow morning."}
@@ -124,8 +124,8 @@ lines:
     - {zh: "{item}够了够了，再送我都不好意思了。", en: "That's plenty of {item}. Any more and I'd feel silly."}
     - {zh: "桥边堆的{item}够用了。", en: "The {item} piled at the bridge is plenty."}
   point_heard:
-    - {zh: "这个嘛……我不清楚。不过听{name}提起过，你去问问？", en: "Well, now... I don't know. I did hear {name} mention it, though. Why not ask?"}
-    - {zh: "我真不知道啊。好像{name}说起过，你去问问吧。", en: "I really don't know. I think {name} talked about it, so go and ask."}
+    - {zh: "我就听{name}随口提了几句，你真想弄明白，就去问问吧。", en: "I just heard {name} mention it in passing. Ask there if you want to get to the bottom of it."}
+    - {zh: "我是听{name}说的，后头要问什么，找那边比问我强。", en: "I heard it from {name}. You'll get a better answer there if you have more questions."}
   point_hub:
     - {zh: "这我答不上来。你去问{name}，什么消息都听得到。", en: "I can't answer that. Ask {name}, who hears every bit of news."}
     - {zh: "我不知道。{name}整天守着茶馆，镇上的事都清楚。", en: "I don't know. Try {name}, who sits in the teahouse all day and knows the town's business."}
@@ -140,35 +140,35 @@ lines:
     - {zh: "{item}啊……我留着也是浪费，你送别人吧。", en: "Ah, {item}... it'd be wasted on me. Give it to someone else."}
 frames:
   seen:
-    - {zh: "实话跟你讲，{line}。", en: "I'll level with you, {line}."}
-    - {zh: "{line}，这个我最清楚。", en: "{line}. Nobody knows that better than me."}
+    - {zh: "我当时就在那儿，{line}。", en: "I was there myself and saw that {line}."}
+    - {zh: "{line}，这一段我在场，看得清楚。", en: "{line}, and I was there to see that part myself."}
   heard:
-    - {zh: "我是听{teller}讲的，说{line}。", en: "I got it from {teller}, who said {line}."}
-    - {zh: "{teller}跟我讲，说是{line}。", en: "{teller} was telling me that {line}."}
+    - {zh: "你问我从哪儿听来的，我听{teller}讲过，说{line}。", en: "If you want to know where I heard it, {teller} told me that {line}."}
+    - {zh: "{teller}说起过这个，说是{line}。", en: "I remember how {teller} put it: {line}."}
   unknown:
     - {zh: "都这么传，说{line}。", en: "That's what's going round, that {line}."}
     - {zh: "有人这么讲，{line}。谁讲的我也说不上来。", en: "Some folks say {line}. Who said it first, I couldn't tell you."}
   own:
     - {zh: "我觉着吧，{line}。", en: "If you want my take, {line}."}
-    - {zh: "要我说，{line}。", en: "My two cents, {line}."}
+    - {zh: "要问我呢，{line}。", en: "If you ask me, I'd say {line}."}
   guess_own:
     - {zh: "这个嘛……{hedge}{line}。", en: "Well now... {hedge} {line}."}
     - {zh: "说不好的，{hedge}{line}。", en: "Hard to say, but {hedge} {line}."}
   guess_heard:
     - {zh: "听{teller}那口气，{hedge}{line}。", en: "The way {teller} told it, {hedge} {line}."}
-    - {zh: "{teller}也是随口一说，{hedge}{line}。", en: "{teller} was only saying, but {hedge} {line}."}
+    - {zh: "照{teller}那句说的，{hedge}{line}。", en: "Going by what {teller} said, {hedge} {line}."}
   guess_unknown:
     - {zh: "不知道谁讲的，{hedge}{line}。", en: "Can't say who told me, but {hedge} {line}."}
-    - {zh: "就是听人瞎传，{hedge}{line}。", en: "It's just talk going round, but {hedge} {line}."}
+    - {zh: "我也就听了一耳朵，{hedge}{line}。", en: "I only caught a little, but {hedge} {line}."}
   rival:
     - {zh: "不过{teller}跟我说的又不一样，说{line}。", en: "Though {teller} told me something different, that {line}."}
-    - {zh: "{teller}说的又是另一样，说{line}。我也拿不准了。", en: "{teller} told it another way, that {line}. Now I'm not sure."}
+    - {zh: "可还有一种讲法，我听{teller}说是{line}。", en: "There's another version too. I heard from {teller} that {line}."}
   known:
     - {zh: "{line}，这谁不知道啊。", en: "{line}. Ask anyone."}
     - {zh: "{line}。全镇都晓得。", en: "{line}. The whole town knows."}
 hedges:
-  - {zh: 我猜, en: I'd guess}
-  - {zh: 没准是, en: I'd wager}
+  - {zh: 我猜, en: "I'd guess"}
+  - {zh: 没准是, en: I figure}
 # What he says by the state of the game (world/bridge/roles.py): a greeting as a talk opens, a last
 # word as the manager leaves, and the epilogue of the ending page. The first entry whose conditions
 # all hold is the one. The town blames him for the rail until it is set straight in public, so his
@@ -177,7 +177,7 @@ greet:
   - id: new
     when: [{kind: acquainted, is: new}]
     lines:
-      - {zh: "我是李二，在扎灯坊糊灯的。镇上怎么说我，你该听说了吧？", en: "I'm Li Er. I paste lanterns at the workshop. You'll have heard what the town says about me?"}
+      - {zh: "你是来问石桥的吧？我是李二，有什么话你就问。", en: "You've come to ask about the bridge, have you? I'm Li Er. Go ahead and ask."}
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
@@ -189,19 +189,19 @@ greet:
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "桥的事说开了。我这脸，总算抬得起来了。", en: "The bridge business is out in the open. I can hold my head up at last."}
+      - {zh: "现在桥的事说清了，我也能抬头见人了。", en: "Now that people know what happened to the bridge, I can look them in the eye again."}
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
-      - {zh: "两家能坐一桌吃饭了，我心里也敞亮多了。", en: "The two houses sat down to eat together. I feel lighter for it."}
+      - {zh: "两家总算吃上了这桌饭。我这下放心了。", en: "The two families finally sat down to eat. I can stop worrying now."}
   - id: kept
     when: [{kind: promised, state: kept}]
     lines:
-      - {zh: "你答应我的事办了。嘿，我欠你一回。", en: "You did what you promised. Heh, I owe you one."}
+      - {zh: "你真把答应我的事办了，我这回可欠你个人情。", en: "You came through for me. I owe you one this time."}
   - id: cleared
     when: [{kind: cleared}]
     lines:
-      - {zh: "我那晚只是找灯笼，大伙儿总算信了。不容易啊。", en: "I was only looking for my lantern that night, and folks finally believe it. It wasn't easy."}
+      - {zh: "我那晚本来就是去找灯笼的，要不是你肯开口，大家还不知要猜到几时。", en: "I went there that night to look for the lantern. You spoke up, or people would still be guessing."}
   - id: again
     when: [{kind: acquainted, is: today}]
     lines:
@@ -215,7 +215,7 @@ chat:
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
-      - {zh: "没事没事，我等着。", en: "No trouble at all, I'll wait."}
+      - {zh: "这事我先不催你。", en: "I won't press you about it for now."}
   - id: festival
     when: [{kind: after, day: 5, hour: 15}]
     lines:
@@ -223,7 +223,7 @@ chat:
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "说开了真好。", en: "It's good to have it said."}
+      - {zh: "往后再有人问桥的事，就有话回了。", en: "Next time someone asks about the bridge, I've got an answer."}
   - id: cleared
     when: [{kind: cleared}]
     lines:
@@ -235,7 +235,7 @@ chat:
 epilogue:
   - id: full
     when: [{kind: cleared}, {kind: flag, flag: bridge_fixed}, {kind: flag, flag: truth_told}]
-    text: {zh: "李二糊的灯排在游灯最前头。再没有人提起毁桥的闲话。", en: "The lanterns Li Er pasted led the parade. Nobody spoke of the rumour any more."}
+    text: {zh: "李二糊的灯排在游灯队前头。路边再没人提李二弄坏桥的那桩闲话。", en: "Li Er's lanterns led the parade. Along the route, nobody brought up the story that Li Er broke the bridge."}
   - id: cleared_bridge
     when: [{kind: cleared}, {kind: flag, flag: bridge_fixed}]
     text: {zh: "李二提着自己糊的灯过了桥。街坊看见了，都点头打招呼。", en: "Li Er crossed the bridge with a lantern from the workshop. The neighbours saw and nodded hello."}

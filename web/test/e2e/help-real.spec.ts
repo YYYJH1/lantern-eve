@@ -61,7 +61,7 @@ test.describe("the acts around the manager, in the real game", () => {
     await page.getByTestId("verb-look").click({ force: true });
     await expect(page.getByTestId("around-why")).toHaveText(en["act.off.busy"]);
     await run(page);
-    await expect(notes(page).filter({ hasText: /You noted down|You found nothing/ })).toHaveCount(1, { timeout: 30_000 });
+    await expect(notes(page).filter({ hasText: /^A closer look (turned up|revealed)/ })).toHaveCount(1, { timeout: 30_000 });
     await expect(page.getByTestId("verb-rally")).toHaveAttribute("aria-disabled", "false");
     expect(lantern.pageErrors).toEqual([]);
   });

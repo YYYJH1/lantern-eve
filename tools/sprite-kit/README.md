@@ -2,19 +2,19 @@
 
 # Sprite kit
 
-The game page does not draw the people, the places and the props of the town map itself. This kit renders them once, at build time: a small WebGL2 ray marcher of our own (signed distance fields, toon shading and ink lines, no library and no model files) that bakes every frame of every sprite into two atlases and a manifest. The game page only draws the frames.
+This kit renders the people, places and props of the town map at build time. Its WebGL2 ray marcher uses signed distance fields, toon shading and ink outlines. It needs no external libraries or model files. The client draws the baked frames using the atlas manifest.
 
 ```
 node tools/sprite-kit/bake.mjs [--jobs 4] [--only char.li_da,place.bridge] [--scales 1,2] [--px 56] [--out out] [--kmax N]
 ```
 
-It needs Node 22 and the Playwright of `web/` with its Chromium. The script looks for Playwright in `../../web`, and `KIT_PLAYWRIGHT_FROM` names another `web/` folder. Software WebGL is enough, and a graphics card only makes the bake faster. `--jobs` is the number of browsers that bake at the same time, `--scales` the atlases to make (`1,2`), `--px` the pixels to a world unit at scale 1. `--only` bakes the sprites with these ids or id prefixes, and `--kmax N` only the first N frames of every animation. A bake with either writes a manifest that is not whole, so it is for looking and not for shipping. The heaviest frames are baked first, and each of them needs a few GB while it renders at 2x, so every further job needs that much more memory.
+Use Node 22 and Chromium from the Playwright installation in `web/`. The script looks in `../../web` unless `KIT_PLAYWRIGHT_FROM` points to another directory. Software WebGL works. A GPU can speed up the bake. `--jobs` sets the number of parallel browsers, `--scales` selects atlas resolutions (`1,2`), and `--px` sets pixels per world unit at 1x. Use `--only` to choose sprite IDs or prefixes, or `--kmax N` for the first N frames of each animation. Either leaves the manifest incomplete, so use a full bake for release. The script starts with the largest frames, which take several GB per job at 2x.
 
 ## What it writes
 
-`out/` holds `atlas-1x.webp`, the 2x atlas (`atlas-2x.webp`, or `atlas-2x-1.webp` and `atlas-2x-2.webp` when it is taller than 4,096 px) (all lossless), `manifest.json`, and two pictures for the eye: `contact-sheet.png` with every sprite, its anchor and its footprint, and `walk4.gif`. The timings of the run go to `bake-report.json` next to `bake.mjs`. Git ignores both `out/` and the report.
+Under `out/`, find the lossless 1x atlas (`atlas-1x.webp`), the lossless 2x atlas, `manifest.json`, `contact-sheet.png` with anchors and footprints for all sprites, and `walk4.gif`. The 2x atlas splits into `atlas-2x-1.webp` and `atlas-2x-2.webp` above 4,096 px. Run timings go into `bake-report.json` next to `bake.mjs`. Git ignores both the output directory and the report.
 
-The manifest (`schema: lantern-eve/sprite-kit@1`) is the whole contract with the page. It gives the camera and the units (one grid cell is 32 px wide and 25.22 px deep on the screen, and height adds -34.48 px per world unit), the atlas files, and for each sprite its frame size, its anchor, the position of each frame in each atlas, and what the sprite needs to be placed:
+The web client reads the atlas files, camera and units from the manifest (`schema: lantern-eve/sprite-kit@1`). A grid cell projects to 32 px wide and 25.22 px deep, and one world unit of height raises the sprite by 34.48 px. Each sprite entry gives frame size, anchor, atlas offsets and placement data.
 
 - A character has the animations `idle`, `walk` and `talk`, and `carry` for the ones that carry something. Each has the four directions `down`, `up`, `left` and `right`, which are separate renders. `walk` has the length of its stride in pixels. The anchor is the ground point between the feet. The kit has a figure for each of the twenty people of the cast and one for the manager, and three more of the town (a man, a woman and a child). `web/src/page/map/sprites.ts` says who is drawn with which.
 - A place has its footprint in cells and the anchor at the south-west corner of the footprint on the ground. A house has the mounts of its two door lanterns, a building with windows names the sprite of its lit windows (`lights`, see below), and the bridge has the lift of a walker on its deck.
@@ -24,11 +24,11 @@ Frame sizes, anchors and offsets are in pixels at scale 1. The 2x atlas holds th
 
 ## The windows at night
 
-A building with windows has a second sprite, `fx.windows.<name>`, and it is not a second copy of the building. It is the lit panes of the windows, and the paper of the lanterns that hang on the building, rendered once from the same model in a mode of the ray marcher (`uMode 1`) where the panes are a flat warm colour and everything else is clear but still hides what lies behind it. The lattice bars in front of a pane stay dark, so the light shows through the lattice. The page adds this sprite to the picture over the building at night, anchored where the building is, and draws nothing of it by day. The building's entry names it (`lights`), and its own entry has the windows as `spots`: `[x, y, w, h]` from its anchor in 1x pixels (y down), which the page puts a soft halo on. Instances of one building share the one sprite: the two Li houses share one, and so do the two Zhou houses, and the stalls and the bridge have none.
+For a building with windows, render `fx.windows.<name>` from the same model using ray marcher mode `uMode 1`. In that mode, lit panes and lantern paper are a flat warm colour. The other surfaces remain transparent while still blocking surfaces behind them. This leaves the window lattice dark. The client draws the effect over the building at night using the building’s anchor and its `lights` reference. The effect’s `spots` field gives halo rectangles as `[x, y, w, h]` in 1x pixels from the anchor, with y down. Instances of each house model share one window sprite. Stalls and the bridge have none.
 
 ## Objects for the corner of the page
 
-Four sprites are not for the map. They are for the corner of the page, where the manager keeps the tools of the job: `prop.elder_seal` (a stone seal with the character 族 cut in its face and a red cord tied round its knob), `prop.notebook` (a thread-bound book lying flat, 见闻簿 on its label, the spine on the right as in the old books), and `prop.incense_unlit` and `prop.incense_lit` (a bronze burner with a stick of incense, and the same burner with the tip glowing and a thread of smoke going up). They are baked by the same line as the people and the props, with the same camera and light, and are 57 to 71 pixels tall at 1x. Each stands on one point and has no footprint. The two burners are one model, so a page that swaps them puts them on the same anchor and nothing moves: the lit one is taller above the anchor by the smoke, and the room under the anchor is the same.
+The manager’s tools in the page corner come from four sprites. `prop.elder_seal` has a stone face engraved with 族 and a red cord. `prop.notebook` is a thread-bound book with a 见闻簿 label and the spine on the right. `prop.incense_unlit` and `prop.incense_lit` are the same bronze incense burner with an unlit stick or a glowing tip and smoke. All four use the map’s camera and light, measure 57 to 71 px high at 1x and have a single anchor with no footprint. The burner sprites share their anchor and the space below it, so only the smoke rises when the client switches to the lit sprite.
 
 A page draws one like any other sprite of the manifest: `frames` gives `[page, x, y]` in the atlas, `frame` the size in pixels at 1x and `anchor` the ground point in the frame.
 
@@ -40,7 +40,7 @@ The objects have a shader program of their own. `src/shaders/objects.glsl` holds
 node tools/sprite-kit/compare.mjs web/public/sprites tools/sprite-kit/out [--partial]
 ```
 
-It decodes the atlases of the two folders in Chromium and compares every byte of the pixels, sprite by sprite and frame by frame, and the manifest entry of each sprite without the positions of its frames (a frame moves in the atlas when a sprite is added, and its pixels do not). A sprite that only the new manifest has is listed and is no error. `--partial` also lets the new manifest lack sprites, for a bake with `--only`. The exit code is 0 when everything compared is identical.
+The comparison decodes both atlases in Chromium, checks each sprite frame byte for byte and compares the manifest entries. Atlas positions are excepted because frame packing can move pixels without changing them. The tool lists new sprite IDs without failing. `--partial` allows missing IDs in the new bake for runs using `--only`. The process exits with 0 if all compared entries match.
 
 ## Where the art goes
 
@@ -55,7 +55,7 @@ The page reads the manifest and takes no frame from a fixed place. A sprite that
 
 ## The bake is deterministic
 
-The same sources and the same options give byte-identical files. The order in which the browsers finish does not matter, because the frames are sorted before they are packed, and the colour profile that Chromium adds is cut out of the images, so every loader shows the same colours. What differs from run to run, the timings, is kept out of `out/`. A change in the four files under `web/public/sprites/` (the atlases and `manifest.json`) therefore comes from a change in the sources or the options.
+The same source and options yield byte-identical files. The packer sorts frames before writing, regardless of the order in which Chromium jobs finish. It also strips Chromium’s colour profile. Timings live outside `out/`. Changes to the atlases or `manifest.json` in `web/public/sprites/` therefore reflect a change in the source or options.
 
 ## The sources
 

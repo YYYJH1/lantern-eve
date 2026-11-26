@@ -8,11 +8,11 @@
 <source media="(prefers-color-scheme: dark)" srcset="assets/architecture-en-dark.png">
 <img alt="One Python core, two hosts (a browser worker with Pyodide and a Python server), one web client, and replays that reproduce a game tick for tick" src="assets/architecture-en-light.png" width="920"></picture></p>
 
-The world is `lantern_core`, a pure state machine. A call takes the inputs of one tick as JSON and returns that tick's outputs as JSON, and nothing in the core reads a clock, a file or the network. The host numbers every input that can change the world (a player action, a model result, a pause) when it arrives, and records it, so a replay reproduces the game tick for tick. The state holds no floats, only integers, strings, booleans and null in lists and objects, and its SHA-256 is the same under CPython and under Pyodide.
+`lantern_core` is the game's state machine. Each tick takes JSON inputs and returns JSON outputs. The host handles clocks, files and network access. It numbers state-changing inputs as they arrive, including player actions, model replies and pauses. A replay sends those inputs back in order. The state uses integers, strings, booleans, `null`, lists and objects. Given the same inputs, CPython and Pyodide produce the same SHA-256 at every tick.
 
-The browser host runs the core in Pyodide inside a module worker. The server host runs it under CPython with asyncio. Both keep to the contract in the docstring of `core/lantern_core/api.py`.
+The browser host runs the core in Pyodide inside a module worker. The server host uses CPython and asyncio. The docstring in `core/lantern_core/api.py` defines the interface for both.
 
-The `lantern-eve` command runs the server host. `lantern-eve play` serves the built web client on 127.0.0.1 and runs one session per game. A session runs the loop of the browser host in Python. It numbers inputs on receipt, steps the core on a fixed-timestep accumulator, hands model requests to a transport and records what the core applied. The page talks to it over a WebSocket, with the messages of the browser host and a few of its own, which `host_server/lantern_eve/protocol.py` documents. Each game's replay goes to `runs/` in the browser host's format, so `lantern_core.replay.rebuild` reads it as it stands. [web/README.md](../web/README.md) says how to run the web client against it.
+`lantern-eve play` runs the server host on `127.0.0.1`, serves the built page and opens one session per game. Each session numbers incoming inputs, steps the core at a fixed interval, passes model requests to the transport and records the inputs the core applied. The page connects over WebSocket using the protocol documented in `host_server/lantern_eve/protocol.py`. Replays go to `runs/` in the browser host format, ready for `lantern_core.replay.rebuild`. See the [web client guide](../web/README.md) for connection instructions.
 
 ## Layout
 
@@ -43,6 +43,8 @@ npm --prefix web exec -- playwright install chromium
 npm --prefix web run test:e2e
 ```
 
-`-n 8` runs the tests in eight processes (pytest-xdist). pytest skips the cross-host tests until `npm ci --prefix tests/cross_host` has run, and the check of the built page until `web/dist` is built. `lantern-eve batch` plays the seeds of the demo world `m0` headless (`--scenario bridge` plays the town), with one call of the core per tick. It prints one line per seed with the final tick and the state hash, and the same seeds print the same lines on every run.
+`pytest -n 8` runs eight processes via pytest-xdist. The cross-host tests require `npm ci --prefix tests/cross_host`, and the built-page test requires `web/dist`. pytest skips each check when its prerequisite is missing.
 
-CI runs on every push to main and on every pull request, and can be started by hand from the Actions tab. In a fork its jobs run only when started by hand. Once a week the browser tests run alone. CI runs ruff, the content and font checks and pytest on Python 3.12 and 3.14, and the cross-host check under Node 22 and Pyodide 314, where a skipped run fails. It also runs the web build and the browser tests in Chromium, in parts that take about the same time, one part to a runner (see [web/README.md](../web/README.md)).
+`lantern-eve batch` plays the demo scenario `m0` without a page. Use `--scenario bridge` to play Chengxi. The command prints the last tick and state hash for each seed. Repeating a seed produces the same output.
+
+CI runs on pushes to `main` and on pull requests. You can also start it from the Actions tab, including on forks, where dispatch is manual. Python 3.12 and 3.14 jobs run Ruff, content and font checks, and pytest. The Node 22 and Pyodide 314 job treats a skipped cross-host comparison as a failure. Chromium tests run in groups of similar runtime and also have a separate weekly run. See [browser test groups](../web/README.md#tests).

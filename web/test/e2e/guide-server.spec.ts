@@ -27,7 +27,7 @@ test.describe("the opening game on the server host", () => {
       await expect(page.getByTestId("opening-start")).toBeEnabled({ timeout: 90_000 });
       // A server host has no saves, and the page says so.
       await expect(page.getByTestId("opening-continue")).toBeDisabled();
-      await expect(page.getByTestId("opening-continue-note")).toHaveText("This server keeps no saves. Saves are kept when the game runs in your browser.");
+      await expect(page.getByTestId("opening-continue-note")).toHaveText("This server doesn't save your progress. Start a game in browser mode to use saves.");
       // The world is held behind the opening page, in the game the core names.
       expect(await gameOf(page)).toEqual({ seed: 492, scenario: "bridge", preset: "slice" });
       await page.waitForTimeout(800);

@@ -207,8 +207,8 @@ test.describe("the riddles", () => {
 
   test("have a line for the ending page for none, some and all", () => {
     expect([0, 1, 3, 4, 5].map(riddleEndingKey)).toEqual(["egg.ending.riddles.none", "egg.ending.riddles", "egg.ending.riddles", "egg.ending.riddles", "egg.ending.riddles.all"]);
-    expect(translate("en", "egg.ending.riddles", { n: "three" })).toBe("You guessed three of the riddles.");
-    expect(translate("zh", "egg.ending.riddles", { n: "三" })).toBe("灯谜猜中了三条。");
+    expect(translate("en", "egg.ending.riddles", { n: "three" })).toBe("You solved three of the lantern riddles.");
+    expect(translate("zh", "egg.ending.riddles", { n: "三" })).toBe("你猜对了三条灯谜。");
   });
 });
 

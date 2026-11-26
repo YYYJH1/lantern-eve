@@ -349,6 +349,26 @@
   line-height: 1.55;
 }
 
+.clarify-exchange {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.clarify-exchange p {
+  margin: 8px 0;
+  line-height: 1.55;
+}
+
+.clarify-exchange strong {
+  margin-inline-end: 0.65em;
+}
+
+.clarify-follow summary {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
 .clarify-empty,
 .clarify-only,
 .clarify-sum {

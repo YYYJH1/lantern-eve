@@ -366,6 +366,11 @@ for (const size of SIZES) {
         expect(found.outside, "nothing runs off the window").toEqual([]);
         expect(found.covered, "no control lies under another block").toEqual([]);
         expect(found.overlaps, "no two blocks lie one over the other").toEqual([]);
+        if (name === "talk-request") {
+          const request = lantern.page.getByTestId("request-card");
+          await expect(request.getByRole("heading")).toBeInViewport();
+          await request.getByTestId("request-confirm").click({ trial: true });
+        }
         expect(lantern.pageErrors).toEqual([]);
       });
     }

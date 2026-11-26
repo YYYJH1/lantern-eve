@@ -60,7 +60,8 @@ was not there learns of it: it is a prop with a story of its own (it has no pare
 an opening does not hold it), and the talk of the town carries it from the people who know it.
 
 Events: ``clarified`` (``venue``, ``audience``: ``[{npc, before, after, reason: {zh, en}}]``,
-``accepted``: how many, ``claim`` and ``basis``: the entries, ``prop``: the prop of the claim).
+``accepted``: how many, ``claim`` and ``basis``: the entries, ``prop``: the prop of the claim,
+``judgment``: the relation spoken, ``witnesses``: who can speak to the cited notes first-hand).
 Rejected: ``no_entry``, ``not_shown``, ``overclaim``, ``no_witness``, ``said_already``.
 The state kept is ``public["clarified"]``: ``"claim prop|basis props"`` of each clarification that
 was made.
@@ -425,6 +426,8 @@ def apply(sim: Sim, body: dict[str, Any], place: str, here: list[str], culprit: 
         accepted=len(yes),
         claim=body["claim"],
         basis=list(body["basis"]),
+        judgment=said,
+        witnesses=speaking,
         prop=claim_id,
     )
     converse.ack(sim, body)

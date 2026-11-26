@@ -372,8 +372,8 @@ def test_what_the_manager_said_reads_as_the_manager_said_it_in_both_languages():
         claimed_source=PLAYER,
         speaker=LISTENER,
     )
-    assert retold["en"].startswith("The Festival Manager told me that")
-    assert retold["zh"].startswith("总管跟我说")
+    assert retold["en"].startswith("I heard the Festival Manager say that")
+    assert retold["zh"].startswith("我听总管说过")
 
 
 # ------------------------------------------------------------------------------ the action itself

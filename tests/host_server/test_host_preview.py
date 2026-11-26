@@ -154,7 +154,7 @@ def test_a_page_asks_for_a_preview_and_gets_the_answer_of_the_core_as_the_reply(
             assert result["cost"] == 20 and isinstance(result["version"], int)
             assert result["asks"]["en"].startswith("Ask Granny Li")
             # the manager is not in a talk, which the blockers say in words the page shows
-            assert result["blockers"][0]["en"].startswith("You are not talking to")
+            assert result["blockers"][0]["en"] == "Start a conversation with Granny Li first"
             assert result == session.preview(LEND)  # word for word what the core says
             assert session.game.hash() == before
             await client.close()

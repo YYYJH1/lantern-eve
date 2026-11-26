@@ -524,7 +524,7 @@ def test_a_witness_who_is_asked_tells_what_they_saw_and_the_notebook_keeps_it_as
     assert entry["source"]["how"] == "saw" and "hand" not in entry["source"]
     assert [name["id"] for name in entry["chain"]] == ["miaozhu"]  # who says they saw it themself
     assert entry["marks"] == []  # the notebook marks nothing the manager has not judged
-    assert entry["text"]["en"] == "Boatman He was at home last night."
+    assert entry["text"]["en"] == "Boatman He was at home that night."
     again = ask(game, kind="testify")
     assert acks(again) == [("rejected", "said_already")]
 

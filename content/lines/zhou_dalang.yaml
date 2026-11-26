@@ -3,8 +3,8 @@
 # though at heart he fears his father.
 person: zhou_dalang
 voice:
-  zh: "周掌柜的大儿子，帮家里扛木料、跑买卖。性子冲，没耐心，问不到三句就顶回去，喝了酒更冲。嘴上横，心里其实怕爹。最怕被人瞧不起，那晚喝没喝多，最好谁也别提。不想说就一句「问那么多干什么」，真火了才吼「关你什么事！」"
-  en: "Shopkeeper Zhou's elder son, who hauls timber and runs the trade's errands. Hot-tempered and impatient, he snaps back before the third question, and worse after a drink. Loud in speech, though at heart he fears his father. He hates to be looked down on, and would rather nobody mentioned how much he drank that night. When he won't answer: why all these questions. Only when truly angry does he shout: none of your business!"
+  zh: "周家大郎替家里扛木料、跑买卖，别人迟迟不说来意时会催。脾气上来会当面反问，倒未必句句带火。最怕有人当众瞧不起他，在父亲可能听到的事上会多留几分心。"
+  en: "Shopkeeper Zhou's eldest son carries timber and helps with business. He hurries people along if they take too long to say what they want. When angry, he is apt to throw a question back at them. He hates being looked down on in public and is more careful about anything that might reach his father."
 call:
   fam_zhou: {zh: 我们家, en: our family}
   li_er: {zh: 李家老二, en: Li Er}
@@ -15,11 +15,11 @@ call:
   zhou_zhanggui: {zh: 我爹, en: my father}
 lines:
   asleep:
-    - {zh: "呼噜……走开……让我睡……（睡熟了）", en: "Snore... go away... let me sleep... (fast asleep)"}
-    - {zh: "唔……酒……再来一碗……（睡熟了）", en: "Mm... wine... another bowl... (fast asleep)"}
+    - {zh: "大郎没醒。", en: "Dalang doesn't wake."}
+    - {zh: "还在打鼾。", en: "Still snoring."}
   busy:
     - {zh: "没空，别来烦我。", en: "No time. Don't pester me."}
-    - {zh: "我忙着呢，等会儿再说。", en: "I'm busy. It can wait."}
+    - {zh: "我这会儿顾不上你。有话等会儿说。", en: "I can't talk now. It can wait."}
   timeout:
     - {zh: "行了，我没工夫陪你耗。", en: "That's enough. I haven't time to waste on you."}
     - {zh: "不聊了，我还有事。", en: "I'm done talking. I've got things to do."}
@@ -36,20 +36,20 @@ lines:
     - {zh: "不对，你搞错了。", en: "Wrong. You've got it wrong."}
     - {zh: "胡扯，不是这样。", en: "Nonsense. It's not like that."}
   keeper_no:
-    - {zh: "不熟，别凑过来。", en: "I don't know you. Keep your distance."}
-    - {zh: "你谁啊？今天不行。", en: "Who are you? Not today."}
+    - {zh: "你我又不熟，怎么一上来就找我要东西看？", en: "We hardly know each other. Why ask me to show you that straight off?"}
+    - {zh: "你这才刚来，我还不能给你看。", en: "You've only just come around. I can't show you that yet."}
   took_in:
     - {zh: "哦，知道了。", en: "Hm. Got it."}
-    - {zh: "行，我听见了。", en: "Fine. I heard you."}
+    - {zh: "你这么一说我就明白了，这话我记着。", en: "I get it now you've put it that way. I'll remember it."}
   knew:
     - {zh: "早知道了，用不着你说。", en: "Knew it already. No need for you to tell me."}
     - {zh: "这个我清楚。", en: "I'm aware of that."}
   doubted:
-    - {zh: "胡说，我听到的不是这样。", en: "Rubbish. That's not what I heard."}
+    - {zh: "你说的这段跟我听的对不上，你是从谁那儿听来的？", en: "That part doesn't match what I heard. Who told you?"}
     - {zh: "不对劲，跟我听的对不上。", en: "Something's off. It doesn't match what I heard."}
   caught:
-    - {zh: "你敢骗我？以后你的话我一句都不听。", en: "You dare lie to me? I won't hear another word out of you."}
-    - {zh: "撒谎的东西，别让我再看见你。", en: "Lying wretch. Don't let me see you again."}
+    - {zh: "我还当你说的话有准儿，原来也敢拿瞎话糊弄我！", en: "I thought I could take your word for it, and you've been feeding me lies!"}
+    - {zh: "还跟我说什么？走开。", en: "What else have you got to say to me? Go away."}
   deal:
     - {zh: "成，就这样。", en: "Fine. That's that."}
     - {zh: "好，别反悔。", en: "Right. Don't go back on it."}
@@ -57,7 +57,7 @@ lines:
     - {zh: "空话，我不信。", en: "Empty talk. I don't buy it."}
     - {zh: "拿出东西来再说。", en: "Show me something real, then talk."}
   kept_thanks:
-    - {zh: "你还算讲信用，这事我记着。", en: "You keep your word, at least. I'll remember it."}
+    - {zh: "说实话，我原没打算信你，既然事情办成了，我也不赖你这份情。", en: "Truth be told, I didn't expect you to keep your word. Since you did, I owe you one."}
     - {zh: "说到做到。行，欠你一回。", en: "You did what you said. Fine, I owe you one."}
   will_do:
     - {zh: "行，我去办。", en: "Fine, I'll do it."}
@@ -82,7 +82,7 @@ lines:
     - {zh: "没啥好说的。", en: "Got nothing to say."}
   testified:
     - {zh: "我看到什么就说什么，别的没有。", en: "I say what I saw. Nothing else."}
-    - {zh: "没看见的我不说，看见的都是真的。", en: "I don't speak of what I didn't see. What I saw is true."}
+    - {zh: "当时的情形我瞧得清楚，能说的就这些。", en: "I could see clearly what happened. I've told you all I can."}
   too_late:
     - {zh: "晚了，明天再来。", en: "Too late. Come tomorrow."}
     - {zh: "天都黑了，明天再说吧。", en: "It's dark. Let it wait till tomorrow."}
@@ -97,9 +97,9 @@ lines:
     - {zh: "那话不说清楚，这事免谈。", en: "Until that's cleared up, forget it."}
   hard_hc_li_bamboo_rumour:
     - {zh: "全镇都在传，你一声不吭。没得借，走人。", en: "The whole town's talking and you keep your mouth shut. Nothing to lend. Go."}
-    - {zh: "闲话满天飞，你装哑巴。别指望我点头。", en: "Talk everywhere and you play dumb. Don't expect a nod from me."}
+    - {zh: "传成这样了你还不说话？别指望我点头。", en: "After all that's been said, you're still keeping quiet? Don't count on me agreeing."}
   hard_other:
-    - {zh: "免谈，别浪费口舌。", en: "Out of the question. Save your breath."}
+    - {zh: "没有。别再问了。", en: "No. Quit asking."}
     - {zh: "办不到，再说也一样。", en: "Not happening. Asking again changes nothing."}
   elder_yes:
     - {zh: "行了，我认了。", en: "Fine. I accept it."}
@@ -126,10 +126,10 @@ lines:
     - {zh: "够了，桥边的{item}你没看见吗？", en: "Enough. Can't you see the {item} at the bridge?"}
     - {zh: "{item}够了，别再烦我。", en: "The {item} is enough, so stop bothering me."}
   point_heard:
-    - {zh: "我怎么知道。听{name}讲过，自己去问。", en: "How should I know. I heard {name} talk about it, so go and ask yourself."}
-    - {zh: "不清楚。{name}讲过，自己去找。", en: "No idea. I heard {name} on about it, so go and find them."}
+    - {zh: "我就听{name}说过这么一嘴，旁的我哪晓得？你要问就去问。", en: "I only heard {name} say a word or two. How should I know the rest? Go and ask."}
+    - {zh: "我就听过一耳朵，你有话直接问{name}去。", en: "I only caught a bit. If you've got questions, take them to {name}."}
   point_hub:
-    - {zh: "别问我。去找{name}，镇上什么事那儿都知道。", en: "Don't ask me. Go see {name}, who knows every piece of news in town."}
+    - {zh: "我哪有空打听这些，你去问{name}，兴许还能听全了。", en: "I've no time to ask around about that. Try {name} if you want the whole story."}
     - {zh: "我没工夫管闲事，要打听就去问{name}。", en: "I've no time for idle talk. If you want news, ask {name}."}
   gift_like:
     - {zh: "{item}？算你识相。", en: "Some {item}? You know what's good."}
@@ -142,20 +142,20 @@ lines:
     - {zh: "拿{item}来干什么？我又不是老头子。", en: "What would I want with {item}? I'm no old man."}
 frames:
   seen:
-    - {zh: "这用不着听别人说，{line}。", en: "I need nobody to tell me that {line}."}
-    - {zh: "{line}，我自己清楚得很。", en: "{line}. I know that well enough myself."}
+    - {zh: "这事我从头就看在眼里，{line}。", en: "I watched it happen myself, and I can tell you that {line}."}
+    - {zh: "{line}，你问这段我还真瞧见了。", en: "{line}, and yes, that's the part I actually saw."}
   heard:
-    - {zh: "{teller}那张嘴里说的是，{line}。", en: "That came out of {teller}'s mouth, that {line}."}
-    - {zh: "{teller}跟我嚷嚷过，说{line}。", en: "{teller} went on at me that {line}."}
+    - {zh: "{line}，是{teller}跟我说的，你要不信就去问。", en: "{line}. I heard it from {teller}. You can ask if you don't believe me."}
+    - {zh: "你问我？我也是听{teller}说的，说{line}。", en: "You're asking me? I got it from {teller}, who said {line}."}
   unknown:
     - {zh: "外头瞎传，说{line}。", en: "People are blabbing that {line}."}
     - {zh: "满街乱传，{line}。谁起的头，我才不管。", en: "It's all over the street, that {line}. Who started it, I don't care."}
   own:
     - {zh: "我告诉你，{line}。", en: "I'm telling you straight, {line}."}
-    - {zh: "老实说，{line}。", en: "Frankly, {line}."}
+    - {zh: "我说是{line}。", en: "I'm saying {line}."}
   guess_own:
     - {zh: "我随口一说，{hedge}{line}。", en: "Just saying, but {hedge} {line}."}
-    - {zh: "谁知道，{hedge}{line}。", en: "Who knows, but {hedge} {line}."}
+    - {zh: "{hedge}{line}。我可没跟你打包票。", en: "{hedge} {line}. I won't swear to it."}
   guess_heard:
     - {zh: "{teller}嘴里漏过一句，{hedge}{line}。", en: "{teller} let one slip, and {hedge} {line}."}
     - {zh: "照{teller}的话头，{hedge}{line}。", en: "Judging by {teller}'s talk, {hedge} {line}."}
@@ -163,8 +163,8 @@ frames:
     - {zh: "不知谁嚷嚷的，{hedge}{line}。", en: "Some loudmouth said it, but {hedge} {line}."}
     - {zh: "满街都在传，{hedge}{line}。", en: "It's going round the whole street, but {hedge} {line}."}
   rival:
-    - {zh: "可{teller}嘴里是另一套，说{line}。", en: "But {teller}'s mouth says different, that {line}."}
-    - {zh: "{teller}偏说是另一回事，说{line}。", en: "Yet {teller} swore to something else, that {line}."}
+    - {zh: "可{teller}讲的跟这不一样。{line}。", en: "But {teller} told it differently, saying {line}."}
+    - {zh: "可{teller}非说{line}。", en: "But {teller} went and said {line}."}
   known:
     - {zh: "{line}，这还用说？", en: "{line}. Need you ask?"}
     - {zh: "{line}，满镇都知道。", en: "{line}. The whole town knows it."}
@@ -180,7 +180,7 @@ greet:
   - id: new
     when: [{kind: acquainted, is: new}]
     lines:
-      - {zh: "你就是总管？我是周家大郎。我忙着，有话快说。", en: "You're the Manager? I'm Zhou Dalang. I'm busy, so say it quick."}
+      - {zh: "你就是新来的总管？我叫周家大郎，有事你便说，我还得回去干活。", en: "Are you the new Manager? I'm Zhou Dalang. Say what you came for. I've work to get back to."}
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
@@ -192,7 +192,7 @@ greet:
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "桥的事摆明了。别再拿眼睛盯着我。", en: "The bridge business is out in the open. Stop staring at me."}
+      - {zh: "桥的事都说清了。还盯着我干什么？", en: "They've sorted out what happened to the bridge. What are you still looking at me for?"}
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
@@ -200,7 +200,7 @@ greet:
   - id: bridge
     when: [{kind: flag, flag: bridge_fixed}]
     lines:
-      - {zh: "桥修好了。我扛的木头，一根没少。", en: "The bridge is mended. Not one timber I hauled went missing."}
+      - {zh: "桥总算修好了，送到桥边的木头可没少我扛的那一份。", en: "The bridge is finally mended, and I didn't shirk my share of carrying the timber."}
   - id: kept
     when: [{kind: promised, state: kept}]
     lines:
@@ -208,7 +208,7 @@ greet:
   - id: cleared
     when: [{kind: cleared}]
     lines:
-      - {zh: "李家老二那事当众说清了，早该如此。", en: "Li Er's business was cleared up in public. About time."}
+      - {zh: "李家老二那事当众说清了。早说清不就完了。", en: "They set the story about the Li boy straight in front of everyone. Could've done that sooner."}
   - id: again
     when: [{kind: acquainted, is: today}]
     lines:
@@ -230,7 +230,7 @@ chat:
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
-      - {zh: "两家的事，到此为止。", en: "That's the end of the quarrel between the houses."}
+      - {zh: "两家吃过饭了。别再提了。", en: "The two families sat down together. Leave it there."}
   - id: plain
     lines:
       - {zh: "走吧，别挡着路。", en: "Move along. You're in the way."}

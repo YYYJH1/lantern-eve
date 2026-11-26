@@ -117,22 +117,20 @@ def test_the_card_of_the_third_morning_says_it_in_both_languages_and_so_does_the
     run_to(game, at(3, 7, 30))
     work = tasks_of(frame_now(game))["t_work_3"]
     assert work["why"] == {  # the work that is left in mornings, the hours on the board
-        "zh": "照这几个帮手，再干两个早上桥就修完了。",
-        "en": "With these helpers, two more mornings and the bridge is done.",
+        "zh": "这几个人再干两个早上，就能把桥修好。",
+        "en": "This crew can finish the bridge in two more mornings.",
     }
     run_to(game, at(3, 14))
     last = tasks_of(frame_now(game))["t_work_4"]
     assert last["why"] == {  # the afternoon before: the last morning is tomorrow's
-        "zh": "明早是最后一个早上。照这几个帮手，明早就能把桥修完。",
-        "en": (
-            "Tomorrow morning is the last one. With these helpers, the bridge will be done by then."
-        ),
+        "zh": "明早是最后一次开工，眼下的人手够把桥修好。",
+        "en": ("Tomorrow morning is the last chance to work, and this crew can finish in time."),
     }
     run_to(game, at(4, 7))
     last = tasks_of(frame_now(game))["t_work_4"]
     assert last["why"] == {
-        "zh": "今天是最后一个早上。照这几个帮手，今天就能把桥修完。",
-        "en": "This is the last morning. With these helpers, the bridge will be done today.",
+        "zh": "今天上午是最后一次开工，眼下的人手够把桥修好。",
+        "en": "This morning is the last chance to work, and this crew can finish in time.",
     }
 
 
@@ -204,5 +202,5 @@ def test_the_detour_is_offered_by_the_hours_a_day_early_and_not_before_the_morni
     assert "t_detour" not in tasks_of(frame_now(game))
     run_to(game, at(3, 13, 2))
     detour = tasks_of(frame_now(game))["t_detour"]
-    assert detour["state"] == "open" and "桥怕是来不及修好了" in detour["why"]["zh"]
-    assert "may not be mended in time" in detour["why"]["en"]
+    assert detour["state"] == "open" and "桥怕是来不及修了" in detour["why"]["zh"]
+    assert "may not be ready in time" in detour["why"]["en"]

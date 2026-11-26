@@ -101,33 +101,33 @@ def test_a_person_in_their_own_home_is_said_to_be_at_home_and_in_any_other_place
     home = Prop.of("h", "at", at, (-90, -20))
     away = Prop.of("a", "at", {"who": "li_er", "where": "p_he_home"}, (-90, -20))
     # until the lines know the homes, the place is named
-    assert lines.statement(home, names)["en"] == "Boatman He was at Boatman He's House last night"
+    assert lines.statement(home, names)["en"] == "Boatman He was at Boatman He's House that night"
     lines.homes = {"old_he": "p_he_home"}
     assert lines.statement(home, names) == {
-        "zh": "船夫老何昨晚在家",
-        "en": "Boatman He was at home last night",
+        "zh": "船夫老何出事那晚在家",
+        "en": "Boatman He was at home that night",
     }
     denial = Prop.of("n", "at", at, (-90, -20), neg=True)
     assert lines.statement(denial, names) == {
-        "zh": "船夫老何昨晚没在家",
-        "en": "Boatman He was not at home last night",
+        "zh": "船夫老何出事那晚没在家",
+        "en": "Boatman He was not at home that night",
     }
     # the person says it of themselves, and another person at that house is at the house
     assert lines.statement(home, names, speaker="old_he") == {
-        "zh": "我昨晚在家",
-        "en": "I was at home last night",
+        "zh": "我出事那晚在家",
+        "en": "I was at home that night",
     }
-    assert lines.statement(away, names)["en"] == "Li Er was at Boatman He's House last night"
+    assert lines.statement(away, names)["en"] == "Li Er was at Boatman He's House that night"
 
 
 def test_a_statement_has_the_words_of_its_predicate_and_the_time_of_its_span():
     assert LINES.statement(AT, NAMES) == {
-        "zh": "李二昨晚在桥边",
-        "en": "Li Er was at the bridge last night",
+        "zh": "李二出事那晚在桥边",
+        "en": "Li Er was at the bridge that night",
     }
     assert LINES.statement(DAMAGED, NAMES) == {
-        "zh": "李家昨晚把栏杆弄坏了",
-        "en": "the Li Family broke the bridge railing last night",
+        "zh": "李家出事那晚把栏杆弄坏了",
+        "en": "the Li Family broke the bridge railing that night",
     }
 
 
@@ -139,8 +139,8 @@ def test_a_predicate_may_say_a_place_or_a_thing_by_a_form_of_its_own():
         "zh": "栏杆在桥上",
         "en": "the railing is at the bridge",
     }
-    assert LINES.statement(AT, NAMES)["zh"] == "李二昨晚在桥边"
-    assert LINES.statement(DAMAGED, NAMES)["en"].endswith("broke the bridge railing last night")
+    assert LINES.statement(AT, NAMES)["zh"] == "李二出事那晚在桥边"
+    assert LINES.statement(DAMAGED, NAMES)["en"].endswith("broke the bridge railing that night")
 
 
 def test_a_slot_the_prop_leaves_out_and_a_span_it_does_not_have_leave_no_gap():
@@ -159,8 +159,8 @@ def test_a_slot_the_prop_leaves_out_and_a_span_it_does_not_have_leave_no_gap():
 def test_a_denial_uses_the_denial_of_the_predicate_and_a_motive_goes_last():
     denial = Prop.of("nb", "at", {"who": "li_er", "where": "p_bridge"}, (-110, -80), neg=True)
     assert LINES.statement(denial, NAMES) == {
-        "zh": "李二昨晚没去桥边",
-        "en": "Li Er did not go to the bridge last night",
+        "zh": "李二出事那晚没去桥边",
+        "en": "Li Er did not go to the bridge that night",
     }
     jealous = Prop.of("j", "damaged", {"who": "fam_li", "what": "t_rail"}, None, motive="jealousy")
     assert LINES.statement(jealous, NAMES) == {
@@ -183,44 +183,46 @@ def test_a_prop_the_table_has_no_words_for_is_an_error():
 
 def test_what_is_said_is_framed_by_how_the_speaker_knows_it():
     assert say(AT, source="self_seen") == {
-        "zh": "李二昨晚在桥边。",
-        "en": "Li Er was at the bridge last night.",
+        "zh": "李二出事那晚在桥边。",
+        "en": "Li Er was at the bridge that night.",
     }
     assert say(AT, source="unknown") == {
-        "zh": "听人说，李二昨晚在桥边。",
-        "en": "I've heard it said that Li Er was at the bridge last night.",
+        "zh": "我是听人这么说的，李二出事那晚在桥边。",
+        "en": "What I've heard is that Li Er was at the bridge that night.",
     }
     assert say(AT, source="gengfu") == {
-        "zh": "照我看，李二昨晚在桥边。",
-        "en": "If you ask me, Li Er was at the bridge last night.",
+        "zh": "照我看，李二出事那晚在桥边。",
+        "en": "If you ask me, Li Er was at the bridge that night.",
     }
     assert say(AT, source="old_he") == {
-        "zh": "船夫老何跟我说，李二昨晚在桥边。",
-        "en": "Boatman He told me that Li Er was at the bridge last night.",
+        "zh": "我听船夫老何说过，李二出事那晚在桥边。",
+        "en": "I heard Boatman He say that Li Er was at the bridge that night.",
     }
-    assert say(AT, source="gengfu", speaker="li_er")["en"].startswith("The Night Watchman told me")
+    assert say(AT, source="gengfu", speaker="li_er")["en"].startswith(
+        "I heard the Night Watchman say"
+    )
 
 
 def test_a_guess_takes_the_hedge_of_the_table_and_keeps_its_source():
     assert say(AT, "speculate", source="gengfu") == {
-        "zh": "我猜李二昨晚在桥边。",
-        "en": "I guess Li Er was at the bridge last night.",
+        "zh": "我猜李二出事那晚在桥边。",
+        "en": "I guess Li Er was at the bridge that night.",
     }
     assert say(AT, "speculate", source="gengfu", pick=1) == {
-        "zh": "怕是李二昨晚在桥边。",
-        "en": "I'd say Li Er was at the bridge last night.",
+        "zh": "怕是李二出事那晚在桥边。",
+        "en": "I'd say Li Er was at the bridge that night.",
     }
     assert say(AT, "speculate", source="gengfu", pick=2)["zh"].startswith("我猜")  # it wraps round
     assert say(AT, "speculate", source="unknown") == {
-        "zh": "有人猜，李二昨晚在桥边。",
-        "en": "Some people guess that Li Er was at the bridge last night.",
+        "zh": "有人猜，李二出事那晚在桥边。",
+        "en": "Some people guess that Li Er was at the bridge that night.",
     }
     assert say(AT, "speculate", source="old_he", pick=1) == {
-        "zh": "船夫老何猜，李二昨晚在桥边。",
-        "en": "Boatman He guessed that Li Er was at the bridge last night.",
+        "zh": "船夫老何猜，李二出事那晚在桥边。",
+        "en": "Boatman He guessed that Li Er was at the bridge that night.",
     }
     # a guess cannot be seen, so one that names the speaker's own eyes is the speaker's guess
-    assert say(AT, "speculate", source="self_seen")["zh"] == "我猜李二昨晚在桥边。"
+    assert say(AT, "speculate", source="self_seen")["zh"] == "我猜李二出事那晚在桥边。"
 
 
 ENVY = Prop.of("j", "damaged", {"who": "li_er", "what": "t_rail"}, (-45, -35), motive="jealousy")
@@ -228,25 +230,25 @@ ENVY = Prop.of("j", "damaged", {"who": "li_er", "what": "t_rail"}, (-45, -35), m
 
 def test_a_motive_is_a_sentence_of_its_own_when_a_person_speaks_and_follows_how_they_know_it():
     assert say(ENVY, source="old_he") == {
-        "zh": "船夫老何跟我说，李二昨晚把栏杆弄坏了。还说是眼红人家出风头。",
-        "en": "Boatman He told me that Li Er broke the bridge railing last night. "
+        "zh": "我听船夫老何说过，李二出事那晚把栏杆弄坏了。还说是眼红人家出风头。",
+        "en": "I heard Boatman He say that Li Er broke the bridge railing that night. "
         "They say it was out of envy.",
     }
     assert say(ENVY, source="unknown") == {
-        "zh": "听人说，李二昨晚把栏杆弄坏了。还说是眼红人家出风头。",
-        "en": "I've heard it said that Li Er broke the bridge railing last night. "
+        "zh": "我是听人这么说的，李二出事那晚把栏杆弄坏了。还说是眼红人家出风头。",
+        "en": "What I've heard is that Li Er broke the bridge railing that night. "
         "They say it was out of envy.",
     }
     assert say(ENVY, source="self_seen") == {
-        "zh": "李二昨晚把栏杆弄坏了。那是眼红人家出风头。",
-        "en": "Li Er broke the bridge railing last night. That was out of envy.",
+        "zh": "李二出事那晚把栏杆弄坏了。那是眼红人家出风头。",
+        "en": "Li Er broke the bridge railing that night. That was out of envy.",
     }
     assert say(ENVY, source="gengfu")["zh"] == (
-        "照我看，李二昨晚把栏杆弄坏了。那是眼红人家出风头。"
+        "照我看，李二出事那晚把栏杆弄坏了。那是眼红人家出风头。"
     )
     assert say(ENVY, "speculate", source="gengfu") == {
-        "zh": "我猜李二昨晚把栏杆弄坏了。怕是眼红人家出风头。",
-        "en": "I guess Li Er broke the bridge railing last night. I'd say it was out of envy.",
+        "zh": "我猜李二出事那晚把栏杆弄坏了。怕是眼红人家出风头。",
+        "en": "I guess Li Er broke the bridge railing that night. I'd say it was out of envy.",
     }
     # a guess that somebody told is told: what they guessed, and what they said it was
     assert say(ENVY, "speculate", source="old_he")["zh"].endswith("。还说是眼红人家出风头。")
@@ -257,9 +259,9 @@ def test_the_motive_stays_inside_the_frame_of_the_speaker_and_a_denial_has_none(
     said = LINES.say(
         ENVY, NAMES, modality="assert", claimed_source="self_seen", speaker="gengfu", frame=mine
     )
-    assert said["zh"] == "我是亲眼见的：李二昨晚把栏杆弄坏了。那是眼红人家出风头。你信不信。"
+    assert said["zh"] == "我是亲眼见的：李二出事那晚把栏杆弄坏了。那是眼红人家出风头。你信不信。"
     assert said["en"] == (
-        "I saw it: Li Er broke the bridge railing last night. That was out of envy. "
+        "I saw it: Li Er broke the bridge railing that night. That was out of envy. "
         "Believe it or not."
     )
     denial = Prop.of(
@@ -267,17 +269,17 @@ def test_the_motive_stays_inside_the_frame_of_the_speaker_and_a_denial_has_none(
     )
     assert "眼红" not in say(denial, source="old_he")["zh"]
     assert LINES.rival(ENVY, NAMES, teller="old_he", speaker="gengfu") == {
-        "zh": "可船夫老何跟我说的是，李二昨晚把栏杆弄坏了。还说是眼红人家出风头。",
-        "en": "But Boatman He told me that Li Er broke the bridge railing last night. "
+        "zh": "不过我听船夫老何说，李二出事那晚把栏杆弄坏了。还说是眼红人家出风头。",
+        "en": "But Boatman He told me that Li Er broke the bridge railing that night. "
         "They say it was out of envy.",
     }
     # the narration keeps the motive after a comma, as one clause
     assert LINES.statement(ENVY, NAMES) == {
-        "zh": "李二昨晚把栏杆弄坏了，是眼红人家出风头",
-        "en": "Li Er broke the bridge railing last night, out of envy",
+        "zh": "李二出事那晚把栏杆弄坏了，是眼红人家出风头",
+        "en": "Li Er broke the bridge railing that night, out of envy",
     }
     assert LINES.statement(ENVY, NAMES, motive=False)["en"] == (
-        "Li Er broke the bridge railing last night"
+        "Li Er broke the bridge railing that night"
     )
 
 
@@ -314,44 +316,44 @@ def test_a_speaker_with_their_own_wording_of_the_frame_and_the_hedges_is_not_giv
     assert LINES.say(
         AT, NAMES, modality="assert", claimed_source="self_seen", speaker="gengfu", frame=mine
     ) == {
-        "zh": "我这么说：李二昨晚在桥边！",
-        "en": "Mark you: Li Er was at the bridge last night!",
+        "zh": "我这么说：李二出事那晚在桥边！",
+        "en": "Mark you: Li Er was at the bridge that night!",
     }
     for pick, hedge in ((0, "I think"), (1, "I suppose"), (2, "I think")):
         said = LINES.say(
             AT, NAMES, modality="speculate", claimed_source="gengfu", speaker="gengfu",
             pick=pick, frame=guess, hedges=words,
         )  # fmt: skip
-        assert said["en"] == f"Who can say. {hedge} Li Er was at the bridge last night."
+        assert said["en"] == f"Who can say. {hedge} Li Er was at the bridge that night."
         assert said["zh"].startswith("说不准。" + words["zh"][pick % 2])
     # a frame of their own and the hedges of the table, or the other way about
     assert (
         LINES.say(
             AT, NAMES, modality="speculate", claimed_source="gengfu", speaker="gengfu", frame=guess
         )["en"]
-        == "Who can say. I guess Li Er was at the bridge last night."
+        == "Who can say. I guess Li Er was at the bridge that night."
     )
     assert (
         LINES.say(
             AT, NAMES, modality="speculate", claimed_source="gengfu", speaker="gengfu", hedges=words
         )["en"]
-        == "I think Li Er was at the bridge last night."
+        == "I think Li Er was at the bridge that night."
     )
     # without either, the words are the table's, as they always were
-    assert say(AT, source="self_seen")["en"] == "Li Er was at the bridge last night."
+    assert say(AT, source="self_seen")["en"] == "Li Er was at the bridge that night."
 
 
 def test_a_denial_and_a_lie_are_framed_like_an_assertion():
     denial = Prop.of("nb", "at", {"who": "li_er", "where": "p_bridge"}, (-110, -80), neg=True)
-    assert say(denial, "deny", source="self_seen")["zh"] == "李二昨晚没去桥边。"
+    assert say(denial, "deny", source="self_seen")["zh"] == "李二出事那晚没去桥边。"
     assert say(AT, "lie", source="self_seen") == say(AT, source="self_seen")
 
 
 def test_a_speaker_who_is_named_in_the_prop_says_i_and_me():
     seen = say(AT, source="self_seen", speaker="li_er")
     assert seen == {
-        "zh": "我昨晚在桥边。",
-        "en": "I was at the bridge last night.",
+        "zh": "我出事那晚在桥边。",
+        "en": "I was at the bridge that night.",
     }
     owns = Prop.of("o", "owns", {"who": "li_er", "what": "t_boat"})
     assert LINES.statement(owns, NAMES, "li_er") == {
@@ -399,21 +401,21 @@ def test_a_line_with_its_own_shi_drops_the_shi_of_the_frame_and_of_the_hedge():
     plain = LINES.say(
         AT, NAMES, modality="speculate", claimed_source="gengfu", speaker="gengfu", hedges=hedged
     )
-    assert plain["zh"] == "八成是李二昨晚在桥边。"
+    assert plain["zh"] == "八成是李二出事那晚在桥边。"
 
 
 def test_the_one_who_told_it_is_themself_in_what_they_told():
-    """船夫老何跟我说，自己昨晚在桥边: the teller is not named twice, in English "they" with
+    """我听船夫老何说过，自己出事那晚在桥边: the teller is not named twice, in English "they" with
     the verb that goes with it; a guess the speaker hedges is the speaker's own and names them."""
     there = Prop.of("h", "at", {"who": "old_he", "where": "p_bridge"}, (-110, -80))
     assert say(there, source="old_he") == {
-        "zh": "船夫老何跟我说，自己昨晚在桥边。",
-        "en": "Boatman He told me that they were at the bridge last night.",
+        "zh": "我听船夫老何说过，自己出事那晚在桥边。",
+        "en": "I heard Boatman He say that they were at the bridge that night.",
     }
     assert LINES.rival(there, NAMES, teller="old_he", speaker="gengfu")["zh"] == (
-        "可船夫老何跟我说的是，自己昨晚在桥边。"
+        "不过我听船夫老何说，自己出事那晚在桥边。"
     )
-    assert say(there, "speculate", source="old_he")["zh"] == "船夫老何猜，自己昨晚在桥边。"
+    assert say(there, "speculate", source="old_he")["zh"] == "船夫老何猜，自己出事那晚在桥边。"
     mine = {
         "zh": "{teller}提过一句。{hedge}{line}。",
         "en": "{teller} said a word. {hedge} {line}.",
@@ -421,7 +423,7 @@ def test_the_one_who_told_it_is_themself_in_what_they_told():
     hedged = LINES.say(
         there, NAMES, modality="speculate", claimed_source="old_he", speaker="gengfu", frame=mine
     )
-    assert hedged["zh"] == "船夫老何提过一句。我猜船夫老何昨晚在桥边。"
+    assert hedged["zh"] == "船夫老何提过一句。我猜船夫老何出事那晚在桥边。"
 
 
 def test_a_guessed_motive_is_said_in_the_other_hedge_of_the_speaker():
@@ -436,12 +438,12 @@ def test_a_guessed_motive_is_said_in_the_other_hedge_of_the_speaker():
             pick=pick,
             hedges=words,
         )
-        assert said["zh"] == f"{line}李二昨晚把栏杆弄坏了。{motive}眼红人家出风头。"
+        assert said["zh"] == f"{line}李二出事那晚把栏杆弄坏了。{motive}眼红人家出风头。"
     said = LINES.say(
         ENVY, NAMES, modality="speculate", claimed_source="gengfu", speaker="gengfu", hedges=words
     )
     assert said["en"] == (
-        "I'd say Li Er broke the bridge railing last night. I suspect it was out of envy."
+        "I'd say Li Er broke the bridge railing that night. I suspect it was out of envy."
     )
 
 
@@ -453,4 +455,4 @@ def test_what_the_whole_town_knows_is_said_as_that_and_not_as_a_thing_seen():
         "zh": "老何的船是船夫老何的，镇上谁都知道。",
         "en": "Old He's Boat belongs to Boatman He. Everyone in town knows that.",
     }
-    assert say(AT, source="self_seen")["zh"] == "李二昨晚在桥边。"
+    assert say(AT, source="self_seen")["zh"] == "李二出事那晚在桥边。"

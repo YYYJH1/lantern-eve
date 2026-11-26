@@ -247,8 +247,12 @@ def test_a_reply_with_no_act_says_something_and_writes_nothing_down():
 def test_a_lie_the_script_allows_is_told_and_written_down_as_the_rules_write_down_one():
     room = Room("old_he", hour=9, seed=2)
     request = asked(room.act("ask", topic="pr_he_under_bridge"))
-    default = request["messages"][1]["content"].split("would be the one below.")[1]
-    lie = json.loads(default.split("\n")[1].split("\n")[0])["acts"]
+    default = next(
+        line
+        for line in request["messages"][1]["content"].splitlines()
+        if line.startswith('{"acts":')
+    )
+    lie = json.loads(default)["acts"]
     if not lie:
         pytest.skip("the rules have no lie for this person here")
     out = room.result(request, "ok", json.dumps({"acts": lie}))

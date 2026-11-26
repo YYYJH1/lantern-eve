@@ -130,7 +130,7 @@ def test_the_preview_says_what_is_missing():
     shown = json.loads(
         game.preview_json(json.dumps({"verb": "entrust", "npc": ELDER, "kind": "convene"}))
     )
-    assert [b["en"] for b in shown["blockers"]] == ["Something else has to be in hand first"]
+    assert [b["en"] for b in shown["blockers"]] == ["Find the other evidence first"]
     me(game)["evidence"].append("e_footprint")
     join_friends(game)
     shown = json.loads(

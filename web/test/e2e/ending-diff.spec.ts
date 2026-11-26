@@ -22,7 +22,7 @@ test.describe("the words that changed in a telling", () => {
   test("are marked in English by the word: choosing the telling that changed a story shows it beside the telling before, with the new words marked", async ({ lantern }) => {
     await open(lantern);
     const page = lantern.page;
-    await expect(page.getByTestId("tree-diff-hint")).toHaveText("Choose a line of the tree to see which words changed in that telling.");
+    await expect(page.getByTestId("tree-diff-hint")).toHaveText("Select the line between two people to see what changed when the story passed from one to the other.");
     // c6: Niangzi told Huoji "The Li family wrecked the bridge on purpose, to spoil the Zhou family's night." (p3), which she had heard from Zhanggui as the same words
     // c7: Huoji told the shopkeeper p4: the same, with "and blamed a drunk" added
     await pressTelling(lantern.page, "c7");
@@ -50,7 +50,7 @@ test.describe("the words that changed in a telling", () => {
   test("are marked in Chinese by the character", async ({ lantern }) => {
     await open(lantern, "zh");
     const page = lantern.page;
-    await expect(page.getByTestId("tree-diff-hint")).toHaveText("点一条线，看这一回改了哪些字。");
+    await expect(page.getByTestId("tree-diff-hint")).toHaveText("点开两人之间的线，看看这句话到了下一张嘴，哪里变了。");
     await pressTelling(lantern.page, "c7");
     await expect(page.getByTestId("diff-before")).toHaveText("李家故意毁桥，不想让周家出风头。");
     await expect(page.getByTestId("diff-after")).toHaveText("李家故意毁桥，不想让周家出风头，还嫁祸给醉汉。");
@@ -71,7 +71,7 @@ test.describe("the words that changed in a telling", () => {
     await edge(lantern, "c1").focus();
     await page.keyboard.press("Enter");
     await expect(page.getByTestId("tree-diff")).toHaveAttribute("data-telling", "c1");
-    await expect(page.getByTestId("diff-first")).toHaveText("This is where the story starts.");
+    await expect(page.getByTestId("diff-first")).toHaveText("There's no earlier telling on record here.");
     await expect(page.getByTestId("diff-after")).toHaveText("Li Er was looking for his lantern by the bridge.");
     // c4: Granny Li passed on what Li Er told her, as it was
     await edge(lantern, "c4").focus();
@@ -81,7 +81,7 @@ test.describe("the words that changed in a telling", () => {
     await expect(page.getByTestId("diff-mark")).toHaveCount(0);
     await expect(page.getByTestId("tree-diff")).toHaveAttribute("data-same", "true");
     // the line has a name for a reader that cannot see it
-    await expect(edge(lantern, "c4")).toHaveAttribute("aria-label", "Show what changed when Granny Li told Li Xiaomei");
+    await expect(edge(lantern, "c4")).toHaveAttribute("aria-label", "See what Granny Li passed on to Li Xiaomei");
     await expect(edge(lantern, "c4")).toHaveAttribute("role", "button");
   });
 });

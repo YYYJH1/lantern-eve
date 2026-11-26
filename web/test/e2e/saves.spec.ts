@@ -118,16 +118,16 @@ test.describe("saves", () => {
     const before = await lantern.tick();
     await page.getByTestId("btn-load").click();
     const notice = page.getByTestId("notice");
-    await expect(notice).toContainText("This save was made by another version of the game, which this one cannot read.");
+    await expect(notice).toContainText("This version can't open that save.");
     await expect(notice).toHaveAttribute("data-kind", "load-version");
     // The host's own words follow them: the code, where the hashes part, and what made the save.
     await expect(notice).toContainText(/hash_mismatch: .*\(saved by core 0\.0\.0 \/ c0ffee00, running /);
     // The plain words follow the language of the page as it is switched, and the host's words stay as the host gave them.
     await lantern.switchLang("zh");
-    await expect(notice).toContainText("这份存档是另一个版本的游戏存的，这一版读不出来。");
+    await expect(notice).toContainText("这一版读不了这份存档。");
     await expect(notice).toContainText("hash_mismatch");
     await lantern.switchLang("en");
-    await expect(notice).toContainText("This save was made by another version of the game");
+    await expect(notice).toContainText("This version can't open that save.");
     // The game that runs is left alone.
     await expect(page.getByTestId("loaded")).toHaveCount(0);
     await lantern.waitForTick(before + 30);

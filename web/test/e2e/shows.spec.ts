@@ -39,7 +39,7 @@ test.describe("the card of a job that is done", () => {
     await expect(card(page)).toBeVisible();
     await expect(card(page)).toHaveAttribute("data-job", "bridge");
     await expect(page.getByTestId("show-title")).toHaveText("The bridge is mended");
-    await expect(page.getByTestId("show-text")).toHaveText("The Stone Bridge is whole again, and the lantern parade can cross.");
+    await expect(page.getByTestId("show-text")).toHaveText("The railing is fixed, so the lantern parade can cross the Stone Bridge on festival night.");
     await expect(page.getByTestId("show-close")).toHaveText("Carry on");
     await expect(page.getByTestId("show-close")).toBeFocused();
     // The world is held while it is up, and the button of the pause does not let it go.
@@ -57,7 +57,7 @@ test.describe("the card of a job that is done", () => {
     expect(Math.abs(at.y - Math.round(door.y))).toBeLessThanOrEqual(2);
     await lantern.setLang("zh");
     await expect(page.getByTestId("show-title")).toHaveText("桥修好了");
-    await expect(page.getByTestId("show-text")).toHaveText("石桥又完整了，游灯的队伍可以过去了。");
+    await expect(page.getByTestId("show-text")).toHaveText("石桥的栏杆补好了，到了灯会，队伍就能从桥上过。");
     await expect(page.getByTestId("show-close")).toHaveText("接着办");
     await lantern.setLang("en");
     // Putting it away lets the world go, and the light goes out over a moment.
@@ -94,7 +94,7 @@ test.describe("the card of a job that is done", () => {
     await expect(page.getByTestId("show-glow")).toHaveAttribute("data-at", "player");
     await lantern.setLang("zh");
     await expect(page.getByTestId("show-title")).toHaveText("两家和好了");
-    await expect(page.getByTestId("show-text")).toHaveText("李、周两家的人坐到了一处，旧账不再挂在嘴上。");
+    await expect(page.getByTestId("show-text")).toHaveText("李、周两家的当家肯坐下来吃这顿饭，两家也就把旧怨放下了。");
     await lantern.setLang("en");
     await page.getByTestId("show-close").click();
     await expect(card(page)).toHaveCount(0);

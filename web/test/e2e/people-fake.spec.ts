@@ -43,7 +43,7 @@ test.describe("the page of the first six", () => {
       await expect(six.nth(index).getByTestId("people-six-name")).toHaveText(person?.en ?? "");
       await expect(six.nth(index).getByTestId("people-six-intro")).toHaveText(person?.intro.en ?? "");
     }
-    await expect(page.getByTestId("people-more")).toHaveText("A dozen or so more people live in town. You will get to know them when you meet.");
+    await expect(page.getByTestId("people-more")).toHaveText("Once you're in town, you can look up the people you've spoken to under People.");
     // Their portraits are cut from the sprites of the map.
     await expect(page.locator('[data-testid="portrait"][data-drawn="true"]')).toHaveCount(6, { timeout: 30_000 });
     // The world is held behind the page, and the tutorial has not begun.
@@ -56,10 +56,10 @@ test.describe("the page of the first six", () => {
     for (const word of ["rail", "witness", "culprit", "saw", "blame", "truth"]) expect(words.toLowerCase(), word).not.toContain(word);
     // In Chinese the same people, in the same order.
     await page.getByTestId("opening-people").getByTestId("lang-zh").click();
-    await expect(page.getByTestId("people-opening-title")).toHaveText("这几个人");
+    await expect(page.getByTestId("people-opening-title")).toHaveText("镇上的人");
     await expect(six.nth(1).getByTestId("people-six-name")).toHaveText("李老太");
     await expect(six.nth(1).getByTestId("people-six-intro")).toHaveText(cast.find((p) => p.id === "li_laotai")?.intro.zh ?? "");
-    await expect(page.getByTestId("people-more")).toHaveText("镇上还有十来位，见了面再认识。");
+    await expect(page.getByTestId("people-more")).toHaveText("进了镇，跟谁说过话，往后就在人物谱里找谁。");
     await expect(page.getByTestId("people-enter")).toHaveText("进镇");
     // The button goes on to the first day: the page is gone, the world runs, and the tutorial gives its first card.
     await page.getByTestId("people-enter").click();
@@ -114,7 +114,7 @@ test.describe("a first meeting", () => {
     await expect(note).toBeVisible();
     await expect(note.getByTestId("meeting-name")).toHaveText("Li Da");
     await expect(note.getByTestId("meeting-intro")).toHaveText(intro?.en ?? "");
-    await expect(note.getByTestId("meeting-added")).toHaveText("Now in the people book.");
+    await expect(note.getByTestId("meeting-added")).toHaveText("You can look this person up under People.");
     // The same frame again, or another frame of the same talk, says the same.
     await fake.feedFrame(page, { people: rows });
     await expect(note).toBeVisible();
@@ -131,7 +131,7 @@ test.describe("a first meeting", () => {
     await expect(page.getByTestId("talk-strip")).toHaveAttribute("data-talking", "false");
     await fake.startTalk(page, "li_er", { people: other });
     await expect(page.getByTestId("meeting-name")).toHaveText("李二");
-    await expect(page.getByTestId("meeting-added")).toHaveText("人物谱里记下了。");
+    await expect(page.getByTestId("meeting-added")).toHaveText("以后可以在人物谱里找到这位。");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -152,7 +152,7 @@ test.describe("the book of the people", () => {
     await openNotebook(page);
     await expect(page.getByTestId("workspace-tab-people")).toHaveText("People0");
     await page.getByTestId("workspace-tab-people").click();
-    await expect(page.getByTestId("people-empty")).toHaveText("You have not talked with anyone yet. Each person you talk with gets a line here.");
+    await expect(page.getByTestId("people-empty")).toHaveText("Talk to someone in town to add your first entry.");
     await expect(page.getByTestId("people-count")).toHaveText("0 people met");
     await feedPeople(page);
     await expect(page.getByTestId("workspace-tab-people")).toHaveText("People3");
@@ -167,7 +167,7 @@ test.describe("the book of the people", () => {
     await expect(granny.getByTestId("people-family")).toHaveCount(0); // the role says it already
     await expect(granny.getByTestId("people-met-at")).toHaveText(["Day 1 08:10, at Li Family House"]);
     await expect(granny.getByTestId("people-asked-what")).toHaveText("the role of honour of lighting the main lantern");
-    await expect(granny.getByTestId("people-asked-for")).toHaveText("For: Ask Granny Li to lend the bamboo for the bridge");
+    await expect(granny.getByTestId("people-asked-for")).toHaveText("You asked for “Ask Granny Li to lend the bamboo for the bridge”");
     await expect(granny.getByTestId("people-like")).toHaveText("Likespastries");
     await expect(granny.getByTestId("people-dislike")).toHaveText("Dislikeswine");
     await expect(granny.getByTestId("people-said")).toHaveCount(0);
@@ -258,7 +258,7 @@ test.describe("the book of the people", () => {
     await expect(card.getByTestId("hearts-joined")).toHaveCount(0);
     await expect(card.getByTestId("hearts-waiting")).toHaveAttribute("data-waiting", "2");
     await lantern.setLang("zh");
-    await expect(card.getByTestId("hearts-waiting")).toHaveText("想等熟人先来，还差两个");
+    await expect(card.getByTestId("hearts-waiting")).toHaveText("还等两个熟人先来");
     expect(lantern.pageErrors).toEqual([]);
   });
 
@@ -334,19 +334,19 @@ test.describe("where a note came from", () => {
     await fake.openFirstDay(lantern);
     await openNotebook(page);
     const badge = (id: string) => page.locator(`[data-testid="note"][data-id="${id}"]`).getByTestId("source-badge");
-    await expect(badge("n_scrape")).toHaveText("You saw it");
+    await expect(badge("n_scrape")).toHaveText("You saw it yourself");
     await expect(badge("n_scrape")).toHaveAttribute("title", "Day 1 08:10, at Stone Bridge");
-    await expect(badge("n_clerk")).toHaveText("Zhou's Clerk says they saw it");
+    await expect(badge("n_clerk")).toHaveText("Zhou's Clerk says they saw it themselves");
     await expect(badge("n_clerk")).toHaveAttribute("data-how", "saw");
     await expect(badge("n_broke")).toHaveText("Teahouse Keeper says they heard it from Shopkeeper Zhou");
     await expect(badge("n_broke")).toHaveAttribute("data-how", "heard");
-    await expect(badge("n_boat")).toHaveText("Teahouse Keeper cannot say who told them");
+    await expect(badge("n_boat")).toHaveText("Teahouse Keeper couldn't say who told them");
     await expect(badge("n_boat")).toHaveAttribute("data-how", "unsure");
     await lantern.setLang("zh");
-    await expect(badge("n_scrape")).toHaveText("你亲眼看见的");
-    await expect(badge("n_clerk")).toHaveText("周家伙计说，是亲眼看见的");
-    await expect(badge("n_broke")).toHaveText("茶馆老板娘说，是听周掌柜说的");
-    await expect(badge("n_boat")).toHaveText("茶馆老板娘说，记不清是听谁说的");
+    await expect(badge("n_scrape")).toHaveText("亲眼所见");
+    await expect(badge("n_clerk")).toHaveText("周家伙计说自己亲眼见过");
+    await expect(badge("n_broke")).toHaveText("茶馆老板娘说是听周掌柜讲的");
+    await expect(badge("n_boat")).toHaveText("茶馆老板娘说不清是听谁讲的");
     await expect(badge("n_clerk")).toHaveAttribute("title", "第一天 08:20，在茶馆");
     // No count of hands anywhere on the sheet.
     expect(await textOf(page, "notebook")).not.toMatch(/第[一二三四五六七八九\d]+手|\b\d(st|nd|rd|th) hand\b/);
@@ -369,23 +369,23 @@ test.describe("the people on the map", () => {
     // The people the player knows are by name, the others by what they are (the part of the role before the comma).
     expect(shown.zhou_huoji).toMatchObject({ text: "Zhou's Clerk", known: true });
     expect(shown.cha_laoban).toMatchObject({ text: "Teahouse Keeper", known: true });
-    // (Li Da stands under the placard of the day at this size, which hides his tag as it hides him.)
-    expect(shown.li_xiaomei).toMatchObject({ text: "Daughter of Li Da", known: false });
+    // The clock and the rumour legend hide some tags, so check a role in the open.
+    expect(shown.zhou_erlang).toMatchObject({ text: "Second Zhou son", known: false });
     expect(shown.zhou_zhanggui).toMatchObject({ text: "Head of the Zhou shop", known: false });
     expect(shown.zuzhang).toMatchObject({ text: "Elder of the clan", known: false });
     // The slip points to Granny Li: she has the dot, and nobody else.
     expect(shown.li_laotai).toMatchObject({ text: "Granny Li", known: true, dot: true });
     expect(Object.entries(shown).filter(([, label]) => label.dot).map(([id]) => id)).toEqual(["li_laotai"]);
     // The two families have a line in their colour, the others none.
-    expect(shown.li_xiaomei?.edge).toBe(0xd0593a);
     expect(shown.li_laotai?.edge).toBe(0xd0593a);
+    expect(shown.zhou_erlang?.edge).toBe(0x3f7fa6);
     expect(shown.zhou_zhanggui?.edge).toBe(0x3f7fa6);
     expect(shown.zhou_huoji?.edge).toBe(0x3f7fa6);
     expect(shown.cha_laoban?.edge).toBeNull();
     expect(shown.zuzhang?.edge).toBeNull();
     // In Chinese the words follow.
     await lantern.setLang("zh");
-    await expect.poll(async () => (await labels(page)).li_xiaomei?.text).toBe("李大的女儿");
+    await expect.poll(async () => (await labels(page)).zhou_erlang?.text).toBe("周家次子");
     expect((await labels(page)).li_laotai?.text).toBe("李老太");
     expect((await labels(page)).zhou_huoji?.text).toBe("周家伙计");
     expect(lantern.pageErrors).toEqual([]);

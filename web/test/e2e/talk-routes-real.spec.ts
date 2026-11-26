@@ -73,7 +73,7 @@ test.describe("what a person asks in return, on the real core", () => {
     await page.getByTestId("answer-yes").click();
     await expect(card).toHaveAttribute("data-verb", "promise");
     await expect(card).toHaveAttribute("data-phase", "result", { timeout: 90_000 });
-    await expect(page.getByTestId("request-result")).toHaveText("You gave your word to Clan Elder.");
+    await expect(page.getByTestId("request-result")).toHaveText("You've given Clan Elder your word. Remember to keep it by the agreed time.");
     await untilSettled(page);
     expect((await promisesOf(lantern)).map((a) => [a.what, a.item])).toEqual([["role", "lead_lanterns"]]);
     await expect(page.getByTestId("answer-line")).toHaveCount(0);
@@ -124,7 +124,7 @@ test.describe("what a person asks in return, on the real core", () => {
     await give.locator('[data-id="stall:back"]').click();
     await expect(card(page)).toHaveAttribute("data-verb", "promise");
     expect(await confirmed(page)).toBe(true);
-    await expect(page.getByTestId("request-result")).toHaveText("You gave your word to Temple Keeper.");
+    await expect(page.getByTestId("request-result")).toHaveText("You've given Temple Keeper your word. Remember to keep it by the agreed time.");
     expect((await promisesOf(lantern)).map((a) => [a.what, a.item])).toEqual([["stall", "back"]]);
     await putAway(page);
 
@@ -359,7 +359,7 @@ test.describe("the boatman's boat, on the real core", () => {
   test("a look that was turned down: the first talk of the day is not enough and puts nothing forward, the second puts the promise forward with no question, and the look is let through after it", async ({ lantern }) => {
     test.setTimeout(360_000);
     const page = lantern.page;
-    const refused = /will not let you look/;
+    const refused = /don't know you well enough to let you see it yet/;
     await startGame(lantern, GAME);
     await waitForClock(page, 9, 0);
     // The boatman does not know the manager yet: the look is turned down, and the page says so.

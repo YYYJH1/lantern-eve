@@ -4,9 +4,9 @@
 <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-en-dark.png">
 <img alt="Lantern Eve, 灯会前夕. A river town hung with lanterns, and a stone bridge with a stretch of its railing fallen. Three people pass a line along, and “Li Er was at the bridge last night” becomes “Li Er broke the bridge railing last night”." src="docs/assets/banner-en-light.png" width="920"></picture></p>
 
-<p align="center"><b>A river town is getting ready for its lantern festival. The talk of the town passes from person to person, and it changes on the way. For every line you hear, your notebook records who it came through.</b></p>
+<p align="center">There are five days until the lantern festival, and part of the bridge railing has come down. Someone saw Li Er there that night. A few doorways later, people are saying he broke it.</p>
 
-<p align="center"><b>Play in the browser: <a href="https://yyyjh1.github.io/lantern-eve/">https://yyyjh1.github.io/lantern-eve/</a></b></p>
+<p align="center"><b><a href="https://yyyjh1.github.io/lantern-eve/">Play Lantern Eve in your browser</a></b></p>
 
 <p align="center">
 <a href="https://github.com/YYYJH1/lantern-eve/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/YYYJH1/lantern-eve/actions/workflows/ci.yml/badge.svg"></a>
@@ -17,40 +17,40 @@
 <p align="center"><picture>
 <source media="(prefers-color-scheme: dark)" srcset="docs/assets/play-en-dark.gif">
 <img alt="Animated: the first day, from the opening page to the next morning" src="docs/assets/play-en-light.gif" width="880"></picture><br>
-<sub>The first day of five, from the opening page to the next morning. The red slip at the top names the next thing to do. After Start you meet six people, and the clan elder sends you to Granny Li to borrow the bamboo. A talk opens on a strip of paper along the bottom of the map, with four buttons and a row of hearts, and you can give the person a small gift. Granny Li refuses. You follow the rumour back from person to person, by way of the teahouse keeper, to Zhou's Clerk. In the notebook you set what the clerk saw beside what the town says, and find that the one does not prove the other. In the evening you set the talk straight in public at the teahouse. Everyone there says in their own words what they make of it, and Granny Li gives way. Li Da, who keeps the bamboo, promises to bring it. A note sums up the night. The next morning the Town Gazette is out. The bamboo lies at the bridge, and the ledger shows what the bridge needs and what has come.</sub></p>
+<sub>The first day in play. Ask Granny Li for bamboo, hear Zhou's clerk give evidence at the teahouse, and see Li Da deliver the bamboo the next morning.</sub></p>
 
-Chengxi is a river town. A stretch of railing on its stone bridge has just fallen. The clan elder has brought you in from outside to run this year's lantern festival. On the night of the fifth day the Li and Zhou families are to carry their lanterns over the bridge together. Before then you have to mend the bridge, tell everyone how it broke, and make peace between the two families.
+You're the new festival manager in Chengxi. The elder sends you to borrow bamboo from the Li family. Granny Li wants to know what you plan to tell the neighbours about her younger son. She heard the story from the teahouse keeper, who sends you to Zhou's clerk. The clerk can vouch for what they saw by the bridge.
 
-The elder walks you through the first day. You talk to people, follow a rumour back one person at a time, compare what you heard in your notebook, and go to the teahouse in the evening to set the talk straight in public.
+Put the sighting beside the rumour in your notebook. When the teahouse fills up that evening, bring up the rumour and ask an eyewitness what they saw. If Granny Li gives way, find Li Da to arrange for the bamboo.
 
 <p align="center"><picture>
 <source media="(prefers-color-scheme: dark)" srcset="docs/assets/notebook-en-dark.png">
 <img alt="The notebook, a book bound with thread, open at two pages. The left page holds the line set against a claim, the three ways two lines can relate, and the result of the comparison. The right page is the statement card, with none of its blanks filled in." src="docs/assets/notebook-en-light.png" width="880"></picture><br>
-<sub>The notebook on the first day, just after two lines were compared. At the top of the left page is the line set against the claim, “Li Er was at the bridge last night”. Below it are the three ways two lines can relate, each with a small example, and then the result: that line shows only that Li Er was at the bridge, not that he broke the railing out of envy. The right page is the statement card, at 0 of 3. Under each blank are a few accounts to choose from, and beside each account is a tally in strokes of the character 正, one stroke for every note in the notebook that bears it out.</sub></p>
+<sub>Compare two accounts on the left. On the right, the strokes of 正 tally how many notes support each answer in your statement.</sub></p>
 
-Twenty people live in the town. Each of them remembers what they have seen and heard, and has plans and old grudges of their own. They pass news to one another. You meet six of them at the start and the rest when you come across them. Everyone you have met goes into the people book. Each person has a row of hearts. Click it to see how things stand between you. The market has four small things each day, and you can give away one a day, to anyone you like. A talk has just four buttons: *Ask around*, *Ask a favour*, *Tell* and *Take your leave*. *Ask a favour* names on its button the one thing most worth asking this person for now, and the rest are under *Others*. The first time an action becomes useful, its button glows once and a small card says what it does.
+Twenty people live in Chengxi, with errands of their own and stories they've heard. The opening introduces six of them. Once you're in town, anyone you've greeted goes into the people book. In a conversation you can ask around, ask a favour, pass on a piece of news or take your leave. Click the hearts to see how you stand with someone. If you'd like to bring a gift, pick one at the market. You can give one a day.
 
-The notebook also holds a statement card. Its three blanks are *How the bridge broke*, *What happened that night* and *Why people got it wrong*. You fill each blank with one of the accounts you have heard. From the evening of the fourth day you can make the statement in public.
+Your notebook also holds a draft statement. Use the accounts you've collected to choose how the bridge broke, what happened that night and how the story went astray. From the fourth evening you can give the full statement in public.
 
-The festival is on the night of the fifth day. Which way the lantern parade goes, whether the two families walk together and who lights the main lantern all follow from what you got done in the five days. After the festival comes the ending page, which draws how the rumour travelled through the town.
+What you get done over the five days determines which way the parade goes, whether the Li and Zhou families walk together and who lights the main lantern. After the festival, the ending shows who passed the rumour along to whom.
 
 <p align="center"><picture>
 <source media="(prefers-color-scheme: dark)" srcset="docs/assets/festival-en-dark.png">
 <img alt="The whole town on the festival night. The lanterns at every door are lit, and people with lanterns walk from the street over the stone bridge and up to the ancestral hall. The main lantern is lit, and lanterns drift down the river." src="docs/assets/festival-en-light.png" width="880"></picture><br>
-<sub>The festival night of a game that went as well as it could. The line at the bottom says how the night went: “The bridge was mended. The two families walked side by side, and the heads of both families lit the main lantern together.”</sub></p>
+<sub>With the bridge repaired, the parade crosses the river and heads for the ancestral hall.</sub></p>
 
 <p align="center"><picture>
 <source media="(prefers-color-scheme: dark)" srcset="docs/assets/ending-en-dark.png">
 <img alt="The rumour tree of the ending page. A rumour passes from one person to the next, and the tellings in which it changed are marked by numbered circles." src="docs/assets/ending-en-light.png" width="806"></picture><br>
-<sub>The ending page draws how the rumour travelled. There are two trees, each starting from someone who saw it, and the names of those two have a heavy frame. A line is one telling, and a dashed line carries a version that is not true. A numbered circle marks a telling that changed the story, and the list below says who told whom when it changed.</sub></p>
+<sub>Each line is a retelling. A dashed line carries a false account. Follow the numbered circles to see where the story changed.</sub></p>
 
-The town has sound. By day you hear the river, birds and the voices of the market. At night there are insects, and the watchman's clapper. When it rains you hear the rain, and the festival has drums and gongs and a tune. All of it is made in the browser as the game plays, and the menu can turn it off.
+Listen for the river and the voices of the market during the day, or the watchman's clapper at night. The browser makes these sounds as you play. You can turn them off in the menu.
 
-The townsfolk speak lines written for them, so a game needs no model and no key, and plays the same offline. If you like, the menu lets you connect a model of your own. Alibaba Bailian and DeepSeek take your own key, and Ollama runs on your own machine. The rules still decide what the townsfolk answer you, and the model only puts it in each person's own manner. The calls go from your browser straight to the provider. The key stays in the page, and goes into the browser's storage only when “remember on this device” is ticked. The model calls of a game stay within a budget, 3 yuan by default.
+The dialogue comes with the game, which can run offline once its assets have loaded. To try model-written phrasing, connect Alibaba Bailian, DeepSeek or a local Ollama instance from the menu. The game rules still determine the facts in each answer. Requests go straight from your browser to the chosen provider. The browser saves your key only if you choose to remember it on this device. The default budget is 3 yuan per game.
 
 ## Try it
 
-The web version runs the whole town in your browser, with no game server and no key. The page shows Chinese or English as your browser does, and the menu can switch between them. To run it yourself you need Node 22.18 or later and [uv](https://docs.astral.sh/uv/). uv builds the core of the game for the browser. Vite prints the address to open. The game is made for a computer's browser, in a window of at least 1200 × 600. In a smaller window the opening page says so, and *Open anyway* starts the game all the same.
+To run the web version locally, install Node 22.18 or later and [uv](https://docs.astral.sh/uv/). Open the address Vite prints. The game is laid out for a desktop browser. If the window is smaller than 1200 × 600, the opening page offers a way to continue. You can switch languages in the menu.
 
 ```bash
 cd web
@@ -58,7 +58,7 @@ npm ci
 npm run dev
 ```
 
-The server host can run the town instead, under CPython. Build the client once, then start the server, which prints the address to open.
+You can also run the game on a CPython server. Build the client, start the server and open the address printed in the terminal.
 
 ```bash
 uv sync

@@ -196,7 +196,7 @@
   flex-direction: column;
   gap: 3px;
   width: max-content;
-  max-width: 170px;
+  max-width: 192px;
   padding: 5px 10px 6px;
   border: 1px solid var(--ink);
   background: var(--paper);

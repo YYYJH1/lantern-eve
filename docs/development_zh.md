@@ -8,11 +8,11 @@
 <source media="(prefers-color-scheme: dark)" srcset="assets/architecture-zh-dark.png">
 <img alt="一份 Python 核心配两种宿主，一种是浏览器里跑 Pyodide 的 worker，一种是 Python 服务端。两种宿主共用一个网页客户端。录像能一拍不差地重放出同一局。" src="assets/architecture-zh-light.png" width="920"></picture></p>
 
-`lantern_core` 就是游戏世界本身，是一台纯状态机。宿主每拍调用它一次，用 JSON 把这一拍的输入交进去，拿回的输出也是 JSON。核心不读时钟，不读文件，也不联网。凡是会改变世界的输入，比如玩家的动作、模型的结果、暂停，一到宿主就编上号记下来，所以录像能一拍不差地重放出这一局。状态里没有浮点数，只有整数、字符串、布尔值和 null，装在列表和对象里。状态的 SHA-256 在 CPython 和 Pyodide 下完全一样。
+`lantern_core` 是游戏的状态机。宿主每拍把 JSON 输入交给核心，再接收这一拍的 JSON 输出。时钟、文件和网络由宿主管理。玩家操作、模型结果、暂停等会改变状态的输入，宿主在收到时编号并记进录像。回放按这个顺序重新交给核心。状态由整数、字符串、布尔值、`null`、列表和对象组成，同一局在 CPython 和 Pyodide 下逐拍得到相同的 SHA-256。
 
-浏览器宿主在模块 worker 里用 Pyodide 跑核心。服务端宿主用 CPython 加 asyncio 跑核心。两边守的是同一份约定，写在 `core/lantern_core/api.py` 的文档字符串里。
+浏览器宿主在模块 worker 里通过 Pyodide 运行核心。服务端宿主使用 CPython 和 asyncio。两种宿主的接口约定见 `core/lantern_core/api.py` 的文档字符串。
 
-`lantern-eve` 命令跑的是服务端宿主。`lantern-eve play` 在 127.0.0.1 上起一个服务，把构建好的网页客户端发给浏览器，每局开一个会话。会话用 Python 跑浏览器宿主那一套循环。它收到输入就编号，用定步长累加器推进核心，把模型请求交给传输层，再记下核心用了哪些输入。页面经 WebSocket 和它通信，用的是浏览器宿主的那些消息，外加几条它自己的，都写在 `host_server/lantern_eve/protocol.py` 里。每局的录像按浏览器宿主的格式写进 `runs/`，所以 `lantern_core.replay.rebuild` 能原样读它。怎样让网页客户端连上服务端宿主，见 [web/README_zh.md](../web/README_zh.md)。
+`lantern-eve play` 在 `127.0.0.1` 运行服务端宿主，提供构建好的网页，并为每局开一个会话。会话给收到的输入编号，用固定步长推进核心，把模型请求交给传输层，并记录核心实际采用的输入。页面经 WebSocket 和会话通信，消息格式见 `host_server/lantern_eve/protocol.py`。录像写入 `runs/`，格式与浏览器宿主一致，可以直接交给 `lantern_core.replay.rebuild`。连接方式见 [网页客户端说明](../web/README_zh.md)。
 
 ## 目录
 
@@ -43,6 +43,8 @@ npm --prefix web exec -- playwright install chromium
 npm --prefix web run test:e2e
 ```
 
-`-n 8` 让测试分成八个进程并行跑（pytest-xdist）。没跑过 `npm ci --prefix tests/cross_host`，pytest 会跳过跨宿主的测试。`web/dist` 没构建出来，pytest 也会跳过检查构建产物的那一项。`lantern-eve batch` 无头跑演示世界 `m0` 的这几个种子（`--scenario bridge` 跑的是小镇），每拍调用一次核心。它给每个种子打印一行，写着最后一拍的拍号和状态哈希。同样的种子，每次打印出的行都一样。
+`pytest -n 8` 用 pytest-xdist 开八个进程。跨宿主测试需要先运行 `npm ci --prefix tests/cross_host`，页面产物测试需要先构建 `web/dist`。各自的依赖缺失时，pytest 会跳过对应测试。
 
-每次推送到 main 和每个 pull request 都会跑 CI，在 Actions 页面也能手动启动。在 fork 里，CI 的任务只在手动启动时才跑。每周还会单独跑一次浏览器测试。CI 在 Python 3.12 和 3.14 上跑 ruff、内容检查、字体检查和 pytest，在 Node 22 和 Pyodide 314 上跑跨宿主比对，比对被跳过也算失败。CI 还在 Chromium 里跑网页构建和浏览器测试。浏览器测试分成用时差不多的几份，每台运行机跑一份（见 [web/README_zh.md](../web/README_zh.md)）。
+`lantern-eve batch` 默认跑演示场景 `m0`，加 `--scenario bridge` 可跑澄溪镇。批跑不需要打开页面。命令为每个种子打印最后的拍号和状态哈希，同一个种子重复运行的输出应当一致。
+
+推送到 `main` 或打开 pull request 时会运行 CI，也可以在 Actions 页面手动启动。Fork 里的工作流只手动运行。Python 3.12 和 3.14 上检查 Ruff、内容、字体和 pytest。Node 22 和 Pyodide 314 上做跨宿主比对，跳过比对也算失败。浏览器测试使用 Chromium，按耗时分给多台运行机，每周还会独立跑一轮。[浏览器测试清单](../web/README_zh.md#测试)

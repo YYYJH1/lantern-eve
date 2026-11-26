@@ -96,11 +96,11 @@ function StepBody({ step, play, scene, lang, slice, verbs }: BodyProps) {
       return (
         <>
           <p>{t("tut.granny.body")}</p>
+          <p>{t("tut.granny.action")}</p>
           {task === null ? null : (
             <div class="tut-task" data-testid="tut-task">
               <span class="tut-task-label">{t("tut.goal.task")}</span>
               <strong>{pick(task.text, lang)}</strong>
-              {task.why === null ? null : <span>{pick(task.why, lang)}</span>}
             </div>
           )}
         </>
@@ -220,7 +220,7 @@ function Tutorial({ play, scene, lang, slice, verbs }: { play: Play; scene: Scen
             {t("tut.skip")}
           </InkAct>
           <button type="button" class="ink-act" data-testid="tutorial-next" ref={focus} onClick={() => guide.dismissCard()}>
-            {t("tut.got")}
+            {t(card === "granny" ? "tut.granny.reply" : "tut.got")}
             <Underline seed="tut-next" />
           </button>
         </footer>

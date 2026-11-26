@@ -68,7 +68,7 @@ export interface PlayNote {
 /** What the player does in a talk, as the lines of the talk name it. */
 export type TalkAct = "ask" | "source" | "tell" | "entrust" | "promise" | "gift";
 export type TalkLine =
-  | { who: "you"; how: TalkAct; subject: Name }
+  | { who: "you"; how: TalkAct; subject: Name; speech?: MessageKey }
   | {
       who: "them";
       text: Name;
@@ -149,6 +149,8 @@ export interface Sent {
   type: string;
   /** What the action was about, for the lines of a talk. */
   subject?: Name;
+  /** The player's words when a specific action has a spoken line. */
+  speech?: MessageKey;
   npc?: string;
   /** A walk that is part of an approach. */
   approach?: boolean;
@@ -401,8 +403,10 @@ export class Play {
 
   ask(topic: string, subject: Name): void {
     const partner = this.state.talk?.npc;
+    const again = partner !== undefined && this.flows.askedOf(partner).has(topic);
     if (partner !== undefined) this.flows.noteAsked(partner, topic);
-    this.send({ type: "ask", topic }, { subject, ...this.addressee() });
+    const speech = topic === "li_er" ? (again ? "talk.you.askLiErAgain" : "talk.you.askLiEr") : undefined;
+    this.send({ type: "ask", topic }, { subject, ...(speech === undefined ? {} : { speech }), ...this.addressee() });
   }
 
   /** Gives one of the small things of the day to the person talked to. `subject` names it for the lines of the talk. */
@@ -714,16 +718,23 @@ export class Play {
     if (meta.silent === true) return;
     const reason = typeof event.reason === "string" ? event.reason : null;
     if (event.result === "rejected") {
+      const answered = meta.type === "entrust" && this.frameEvents.some((e) => e.kind === "entrusted" && e.npc === meta.npc);
+      if (answered) this.keepTalkExchange(meta, view);
       // A request with a preview and a judgement show the answer where they were made, and not in a note over the map.
       if (meta.flow !== undefined && id !== null) this.flows.onRejected(meta.flow, id, reason);
       else this.refused(meta, reason, declined);
       return;
     }
     if (meta.type === "move" && this.state.destination !== null) this.state.destination.walking = true;
+    this.keepTalkExchange(meta, view);
+    if (meta.flow !== undefined && id !== null) this.flows.onApplied(meta.flow, id);
+  }
+
+  private keepTalkExchange(meta: Sent, view: ViewFrame): void {
     const act = TALK_ACTS[meta.type];
-    if (act !== undefined && this.state.talk !== null && meta.subject !== undefined) {
+    if (act !== undefined && this.state.talk !== null && meta.subject !== undefined && (meta.npc === undefined || this.state.talk.npc === meta.npc)) {
       const talk = this.state.talk;
-      talk.lines.push({ who: "you", how: act, subject: meta.subject });
+      talk.lines.push({ who: "you", how: act, subject: meta.subject, ...(meta.speech === undefined ? {} : { speech: meta.speech }) });
       const said = view.bubbles.find((b) => b.npc === talk.npc && this.tick < b.until);
       if (said !== undefined) {
         const pointer = this.pointerOf(talk.npc);
@@ -731,7 +742,6 @@ export class Play {
         talk.lines.push({ who: "them", text: said.text, ...(pointer === null ? {} : { points: [pointer] }), ...(wrote === null ? {} : { entry: wrote }) });
       }
     }
-    if (meta.flow !== undefined && id !== null) this.flows.onApplied(meta.flow, id);
   }
 
   /**

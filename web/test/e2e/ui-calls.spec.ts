@@ -104,13 +104,13 @@ test.describe("the model call log", () => {
     await expect(row("r20-0")).toContainText("director");
     await expect(row("r20-0")).toContainText("timed out");
     await expect(row("r20-0")).toContainText("8000 ms");
-    await expect(row("r20-0")).toContainText("Moved down: the budget is running out.");
+    await expect(row("r20-0")).toContainText("Switched because spending reached the budget threshold.");
     await expect(row("r20-0")).toContainText("held ¥0.000196");
     await expect(row("r20-0")).toContainText("charged ¥0.000196");
     // A request the gate turned into a script line never went out.
     await expect(row("r30-0").locator(".call-given")).toHaveText("script line");
     await expect(row("r30-0")).toContainText("not sent");
-    await expect(row("r30-0")).toContainText("Moved down: the cloud could not be reached.");
+    await expect(row("r30-0")).toContainText("Switched because the cloud could not be reached.");
     await expect(row("r30-0")).toContainText("no model");
     await expect(row("r30-0")).toContainText("Town Gazette");
     // An error shows its code. A call in flight shows what is held for it and nothing charged.
@@ -144,12 +144,12 @@ test.describe("the model call log", () => {
     await expect(row("r20-0").locator(".call-given")).toHaveText("便宜档");
     await expect(row("r20-0")).toContainText("导演");
     await expect(row("r20-0")).toContainText("超时");
-    await expect(row("r20-0")).toContainText("预算快用完了，降了档。");
+    await expect(row("r20-0")).toContainText("费用已到切换档位的上限。");
     await expect(row("r20-0")).toContainText("预留 ¥0.000196");
     await expect(row("r20-0")).toContainText("扣费 ¥0.000196");
     await expect(row("r30-0")).toContainText("台词库");
     await expect(row("r30-0")).toContainText("未发出");
-    await expect(row("r30-0")).toContainText("连不上云端，降了档。");
+    await expect(row("r30-0")).toContainText("连不上云端，已改用其他方式。");
     await expect(row("r30-0")).toContainText("无模型");
     await expect(row("r40-0")).toContainText("预取");
     await expect(row("r50-0")).toContainText("反思");
@@ -170,7 +170,7 @@ test.describe("the model call log", () => {
     await expect(page.getByTestId("calls-total")).toHaveText("230");
     await expect(page.getByTestId("call").first()).toHaveAttribute("data-id", "c229");
     await expect(page.getByTestId("call").last()).toHaveAttribute("data-id", "c30");
-    await expect(page.getByTestId("calls-cap")).toHaveText("Only the newest 200 calls are listed. The figures above count them all.");
+    await expect(page.getByTestId("calls-cap")).toHaveText("Only the latest 200 calls are listed. The totals cover the whole game.");
     await expect(page.getByTestId("calls-booked")).toHaveText("¥0.00023");
     // A call that was heard of before changes where it stands.
     await feed(page, { type: "model-calls", replace: false, calls: [{ ...many[229], status: "timeout", late: true }] });

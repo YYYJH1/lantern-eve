@@ -2,7 +2,7 @@
 
 # Fonts
 
-The page sets its text in LXGW WenKai, a Kai face with Latin letters in the same family, and its titles in Ma Shan Zheng, a brush face. The full faces weigh 26 MB and 6 MB. The page does not load them. This tool cuts them down to the characters that the game can show and writes the cuts as WOFF2 into `web/public/fonts/`, each beside its licence (SIL Open Font License 1.1).
+The web client uses LXGW WenKai for body text in both languages and Ma Shan Zheng for titles. The source fonts are 26 MB and 6 MB. To build the client fonts, this tool keeps the characters the game can display and saves each subset as WOFF2 under `web/public/fonts/` alongside its SIL Open Font License 1.1.
 
 | Face | File | Size | Characters |
 |---|---|---|---|
@@ -12,15 +12,15 @@ The page sets its text in LXGW WenKai, a Kai face with Latin letters in the same
 
 `subsets.json` holds the exact size and character count of each cut.
 
-The two WenKai faces are for the body of the page: Regular for the text and Medium for what stands out. Ma Shan Zheng is for the titles only: the name of the game, the masthead of the Town Gazette, the names of the tasks on the slips (and what a slip says while there is no task), the names of the jobs on the ledger, the titles of the cards that say a job is done, and the seal of a surname at the corner of the talk and on the note of a person. It has the characters of those words, the names of the people in them, the character of every seal and the printable ASCII.
+WenKai Regular is the default weight. Use Medium for emphasis. Ma Shan Zheng covers the game title, the Town Gazette masthead, task names and empty states on slips, job names on the ledger, titles on completion cards, and surname seals in talks and on person cards. The title subset includes any names that appear there, every seal character and printable ASCII.
 
 ## The text of the game
 
-`chars.py` reads every place where text for the player lives: the compiled content, the strings of the page (the message tables, the components, the style sheets and `index.html`), and the strings of the core and of the server host. It leaves out comments, docstrings, the patterns of regular expressions and the prompts for the language models. The result is a little more than what is shown, and never less. A character that a full face lacks is listed under `unavailable` in `subsets.json` and drawn by the next face of the font stack. `tests/test_fonts.py` allows at most six of them for each face, and none may be a Chinese character.
+`chars.py` collects player-facing text from the compiled content, web message tables, components, stylesheets, `index.html`, the core and the server host. It skips comments, docstrings, regular expressions and language model prompts. For a character the source font lacks, `subsets.json` records it under `unavailable` and the browser uses the next face in the font stack. `tests/test_fonts.py` allows up to six missing characters per face and requires coverage for every Chinese character.
 
 ## Fetch the full faces
 
-The faces are not in the repository. The cut checks every file against the hash pinned in `build.py`, so a different version is refused.
+Download the full source fonts before building. `build.py` verifies each file against its pinned checksum.
 
 ```bash
 mkdir -p tools/fonts/src
@@ -42,7 +42,7 @@ uv run python tools/fonts/build.py --src tools/fonts/src   # cut the faces, writ
 uv run python tools/fonts/build.py --check                 # do the faces on disk have every character now?
 ```
 
-The cut needs fontTools with the `woff` extra, which is in the dev group of `pyproject.toml`. `tests/test_fonts.py` asks the same question with the same code. A change to a text that needs a new character fails it, and then the cut has to be run again. The tests read the faces on disk and `subsets.json`, so they need no full face.
+The `dev` group in `pyproject.toml` includes fontTools with the `woff` extra. Run the check after changing game text. If a new character is missing, rebuild the subsets. `tests/test_fonts.py` checks the same files and `subsets.json` without needing the source fonts.
 
 ## Use
 
@@ -52,8 +52,8 @@ The cut needs fontTools with the `woff` extra, which is in the dev group of `pyp
 @font-face { font-family: "Brush"; src: url("/fonts/ma-shan-zheng/MaShanZheng-titles.subset.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 ```
 
-The cut keeps the OpenType features that a page of Chinese text uses: the vertical forms of the glyphs (`vert`) for text set downwards, the contextual spacing of punctuation (`chws`, `vchw`), its half width forms (`halt`, `vhal`), and `calt` and `ccmp`. Fractions, superscripts and the other stylistic sets are left out. The licence of WenKai lets a subset keep the family name when it is made for the web only and is not offered as an installable font.
+The subsets preserve the OpenType features used on the Chinese page, including vertical glyphs (`vert`), contextual punctuation spacing (`chws`, `vchw`), half-width punctuation (`halt`, `vhal`), `calt` and `ccmp`. The build drops fractions, superscripts and other stylistic sets. WenKai’s licence allows a web-only subset to keep the family name if it is distributed only as a web font.
 
 ## Outlines for shapes
 
-`glyph_paths.py` writes the outline of a few characters of Ma Shan Zheng as SVG path data, in the em square of the font. The sprite kit uses it for the character on the elder's seal and for the label of the notebook (`tools/sprite-kit/src/page/glyphs.js`), and `tools/ink_ui` for the seals of the brush marks, so that drawing them needs no font.
+`glyph_paths.py` exports selected Ma Shan Zheng glyph outlines as SVG paths in the font’s em square. The sprite kit uses the paths for the notebook label and the elder’s seal (`tools/sprite-kit/src/page/glyphs.js`). The ink UI uses them for its seals. Both can render those characters without loading the font.

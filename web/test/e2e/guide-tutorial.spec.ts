@@ -122,8 +122,8 @@ test.describe("the tutorial on a real game", () => {
     await expect(card).toHaveAttribute("data-step", "clerk", { timeout: 90_000 });
     await expect(step).toHaveText("Tutorial 2 of 4");
     await expect(page.getByTestId("tutorial-title")).toHaveText(en["tut.clerk.title"]);
-    await expect(page.getByTestId("tut-blocker").locator("dd")).toHaveText("The Li family will not give the bamboo");
-    await expect(page.getByTestId("tut-why").locator("dd")).toHaveText("The town is saying Li Er broke the bridge. Granny Li is angry that you, the manager, have said nothing.");
+    await expect(page.getByTestId("tut-blocker").locator("dd")).toHaveText("The Li family won't lend the bamboo");
+    await expect(page.getByTestId("tut-why").locator("dd")).toHaveText("Granny Li heard the neighbours blame Li Er for the broken railing. She wants to hear what the Manager has to say first.");
     expect(await stands(page)).toBe(true);
     await page.getByTestId("tutorial-next").click();
     await expect(card).toHaveCount(0);
@@ -143,14 +143,18 @@ test.describe("the tutorial on a real game", () => {
     await expect(card).toHaveAttribute("data-step", "compare", { timeout: 90_000 });
     await expect(step).toHaveText("Tutorial 3 of 4");
     // The lines are quoted without the full stop they end with, which the sentence has of its own.
-    await expect(page.getByTestId("tut-pair")).toContainText("the line you set against it is \u201cLi Er was at the bridge last night\u201d");
+    await expect(page.getByTestId("tut-pair")).toHaveText(
+      en["tut.pair.body"]
+        .replace("{a}", "Li Er was at the bridge that night")
+        .replace("{b}", "Li Er broke the bridge railing that night, out of envy"),
+    );
     await expect(page.getByTestId("tut-relation")).toHaveText(en["pairing.ans.unsupported"]);
     await expect(page.getByTestId("notebook")).toHaveAttribute("data-open", "true");
     // The notebook is scrolled to the pair, past the entries that are new, so that the answers are in view. The page shows the pair by its foot, above the phrase that turns the page, and the pair can be
     // taller than that by as much as the lines of the title of the slip, which the book starts under, take from the page (the book is open at two pages, and the page is narrow): what is in view is then
     // the answers, which the step needs, and not the whole of the pair, whose heading lies above the page.
     await expect(page.getByTestId("answers")).toBeInViewport({ ratio: 0.99 });
-    await expect(page.getByTestId("pair-shown")).toContainText("Li Er was at the bridge last night.");
+    await expect(page.getByTestId("pair-shown")).toContainText("Li Er was at the bridge that night.");
     await expect(page.getByTestId("ans-unsupported")).toHaveClass(/is-signal/);
     await expect(page.getByTestId("btn-notebook")).toHaveClass(/is-signal/);
     expect(await stands(page)).toBe(true);
@@ -173,7 +177,7 @@ test.describe("the tutorial on a real game", () => {
     await page.getByTestId("tutorial-next").click();
     await expect(card).toHaveCount(0);
     await expect(page.getByTestId("tutorial-chip")).toHaveCount(0);
-    await expect(page.getByTestId("game-note").last()).toHaveText("The tutorial is done. Ask the elder any time you need a hand.");
+    await expect(page.getByTestId("game-note").last()).toHaveText("There's more to do around town. Come and find me if you get stuck.");
     expect(await page.evaluate(() => localStorage.getItem("lantern.tutorial"))).toBe("done");
     await expect(page.getByTestId("status")).toHaveText("running");
     expect(lantern.pageErrors).toEqual([]);

@@ -6,7 +6,7 @@ id: lost_lantern
 label: 失灯
 days: 7
 truth_fixed_at: 2820
-summary: 第二夜扎灯坊里的主灯不见了，坊里的人、孩子和两家的人互相对不上说法。
+summary: 第二夜，扎灯坊里少了为灯会准备的那盏主灯。问起是谁拿走的，坊里的人、孩子和李、周两家各有各的说法。
 
 cast:
   - fam_li
@@ -39,13 +39,13 @@ variants:
     label: 嫉妒的学徒拿走的
     holds: [pr_app_took, pr_app_at_workshop, pr_towel_left, pr_shitou_home, pr_huoji_tea, pr_maker_loft]
   - id: v_child
-    label: 借去玩的孩子拿走的
+    label: 孩子拿去玩了
     holds: [pr_kid_took, pr_kid_at_workshop, pr_horse_left, pr_app_dorm, pr_huoji_tea, pr_maker_loft]
   - id: v_family
-    label: 想让对家出丑的周家拿走的
+    label: 周家拿走了灯，想让李家出丑
     holds: [pr_huoji_took, pr_zhou_took, pr_huoji_at_workshop, pr_tassel_left, pr_app_dorm, pr_shitou_home, pr_maker_loft]
   - id: v_maker
-    label: 扎灯师傅自己藏起来遮丑
+    label: 扎灯师傅把灯藏了起来，怕人看见毛病
     holds: [pr_maker_hid, pr_maker_at_workshop, pr_lantern_flawed, pr_app_dorm, pr_shitou_home, pr_huoji_tea]
 
 shared:
@@ -118,21 +118,21 @@ exclusive:
 observations:
   - id: obs_gengfu_near
     kind: misleading
-    label: 更夫那晚正好在工坊附近
+    label: 出事那晚，更夫的巡路经过扎灯坊
     holder: gengfu
     shows: [pr_gengfu_round]
     toward: [pr_gengfu_took]
     in: all
   - id: obs_kid_afternoon
     kind: cover_story
-    label: 石头说竹马是下午来看灯时落下的
+    label: 石头说，下午来看灯的时候就把竹马落下了
     holder: shitou
     shows: [pr_shitou_afternoon]
     toward: [pr_shitou_home]
     in: [v_apprentice, v_child, v_family, v_maker]
   - id: obs_app_daytime
     kind: cover_story
-    label: 学徒说蓝布巾整天挂在工坊里
+    label: 学徒说，那条蓝布巾白天一直挂在扎灯坊
     holder: apprentice
     shows: [pr_app_daytime]
     toward: [pr_app_dorm]
@@ -140,7 +140,7 @@ observations:
 
 chains:
   - id: ch_borrow_to_steal
-    label: 从「石头借灯去玩」传成「李二出于使坏偷了灯」
+    label: 从「石头借灯去玩」传成「李二存心偷灯使坏」
     hops:
       - {prop: pr_kid_took}
       - {prop: pr_kid_took_bare, speaker: xiao_man, listener: cha_laoban}
@@ -155,76 +155,76 @@ chains:
 
 evidence:
   - id: e_towel
-    label: 工坊门口的蓝布巾
+    label: 扎灯坊门口留着一条蓝布巾
     label_en: "A blue cloth at the workshop door"
     supports: [pr_towel_left, pr_towel_owner]
     acquire: {from: p_workshop, gatekeeper: null, min_trust: null, daily: [420, 1080], minutes: 20, until: 4320}
   - id: e_horse
-    label: 工坊门口的竹马
+    label: 扎灯坊门口留着一匹竹马
     label_en: "A bamboo horse at the workshop door"
     supports: [pr_horse_left, pr_horse_owner]
     acquire: {from: p_workshop, gatekeeper: null, min_trust: null, daily: [420, 1080], minutes: 20, until: 4320}
   - id: e_tassel
-    label: 工坊墙根的周家灯穗
-    label_en: "A Zhou family lantern tassel at the foot of the workshop wall"
+    label: 扎灯坊墙根的周家灯穗
+    label_en: "A Zhou family lantern tassel against the workshop wall"
     supports: [pr_tassel_left, pr_tassel_owner]
     acquire: {from: p_workshop, gatekeeper: null, min_trust: null, daily: [420, 1080], minutes: 20, until: 4320}
   - id: e_gengfu_app
-    label: 更夫的证词：学徒房的灯灭了，有人影往工坊去
-    label_en: "The night watchman's word: the apprentices' lamp went out and a figure headed for the workshop"
+    label: 更夫说，学徒房的灯一灭，就看见有个人影往扎灯坊去
+    label_en: "The watchman says a figure headed towards the workshop just after the light went out in the apprentices' room"
     supports: [pr_app_at_workshop, pr_gengfu_round]
     refutes: [pr_app_dorm]
     acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [1140, 1380], minutes: 30}
   - id: e_gengfu_kid
-    label: 更夫的证词：一个小影子拖着竹马进了工坊
-    label_en: "The night watchman's word: a small figure dragging a bamboo horse went into the workshop"
+    label: 更夫说，有个矮个子拖着竹马进了扎灯坊
+    label_en: "The watchman saw a short figure drag a bamboo horse into the workshop"
     supports: [pr_kid_at_workshop, pr_gengfu_round]
     refutes: [pr_shitou_home]
     acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [1140, 1380], minutes: 30}
   - id: e_gengfu_huoji
-    label: 更夫的证词：周家伙计提着灯笼在工坊旁
-    label_en: "The night watchman's word: the clerk was by the workshop with a lantern"
+    label: 更夫说，看见周家伙计提着灯笼在扎灯坊旁
+    label_en: "The watchman says Zhou's Clerk was outside the workshop with a lantern"
     supports: [pr_huoji_at_workshop, pr_gengfu_round]
     refutes: [pr_huoji_tea]
     acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [1140, 1380], minutes: 30}
   - id: e_gengfu_maker
-    label: 更夫的证词：师傅整晚守在工坊里
-    label_en: "The night watchman's word: the master stayed in the workshop all night"
+    label: 更夫说，扎灯师傅那一晚都守在坊里
+    label_en: "The watchman says the Lantern Maker stayed at the workshop all night"
     supports: [pr_maker_at_workshop, pr_gengfu_round]
     refutes: [pr_maker_loft]
     acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [1140, 1380], minutes: 30}
   - id: e_dorm_mate
-    label: 木匠的证词：学徒整晚睡在房里
-    label_en: "The carpenter's word: the apprentice slept in the room all night"
+    label: 木匠说，学徒那一晚都在房里睡觉
+    label_en: "The Carpenter says the apprentice slept in the room all night"
     supports: [pr_app_dorm]
     refutes: [pr_app_at_workshop]
     acquire: {from: mujiang, gatekeeper: null, min_trust: 25, daily: [480, 1080], minutes: 30}
   - id: e_granny_home
-    label: 李老太的证词：石头夜里在家睡觉
-    label_en: "Granny Li's word: Shitou slept at home that night"
+    label: 李老太说，石头那晚在家睡觉
+    label_en: "Granny Li says Shitou slept at home that night"
     supports: [pr_shitou_home]
     refutes: [pr_kid_at_workshop]
     acquire: {from: li_laotai, gatekeeper: null, min_trust: 30, daily: [480, 1080], minutes: 30}
   - id: e_tea_owner
-    label: 茶馆老板娘的证词：周家伙计那晚在茶馆坐到很晚
-    label_en: "The teahouse keeper's word: the clerk sat in the teahouse until late that night"
+    label: 茶馆老板娘说，周家伙计那晚在茶馆坐到很晚
+    label_en: "The Teahouse Keeper says Zhou's Clerk sat in the teahouse until late that night"
     supports: [pr_huoji_tea]
     refutes: [pr_huoji_at_workshop]
     acquire: {from: cha_laoban, gatekeeper: null, min_trust: 15, daily: [600, 1260], minutes: 20}
   - id: e_maker_loft
-    label: 庙祝的证词：那晚阁楼的灯早早灭了
-    label_en: "The temple keeper's word: the loft lamp went out early that night"
+    label: 庙祝说，那晚阁楼的灯灭得早
+    label_en: "The Temple Keeper says the loft lamp went out early that night"
     supports: [pr_maker_loft]
     refutes: [pr_maker_at_workshop]
     acquire: {from: miaozhu, gatekeeper: null, min_trust: 20, daily: [480, 1080], minutes: 30}
   - id: e_flaw
-    label: 学徒的证词：师傅摔裂了灯架，骂了半夜
-    label_en: "The apprentice's word: the master cracked a lantern frame and cursed half the night"
+    label: 学徒说，师傅摔裂了灯架，骂了半宿
+    label_en: "The apprentice says the Lantern Maker dropped and cracked the lantern frame, then cursed half the night"
     supports: [pr_lantern_flawed]
     acquire: {from: apprentice, gatekeeper: zhadeng_shifu, min_trust: 35, daily: [480, 1080], minutes: 40}
   - id: e_cabinet
-    label: 工坊夹壁里露出的灯架边角
-    label_en: "The corner of a lantern frame showing in the hidden wall of the workshop"
+    label: 扎灯坊的夹壁后露出一角灯架
+    label_en: "A corner of the lantern frame shows behind the workshop's false wall"
     supports: [pr_maker_hid, pr_lantern_flawed]
     acquire: {from: p_workshop, gatekeeper: zhadeng_shifu, min_trust: 50, daily: [480, 1080], minutes: 50}
 
@@ -283,7 +283,7 @@ lies:
 
 speculation:
   - id: sr_left_item
-    label: 物件遗在现场，物主又没有说法，就推测是物主拿的
+    label: 物件落在灯原先摆的地方，会不会是它的主人拿了灯？
     vars: {I: thing, P: place, X: person, L: thing}
     premises:
       - {pred: left_at, args: {what: $I, where: $P}}
@@ -294,7 +294,7 @@ speculation:
     hedge: [我猜, 怕是]
     min_suspicion: 25
   - id: sr_maker_flaw
-    label: 灯本来就有毛病又不见了，就推测是做灯的人藏起来的
+    label: 出了毛病的灯不见了，会不会是扎灯的人把它藏了起来？
     vars: {X: person, L: thing}
     premises:
       - {pred: broken, args: {what: $L}}
@@ -304,7 +304,7 @@ speculation:
     hedge: [我猜, 怕是]
     min_suspicion: 45
   - id: sr_rival_spite
-    label: 那晚在现场的是结怨那一家的人，就推测是这个人拿的
+    label: 那晚有人到过灯原先摆的地方，偏又是结怨那家的人，会不会是这个人拿了灯？
     vars: {X: person, P: place, L: thing}
     premises:
       - {pred: at, args: {who: $X, where: $P}}

@@ -3,29 +3,29 @@
 # and cares whether a thing is true before it goes into the Gazette.
 person: sishu_xiansheng
 voice:
-  zh: 私塾先生，办《镇报》。读书人，说话斯文、有条理，偶尔掉一句书袋，可说的是大白话，不说「曾言及」「据某某所言」这类话。自称「在下」用得少，平常就说「我」。最在乎报上登的是不是真的，还有孩子们念书。不想说的事就说「这事还没查实，在下不好乱讲」。对总管说「您」。叫族长「族长」，叫李老太「李家老太太」，叫船夫老何「老何」。
-  en: The schoolmaster, editor of the Town Gazette. Speaks gently and in good order, now and then a learned phrase, but in plain words and never like a report. Cares whether what the Gazette prints is true, and about the children's lessons. When he would rather not say, he says it has not been checked yet.
+  zh: "私塾先生教书，也办《镇报》。问话有条理，乐于把一件事的来龙去脉说完整，听来的事则会提一句还该找谁问。偶尔用「若」「不妨」或自称「在下」，尤其是礼数重的场合。跟总管称「您」。"
+  en: "The schoolmaster teaches and runs the Town Gazette. He asks orderly questions and will explain how something came about. If he only heard it from someone else, he says who might fill in the gaps. He can be a little formal when the occasion calls for courtesy, especially with the Manager."
 call:
   li_laotai: {zh: 李家老太太, en: Granny Li}
   old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "呼……这一期……还缺一篇……（睡熟了）", en: "Zzz... this issue... still one piece short... (fast asleep)"}
-    - {zh: "唔……学而时习之……（睡熟了）", en: "Mm... learn, and practise it... (fast asleep)"}
+    - {zh: "先生睡熟了。", en: "The schoolmaster is sound asleep."}
+    - {zh: "私塾先生没应声。", en: "No answer from the schoolmaster."}
   busy:
-    - {zh: "我正校着《镇报》，您改日再来。", en: "I'm proofreading the Gazette. Come another day, please."}
+    - {zh: "这期《镇报》还差一点没校完，您容我先把手头的事做了。", en: "I've a little more of the Town Gazette to proofread. Please let me finish it first."}
     - {zh: "学生在念书，我走不开。", en: "The pupils are reading and I can't leave them."}
   timeout:
     - {zh: "学生还等着上课，我得回去了。", en: "The pupils are waiting for their lesson. I must go back."}
     - {zh: "时辰到了。报上的稿子还没写完。", en: "It's time. I haven't finished writing for the Gazette."}
   unknown:
     - {zh: "这件事我没听人说过。", en: "Nobody has spoken to me about this."}
-    - {zh: "这个我不知道，也没人往报上递过话。", en: "I don't know, and nobody has sent word of it to the Gazette."}
+    - {zh: "还没人往报上递过这件事。", en: "Nobody's sent this in to the paper."}
   evade:
     - {zh: "这事还没查实，在下不好乱讲。", en: "This hasn't been checked yet, so I won't speak loosely about it."}
     - {zh: "没查清楚的事，我不往外说。", en: "I don't repeat what hasn't been looked into."}
   not_said:
-    - {zh: "这话不是我说的，我说的不是这个。", en: "Those aren't my words. That's not what I said."}
+    - {zh: "这句话与我说过的有出入，您是听谁转述的？", en: "That differs from what I said. Who passed it on to you?"}
     - {zh: "我从没这样讲过。", en: "I never said it that way."}
   not_so:
     - {zh: "不是这样，您弄错了。", en: "That's not so. You have it wrong."}
@@ -35,24 +35,24 @@ lines:
     - {zh: "这东西我不轻易给人看。", en: "I don't show that to people lightly."}
   took_in:
     - {zh: "原来如此，我记下了。", en: "I see. I'll note it down."}
-    - {zh: "多谢相告。这事我得核一核。", en: "Thank you for telling me. I'll need to check it."}
+    - {zh: "多谢相告，您刚才说的我记下了。", en: "Thank you for coming to tell me. I've noted what you said."}
   knew:
     - {zh: "这件事我已经听说了。", en: "I had already heard about it."}
     - {zh: "这个我知道，前头已经有人跟我讲过。", en: "I know. Someone told me before you did."}
   doubted:
-    - {zh: "我听到的跟这个不一样。", en: "What I heard was not the same."}
-    - {zh: "这和我知道的对不上，还得再查。", en: "That doesn't fit what I know. It needs checking."}
+    - {zh: "我先前听的说法不同，能请您讲讲问的是谁吗？", en: "I heard a different account before. Could you tell me whom you asked?"}
+    - {zh: "两种说法有出入，这一处还要再查。", en: "The two accounts differ. That part still needs checking."}
   caught:
-    - {zh: "原来是你编的。这样的话，我差点登上报。", en: "So you made it up. I nearly printed that in the Gazette."}
+    - {zh: "我若信了您刚才的说法，稀里糊涂往报上一登，岂不连我也成了传假话的人？", en: "If I'd printed what you said in the Gazette without checking, wouldn't I have passed the lie on myself?"}
     - {zh: "你骗了我。往后你的话，我得先查过再信。", en: "You lied to me. From now on I'll check what you say before I believe it."}
   deal:
-    - {zh: "一言为定，我记下了。", en: "Agreed. I've written it down."}
+    - {zh: "好，照这个约定来。", en: "Agreed. We'll stick to that."}
     - {zh: "好，就照这么办。", en: "Good. We'll do it like that."}
   empty:
     - {zh: "空口无凭，我没法信。", en: "There's nothing behind that, so I can't believe it."}
     - {zh: "没凭据的话报上不登，我也不信。", en: "Words without proof don't go in the Gazette, and I don't believe them either."}
   kept_thanks:
-    - {zh: "您说到做到，难得。", en: "You did what you said. That's rare."}
+    - {zh: "您把答应的事办成了，我想着下回遇见您，总该当面道一声谢。", en: "Now that you've kept your word, I wanted to thank you the next time we met."}
     - {zh: "答应的事办到了，多谢。", en: "What you promised got done. Thank you."}
   will_do:
     - {zh: "好，这件事我去办。", en: "Very well, I'll see to it."}
@@ -95,16 +95,16 @@ lines:
     - {zh: "谣言没说清，总管也不开口。我不敢轻易应下。", en: "The rumour hasn't been cleared and you won't speak, Manager. I won't agree lightly."}
   hard_other:
     - {zh: "这事没有商量的余地。", en: "There's no room to bargain on this."}
-    - {zh: "断无可能。", en: "That is quite impossible."}
+    - {zh: "这事不用再商量了。", en: "There's nothing more to discuss on that."}
   elder_yes:
-    - {zh: "说得在理，证据也对得上。我信服。", en: "That makes sense, and the proof fits. I'm convinced."}
-    - {zh: "我听明白了，心服口服。", en: "I understand now, and I accept it fully."}
+    - {zh: "说得通。拿这些事一件件对，也都对得上。", en: "That makes sense. It fits what we know, point by point."}
+    - {zh: "您讲明白了。我没有异议。", en: "You've explained it. I have no objection."}
   elder_no:
     - {zh: "单凭这几句，还难下定论。", en: "On these few words alone, no conclusion can be drawn."}
     - {zh: "理由还不够，我不敢轻信。", en: "The reasons aren't enough yet. I won't believe it lightly."}
   objection_withdrawn:
     - {zh: "事情既然说明白了，我不再阻拦。", en: "Since the matter has been made clear, I won't stand in the way."}
-    - {zh: "误会解开了，我没有异议。", en: "The misunderstanding is cleared up. I have no objection."}
+    - {zh: "这个误会已经解开了。我可以放心了。", en: "That misunderstanding's been cleared up. I can let it go now."}
   witness_in_public:
     - {zh: "我只说看见的，一个字不增不减。", en: "I tell only what I saw, not a word more or less."}
     - {zh: "我看见的就到这里，其余的不知道。", en: "What I saw ends there. I don't know the rest."}
@@ -121,10 +121,10 @@ lines:
     - {zh: "桥边的{item}已经够用了。", en: "The {item} at the bridge is already enough."}
     - {zh: "{item}够了，不必再添。", en: "There's enough {item}. No need to add more."}
   point_heard:
-    - {zh: "这件事我没听说过。不过听{name}谈起过，您去问问。", en: "I haven't heard of it. But I heard {name} talking about it, so you might ask."}
-    - {zh: "我不清楚。记得{name}说起过，可以去问问。", en: "I'm not sure. I remember {name} mentioning it, so ask there."}
+    - {zh: "我从{name}那里听见几句，原委尚不清楚，您不妨亲自去问一问。", en: "I heard a little from {name}. As I don't know the whole story, you might ask in person."}
+    - {zh: "我也只听{name}提过，您不妨问问原委。", en: "I only heard {name} mention it. You might ask for the full account there."}
   point_hub:
-    - {zh: "这件事我无从知道。镇上的消息，问{name}最全。", en: "I've no way of knowing. For the town's news, ask {name}."}
+    - {zh: "这事我还没细问，您若想弄清来龙去脉，可以先去找{name}。", en: "I haven't looked into that. If you want to know how it came about, try asking {name} first."}
     - {zh: "我不敢乱说。想打听街坊的事，可以去问{name}。", en: "I won't guess. If you want the talk of the street, ask {name}."}
   gift_like:
     - {zh: "{item}，正合我意。多谢。", en: "Ah, {item}, just to my taste. My thanks."}
@@ -137,32 +137,32 @@ lines:
     - {zh: "{item}就留着送别人吧。还是多谢。", en: "Better give the {item} to someone else. Thank you all the same."}
 frames:
   seen:
-    - {zh: "这是在下亲眼所见。{line}。", en: "I was there and saw that {line}."}
-    - {zh: "{line}。这是我亲眼所见。", en: "{line}. This I saw with my own eyes."}
+    - {zh: "那时我恰在场，亲眼看见{line}。", en: "I happened to be there and saw for myself that {line}."}
+    - {zh: "那时我人在场，亲眼见到{line}。", en: "I was present at the time and saw that {line}."}
   heard:
-    - {zh: "{teller}跟我说过。说是{line}。", en: "I heard it from {teller}, who said {line}."}
-    - {zh: "我是听{teller}讲的，还没查实。说是{line}。", en: "I had it from {teller}, and I haven't checked it yet. The account was that {line}."}
+    - {zh: "此事我听{teller}亲口讲过，说{line}。", en: "I heard {teller}'s account in person. It was that {line}."}
+    - {zh: "我听{teller}讲过，说{line}。这还得核一核。", en: "I heard from {teller} that {line}. It still needs checking."}
   unknown:
     - {zh: "镇上有这么个说法。说{line}。", en: "There's a story going round town that {line}."}
-    - {zh: "这话是谁先说的，我还没查到。说是{line}。", en: "I haven't found out who said it first. The story is that {line}."}
+    - {zh: "这话还没查出是谁说的，说{line}。", en: "I haven't found who said it. The account I heard was that {line}."}
   own:
-    - {zh: "以在下之见，{line}。", en: "In my humble view, {line}."}
+    - {zh: "依我手头知道的情形看，{line}。", en: "From what I know of the matter, {line}."}
     - {zh: "我前后想过了，{line}。", en: "I've thought it through, and I believe {line}."}
   guess_own:
-    - {zh: "这只是在下的推测。{hedge}{line}。", en: "This is no more than a guess. {hedge} {line}."}
-    - {zh: "还没查实，不好说定。{hedge}{line}。", en: "It hasn't been checked, so I can't be sure. {hedge} {line}."}
+    - {zh: "{hedge}{line}。还得查过才好说。", en: "{hedge} {line}. That still needs checking."}
+    - {zh: "{hedge}{line}。回头得查一查。", en: "{hedge} {line}. I'll have to look into it."}
   guess_heard:
     - {zh: "{teller}没说清楚。{hedge}{line}。", en: "{teller} wasn't clear about it. {hedge} {line}."}
-    - {zh: "{teller}提过，可惜语焉不详。{hedge}{line}。", en: "{teller} mentioned it, though without much detail. {hedge} {line}."}
+    - {zh: "从{teller}说的那几句看，{hedge}{line}。", en: "Based on what {teller} told me, {hedge} {line}."}
   guess_unknown:
-    - {zh: "出处不明。{hedge}{line}。", en: "Nobody knows where it came from. {hedge} {line}."}
+    - {zh: "说这话的人还没找着，{hedge}{line}。", en: "I haven't found who said it, but {hedge} {line}."}
     - {zh: "不过是街头的传言。{hedge}{line}。", en: "It's only street talk. {hedge} {line}."}
   rival:
-    - {zh: "{teller}的说法却不一样。说是{line}。", en: "The account {teller} gave me is different, though. It has it that {line}."}
-    - {zh: "另有一种说法，是{teller}讲的。说{line}。", en: "There's another account, from {teller}, that {line}."}
+    - {zh: "我还听{teller}讲过另一种说法，说是{line}。", en: "I heard a different account from {teller}, namely that {line}."}
+    - {zh: "还有一条得对一对。{teller}说{line}。", en: "There's another account to check. I heard {teller} say {line}."}
   known:
     - {zh: "{line}，镇上无人不知。", en: "{line}. There's nobody in town who doesn't know it."}
     - {zh: "{line}。这是镇上人人都知道的。", en: "{line}. It's known to everyone in town."}
 hedges:
-  - {zh: 想必, en: I surmise}
-  - {zh: 大概, en: I presume}
+  - {zh: 照我看, en: "I'd say"}
+  - {zh: 大概, en: I think}

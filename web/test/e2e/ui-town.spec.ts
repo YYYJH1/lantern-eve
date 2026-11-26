@@ -239,7 +239,7 @@ test.describe("the town on the map", () => {
     await lantern.waitForTick(300);
     await drawn(lantern);
     const items = page.locator('[data-testid="map-legend"] .legend-item');
-    const words = { en: ["Blames someone", "Clears the blame", "Other talk"], zh: ["怪到某人头上", "洗清罪名", "别的闲话"] } as const;
+    const words = { en: ["Blames someone", "Clears someone of blame", "Other talk"], zh: ["怪到某人头上", "替人澄清", "别的闲话"] } as const;
     for (const theme of ["light", "dark"] as const) {
       await lantern.setTheme(theme);
       for (const lang of ["en", "zh"] as const) {
@@ -438,7 +438,7 @@ test.describe("the town on the map", () => {
       const lantern = new LanternPage(await (await browser.newContext()).newPage(), servers);
       await lantern.open("scenario=bridge&seed=7&pace=40&until=400", { menu: false });
       await lantern.waitForTick(400);
-      await expect(lantern.page.getByTestId("veil")).toContainText("The map needs WebGL");
+      await expect(lantern.page.getByTestId("veil")).toContainText("This browser doesn't support WebGL, so it can't display the map.");
       expect(await lantern.page.evaluate(() => window.__lantern.view.ready)).toBe(false);
       // The numbers, the clock and the controls are DOM, and they work without the map.
       await expect(lantern.page.getByTestId("hud-clock")).not.toHaveText("–");

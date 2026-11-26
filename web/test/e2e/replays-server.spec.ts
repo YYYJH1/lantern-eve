@@ -99,7 +99,7 @@ test("the gallery lists the replays that the server wrote, plays one in the brow
     await expect(row.getByTestId("gallery-meta")).toContainText(/recorded up to Day \d+ \d\d:\d\d, bridge, .* (KB|MB), core /);
     await page.getByTestId("gallery").getByTestId("lang-zh").click();
     await expect(row.getByTestId("gallery-name")).toHaveText("服务器上的一局");
-    await expect(page.getByTestId("gallery-server").locator("h3")).toContainText("这台服务器上打过的");
+    await expect(page.getByTestId("gallery-server").locator("h3")).toContainText("服务器录像");
 
     // Watch it: the browser plays what the server wrote, with the core of its own.
     await row.getByTestId("gallery-watch").click();

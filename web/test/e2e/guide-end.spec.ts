@@ -11,26 +11,26 @@ test.use({ map: true });
 const WORDS = {
   en: {
     title: "The first day is done",
-    reached: "The first load of bamboo has reached the Stone Bridge. The festival is on the night of the fifth day. Before then, the bridge has to be mended, how it broke has to be told in public, and the two families have to make peace.",
+    reached: "The first load of bamboo has reached the bridge. Between now and the fifth evening, there's time to finish the repairs, find out what broke the railing and get the two families talking.",
     keep: "Keep playing",
     idleTop: "Nothing to do right now",
-    idleTask: "Everything is done. Look around if you like, and wait for the festival on the night of the fifth day.",
+    idleTask: "That's everything for now. The festival begins on the fifth evening, so you can look around town until then.",
     overTop: "The festival is over",
     overTask: "The festival is over.",
     pick: "Pick something to do",
-    none: "Nothing chosen yet. Pick one of the tasks below.",
+    none: "Pick a task below to show it on the red slip.",
     running: "running",
   },
   zh: {
     title: "第一天过完了",
-    reached: "第一批竹料送到了石桥。灯会在第五天晚上。在那之前，还要把桥修好，把桥是怎么坏的当众说清，再让两家和好。",
+    reached: "头一批竹料已经送到桥边。离第五天晚上的灯会还有几天，趁这阵把桥修好，查清栏杆怎么断的，也劝李、周两家坐下来谈一谈。",
     keep: "接着玩",
     idleTop: "眼下没有要办的事",
-    idleTask: "事都办完了。四处走走，等第五天晚上的灯会。",
+    idleTask: "眼下的差事都办完了。灯会在第五天晚上开场，在那之前还可以在镇上走走。",
     overTop: "灯会已过",
     overTask: "灯会办完了。",
     pick: "挑一件事来办",
-    none: "还没选要办的事，从下面挑一件。",
+    none: "在下面选一件事，红签上就会记下这件事。",
     running: "进行中",
   },
 } as const;
@@ -172,14 +172,14 @@ test.describe("the card that says the first day is done", () => {
 /** The elder's three answers when the days after have nothing open now. */
 const ELDER_IDLE = {
   en: [
-    "There is nothing left to do now. Look around as you like, and wait for the festival on the night of the fifth day.",
-    "No two lines need comparing now. You can compare any two lines in your notebook whenever you like.",
-    "Nothing has to be done right now. Go where you like and ask whom you like until the festival on the night of the fifth day.",
+    "You can look around town now. Come back for the lanterns on the fifth evening.",
+    "If there's an account you're unsure about, open your notebook and find something to check it against.",
+    "You can take a breather now. Come and see the lanterns on the fifth evening.",
   ],
   zh: [
-    "眼下没什么事要办。随意走走看看，等第五天晚上的灯会就好。",
-    "眼下没有要比的两句。见闻簿里的话，想比随时都能比。",
-    "眼下没有非办不可的事。想去哪里、问谁都行，等到第五天晚上的灯会。",
+    "这会儿没什么非办不可的。到第五天晚上，记得来看灯。",
+    "手头哪句话还拿不准，就翻开见闻簿找一条来核对。",
+    "眼下可以歇口气了。到第五天晚上，记得过来看灯。",
   ],
 } as const;
 
@@ -276,10 +276,10 @@ test.describe("the card of the morning", () => {
     for (const theme of ["light", "dark"] as const) {
       await lantern.setTheme(theme);
       await lantern.setLang("en");
-      await expect(today).toHaveText("Today: Ask Li Da for another batch of bamboo, Li Family House, Day 2 08:00 to 17:00");
+      await expect(today).toHaveText("First up today, “Ask Li Da for another batch of bamboo” (Li Family House, Day 2 08:00 to 17:00)");
       expect(await fake.contrast(page, '[data-testid="recap-today"]'), `${theme} en`).toBeGreaterThan(4.5);
       await lantern.setLang("zh");
-      await expect(today).toHaveText("今天：再请李大送一批竹料，李家宅，第二天 辰时 08:00 到 17:00");
+      await expect(today).toHaveText("今天先办「再请李大送一批竹料」，李家宅，第二天 辰时 08:00 到 17:00");
       expect(await fake.contrast(page, '[data-testid="recap-today"]'), `${theme} zh`).toBeGreaterThan(4.5);
     }
     // It is the last thing on the card, after the three lines and before the button.
@@ -288,9 +288,9 @@ test.describe("the card of the morning", () => {
     // Another task followed, or none followed: the most urgent that is open.
     await lantern.setLang("en");
     await fake.feedFrame(page, fake.laterTasks("t_timber"));
-    await expect(today).toHaveText("Today: Ask Shopkeeper Zhou for the timber");
+    await expect(today).toHaveText("First up today, “Ask Shopkeeper Zhou for the timber”");
     await fake.feedFrame(page, fake.laterTasks(null, { t_bamboo_more: "done" }));
-    await expect(today).toHaveText("Today: Ask Shopkeeper Zhou for the timber");
+    await expect(today).toHaveText("First up today, “Ask Shopkeeper Zhou for the timber”");
     // Nothing open: no line, and the card is the three lines as before.
     await fake.feedFrame(page, done({ day: 2, hour: 7, minute: 5 }));
     await expect(page.getByTestId("recap")).toBeVisible();

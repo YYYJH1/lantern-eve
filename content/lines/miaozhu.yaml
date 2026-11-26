@@ -3,16 +3,16 @@
 # town stays at peace.
 person: miaozhu
 voice:
-  zh: 庙祝，一位上了年纪的妇人。不慌不忙，说话平和，声音不高。会提到神明、香火，但不是句句都提，也不老说「愿」「缘分」。在乎庙里的香火、庙后夹道的钥匙和镇上太平。不想说的事就说「这事菩萨知道，我不好讲」。对总管说「您」。叫船夫老何「老何」。
-  en: The temple keeper, an elderly woman. Unhurried and calm, speaks softly. Mentions the shrine and the incense now and then, not in every sentence. Cares for the incense, the key to the lane behind the temple and peace in the town. When she would rather not say, she says heaven knows and it is not for her to tell.
+  zh: "庙祝是位上了年纪的妇人，守着香火，也管庙后夹道的钥匙。说话从容，愿意听总管把话说完，事关旁人的私话就婉言推开。提香火和钥匙要看所谈的事，平日说话客气，称总管「您」。"
+  en: "The temple keeper is an older woman who tends the shrine and keeps the key to the passage. She hears the Manager out, then gently declines to tell other people's private affairs. Incense and the key come up when relevant. Her usual address to the Manager is courteous."
 call:
   old_he: {zh: 老何, en: Boatman He}
 lines:
   asleep:
-    - {zh: "呼……香……该续了……（睡熟了）", en: "Zzz... the incense... light another... (fast asleep)"}
-    - {zh: "唔……菩萨保佑……（睡熟了）", en: "Mm... heaven keep us... (fast asleep)"}
+    - {zh: "庙祝睡沉了。", en: "The temple keeper is fast asleep."}
+    - {zh: "没听见里头应声。", en: "No answer from inside."}
   busy:
-    - {zh: "我正上着香，您稍等一会儿。", en: "I'm in the middle of the incense. Wait a little, please."}
+    - {zh: "您稍等，容我把这炷香插上，再听您慢慢说。", en: "Give me a moment to set this incense in place, and then I'll hear you out."}
     - {zh: "殿里的灯还没添油，您改日再来吧。", en: "The lamps in the shrine still need oil. Come another day, please."}
   timeout:
     - {zh: "香快烧完了，我得去续上。", en: "The incense is nearly burnt down. I must light more."}
@@ -21,11 +21,11 @@ lines:
     - {zh: "这个我没听人说起过。", en: "I haven't heard anyone speak of that."}
     - {zh: "来上香的人没提过这个。", en: "None of the people who come to pray have mentioned it."}
   evade:
-    - {zh: "这事菩萨知道，我不好讲。", en: "Heaven knows about that. It's not for me to say."}
+    - {zh: "这话我不便讲。", en: "I'd best keep that to myself."}
     - {zh: "这个您就别问我了。", en: "Please don't ask me that one."}
   not_said:
     - {zh: "这话不是我讲的。", en: "Those aren't my words."}
-    - {zh: "我没这么说过，菩萨在上。", en: "I never said that, as heaven is my witness."}
+    - {zh: "这句话不能算到我头上。", en: "You can't lay those words at my door."}
   not_so:
     - {zh: "不是这样的，您弄岔了。", en: "No, it wasn't like that. You've got it mixed up."}
     - {zh: "事情不是这样。", en: "That isn't how it was."}
@@ -33,25 +33,25 @@ lines:
     - {zh: "咱们才见过一回，钥匙的事以后再说。", en: "We've only met once. The key can wait."}
     - {zh: "这钥匙不能随便给不熟的人。", en: "This key isn't for someone I barely know."}
   took_in:
-    - {zh: "原来是这样，我记在心里了。", en: "So that's how it was. I'll keep it in mind."}
-    - {zh: "多谢您告诉我。", en: "Thank you for telling me."}
+    - {zh: "听您这么一讲，我就明白是怎么回事了。", en: "Hearing you tell it that way, I can see what happened."}
+    - {zh: "承您相告，有人再问我，也好回话了。", en: "Thank you for telling me. Now I know how to answer if anyone asks."}
   knew:
     - {zh: "这事来上香的人早讲过了。", en: "The people who come to pray told me that already."}
     - {zh: "我知道，您不用再说了。", en: "I know. You needn't say more."}
   doubted:
-    - {zh: "我听来的不是这样。", en: "That's not what reached me."}
+    - {zh: "我听到的跟您讲的有点不同，您是在哪儿听的？", en: "What I heard differs a little from your account. Where did you hear it?"}
     - {zh: "这跟我听到的不一样。", en: "That's different from what I heard."}
   caught:
-    - {zh: "您在菩萨跟前也说假话。往后您的话，我不敢再信了。", en: "You told a lie even before the shrine. I can't believe your words any more."}
+    - {zh: "我先前信了您的话，如今想来，当时就该多问一声。", en: "I believed what you told me. Looking back, I should have asked another question."}
     - {zh: "原来您一直在骗我。我心里凉了半截。", en: "So you were deceiving me all along. My heart sinks."}
   deal:
-    - {zh: "好，菩萨面前说定了。", en: "Good. It's agreed, before the shrine."}
+    - {zh: "好，我应下这件事。", en: "All right. You can count on me."}
     - {zh: "那就这么办吧。", en: "Then let's do that."}
   empty:
     - {zh: "空口说的，我不收。", en: "Empty words I won't take."}
     - {zh: "光说没用，得做出来。", en: "Saying isn't enough. It has to be done."}
   kept_thanks:
-    - {zh: "您说话算数，菩萨看着呢。", en: "You keep your word, and heaven sees it."}
+    - {zh: "您既应下这件事，又亲自办妥了，我得好好谢您。", en: "You gave me your word and saw it through yourself. You have my thanks."}
     - {zh: "您守了信，我谢谢您。", en: "You kept faith. Thank you."}
   will_do:
     - {zh: "好，这事我来办。", en: "Good. I'll take care of it."}
@@ -75,7 +75,7 @@ lines:
     - {zh: "我没看见什么，说不上话。", en: "I didn't see anything, so I can't say."}
     - {zh: "这事我没什么好讲的。", en: "I have nothing to tell about that."}
   testified:
-    - {zh: "我说的都是亲眼看见的，菩萨跟前不说假话。", en: "What I tell you I saw myself. I don't lie before the shrine."}
+    - {zh: "您问的那段我人在场，能讲的都是亲眼瞧见的。", en: "I was there for the part you asked about. I can tell you what I saw myself."}
     - {zh: "没看见的我不会说。", en: "I won't speak of what I didn't see."}
   too_late:
     - {zh: "天晚了，庙门要关了。明早再来吧。", en: "It's late and the temple gate is closing. Come in the morning."}
@@ -120,10 +120,10 @@ lines:
     - {zh: "桥边的{item}够了，不用再送了。", en: "There's enough {item} at the bridge. No need to send more."}
     - {zh: "{item}已经够用，留着别处用吧。", en: "There's enough {item} already. Keep the rest for something else."}
   point_heard:
-    - {zh: "这个我说不上。{name}来上香时提起过，您去问问。", en: "I couldn't say. I heard {name} mention it while praying here, so go and ask."}
-    - {zh: "我不清楚。倒是听{name}说过几句，您去问问吧。", en: "I'm not sure. I did hear {name} say a few words about it, so go and ask."}
+    - {zh: "我只听{name}说了个大概，您若要问仔细，还得亲自去一趟。", en: "I only heard the outline from {name}. If you want the details, you'd best ask in person."}
+    - {zh: "我说不准，倒是{name}提起过，您可去问问。", en: "I can't say for sure, but {name} did bring it up. You might ask there."}
   point_hub:
-    - {zh: "这事我不知道。茶馆里人来人往，您去问问{name}。", en: "I don't know. People come and go at the teahouse, so ask {name}."}
+    - {zh: "平日我都在庙里，街上的事您不如问问{name}，茶馆来往的人多。", en: "I spend most days at the temple. For news of the street, try {name}. The teahouse sees more people."}
     - {zh: "我这儿清静，听不到什么。您去找{name}吧。", en: "It's quiet here and I don't hear much. Go and find {name}."}
   gift_like:
     - {zh: "{item}，庙里正用得着。多谢你。", en: "Some {item}, just what the temple needs. Thank you."}
@@ -136,32 +136,32 @@ lines:
     - {zh: "{item}就不必了。你的心意，菩萨知道。", en: "No need for {item}. Heaven knows your kindness."}
 frames:
   seen:
-    - {zh: "这是我亲眼看见的，菩萨在上。{line}。", en: "As heaven sees me, I saw with my own eyes that {line}."}
+    - {zh: "当时我也在场，瞧见{line}。", en: "I was there then and watched as {line}."}
     - {zh: "{line}。我亲眼看见的，不说假话。", en: "{line}. I saw it myself, and I don't lie."}
   heard:
-    - {zh: "{teller}来上香时跟我讲的。说{line}。", en: "{teller} told me while praying here, that {line}."}
-    - {zh: "我听{teller}说起过。说是{line}。", en: "I heard {teller} speak of it, saying {line}."}
+    - {zh: "我记得{teller}说过，说是{line}。", en: "I remember {teller} saying that {line}."}
+    - {zh: "这句是我听{teller}提起的，说是{line}。", en: "I heard this part from {teller}, who said that {line}."}
   unknown:
-    - {zh: "来上香的人在说。说{line}。", en: "People who come to pray have been saying that {line}."}
-    - {zh: "庙门口有人讲，是谁我没留意。说是{line}。", en: "Someone at the temple gate said it, and I didn't notice who. The story was that {line}."}
+    - {zh: "这话我也听人讲过，说是{line}。", en: "I've heard it said that {line}, too."}
+    - {zh: "也不晓得是谁讲的，说{line}。", en: "I couldn't tell you who said it. All I heard was that {line}."}
   own:
     - {zh: "我心里想着，{line}。", en: "In my heart I believe {line}."}
     - {zh: "我想着，{line}。", en: "As I feel it, {line}."}
   guess_own:
     - {zh: "这话不好说死。{hedge}{line}。", en: "One shouldn't be too sure. {hedge} {line}."}
-    - {zh: "我心里有这么个念头。{hedge}{line}。", en: "It's only a feeling. {hedge} {line}."}
+    - {zh: "{hedge}{line}。我没敢往外讲。", en: "{hedge} {line}. I've kept that to myself."}
   guess_heard:
     - {zh: "{teller}说得含含糊糊。{hedge}{line}。", en: "{teller} was vague about it. {hedge} {line}."}
     - {zh: "{teller}话没说全。{hedge}{line}。", en: "{teller} didn't tell all of it. {hedge} {line}."}
   guess_unknown:
     - {zh: "也不晓得是谁传出来的。{hedge}{line}。", en: "Who set it going, I can't tell. {hedge} {line}."}
-    - {zh: "风里听来的。{hedge}{line}。", en: "I only caught it on the wind. {hedge} {line}."}
+    - {zh: "哪儿听来的也记不清了，{hedge}{line}。", en: "I forget where I heard it, but {hedge} {line}."}
   rival:
-    - {zh: "{teller}跟我讲过另一种说法。说{line}。", en: "{teller} told me another version, that {line}."}
-    - {zh: "只是{teller}讲的不是这样。说是{line}。", en: "Only {teller} told it differently, that {line}."}
+    - {zh: "不过我听{teller}讲起这事，倒说{line}。", en: "But when I heard {teller} speak of it, the account was that {line}."}
+    - {zh: "只是{teller}讲的略有不同，说是{line}。", en: "The version I heard from {teller} differs a little: {line}."}
   known:
     - {zh: "{line}。镇上的人都知道。", en: "{line}. The people of the town all know it."}
     - {zh: "{line}，这是人人都知道的事。", en: "{line}. That's something everyone knows."}
 hedges:
-  - {zh: 我感觉, en: I feel}
-  - {zh: 许是, en: I sense}
+  - {zh: 我想, en: I think}
+  - {zh: 许是, en: "I'd say"}

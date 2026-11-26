@@ -38,11 +38,11 @@ export const OPTIONS: Record<PartId, FakeOption[]> = {
   ],
   course: [
     option("r_night_boat", n("船夫老何夜里撑船从桥下过，船头撞上了栏杆。事后老何悄悄把船修好了", "Boatman He poled under the bridge in the night and the bow struck the railing. Afterwards the boatman quietly mended the boat"), 1, 0, ["n_boat"]),
-    option("r_old_joints", n("夜里水头打上桥，把旧榫冲松了。栏杆是自己断的，桥上桥下都没有人", "The flood water hit the bridge in the night and loosened the old joints. The railing gave way by itself, with nobody on the bridge or under it"), 0, 0, []),
-    option("r_kicked_in", n("周家大郎夜里在酒肆喝醉了。晃到桥上，一脚踢断了栏杆", "Zhou Dalang got drunk at the tavern in the night, staggered onto the bridge and kicked the railing down"), 0, 0, []),
+    option("r_old_joints", n("出事那晚，水头冲松了桥栏里的旧榫，栏杆就这么断了。当时桥上桥下都没有人", "The flood water loosened the old joints that night, and the railing gave way. There was nobody on or beneath the bridge at the time"), 0, 0, []),
+    option("r_kicked_in", n("周家大郎那晚在酒肆喝醉了酒，摇摇晃晃地走上石桥，一脚踢断了栏杆", "Zhou Dalang got drunk at the tavern in the night, staggered onto the bridge and kicked the railing down"), 0, 0, []),
   ],
   rumour: [
-    option("u_clerk_saw", n("周家伙计只看见李二在桥边找灯笼。周掌柜记着旧怨，猜是李二弄坏的。话越传越重，又添上了「故意」「眼红」", "Zhou's Clerk only saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou, holding an old grudge, guessed that Li Er broke the railing. The story grew as it went round and picked up “on purpose” and “envy”"), 2, 0, ["n_clerk", "n_broke"]),
+    option("u_clerk_saw", n("周家伙计看见李二在桥边找灯笼。周掌柜听了，惦记两家的旧怨，就猜是李二弄断的。传到街坊耳朵里，又多出了「故意」和「眼红」", "Zhou's Clerk saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou heard that and, remembering the old grudge, guessed that Li Er had broken the railing. By the time the neighbours heard, the story had picked up ‘on purpose’ and ‘envy’"), 2, 0, ["n_clerk", "n_broke"]),
     option("u_made_up", n("周家伙计编了瞎话，李二那晚根本不在桥边", "Zhou's Clerk made it up, and Li Er was not at the bridge that night"), 0, 1, ["n_clerk"]),
     option("u_spread", n("周家故意把话传出去，想坏了李家的名声", "The Zhou family spread it on purpose to ruin the name of the Li family"), 0, 0, []),
   ],
@@ -90,7 +90,7 @@ export const LAST_WRONG = {
   elder: "accepted",
   told: false,
   wrong: ["cause"],
-  why: n("「桥是怎么坏的」这一条，和船夫老何亲眼看见的不一样。", "The part “How the bridge broke” goes against what Boatman He saw with their own eyes."),
+  why: n("「桥是怎么坏的」这一条，和船夫老何亲眼看见的不一样。", "The part “How the bridge broke” doesn't match what Boatman He saw with their own eyes."),
 };
 
 /** The statement made last that told the truth. */

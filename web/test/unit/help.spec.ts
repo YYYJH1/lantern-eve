@@ -152,11 +152,11 @@ test.describe("the cards that teach an act", () => {
       // The card is part of the hints, so the menu lists it and lights it again.
       expect(HINTS).toContain(def);
     }
-    // The call for helpers and the request to the elder are two cards, each of which says it is not the other.
-    expect(zh["teach.rally.text"]).toContain("请族长召集族人");
-    expect(zh["teach.convene.text"]).toContain("召集帮手");
-    expect(en["teach.rally.text"]).toContain("asking the elder");
-    expect(en["teach.convene.text"]).toContain("Call for helpers");
+    // The two cards say what each call does.
+    expect(zh["teach.rally.text"]).toContain("修桥");
+    expect(zh["teach.convene.text"]).toContain("祠堂");
+    expect(en["teach.rally.text"]).toContain("When you need more hands to repair the bridge");
+    expect(en["teach.convene.text"]).toContain("gathered at the hall");
   });
 
   test("come when the act first matters and not before: the acts of a talk in a talk, the others where the frame offers them", () => {
@@ -275,10 +275,10 @@ test.describe("the steps of the pairing", () => {
         expect(hasMessage(key), key).toBe(true);
       }
     }
-    expect(zh["pairing.ans.unsupported"]).toBe("撑不起这句话");
+    expect(zh["pairing.ans.unsupported"]).toBe("不足以证明");
     expect(zh["pairing.ans.contradicts"]).toBe("和这句话相反");
     expect(zh["pairing.ans.mismatch"]).toBe("传走样了");
-    expect(zh["pairing.wrong"]).toBe("不对。再想想，这两句能不能都对？");
+    expect(zh["pairing.wrong"]).toBe("先念清这两句各说了什么。若怀疑话传错了，也看看两句各是谁说的。");
     // Nothing the player reads in the pairing speaks of hands, chains of sources, propositions or grasp.
     for (const key of Object.keys(zh).filter((k) => /^(pairing|tut\.(granny|clerk|pair)|teach|cue|act|crew|blank)\./.test(k))) {
       expect(zh[key as keyof typeof zh], key).not.toMatch(/见闻(?!簿)|命题|第几手|[一二三四]手|来源链|把握/);

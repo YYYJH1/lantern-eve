@@ -2,8 +2,8 @@
 # and never an explanation. Cares for the boat, the river and the weather.
 person: old_he
 voice:
-  zh: 摆渡的老何。话少，能一个词说完不说两个，从不解释。在乎船、河水和天气。不想说就不说话，或者一句「不晓得」。叫人用名字或者行当，叫茶馆老板娘「老板娘」，叫更夫「打更的」，叫扎灯师傅「扎灯的」，叫私塾先生「先生」。
-  en: The ferryman. Says as little as possible, one word where one will do and never two, and never explains. Cares for the boat, the river and the weather. When unwilling to talk, says nothing, or just "Don't know". Names people by their name or their trade, the teahouse keeper, the watchman, the lantern maker.
+  zh: "老何在渡口摆渡，熟悉水势和天气。平常问的是过不过河、几时开船，讲到河上的事会把前后说清。话省在客套上，该交代的话会说完整。问到不愿讲的事，往往叫人去问旁人。称茶馆老板娘为「老板娘」，更夫为「打更的」，扎灯师傅为「扎灯的」，私塾先生为「先生」。"
+  en: "Boatman He runs the ferry and knows the water and weather. Most exchanges are about crossing or when the boat will leave. There is little need for pleasantries, but the boatman will explain what happened on the river in full. If unwilling to answer, send people elsewhere. Use familiar names for the keeper, watchman, lantern maker and schoolmaster."
 call:
   cha_laoban: {zh: 老板娘, en: the Teahouse Keeper}
   gengfu: {zh: 打更的, en: the watchman}
@@ -11,20 +11,20 @@ call:
   sishu_xiansheng: {zh: 先生, en: the Schoolmaster}
 lines:
   asleep:
-    - {zh: "呼……船……（睡熟了）", en: "Zzz... boat... (fast asleep)"}
-    - {zh: "唔……水……（睡熟了）", en: "Mm... water... (fast asleep)"}
+    - {zh: "老何睡着了。", en: "Boatman He is asleep."}
+    - {zh: "没人应。", en: "Nobody answers."}
   busy:
-    - {zh: "忙。", en: "Busy."}
-    - {zh: "船上有人。", en: "Got a fare."}
+    - {zh: "等我把手头的事做完，你再来。", en: "Come back once I'm done here."}
+    - {zh: "船上还有人等着，我这会儿跟你说不了话。", en: "There's someone waiting on the boat. I can't talk just now."}
   timeout:
-    - {zh: "船在等。", en: "Boat's waiting."}
-    - {zh: "该开船了。", en: "Time to push off."}
+    - {zh: "我得走了，你还有话下回再说。", en: "I've got to go. Tell me the rest next time."}
+    - {zh: "我还得照看那条船，就说到这儿吧。", en: "I've got a boat to look after. Let's leave it there."}
   unknown:
     - {zh: "不晓得。", en: "Don't know."}
     - {zh: "没听过。", en: "Never heard it."}
   evade:
-    - {zh: "不说。", en: "Not saying."}
-    - {zh: "别问。", en: "Don't ask."}
+    - {zh: "这事我不想讲，你问旁人去。", en: "I'd sooner leave that alone. Ask someone else."}
+    - {zh: "你要问这个，我就没什么跟你讲的了。", en: "If that's what you're asking, I've nothing to tell you."}
   not_said:
     - {zh: "没说过。", en: "Never said it."}
     - {zh: "不是我的话。", en: "Not my words."}
@@ -32,20 +32,20 @@ lines:
     - {zh: "不对。", en: "Wrong."}
     - {zh: "没那回事。", en: "Didn't happen."}
   keeper_no:
-    - {zh: "不熟。", en: "Don't know you."}
-    - {zh: "生人不给。", en: "Not for strangers."}
+    - {zh: "你我拢共才见了几回，这会儿还不便给你看。", en: "We've only met a few times. I can't show you yet."}
+    - {zh: "等咱们熟了些，你再来问吧。", en: "Ask me again when we know each other better."}
   took_in:
-    - {zh: "记下了。", en: "Noted."}
-    - {zh: "知道了。", en: "Heard."}
+    - {zh: "这事我记得了。", en: "I'll keep that in mind."}
+    - {zh: "成，这下我听懂了。", en: "Right, I see what you mean now."}
   knew:
     - {zh: "早知道。", en: "Knew it."}
     - {zh: "晓得。", en: "Known."}
   doubted:
-    - {zh: "不像。", en: "Doesn't sound right."}
-    - {zh: "听的不一样。", en: "Heard different."}
+    - {zh: "等等，我听来的可不一样。", en: "Wait. That's different from what I heard."}
+    - {zh: "这话我听人讲过，讲的不是你这个样。", en: "I heard the story before. It didn't go like that."}
   caught:
-    - {zh: "骗我。不信了。", en: "You lied. Done with you."}
-    - {zh: "骗子。", en: "Liar."}
+    - {zh: "我当你那话是真的，往后可没那么好信了。", en: "I took you at your word. I won't be so quick to do that again."}
+    - {zh: "这话原来是你编的，你还让我怎么信你？", en: "So you made that up. How am I supposed to trust you now?"}
   deal:
     - {zh: "行。", en: "Done."}
     - {zh: "成。", en: "Fine."}
@@ -53,8 +53,8 @@ lines:
     - {zh: "空话。", en: "Empty talk."}
     - {zh: "不信。", en: "Don't believe it."}
   kept_thanks:
-    - {zh: "说到做到。好。", en: "You kept your word. Good."}
-    - {zh: "记着了。", en: "I'll remember."}
+    - {zh: "你答应了就真去做，我记着呢。", en: "You did just what you said you would. I'll remember that."}
+    - {zh: "我还当要再等一阵，没想到你已经办妥了。", en: "I thought I'd be waiting a while yet. You've already done it."}
   will_do:
     - {zh: "我去。", en: "I'll go."}
     - {zh: "办。", en: "On it."}
@@ -68,16 +68,16 @@ lines:
     - {zh: "说了。", en: "Said it."}
     - {zh: "讲过。", en: "Told you."}
   closed:
-    - {zh: "这会儿不行。", en: "Not now."}
-    - {zh: "过会儿。", en: "Later."}
+    - {zh: "这会儿没空，你晚点再来。", en: "I'm tied up just now. Come back later."}
+    - {zh: "再等一阵，眼下还顾不上。", en: "Give it a while. I'm busy now."}
   needs_nod:
-    - {zh: "问族长。", en: "Ask the elder."}
+    - {zh: "这事得族长说了才算。", en: "That's the elder's to decide."}
     - {zh: "我做不了主。", en: "Not mine to say."}
   nothing_to_say:
     - {zh: "没看见。", en: "Didn't see it."}
     - {zh: "没话。", en: "Nothing."}
   testified:
-    - {zh: "我看见的。", en: "I saw it."}
+    - {zh: "那会儿我在跟前，见到什么我都说了。", en: "I was close by. I've told you everything I saw."}
     - {zh: "亲眼见的。", en: "Saw it myself."}
   too_late:
     - {zh: "晚了。明早。", en: "Late. Morning."}
@@ -104,7 +104,7 @@ lines:
     - {zh: "不够。", en: "Not enough."}
     - {zh: "还不行。", en: "Not yet."}
   objection_withdrawn:
-    - {zh: "说清了。不拦。", en: "It's cleared. I won't block it."}
+    - {zh: "说开了。我让步。", en: "That's clear. I'll give way."}
     - {zh: "行。过吧。", en: "Fine. Go ahead."}
   witness_in_public:
     - {zh: "就看见这些。", en: "That's all I saw."}
@@ -122,10 +122,10 @@ lines:
     - {zh: "{item}够了。", en: "Enough {item}."}
     - {zh: "桥边{item}多了。", en: "Plenty of {item} at the bridge."}
   point_heard:
-    - {zh: "{name}讲过。问去。", en: "Heard {name} talk of it. Ask."}
-    - {zh: "{name}提过。", en: "Ask {name}. Mentioned it."}
+    - {zh: "这事{name}提过一回，我没听全，你得去问清楚。", en: "I heard {name} mention it once. I didn't get the whole story, so ask there."}
+    - {zh: "我是听{name}提起的，剩下的你去问吧。", en: "I heard it from {name}. Ask there for the rest."}
   point_hub:
-    - {zh: "问{name}去。", en: "Ask {name}."}
+    - {zh: "我哪晓得这许多？要打听镇上的事，你问{name}。", en: "How would I know all that? If you want the town's news, ask {name}."}
     - {zh: "不管闲话。找{name}。", en: "Don't deal in gossip. See {name}."}
   gift_like:
     - {zh: "{item}。好。", en: "Some {item}. Good."}
@@ -138,20 +138,20 @@ lines:
     - {zh: "{item}……不用。", en: "Some {item}... no need."}
 frames:
   seen:
-    - {zh: "{line}。错不了。", en: "{line}. No mistake."}
-    - {zh: "我清楚。{line}。", en: "I know for sure that {line}."}
+    - {zh: "我亲眼看见{line}，这一点错不了。", en: "I saw for myself that {line}. I'm sure about that much."}
+    - {zh: "{line}，这一点我看清了。", en: "{line}. That much I saw clearly."}
   heard:
-    - {zh: "{teller}讲的。说{line}。", en: "{teller} said {line}."}
-    - {zh: "{teller}说，{line}。", en: "{teller} says {line}."}
+    - {zh: "{teller}跟我提过一回，说{line}。", en: "{teller} once mentioned that {line}."}
+    - {zh: "{teller}说，{line}。", en: "I heard {teller} say {line}."}
   unknown:
-    - {zh: "有人讲。{line}。", en: "Folk say {line}."}
+    - {zh: "听说是{line}。", en: "Word is {line}."}
     - {zh: "传的话，说{line}。", en: "Talk going round says {line}."}
   own:
     - {zh: "我看，{line}。", en: "Way I see it, {line}."}
-    - {zh: "照我说，{line}。", en: "I say {line}."}
+    - {zh: "我看就这么回事。{line}。", en: "My take is that {line}."}
   guess_own:
     - {zh: "说不好。{hedge}{line}。", en: "Hard to say. {hedge} {line}."}
-    - {zh: "猜的。{hedge}{line}。", en: "A guess. {hedge} {line}."}
+    - {zh: "{hedge}{line}。先这么听。", en: "{hedge} {line}. Leave it there."}
   guess_heard:
     - {zh: "{teller}讲了半句。{hedge}{line}。", en: "{teller} said half of it. {hedge} {line}."}
     - {zh: "{teller}没讲明。{hedge}{line}。", en: "{teller} didn't say it straight. {hedge} {line}."}
@@ -159,8 +159,8 @@ frames:
     - {zh: "不知谁讲的。{hedge}{line}。", en: "Who said it, no idea. {hedge} {line}."}
     - {zh: "听来的。{hedge}{line}。", en: "Just heard it. {hedge} {line}."}
   rival:
-    - {zh: "{teller}讲的不一样，说{line}。", en: "{teller} told it different, that {line}."}
-    - {zh: "{teller}另有说法。说{line}。", en: "{teller} has it another way, that {line}."}
+    - {zh: "可我听{teller}讲过另一句。{line}。", en: "What I heard instead, from {teller}, was that {line}."}
+    - {zh: "{teller}却说{line}。", en: "But {teller} said {line}."}
   known:
     - {zh: "{line}。都知道。", en: "{line}. Everyone knows that."}
     - {zh: "{line}。谁不知道。", en: "{line}. Who doesn't."}
@@ -177,7 +177,7 @@ greet:
   - id: new
     when: [{kind: acquainted, is: new}]
     lines:
-      - {zh: "摆渡的。老何。过河？", en: "Ferry. Boatman He. Crossing?"}
+      - {zh: "你找摆渡的？我叫老何，要过河就跟我说一声。", en: "Looking for the ferry? I'm Boatman He. Give me a word if you need to cross."}
   - id: broken
     when: [{kind: promised, state: broken}]
     lines:
@@ -185,19 +185,19 @@ greet:
   - id: festival
     when: [{kind: after, day: 5, hour: 15}]
     lines:
-      - {zh: "今晚船不开。看灯。", en: "No ferry tonight. Watching the lanterns."}
+      - {zh: "今晚不摆渡，你要是找我，我也去看灯了。", en: "There's no ferry tonight. If you're looking for me, I'll be out watching the lanterns."}
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "说完了？好。", en: "Said it all? Good."}
+      - {zh: "桥的事，讲清了？", en: "The bridge business. It's settled?"}
   - id: peace
     when: [{kind: flag, flag: reconcile_seen}]
     lines:
-      - {zh: "两家和了。船上也清静。", en: "The families made peace. Quiet in the boat too."}
+      - {zh: "两家总算和了，坐船的人也能清清静静地过河了。", en: "Now the families have made peace, people can take the ferry in peace too."}
   - id: bridge
     when: [{kind: flag, flag: bridge_fixed}]
     lines:
-      - {zh: "桥通了。船闲了。", en: "Bridge is open. Boat's idle."}
+      - {zh: "自打桥通了，走桥的人多，我这条船倒闲下来了。", en: "Since the bridge opened, more people go that way, and my boat's gone quiet."}
   - id: kept
     when: [{kind: promised, state: kept}]
     lines:
@@ -209,7 +209,7 @@ greet:
   - id: rain
     when: [{kind: weather, is: heavy_rain}]
     lines:
-      - {zh: "雨大。船不下水。", en: "Heavy rain. Boat stays out of the water."}
+      - {zh: "雨这么大，今儿这条船先不下水。", en: "The rain's coming down hard. I'm keeping the boat out of the water today."}
   - id: again
     when: [{kind: acquainted, is: today}]
     lines:
@@ -231,7 +231,7 @@ chat:
   - id: truth
     when: [{kind: flag, flag: truth_told}]
     lines:
-      - {zh: "说开了就好。", en: "Good it's out."}
+      - {zh: "好。说开就好。", en: "Good. It's settled."}
   - id: bridge
     when: [{kind: flag, flag: bridge_fixed}]
     lines:
@@ -252,6 +252,6 @@ epilogue:
     text: {zh: "没人再疑心老何的船了。老何照旧天一亮就下了水，什么也没说。", en: "Nobody suspected Boatman He's boat any more. At first light the ferry went out as usual, and Boatman He said nothing."}
   - id: idle
     when: [{kind: flag, flag: bridge_fixed}]
-    text: {zh: "桥通了，渡船冷清了。老何还守在渡口，天黑才收桨。", en: "With the bridge open the ferry was quiet. Boatman He still sat at the landing and shipped the oars only at dark."}
+    text: {zh: "桥通了，坐船的人少了。老何照旧在渡口等到天黑才收桨。", en: "After the bridge reopened, fewer people took the ferry. Boatman He still waited at the landing until dark before putting the oars away."}
   - id: busy
     text: {zh: "桥没通，渡船一夜没歇。老何一船一船把人送过了河，什么也没说。", en: "The bridge stayed shut and the ferry ran all night. Boatman He took people across boatload by boatload and said nothing."}

@@ -130,7 +130,7 @@ test.describe("the festival night on the real core", () => {
     await keepAlbum(page, "live");
 
     // The night plays over the map, from what the real core says: the bridge, the two families together, both heads at the lantern, up to 120 people.
-    await expect(page.getByTestId("director-caption")).toHaveText("The fifth night. The lantern festival.");
+    await expect(page.getByTestId("director-caption")).toHaveText("On the fifth evening, the lantern festival began.");
     const live = await festival(page);
     expect(live.plan).toMatchObject({ route: "bridge", together: true });
     expect(live.stage.lighters).toEqual(HEADS);
@@ -151,7 +151,7 @@ test.describe("the festival night on the real core", () => {
     await expect(row.getByTestId("moment")).toHaveCount(2);
     await expect(row.getByTestId("moment").evaluateAll((els) => els.map((el) => el.getAttribute("data-kind")))).resolves.toEqual(["both_banks", "together_work"]);
     await expect(row.getByTestId("moment-picture")).toHaveCount(2);
-    await expect(row.getByTestId("moment-words")).toHaveText(["Lanterns hang on both banks.", "People of the Li and Zhou families carry materials together for the first time."]);
+    await expect(row.getByTestId("moment-words")).toHaveText(["Lanterns hang on both banks.", "For the first time, the Lis and the Zhous carried supplies together."]);
     await toTheRow(page);
     await snap(page, "ending-moments");
     const finalTick = ending?.tick as number;
@@ -185,13 +185,13 @@ test.describe("the festival night on the real core", () => {
     const again = await festival(page);
     expect(again.plan).toEqual(live.plan);
     expect(again.timeline).toEqual(live.timeline);
-    await expect(page.getByTestId("director-caption")).toHaveText("The fifth night. The lantern festival.");
+    await expect(page.getByTestId("director-caption")).toHaveText("On the fifth evening, the lantern festival began.");
     await throughTheNight(page);
     await expect(page.getByTestId("ending-title")).toHaveText("A perfect night");
     const rowAgain = page.getByTestId("ending-moments");
     await expect(rowAgain.getByTestId("moment")).toHaveCount(2);
     await expect(rowAgain.getByTestId("moment-picture")).toHaveCount(2);
-    await expect(rowAgain.getByTestId("moment-words")).toHaveText(["Lanterns hang on both banks.", "People of the Li and Zhou families carry materials together for the first time."]);
+    await expect(rowAgain.getByTestId("moment-words")).toHaveText(["Lanterns hang on both banks.", "For the first time, the Lis and the Zhous carried supplies together."]);
     await toTheRow(page);
     await snap(page, "recording-ending-moments");
 

@@ -29,12 +29,12 @@ _SENTENCES = r"""
     "guess_heard": {"en": "{teller} guessed that {line}.", "zh": "{teller}猜，{line}。"},
     "guess_own": {"en": "{hedge} {line}.", "zh": "{hedge}{line}。"},
     "guess_unknown": {"en": "Some people guess that {line}.", "zh": "有人猜，{line}。"},
-    "heard": {"en": "{teller} told me that {line}.", "zh": "{teller}跟我说，{line}。"},
+    "heard": {"en": "I heard {teller} say that {line}.", "zh": "我听{teller}说过，{line}。"},
     "known": {"en": "{line}. Everyone in town knows that.", "zh": "{line}，镇上谁都知道。"},
     "own": {"en": "If you ask me, {line}.", "zh": "照我看，{line}。"},
-    "rival": {"en": "But {teller} told me that {line}.", "zh": "可{teller}跟我说的是，{line}。"},
+    "rival": {"en": "But {teller} told me that {line}.", "zh": "不过我听{teller}说，{line}。"},
     "seen": {"en": "{line}.", "zh": "{line}。"},
-    "unknown": {"en": "I've heard it said that {line}.", "zh": "听人说，{line}。"}
+    "unknown": {"en": "What I've heard is that {line}.", "zh": "我是听人这么说的，{line}。"}
   },
   "hedges": {"en": ["I guess", "I'd say"], "zh": ["我猜", "怕是"]},
   "known": ["located", "owns"],
@@ -53,7 +53,7 @@ _SENTENCES = r"""
     "play": {"en": "just for fun", "zh": "是闹着玩的"},
     "pride": {"en": "out of pride", "zh": "是傲气上来了"},
     "protect": {"en": "to protect someone", "zh": "是想护着谁"},
-    "reckless": {"en": "a reckless drunken prank", "zh": "是喝多了胡闹"},
+    "reckless": {"en": "reckless drunken behaviour", "zh": "是喝多了胡闹"},
     "save_face": {"en": "to save face", "zh": "是要面子"},
     "spite": {"en": "out of spite", "zh": "是存心使坏"}
   },
@@ -109,8 +109,8 @@ _SENTENCES = r"""
       "zh": "{who}[{when}][在{where}]喝了酒"
     },
     "fled_from": {
-      "en": "{who} ran off from {where}[ {when}]",
-      "neg": {"en": "{who} did not run off from {where}", "zh": "{who}没从{where}跑掉"},
+      "en": "{who} ran away from {where}[ {when}]",
+      "neg": {"en": "{who} did not run away from {where}", "zh": "{who}没从{where}跑掉"},
       "zh": "{who}[{when}]从{where}跑掉了"
     },
     "flood_damaged": {
@@ -187,9 +187,9 @@ _SENTENCES = r"""
       "zh": "{what}上有新刮痕"
     },
     "set_straight": {
-      "en": "{who} only saw {whom} looking for {what} at {where}. That has been made clear in public",
+      "en": "{who} only saw {whom} looking for {what} at {where}. That was cleared up in public",
       "neg": {
-        "en": "{who} only saw {whom} looking for {what} at {where}. Nobody has made that clear in public yet",
+        "en": "{who} only saw {whom} looking for {what} at {where}. Nobody has cleared that up in public yet",
         "zh": "{who}只看见{whom}在{where}找{what}。这事还没人当众说清"
       },
       "zh": "{who}只看见{whom}在{where}找{what}。这事当众说清了"
@@ -222,7 +222,7 @@ _SENTENCES = r"""
     "zuzhang"
   ],
   "when": {
-    "last_night": {"en": "last night", "zh": "昨晚"},
+    "last_night": {"en": "that night", "zh": "出事那晚"},
     "lately": {"en": "over the past few days", "zh": "这几天"},
     "this_morning": {"en": "this morning", "zh": "今早"}
   }

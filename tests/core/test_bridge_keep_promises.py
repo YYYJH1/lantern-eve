@@ -69,7 +69,7 @@ def test_a_promise_gets_a_task_that_says_what_was_promised_to_whom_and_by_when()
     }
     assert found["next"] == {
         "zh": "第四天去找李大当面兑现，早点去也行。",
-        "en": "On day 4, go to Li Da and keep it in person, or sooner.",
+        "en": "Make good on your promise to Li Da in person by day 4.",
     }
     # nothing to do with it before the day: the bar stays on what it was
     assert found["action"] is None and found["blocker"] is None
@@ -127,7 +127,7 @@ def test_from_the_morning_it_falls_due_the_task_has_the_action_and_the_bar_follo
     found = task(game, 1)
     assert found["action"] == {"verb": "promise", "npc": LI_DA, "item": "k1", "kind": "keep"}
     assert found["why"]["en"].startswith(
-        "You promised Li Da a front-row stall at the festival. It is due today"
+        "You promised Li Da a front-row stall at the festival. Go in person today"
     )
     assert found["next"] == {
         "zh": "今天去找李大，当面兑现。",
@@ -144,8 +144,8 @@ def test_the_bar_changes_to_it_when_its_day_comes_and_says_why():
     to_it = [e for e in seen if e["to"] == "t_keep_1"]
     assert [e["cause"] for e in to_it] == ["window"]
     assert to_it[0]["reason"] == {
-        "zh": "「兑现对李大的许诺」的时间到了，先办这件",
-        "en": "It is time for “Keep the promise to Li Da”. On to it",
+        "zh": "该办「兑现对李大的许诺」了",
+        "en": "It's time for “Keep the promise to Li Da”",
     }
 
 
@@ -204,11 +204,11 @@ def test_a_promise_not_kept_by_its_day_goes_stale_and_the_bar_says_what_it_cost(
     gone = [e for e in seen if e["from"] == "t_keep_1" and e["cause"] == "stale"]
     assert len(gone) == 1
     assert gone[0]["reason"]["en"].startswith(
-        "You promised Li Da a front-row stall at the festival by day 3 and did not keep it. "
-        "Li Da trusts you less now. Word of it will go round the town. Now on to"
+        "You let day 3 pass without giving Li Da a front-row stall at the festival. "
+        "Li Da trusts you less, and people around town will hear why. Next is"
     )
     assert gone[0]["reason"]["zh"].startswith(
-        "你答应最迟第三天给李大的灯会上的前排摊位，没给成。李大更不信你了。这事还会在镇上传开。改办"
+        "你答应最迟第三天给李大的灯会上的前排摊位，没给成。李大更不信你了。这事还会在镇上传开。先办"
     )
 
 
@@ -223,8 +223,10 @@ def test_when_another_task_is_followed_the_lapse_is_said_all_the_same_without_a_
     assert lapsed[0]["reason"]["zh"] == (
         "你答应最迟第三天给李大的灯会上的前排摊位，没给成。李大更不信你了。这事还会在镇上传开。"
     )
-    assert lapsed[0]["reason"]["en"].startswith("You promised Li Da a front-row stall")
-    assert "Now on to" not in lapsed[0]["reason"]["en"]
+    assert lapsed[0]["reason"]["en"].startswith(
+        "You let day 3 pass without giving Li Da a front-row stall"
+    )
+    assert "Next is" not in lapsed[0]["reason"]["en"]
 
 
 def test_the_cost_is_the_trust_of_the_person_and_a_fact_that_spreads():

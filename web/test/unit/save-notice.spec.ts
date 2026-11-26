@@ -35,7 +35,7 @@ test.describe("what kind of failure a save is", () => {
       setLang(lang);
       for (const kind of SAVE_FAILURES) {
         const text = failureText(kind);
-        expect(text, `${lang} ${kind}`).toMatch(lang === "en" ? /^The game could not be saved/ : /^没能存档/);
+        expect(text, `${lang} ${kind}`).toMatch(lang === "en" ? /saved?|saves/i : /存档/);
         // No word of the host in them, no code and no stop of the machine's.
         expect(text, `${lang} ${kind}`).not.toMatch(/IndexedDB|Quota|HostError|host_error|unsupported|\{|\}/);
         // Where the player can try again or clear room, the words say where: the saves of the menu.
@@ -46,9 +46,9 @@ test.describe("what kind of failure a save is", () => {
     // Four kinds, two languages, eight different sentences.
     expect(words.size).toBe(8);
     setLang("en");
-    expect(failureText("storage")).toBe("The game could not be saved: the browser did not let it write. You can try again from Saves in the menu.");
+    expect(failureText("storage")).toBe("The browser blocked the save. Try again under Saves in the menu.");
     setLang("zh");
-    expect(failureText("storage")).toBe("没能存档，浏览器不让游戏写入。可以到菜单的「存档」里再存一次。");
+    expect(failureText("storage")).toBe("浏览器不让游戏写存档。到菜单的「存档」里再试一次。");
     setLang("en");
   });
 

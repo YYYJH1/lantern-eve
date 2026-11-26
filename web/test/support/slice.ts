@@ -504,7 +504,7 @@ export function entrustOffers(npc: string): Array<Record<string, unknown>> {
 export const SPEAK_OFFERS = [
   { id: "all", label: n("把手里的证据都拿出来", "Show everything you hold"), body: { kind: "evidence" } },
   { id: "item:e_scrape", label: n("出示：桥墩上新的刮痕", "Show: fresh scrapes on the bridge pier"), body: { kind: "evidence", evidence: ["e_scrape"] } },
-  { id: "meal", label: n("摆一桌和解饭", "Lay a table for peace"), body: { kind: "meal" } },
+  { id: "meal", label: n("摆一桌和解饭", "Host a reconciliation meal"), body: { kind: "meal" } },
 ];
 
 /** The part of a frame where the manager may speak in public: the offers of `speak`, and the verb. */
@@ -802,7 +802,7 @@ export function gazetteBody(over: Record<string, unknown> = {}): Record<string, 
       },
     ],
     talk: [
-      { kind: "festival_warm", text: n("街上都在说灯会。哪家挂几盏灯，已经有人在数了。", "The street talks of little but the festival. People are already counting the lanterns at each door.") },
+      { kind: "festival_warm", text: n("街坊议起灯会，已经有人在数各家门前挂几盏灯。", "The street talks of little but the festival. People are already counting the lanterns at each door.") },
       { kind: "split", text: n("街上分成了两拨，一拨向着李家，一拨向着周家。谁也说不服谁。", "The street has split into two camps, one for the Li family and one for the Zhou family. Neither can win the other over.") },
     ],
     ...over,

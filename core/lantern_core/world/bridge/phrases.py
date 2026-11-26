@@ -17,10 +17,10 @@ from __future__ import annotations
 
 PHRASES: dict[str, dict[str, str]] = {
     # a conversation that does not start
-    "asleep": {"zh": "呼……呼……（睡熟了）", "en": "Zzz... (fast asleep)"},
+    "asleep": {"zh": "（没人应声。）", "en": "(No answer.)"},
     "busy": {
-        "zh": "我这会儿正忙着，等会儿再来吧。",
-        "en": "I'm busy just now. Come back a bit later.",
+        "zh": "等我忙完，你再来。",
+        "en": "Come back when I'm done here.",
     },
     # a conversation that ends
     "timeout": {"zh": "我得去干活了。", "en": "I have to get back to work."},
@@ -36,7 +36,10 @@ PHRASES: dict[str, dict[str, str]] = {
         "en": "We hardly know each other. Another day.",
     },
     # what a person says to something the manager told them
-    "took_in": {"zh": "原来是这样。我记下了。", "en": "I see. I'll remember that."},
+    "took_in": {
+        "zh": "原来是这么回事，我记着了。",
+        "en": "So that's what happened. I'll remember.",
+    },
     "knew": {"zh": "这个我早就知道了。", "en": "I knew that already."},
     "doubted": {"zh": "我听到的可不是这样。", "en": "That's not what I heard."},
     "caught": {
@@ -59,12 +62,12 @@ PHRASES: dict[str, dict[str, str]] = {
     },
     "said_already": {"zh": "我刚才说过了。", "en": "I've told you already."},
     "closed": {
-        "zh": "这会儿不行，换个时辰再来。",
-        "en": "Not now. Come back at another hour.",
+        "zh": "这会儿腾不出空。你晚点来。",
+        "en": "I can't spare the time now. Come back later.",
     },
     "needs_nod": {
-        "zh": "这事我做不了主，得先问过家里。",
-        "en": "It's not mine to decide. I have to ask at home first.",
+        "zh": "我一个人定不了，得先回家问一声。",
+        "en": "I can't decide that on my own. I have to ask at home first.",
     },
     "nothing_to_say": {"zh": "这事我没什么可说的。", "en": "I've nothing to say about that."},
     "testified": {
@@ -77,35 +80,38 @@ PHRASES: dict[str, dict[str, str]] = {
     },
     "will_ask": {"zh": "好，我去替你说说。", "en": "All right. I'll go and speak for you."},
     "will_call": {
-        "zh": "好，我这就去叫大家到祠堂。",
-        "en": "All right. I'll go and call everyone to the hall.",
+        "zh": "成，我这就把人叫到祠堂，有什么话你到那儿当面说。",
+        "en": "All right, I'll call everyone to the hall so you can speak to them there.",
     },
     # an answer that says nothing of the matter and points the way: to a person who was heard
     # speaking of it, or to the one the script marks as keeping up with the talk of the town (the
     # teahouse keeper, whose name says where the keeper is found). ``{name}`` is the name of that
     # person (``named``), and these two are the only lines with one
     "point_heard": {
-        "zh": "这事我说不清。我听{name}提起过，你去问问。",
-        "en": "I don't know. I heard {name} talk about it, so go and ask.",
+        "zh": "这事我说不上来，倒是听{name}提过，你不妨去问问。",
+        "en": "I couldn't tell you much, but I heard {name} mention it. Try asking there.",
     },
     "point_hub": {
-        "zh": "这事我不知道。你去问问{name}，镇上的消息那儿最多。",
-        "en": "I don't know. Ask {name}, who hears all the news.",
+        "zh": "这话没传到我这儿，你问问{name}吧，那儿来来往往的人多。",
+        "en": "That hasn't reached me. Try {name}, there's always someone coming or going there.",
     },
     # what a person says when the way is closed (the hard condition of the script)
     "hard_hc_li_bamboo": {
-        "zh": "那个谣言不当众说清楚，李家一根竹子也不借。",
-        "en": "Not one pole of Li bamboo until that rumour is cleared up in public.",
+        "zh": "等你当着大伙儿的面把这事说清，我们再谈借竹料。",
+        "en": "Set it straight where everyone can hear, then we'll talk about the bamboo.",
     },
     # and when the reason is the rumour that she knows of, and the manager's silence about it
     "hard_hc_li_bamboo_rumour": {
-        "zh": "镇上都在说李家弄坏了桥，你这个总管一句话也不说。竹料不借。",
-        "en": "The whole town says the Li family broke the bridge, and you say nothing. No bamboo.",
+        "zh": "总管，街上都说桥是我们家弄坏的，你也不出来说句话，我怎么肯把竹料借给你？",
+        "en": (
+            "Manager, the whole town says my family broke the bridge. If you won't say "
+            "a word about it, how can you expect me to lend you bamboo?"
+        ),
     },
     "hard_other": {"zh": "这事没得商量。", "en": "That's out of the question."},
     # what the elder says after the manager has spoken in public
     "elder_yes": {
-        "zh": "老夫听明白了，这事就这么定了。",
+        "zh": "老夫听明白了，这事就照你说的办。",
         "en": "I've heard enough. That settles it.",
     },
     "elder_no": {
@@ -124,8 +130,8 @@ PHRASES: dict[str, dict[str, str]] = {
         "en": "I only say what I saw with my own eyes.",
     },
     "batch_promised": {
-        "zh": "好，第一批明天早上送到。",
-        "en": "All right. The first batch comes tomorrow morning.",
+        "zh": "成，第一批竹料我明早就送到桥边。",
+        "en": "All right, I'll bring the first load of bamboo to the bridge tomorrow morning.",
     },
     "bamboo_arrived": {
         "zh": "竹料送到桥边了。",
@@ -135,8 +141,8 @@ PHRASES: dict[str, dict[str, str]] = {
     # enough of. ``{amount}``, ``{item}`` and ``{when}`` are the poles, what they are (bamboo or
     # timber) and the day and hour they fall due, and these two are the lines with slots of goods
     "promise_open": {
-        "zh": "我答应过了，{when}把{amount}根{item}送到桥边。",
-        "en": "I've promised already: {amount} poles of {item} at the bridge {when}.",
+        "zh": "说好的{amount}根{item}，我还是{when}送到桥边。",
+        "en": "I'll bring the {amount} poles of {item} we agreed on to the bridge {when}.",
     },
     "goods_enough": {
         "zh": "桥边的{item}已经够了。",
@@ -145,16 +151,16 @@ PHRASES: dict[str, dict[str, str]] = {
     # what a person says to a small thing given them, by how they take it (``gifts``): ``{item}`` is
     # the thing
     "gift_like": {
-        "zh": "{item}啊，这个我喜欢。多谢。",
-        "en": "Ah, {item}. Just what I like. Thanks.",
+        "zh": "{item}啊，我平时就爱这个，多谢你了。",
+        "en": "Oh, {item}. I'm fond of that, thank you.",
     },
     "gift_neutral": {
         "zh": "{item}？好，谢谢你想着我。",
-        "en": "Some {item}? Thank you for thinking of me.",
+        "en": "{item}? Thanks for thinking of me.",
     },
     "gift_dislike": {
-        "zh": "{item}啊……这个我不大碰。还是谢谢你。",
-        "en": "Ah, {item}... I don't really use these. Thank you all the same.",
+        "zh": "我平常不大碰{item}。你的好意我领了。",
+        "en": "I don't go for {item} much. Thanks for thinking of me.",
     },
 }
 

@@ -63,7 +63,7 @@ test.describe("the statement as three blanks", () => {
     const option = page.locator('[data-testid="statement-part"][data-part="cause"]').locator('[data-testid="statement-option"][data-id="c_li_er"]');
     await expect(option).toHaveAttribute("data-support", "1");
     await expect(option).toHaveAttribute("data-against", "1");
-    await expect(option.getByTestId("statement-marks")).toHaveAttribute("aria-label", "1 for, 1 against");
+    await expect(option.getByTestId("statement-marks")).toHaveAttribute("aria-label", "1 in support, 1 against");
     await option.getByTestId("statement-notes").locator("summary").click();
     await expect(option.getByTestId("statement-entry")).toHaveCount(2);
     // The options are all there for a part with nothing held, which does not narrow them down.
@@ -73,10 +73,10 @@ test.describe("the statement as three blanks", () => {
 
   test("says in the same lines what did not hold, and asks with the same lines before the statement is made", async ({ lantern }) => {
     const page = await open(lantern, stmt.readyKey({ last: { ...stmt.LAST_WRONG, wrong: ["cause"] } }));
-    await expect(page.getByTestId("statement-wrong")).toHaveText(`Did not hold: ${en["blank.cause"]}`);
+    await expect(page.getByTestId("statement-wrong")).toHaveText(`Couldn't back up ${en["blank.cause"]}`);
     await page.getByTestId("statement-state").click();
     const lines = page.getByTestId("statement-recap").locator("li");
-    await expect(lines).toHaveText([`${en["blank.cause"]}: Boatman He's boat struck the railing in the night`, `${en["blank.course"]}: Boatman He poled under the bridge in the night and the bow struck the railing. Afterwards the boatman quietly mended the boat`, `${en["blank.rumour"]}: Zhou's Clerk only saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou, holding an old grudge, guessed that Li Er broke the railing. The story grew as it went round and picked up “on purpose” and “envy”`]);
+    await expect(lines).toHaveText([`${en["blank.cause"]}: Boatman He's boat struck the railing in the night`, `${en["blank.course"]}: Boatman He poled under the bridge in the night and the bow struck the railing. Afterwards the boatman quietly mended the boat`, `${en["blank.rumour"]}: Zhou's Clerk saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou heard that and, remembering the old grudge, guessed that Li Er had broken the railing. By the time the neighbours heard, the story had picked up ‘on purpose’ and ‘envy’`]);
     expect(lantern.pageErrors).toEqual([]);
   });
 });

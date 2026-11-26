@@ -36,8 +36,8 @@ test.describe("the opening page", () => {
       en: {
         title: "Lantern Eve",
         chapter: "The Broken Bridge, Five Days",
-        goal: "You run the lantern festival. In five days, get the Li and Zhou families across the bridge together, lanterns lit.",
-        things: ["Mend the bridge", "Set it straight", "Make peace"],
+        goal: "Part of Chengxi's stone bridge railing broke last night. The festival is five days away, and the elder has asked you to see that the Li and Zhou families can still carry their lanterns across.",
+        things: ["Repairs", "Truth", "Peace"],
         start: "Start",
         cont: "Continue",
         gallery: "Recordings",
@@ -47,7 +47,7 @@ test.describe("the opening page", () => {
       zh: {
         title: "灯会前夕",
         chapter: "断桥篇，五日",
-        goal: "你是灯会的总管。五天后，让李、周两家一起提灯过桥。",
+        goal: "昨夜澄溪镇的石桥断了一截栏杆。离灯会只剩五天，族长请你来张罗，今年李、周两家还要提着灯从这儿过河。",
         things: ["修桥", "说清", "说和"],
         start: "开始",
         cont: "继续",
@@ -212,13 +212,13 @@ test.describe("the opening page", () => {
     const note = page.getByTestId("opening-continue-note");
     await expect(note).toHaveText("");
     await page.getByTestId("opening-continue").click();
-    await expect(note).toHaveText("This save was made by another version of the game, which this one cannot read. Press Start for a new game.");
+    await expect(note).toHaveText("This save is from a different version. Select Start to play a new game.");
     await expect(note).toHaveAttribute("data-why", "version");
     // The page does not go in: it is the opening page still, with Start for a new game.
     await expect(page.getByTestId("opening")).toBeVisible();
     await expect(page.getByTestId("opening-start")).toBeEnabled();
     await page.getByTestId("opening").getByTestId("lang-zh").click();
-    await expect(note).toHaveText("这份存档是另一个版本的游戏存的，这一版读不出来。点「开始」开一局新的。");
+    await expect(note).toHaveText("这一版读不了这份存档。点「开始」开新的一局。");
     expect(await page.evaluate(() => window.__lantern.client.state.loaded)).toBeNull();
     expect(lantern.pageErrors).toEqual([]);
   });
@@ -247,8 +247,8 @@ test.describe("the opening page", () => {
 test.describe("a window that is smaller than the page is laid out for", () => {
   const { width, height } = MIN_WINDOW;
   const WORDS = {
-    en: { text: `The game is played in a computer's browser, in a window of at least ${width} × ${height}. Make the window larger, or open it on a computer.`, anyway: "Open anyway" },
-    zh: { text: `这个游戏在电脑的浏览器里玩，窗口至少要 ${width}×${height}。把窗口拉大，或者换电脑打开。`, anyway: "仍然打开" },
+    en: { text: `The game needs a window at least ${width}×${height}. Enlarge yours or open the game on a computer.`, anyway: "Open anyway" },
+    zh: { text: `游戏窗口至少要 ${width}×${height}。把窗口拉大，或换台电脑打开。`, anyway: "仍然打开" },
   } as const;
 
   async function openSmall(lantern: import("../support/fixtures.ts").LanternPage, size: { width: number; height: number }): Promise<void> {
@@ -288,7 +288,7 @@ test.describe("a window that is smaller than the page is laid out for", () => {
   test("is told in a window that is too short as well, and not in one of exactly the smallest size", async ({ lantern }) => {
     const page = lantern.page;
     await openSmall(lantern, { width: width + 300, height: height - 1 });
-    await expect(page.getByTestId("size-notice-text")).toContainText(`${width} × ${height}`);
+    await expect(page.getByTestId("size-notice-text")).toContainText(`${width}×${height}`);
     await page.setViewportSize({ width, height });
     await expect(page.getByTestId("size-notice")).toHaveCount(0);
     await expect(page.getByTestId("opening-start")).toBeEnabled({ timeout: 60_000 });

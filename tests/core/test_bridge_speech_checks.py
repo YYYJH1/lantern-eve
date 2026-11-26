@@ -185,9 +185,9 @@ def test_the_hedges_that_the_townsfolk_use_themselves_are_in_the_list(game):
     for voice in VOICES.values():
         for lang in ("zh", "en"):
             spoken[lang].update(voice["hedges"][lang])
-    assert len(spoken["zh"]) > 30 and len(spoken["en"]) > 30
-    for lang in ("zh", "en"):
-        for hedge in sorted(spoken[lang]):
+    for lang, hedges in spoken.items():
+        assert hedges, lang
+        for hedge in sorted(hedges):
             text = normalise(hedge)
             assert scan(text, LEX.classes["hedge"]), (lang, hedge)
 

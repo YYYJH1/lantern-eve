@@ -66,8 +66,8 @@ people:
     traits: {gossip: 35, conformity: 70, suspicion: 60, warmth: 55}
     ops: {level: 20, sharpen: 25, assimilate: 40, fill: 15}
     intro:
-      zh: "李大、李二的娘。李家的大事，最后都是老太太拿主意。"
-      en: "Mother of Li Da and Li Er. In the Li house, the old lady has the last word on anything big."
+      zh: "李大和李二都是李老太的儿子，李家遇着要紧事，一向等老太太拿定主意才办。"
+      en: "Granny Li is the mother of Li Da and Li Er. When something important comes up, the Li household waits for Granny Li to decide."
     likes: [pastry]
     dislikes: [wine]
     ask: {what: role, item: t_honor_light}
@@ -95,8 +95,8 @@ people:
     traits: {gossip: 40, conformity: 55, suspicion: 45, warmth: 50}
     ops: {level: 25, sharpen: 25, assimilate: 35, fill: 15}
     intro:
-      zh: "李家长子，管着家里的竹林和竹料。做事稳当，大事要等老太太发话。"
-      en: "Eldest Li son, in charge of the family bamboo grove. Steady at the work, and waits for Granny Li's word on anything big."
+      zh: "李家长子李大平日管竹林和竹料。碰上家里的大事，还得去问老太太。"
+      en: "Li Da, the eldest son, looks after the family's bamboo grove and stock. Granny Li still has the final say on big decisions."
     likes: [tea, wine]
     dislikes: [pastry]
     ask: {what: wage, amount: 20}
@@ -126,8 +126,8 @@ people:
     traits: {gossip: 45, conformity: 40, suspicion: 35, warmth: 55}
     ops: {level: 30, sharpen: 20, assimilate: 25, fill: 25}
     intro:
-      zh: "李家次子，在扎灯坊帮工，糊的灯又圆又亮。镇上老老少少，都和李二说得上话。"
-      en: "Second Li son. Pastes lanterns at the lantern workshop, round and bright. Has a word for everyone in town, young or old."
+      zh: "李二是李家的次子，在扎灯坊糊灯，做出来的灯又圆又亮。镇上谁路过坊里，都能同李二聊上几句。"
+      en: "The second Li son pastes paper onto lanterns at the workshop. The lanterns come out round and bright. Anyone going by the workshop can stop for a word with Li Er."
     likes: [lantern_paper]
     dislikes: []
     ask: {what: stall, item: back}
@@ -154,8 +154,8 @@ people:
     traits: {gossip: 55, conformity: 30, suspicion: 15, warmth: 80}
     ops: {level: 40, sharpen: 25, assimilate: 15, fill: 20}
     intro:
-      zh: "李大的小儿子，白天在私塾念书，一下学就往河滩跑。嗓门大，藏不住话。"
-      en: "Li Da's young son. At the school by day, down on the riverbank the moment lessons end. Loud, and bad at keeping a secret."
+      zh: "石头是李大的小儿子，去私塾念书，一放学就往河滩跑。路上叫谁，隔老远都听得见。"
+      en: "Shitou is Li Da's young son and rushes to the riverbank after school. Anyone Shitou shouts to along the way can hear from a long way off."
     likes: [pastry]
     dislikes: [tea]
     ask: {what: slot}
@@ -182,8 +182,8 @@ people:
     traits: {gossip: 60, conformity: 35, suspicion: 25, warmth: 80}
     ops: {level: 30, sharpen: 10, assimilate: 20, fill: 40}
     intro:
-      zh: "李大的女儿，常去扎灯坊裁纸、糊灯面。手巧嘴甜，街坊都喜欢。"
-      en: "Li Da's daughter, often at the lantern workshop cutting paper and pasting shades. Deft, sweet-tongued, liked all along the street."
+      zh: "李家的小妹是李大的女儿，平日常在扎灯坊裁纸糊灯，手巧也爱说话，街坊见了都喜欢。"
+      en: "Li Da's daughter often cuts and pastes the paper at the lantern workshop. The neighbours like Xiaomei's quick hands and friendly chatter."
     likes: [lantern_paper, pastry]
     dislikes: [wine]
     ask: {what: slot}
@@ -210,8 +210,8 @@ people:
     traits: {gossip: 50, conformity: 60, suspicion: 65, warmth: 35}
     ops: {level: 15, sharpen: 25, assimilate: 40, fill: 20}
     intro:
-      zh: "周家的掌柜，做了半辈子木料生意。修桥要的木料，大半在周家库里。"
-      en: "Head of the Zhou shop, a timber dealer for half a lifetime. Most of the timber a bridge repair needs sits in the Zhou store."
+      zh: "周掌柜做了半辈子木料生意，修桥要用的木料，大半还得从周家库里想办法。"
+      en: "Shopkeeper Zhou has spent half a lifetime in the timber trade. Most of the timber needed to mend the bridge would have to come out of the Zhou storehouse."
     likes: [tea]
     dislikes: [pastry]
     ask: {what: stall, item: front}
@@ -239,8 +239,8 @@ people:
     traits: {gossip: 70, conformity: 60, suspicion: 50, warmth: 50}
     ops: {level: 20, sharpen: 30, assimilate: 30, fill: 20}
     intro:
-      zh: "周掌柜的媳妇，天天在集市上转。街坊谁家有点事，周娘子总是头一个知道。"
-      en: "The Shopkeeper's wife, out at the market every day. When something happens in a house on the street, Madam Zhou is usually the first to hear."
+      zh: "周娘子是周掌柜的媳妇，每天要到集市走一走。街坊谁家有了新消息，常常没等集散，周娘子就听说了。"
+      en: "Shopkeeper Zhou's wife goes to the market every day and often hears the neighbours' news before the market breaks up."
     likes: [pastry, tea]
     dislikes: [wine]
     ask: {what: stall, item: back}
@@ -267,8 +267,8 @@ people:
     traits: {gossip: 45, conformity: 20, suspicion: 40, warmth: 30}
     ops: {level: 10, sharpen: 45, assimilate: 25, fill: 20}
     intro:
-      zh: "周掌柜的长子，帮家里扛木料、跑买卖。力气大，脾气也大。"
-      en: "The Shopkeeper's elder son, who carries timber and runs errands for the trade. Strong, and short-tempered."
+      zh: "周掌柜的长子替家里扛木料，也帮着跑买卖。大郎做重活有的是力气，遇事却容易发火。"
+      en: "Shopkeeper Zhou's eldest son carries timber and helps with business. Zhou Dalang has the strength for the heavy work and a temper that flares easily."
     likes: [wine]
     dislikes: [tea]
     ask: {what: wage, amount: 10}
@@ -295,8 +295,8 @@ people:
     traits: {gossip: 55, conformity: 30, suspicion: 30, warmth: 75}
     ops: {level: 30, sharpen: 10, assimilate: 20, fill: 40}
     intro:
-      zh: "周掌柜的次子，性子温和，常替家里去集市和河边办事。见了李家人也照样问好。"
-      en: "The Shopkeeper's younger son, mild by nature, often sent to the market and the river. Still greets the Li family whenever they meet."
+      zh: "二郎是周掌柜的次子，常替家里去集市和河边办事。见着李家人也照样招呼一声，平日很少跟人争执。"
+      en: "Shopkeeper Zhou's second son runs errands at the market or by the river. Erlang still stops to greet people from the Li family and rarely quarrels."
     likes: [tea, lantern_paper]
     dislikes: [wine]
     ask: {what: slot}
@@ -322,8 +322,8 @@ people:
     traits: {gossip: 65, conformity: 75, suspicion: 40, warmth: 45}
     ops: {level: 30, sharpen: 20, assimilate: 30, fill: 20}
     intro:
-      zh: "在周家帮工好些年，手脚勤快。遇上什么事，总说「掌柜的说了算」。"
-      en: "Has worked for the Zhou family for years, with quick hands. Whatever comes up, the answer is that the Shopkeeper decides."
+      zh: "周家伙计在铺子里做了好些年活，手脚麻利。遇上拿主意的事，还是那句『您问掌柜的去』。"
+      en: "Zhou's Clerk has worked in the shop for years and is quick with the work. When it comes to making a decision, the answer is still, ‘Ask the shopkeeper.’"
     likes: [pastry]
     dislikes: [lantern_paper]
     ask: {what: wage, amount: 10}
@@ -351,8 +351,8 @@ people:
     traits: {gossip: 92, conformity: 55, suspicion: 40, warmth: 70}
     ops: {level: 10, sharpen: 45, assimilate: 25, fill: 20}
     intro:
-      zh: "河边茶馆的老板娘，开了十几年。镇上的新鲜事，都要在茶桌上过一遍。"
-      en: "Keeper of the teahouse by the river for more than ten years. Every piece of news in town passes over the teahouse tables."
+      zh: "河边这间茶馆是老板娘开了十几年的老店。哪家有了新消息，茶还没喝完，桌上往往已经说开了。"
+      en: "The keeper has had this teahouse by the river for over ten years. When there's news from a household, everybody at the table usually hears it before the tea is gone."
     likes: [pastry, wine]
     dislikes: [lantern_paper]
     ask: {what: stall, item: front}
@@ -376,8 +376,8 @@ people:
     traits: {gossip: 70, conformity: 40, suspicion: 35, warmth: 55}
     ops: {level: 35, sharpen: 10, assimilate: 20, fill: 35}
     intro:
-      zh: "私塾先生，教镇上的孩子识字，还办着《镇报》。报上登了的事，识字的人就当真。"
-      en: "The schoolmaster, who teaches the town's children to read and puts out the Town Gazette. What the Gazette prints, those who can read take as true."
+      zh: "私塾先生教孩子识字，也办一份《镇报》。街坊碰到闹不明白的事，有时会看看报上怎么说。"
+      en: "The schoolmaster teaches children to read and puts out the Town Gazette. When townspeople can't make sense of something, some of them look to see what the Gazette says."
     likes: [tea, lantern_paper]
     dislikes: [wine]
     ask: {what: role, item: stage_words}
@@ -405,8 +405,8 @@ people:
     traits: {gossip: 40, conformity: 45, suspicion: 55, warmth: 50}
     ops: {level: 30, sharpen: 20, assimilate: 20, fill: 30}
     intro:
-      zh: "渡口的老船夫，摆了二十多年渡船，镇上谁都坐过。"
-      en: "The ferryman at the landing for more than twenty years, and everyone in town has crossed in the boat."
+      zh: "老何在渡口摆船有二十多年了，镇上人要是走水路过河，多半就坐老何这条船。"
+      en: "The ferry at the landing has been in the boatman's hands for over twenty years. Most townspeople crossing by water take that boat."
     likes: [wine, tea]
     dislikes: [pastry]
     ask: {what: wage, amount: 10}
@@ -434,8 +434,8 @@ people:
     traits: {gossip: 15, conformity: 85, suspicion: 50, warmth: 45}
     ops: {level: 50, sharpen: 5, assimilate: 35, fill: 10}
     intro:
-      zh: "澄溪镇辈分最高的长辈，管祠堂和族里的规矩。请外乡人来当今年的灯会总管，是族长拍的板。"
-      en: "The most senior elder in Chengxi, keeper of the ancestral hall and the clan's rules. It was the elder who chose to bring in an outsider as this year's festival manager."
+      zh: "族长是澄溪辈分最高的长辈，祠堂里有什么事，都由族长主理。今年请外乡人当灯会总管，也是族长拿的主意。"
+      en: "The elder is the senior figure in Chengxi and presides over matters at the Ancestral Hall. It was the elder who decided to ask an outsider to manage this year's festival."
     likes: [tea]
     dislikes: [wine]
     ask: {what: role, item: lead_lanterns}
@@ -462,8 +462,8 @@ people:
     traits: {gossip: 10, conformity: 60, suspicion: 70, warmth: 35}
     ops: {level: 60, sharpen: 5, assimilate: 15, fill: 20}
     intro:
-      zh: "账房管着全镇的公账。修桥修路、灯会的花销，一笔一笔都记在账本上。"
-      en: "Keeper of the town's common accounts. Every coin spent on bridges, roads and the festival goes into the ledger."
+      zh: "镇上修桥、修路、办灯会，用的都是公账里的钱，谁支了多少，账房要一笔一笔记下来。"
+      en: "The bridge, the roads and the festival are all paid for out of the town's funds. The accountant records who spent what, item by item."
     likes: [tea]
     dislikes: [lantern_paper]
     ask: {what: stall, item: back}
@@ -488,8 +488,8 @@ people:
     traits: {gossip: 20, conformity: 70, suspicion: 40, warmth: 60}
     ops: {level: 40, sharpen: 10, assimilate: 30, fill: 20}
     intro:
-      zh: "小庙的庙祝，守了大半辈子香火。庙后那条夹道平时锁着，钥匙在庙祝手里。"
-      en: "Keeper of the small temple, tending the incense for most of a lifetime. The lane behind the temple is kept locked, and the key stays with the keeper."
+      zh: "庙祝在小庙守了大半辈子的香火，平日庙后夹道是锁着的，那把钥匙就在庙祝手里。"
+      en: "The temple keeper has tended the shrine for most of a lifetime and keeps the key to the usually locked passage behind the temple."
     likes: [tea, lantern_paper]
     dislikes: [wine]
     ask: {what: stall, item: back}
@@ -517,8 +517,8 @@ people:
     traits: {gossip: 60, conformity: 25, suspicion: 20, warmth: 70}
     ops: {level: 45, sharpen: 25, assimilate: 10, fill: 20}
     intro:
-      zh: "家在河边的孩子，最爱钓鱼，夜里常蹲在河滩上。"
-      en: "A child who lives by the river and loves fishing, often crouched on the bank at night."
+      zh: "小满家就在河边，最爱坐在岸上钓鱼，有时到了夜里还舍不得回去。"
+      en: "Xiaoman lives by the river and loves to fish from the bank, sometimes staying out even after dark."
     likes: [pastry]
     dislikes: [tea]
     ask: {what: slot}
@@ -547,8 +547,8 @@ people:
     traits: {gossip: 50, conformity: 40, suspicion: 55, warmth: 40}
     ops: {level: 30, sharpen: 30, assimilate: 15, fill: 25}
     intro:
-      zh: "打了十几年更的更夫，镇上的人都认得这面锣的声音。"
-      en: "The night watchman, more than ten years on the rounds. Everyone in town knows the sound of the gong."
+      zh: "更夫在澄溪打了十几年更，镇上人到了夜里，隔着门也认得那几声锣。"
+      en: "The watchman has made the night round in Chengxi for over ten years. At night, townspeople know the sound of that gong through their doors."
     likes: [wine]
     dislikes: [tea]
     ask: {what: wage, amount: 10}
@@ -578,8 +578,8 @@ people:
     traits: {gossip: 35, conformity: 50, suspicion: 40, warmth: 55}
     ops: {level: 35, sharpen: 15, assimilate: 25, fill: 25}
     intro:
-      zh: "木匠，在扎灯坊有一张工台。镇上门窗桌椅坏了都找木匠，修桥动木头也少不了这双手。"
-      en: "The carpenter, with a bench at the lantern workshop. The town brings every broken door, window and chair here, and a bridge repair in timber will need these hands."
+      zh: "木匠在扎灯坊支了一张工台，哪家的桌椅、门窗要修，都可以拿到这儿来。镇上修桥的木工活也归这儿。"
+      en: "The carpenter has a bench at the lantern workshop. People bring chairs, tables, doors and windows there for repair. The bridge woodwork gets done there too."
     likes: [wine]
     dislikes: [pastry]
     ask: {what: wage, amount: 20}
@@ -606,8 +606,8 @@ people:
     traits: {gossip: 30, conformity: 45, suspicion: 30, warmth: 60}
     ops: {level: 35, sharpen: 15, assimilate: 20, fill: 30}
     intro:
-      zh: "扎灯师傅，扎了三十年灯，每年游灯打头的主灯都出自这双手。今年的灯扎了一半，就等游灯那一夜。"
-      en: "The lantern maker, thirty years at the craft. The great lantern at the head of every lantern parade is the maker's work, and this year's lanterns are half made, waiting for the night."
+      zh: "扎灯师傅做了三十年，每年游灯走在头里的主灯，都是从扎灯坊抬出去的。今年的灯已经扎了一半。"
+      en: "The lantern maker has been at it for thirty years. Every year the lead lantern for the parade comes from the workshop. This year's lanterns are halfway done."
     likes: [lantern_paper, tea]
     dislikes: [wine]
     ask: {what: role, item: lead_lanterns}

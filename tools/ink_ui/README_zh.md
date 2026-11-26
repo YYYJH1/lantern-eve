@@ -2,7 +2,7 @@
 
 # 水墨界面
 
-页面这套水墨纸面的画风，有两样材料是用脚本画的，不是手画的。一样是纸张毛糙的边，做成九宫格图片。另一样是毛笔的笔画记号，有勾、圈、计数的笔画和印，存成路径数据。两样都只用标准库。
+这两个 Python 脚本用标准库生成网页的纸边和笔画记号。纸边是九宫格切片图。勾、圈、正字笔画和印记用 SVG 路径表示。
 
 ```bash
 uv run python tools/ink_ui/paper.py     # 写出 web/public/ui/paper/ 下的纸边图和 index.json
@@ -11,14 +11,14 @@ uv run python tools/ink_ui/marks.py     # 写出 web/src/page/ui/marks.ts，加 
 
 ## 纸边
 
-一张纸有手裁的毛边，边往里一点有一道墨线。页面不在运行时现做这些，因为给一大张纸套滤镜很慢。`paper.py` 一次画好，1 倍和 2 倍各一套，用的是页面的颜色。白天是荼白（#f3f9f1）的纸，配乌黑（#392f41）或墨灰（#758a99）的线。灯下是牙色（#eedeb0）的纸，配墨灰的线。纸分两档。签用在小东西上，比如纸签、标签、匾。页用在大东西上，比如账簿和见闻簿。
+`paper.py` 把毛边和里面那道墨线分别画成 1 倍和 2 倍图，页面展开大张纸时就不用现算滤镜。白天的荼白纸（#f3f9f1）配乌黑（#392f41）或墨灰（#758a99）的线，灯下换牙色纸（#eedeb0）配墨灰。标签和匾用 `slip`，账簿、见闻簿这样的大张纸用 `page`。
 
 | 档 | 切片 | 条带 | 1 倍文件 | 2 倍文件 |
 |---|---|---|---|---|
 | 签（`slip`） | 12 | 64 | 88×88 像素，约 3 KB | 176×176 像素，约 6 KB |
 | 页（`page`） | 20 | 160 | 200×200 像素，约 7 KB | 400×400 像素，约 17 KB |
 
-文件名是 `<grade>-<palette>-<scale>x.png`，`grade` 是上表里的 `slip` 或 `page`，配色有 `day-ink`、`day-grey` 和 `night` 三种。图是一个正方形。四个角各是一个切片大小，角和角之间是四段边，每段一个条带长。条带里那段毛边的起伏是一段一段重复的，首尾正好对得上，所以接起来看不出接缝。中间是平平的纸色，`fill` 能把它拉满任意大小的纸面。2 倍图是同一条边按两倍大小重新画的，不是把 1 倍图放大。`index.json` 列出切片、颜色和文件。
+切片、配色和文件名见 `index.json`。文件名按 `<grade>-<palette>-<scale>x.png` 排，配色有 `day-ink`、`day-grey` 和 `night`。正方形分成四个角和四条边，每条边的形状会重复，首尾贴合。中间是整块纸色，用 `fill` 拉满纸面。脚本沿同一条边另画一份 2 倍图。
 
 ```css
 .sheet { border-image: url("/ui/paper/page-day-ink-1x.png") 20 fill / 20px round; }
@@ -27,11 +27,11 @@ uv run python tools/ink_ui/marks.py     # 写出 web/src/page/ui/marks.ts，加 
 }
 ```
 
-2 倍图的切片是 1 倍图的两倍，边框的宽度按页面像素算不变。页面想要纸纹，就另加一层背景。
+换成 2 倍图时，把 `border-image-slice` 翻倍，CSS 里的边框宽度照旧。纸纹可以另铺一层背景。
 
 ## 笔画记号
 
-`marks.py` 写出 `web/src/page/ui/marks.ts`。每个记号都是粗细不匀的填充轮廓，起笔压一下，中段最重，收笔变细，笔道还带一点慢慢的抖动。记号是数据，不是图片，所以颜色由页面来定，可以是墨色、胭脂或灯下的颜色，也不用去取任何文件。
+`marks.py` 把路径写进 `web/src/page/ui/marks.ts`。笔道起笔有压力，中段稍重，收笔变细，边沿略有起伏。页面按当前主题选墨色或红色填充。
 
 | 导出 | 是什么 |
 |---|---|
@@ -45,7 +45,7 @@ uv run python tools/ink_ui/marks.py     # 写出 web/src/page/ui/marks.ts，加 
 | `GLYPHS` | 右上角的 `pause`、`play` 和 `menu` |
 | `pick(variants, key)` | 同一个 `key` 每次都挑出同一个变体 |
 
-每个记号有一个 `w` 乘 `h` 的框，`paths` 用 `currentColor` 填充。笔画、横线或下划线要比框长或短时，就画在一个 `<svg preserveAspectRatio="none">` 里，长度取需要的长度，高度取框的高度。
+SVG 的视框用记号的 `w` 和 `h`，以 `currentColor` 填充 `paths`。要拉长或缩短笔画、横线或下划线时，改宽度，保留原高度，并设置 `preserveAspectRatio="none"`。
 
 ```tsx
 import type { Mark } from "./marks.ts";
@@ -58,4 +58,4 @@ const Brush = ({ mark, width, height, stretch }: { mark: Mark; width?: number; h
 );
 ```
 
-印上的字用的是马善政的轮廓（`seal_glyphs.json`，由 `tools/fonts/glyph_paths.py` 生成），画印时用不着字体。一方印是一块墨，里面有一道细框，字从墨里镂空出来。印上留着几个没沾上墨的小点，像手按出来的那样，整方印还微微歪着。白天用胭脂色填，夜里用灯下的红。
+印上的字取自马善政的字形轮廓，由 `tools/fonts/glyph_paths.py` 生成 `seal_glyphs.json`。印面略微倾斜，细框里把字和几处漏印的小点留空。白天填胭脂色，夜里填灯下的红。

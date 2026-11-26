@@ -150,10 +150,10 @@ test.describe("what the page says when no task is open", () => {
 
   test("has its own words for the bar and the card, and a line of the elder for each of the three", () => {
     const words = (lang: "zh" | "en", rest: keyof typeof REST_WORDS) => [translate(lang, REST_WORDS[rest].bar), translate(lang, REST_WORDS[rest].card)];
-    expect(words("zh", "idle")).toEqual(["眼下没有要办的事", "事都办完了。四处走走，等第五天晚上的灯会。"]);
-    expect(words("en", "idle")).toEqual(["Nothing to do right now", "Everything is done. Look around if you like, and wait for the festival on the night of the fifth day."]);
+    expect(words("zh", "idle")).toEqual(["眼下没有要办的事", "眼下的差事都办完了。灯会在第五天晚上开场，在那之前还可以在镇上走走。"]);
+    expect(words("en", "idle")).toEqual(["Nothing to do right now", "That's everything for now. The festival begins on the fifth evening, so you can look around town until then."]);
     expect(words("zh", "over")).toEqual(["灯会已过", "灯会办完了。"]);
-    expect(words("zh", "pick")).toEqual(["挑一件事来办", "还没选要办的事，从下面挑一件。"]);
+    expect(words("zh", "pick")).toEqual(["挑一件事来办", "在下面选一件事，红签上就会记下这件事。"]);
     for (const rest of ["idle", "over"] as const) {
       expect(REST_WORDS[rest].elder1, rest).not.toBeNull();
       expect(REST_WORDS[rest].elder3, rest).not.toBeNull();

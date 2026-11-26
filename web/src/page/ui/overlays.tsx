@@ -6,7 +6,7 @@ import { changed, type Clarified, type Gazette, type Hearer, type Night, type Pa
 import { elderText, truthLastText } from "./board-text.ts";
 import { fill } from "./fill.tsx";
 import { personName } from "./common.tsx";
-import { dayLabel } from "./format.ts";
+import { bare, dayLabel } from "./format.ts";
 import { placeName } from "./names.ts";
 import { count, endsInStop, marks } from "./paper-text.ts";
 import { whenWhere } from "./slip-text.ts";
@@ -42,7 +42,7 @@ function StanceWord({ stance, which }: { stance: Stance | null; which: "before" 
   );
 }
 
-function Hearer({ hearer, scene, lang }: { hearer: Hearer; scene: Scene | null; lang: Lang }) {
+function Hearer({ hearer, scene, lang, spoke = false }: { hearer: Hearer; scene: Scene | null; lang: Lang; spoke?: boolean }) {
   const moved = changed(hearer);
   return (
     <li class="hearer" data-testid="hearer" data-npc={hearer.npc} data-before={hearer.before ?? ""} data-after={hearer.after ?? ""} data-changed={moved}>
@@ -54,12 +54,60 @@ function Hearer({ hearer, scene, lang }: { hearer: Hearer; scene: Scene | null; 
             : fill(t("hearer.still"), { stance: <StanceWord stance={hearer.before} which="before" /> })}
         </span>
       </p>
-      {hearer.reason === null ? null : (
+      {spoke || hearer.reason === null ? null : (
         <p class="hearer-reason" data-testid="hearer-reason">
           {pick(hearer.reason, lang)}
         </p>
       )}
     </li>
+  );
+}
+
+function ClarificationExchange({ claim, cited, witnesses, judgment, objection, scene, lang }: {
+  claim: NotebookEntry;
+  cited: readonly NotebookEntry[];
+  witnesses: readonly string[];
+  judgment: NonNullable<Clarified["judgment"]>;
+  objection: Hearer | undefined;
+  scene: Scene | null;
+  lang: Lang;
+}) {
+  const manager = t("clarify.exchange.manager");
+  const firstSource = cited[0]?.source;
+  const witnessName = firstSource?.kind === "heard" && firstSource.how === "saw" && witnesses.includes(firstSource.whoId) ? pick(firstSource.who, lang) : "";
+  return (
+    <div class="clarify-exchange" data-testid="clarify-exchange">
+      <p class="clarify-claim" data-testid="clarify-claim">
+        <strong>{manager}</strong>
+        {t("clarify.exchange.open", { claim: bare(pick(claim.text, lang)) })}
+      </p>
+      {objection === undefined ? null : (
+        <p data-testid="clarify-objection">
+          <strong>{personName(scene, lang, objection.npc)}</strong>
+          {pick(objection.reason, lang)}
+        </p>
+      )}
+      <details class="clarify-follow">
+        <summary data-testid="clarify-follow">
+          {witnessName === "" ? t("clarify.exchange.show") : t("clarify.exchange.ask", { name: witnessName })}
+        </summary>
+        {cited.map(({ id, source, text }) => {
+          const note = bare(pick(text, lang));
+          const firsthand = source.kind === "heard" && source.how === "saw";
+          const here = firsthand && witnesses.includes(source.whoId);
+          const name = firsthand ? pick(source.who, lang) : "";
+          let line = t("clarify.exchange.record", { note });
+          if (here) line = t("clarify.exchange.witness", { note });
+          else if (source.kind === "seen") line = t("clarify.exchange.seen", { note });
+          else if (firsthand) line = t("clarify.exchange.cited", { name, note });
+          return <p key={id} data-testid="clarify-evidence"><strong>{here ? name : manager}</strong>{line}</p>;
+        })}
+        <p data-testid="clarify-answer">
+          <strong>{manager}</strong>
+          {t(`clarify.exchange.${judgment}`)}
+        </p>
+      </details>
+    </div>
   );
 }
 
@@ -117,6 +165,10 @@ export function ClarifyView({ clarified, entries, scene, lang, onClose, statemen
   const sheet = useRef<HTMLElement>(null);
   useSheetKeys(sheet, onClose);
   const claim = clarified.claim === null ? undefined : entries.find((e) => e.id === clarified.claim);
+  const cited = clarified.basis.flatMap((id) => entries.filter((entry) => entry.id === id));
+  const { judgment, witnesses } = clarified;
+  const exchange = statement === undefined && claim !== undefined && cited.length > 0 && cited.length === clarified.basis.length && judgment !== undefined && witnesses !== undefined;
+  const objection = exchange ? clarified.audience.find((hearer) => hearer.after === "against" && hearer.reason !== null) : undefined;
   const moved = clarified.audience.filter(changed).length;
   const title = t(statement === undefined ? "clarify.title" : "stated.title");
   return (
@@ -127,7 +179,9 @@ export function ClarifyView({ clarified, entries, scene, lang, onClose, statemen
       </header>
       <div class="sheet-scroll">
         {statement === undefined ? null : <Verdict verdict={statement} scene={scene} lang={lang} />}
-        {claim === undefined ? null : (
+        {exchange ? (
+          <ClarificationExchange key={clarified.key} claim={claim} cited={cited} witnesses={witnesses} judgment={judgment} objection={objection} scene={scene} lang={lang} />
+        ) : claim === undefined ? null : (
           <p class="clarify-claim" data-testid="clarify-claim">
             {t("clarify.claim", { claim: pick(claim.text, lang) })}
           </p>
@@ -143,7 +197,7 @@ export function ClarifyView({ clarified, entries, scene, lang, onClose, statemen
             {statement === undefined ? null : <h3 class="stated-who">{t("stated.who")}</h3>}
             <ol class="hearers" data-testid="hearers">
               {clarified.audience.map((hearer) => (
-                <Hearer key={hearer.npc} hearer={hearer} scene={scene} lang={lang} />
+                <Hearer key={hearer.npc} hearer={hearer} scene={scene} lang={lang} spoke={hearer === objection} />
               ))}
             </ol>
             <p class="clarify-sum" data-testid="clarify-sum">

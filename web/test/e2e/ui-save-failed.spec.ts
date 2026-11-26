@@ -11,16 +11,16 @@ import * as fake from "../support/slice.ts";
 
 const WORDS = {
   en: {
-    storage: "The game could not be saved: the browser did not let it write. You can try again from Saves in the menu.",
-    full: "The game could not be saved: the browser has no room left for it. Delete an old save under Saves in the menu, then try again.",
-    server: "The game could not be saved. It runs on a server, and the server keeps no saves.",
-    other: "The game could not be saved. You can try again from Saves in the menu.",
+    storage: "The browser blocked the save. Try again under Saves in the menu.",
+    full: "There's no room for another save. Delete an old one under Saves in the menu, then try again.",
+    server: "This server doesn't support saved games.",
+    other: "Couldn't save. Try again under Saves in the menu.",
   },
   zh: {
-    storage: "没能存档，浏览器不让游戏写入。可以到菜单的「存档」里再存一次。",
-    full: "没能存档，浏览器给这个页面留的地方满了。到菜单的「存档」里删掉旧的，再存一次。",
-    server: "没能存档。这一局在服务器上跑，服务器不存档。",
-    other: "没能存档。可以在菜单的「存档」里再存一次。",
+    storage: "浏览器不让游戏写存档。到菜单的「存档」里再试一次。",
+    full: "存档空间满了。去菜单的「存档」里删一份旧档，再存一次。",
+    server: "这台服务器不支持存档。",
+    other: "存档失败。到菜单的「存档」里再试一次。",
   },
 } as const;
 

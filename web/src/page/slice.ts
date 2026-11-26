@@ -811,6 +811,9 @@ export interface Clarified {
   /** The entry of the notebook that was said to go beyond the evidence, and the entries it was held against. */
   claim: string | null;
   basis: string[];
+  judgment?: Relation;
+  /** Witnesses who actually spoke, including the player when they cited their own sighting. */
+  witnesses?: string[];
   /** How many of those there took it in. */
   accepted: number | null;
   audience: Hearer[];
@@ -828,6 +831,8 @@ export function readClarified(event: Record<string, unknown>, key: string): Clar
     venue: typeof event.venue === "string" && event.venue !== "" ? event.venue : null,
     claim: typeof event.claim === "string" ? event.claim : null,
     basis: (Array.isArray(event.basis) ? event.basis : []).filter((id): id is string => typeof id === "string"),
+    ...(isRelation(event.judgment) ? { judgment: event.judgment } : {}),
+    ...(Array.isArray(event.witnesses) ? { witnesses: event.witnesses.filter((id): id is string => typeof id === "string") } : {}),
     accepted: whole(event.accepted),
     audience,
   };

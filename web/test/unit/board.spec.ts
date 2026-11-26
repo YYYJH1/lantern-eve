@@ -110,13 +110,13 @@ test.describe("the next work time and the helpers", () => {
     expect(helperTotalText(3, 5)).toBe("共 3 / 5 人");
     expect(helperTotalText(0, 5)).toBe("共 0 / 5 人");
     expect(helperTotalText(5, 5)).toBe("共 5 / 5 人");
-    expect(helperTotalText(17, 5)).toBe("共 17 人，要 5 人，够了");
-    expect(helperTotalText(6, 5)).toBe("共 6 人，要 5 人，够了");
+    expect(helperTotalText(17, 5)).toBe("至少要 5 人，已经有 17 人");
+    expect(helperTotalText(6, 5)).toBe("至少要 5 人，已经有 6 人");
     expect(helperTotalText(4, null)).toBe("共 4 人");
     setLang("en");
     expect(helperTotalText(3, 5)).toBe("3 of 5");
     expect(helperTotalText(5, 5)).toBe("5 of 5");
-    expect(helperTotalText(17, 5)).toBe("17 in all, enough (5 needed)");
+    expect(helperTotalText(17, 5)).toBe("17 helpers on hand, at least 5 needed");
     expect(helperTotalText(4, null)).toBe("4 so far");
   });
 
@@ -135,9 +135,9 @@ test.describe("the next work time and the helpers", () => {
 test.describe("the truth on the board", () => {
   test("takes five named people, six in ten who accept and the elder, in words in both languages", () => {
     setLang("en");
-    expect(truthNeeds("en", null).map((need) => need.text)).toEqual(["at least five familiar faces there", "at least six in ten of them believe it", "the elder believes it"]);
+    expect(truthNeeds("en", null).map((need) => need.text)).toEqual(["At least five people you know are there", "At least six in ten of those present believe the account", "The elder accepts the account too"]);
     setLang("zh");
-    expect(truthNeeds("zh", null).map((need) => need.text)).toEqual(["至少五个熟面孔在场", "在场的人有六成以上信", "族长也信"]);
+    expect(truthNeeds("zh", null).map((need) => need.text)).toEqual(["至少五个认识的街坊在场", "在场的人里，至少有六成相信这个说法", "族长也认这个说法"]);
   });
 
   test("says which of the three the last statement met and which it missed, and none of them before there was one", () => {
@@ -164,19 +164,19 @@ test.describe("the truth on the board", () => {
     expect(elderText({ ...last, elder: null })).toBeNull();
     setLang("en");
     expect(truthLastText({ ...last, venue: "p_nowhere" }, SCENE, "en")).toBe("Day 3 18:00: 4 there, 2 believed it (50%)");
-    expect(["refused", "accepted"].map((elder) => elderText({ ...last, elder: elder as "refused" | "accepted" }))).toEqual(["the elder was not convinced", "the elder believed it"]);
+    expect(["refused", "accepted"].map((elder) => elderText({ ...last, elder: elder as "refused" | "accepted" }))).toEqual(["The elder wasn't convinced", "the elder believed it"]);
   });
 });
 
 test.describe("the peace on the board", () => {
   test("says whether anybody saw it, and nothing where the frame does not say", () => {
     setLang("en");
-    expect(witnessText(true)).toBe("Others saw the families make peace");
-    expect(witnessText(false)).toBe("Nobody has seen the families make peace yet");
+    expect(witnessText(true)).toBe("Someone witnessed the families make peace");
+    expect(witnessText(false)).toBe("Nobody has witnessed the families make peace yet");
     expect(witnessText(null)).toBeNull();
     setLang("zh");
-    expect(witnessText(true)).toBe("有人亲眼看见两家和好了");
-    expect(witnessText(false)).toBe("还没人亲眼看见两家和好");
+    expect(witnessText(true)).toBe("有人见证了两家和好");
+    expect(witnessText(false)).toBe("还缺人为两家和好作见证");
   });
 });
 

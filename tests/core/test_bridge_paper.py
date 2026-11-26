@@ -173,7 +173,7 @@ def test_the_headline_is_the_delivery_and_the_short_items_are_the_other_lines_of
         "kind": "delivery",
         "text": {
             "zh": "李大答应的四根竹料，已经送到石桥。",
-            "en": "The 4 poles of bamboo that Li Da promised have reached the Stone Bridge.",
+            "en": "Li Da's delivery of 4 poles of bamboo reached the Stone Bridge.",
         },
     }
     assert paper["news"] == [{"kind": "promise", "text": frame["recap"][1]["text"]}]
@@ -272,18 +272,22 @@ def test_a_statement_that_moved_people_is_news_and_one_that_moved_nobody_comes_a
     (item,) = items_of(game, at(2, 7), at(3, 7))
     assert item.kind == "statement"
     assert item.text == {  # the paper of the morning names the Manager
-        "zh": "总管在茶馆当众讲了桥是怎么坏的。有人点了头。",
-        "en": "The Manager told the town at the Teahouse how the bridge broke. Some people nodded.",
+        "zh": "总管在茶馆当众讲了栏杆断裂的经过，在场有街坊听得点头。",
+        "en": (
+            "The Manager spoke at the Teahouse about how the bridge broke, "
+            "and some of the people there agreed."
+        ),
     }
     (item,) = items_of(game, at(2, 7), at(2, 21), which="night")  # the summary of the night: you
-    assert item.text["zh"] == "你在茶馆当众讲了桥是怎么坏的。有人点了头。"
-    assert item.text["en"].startswith("You told the town at the Teahouse")
+    assert item.text["zh"] == "你在茶馆当众讲了栏杆断裂的经过，在场有街坊听得点头。"
+    assert item.text["en"].startswith("You spoke at the Teahouse")
     speeches[-1] = [at(2, 18), "p_clan_hall", 8, 0, 1, 0, 0, []]
     (item,) = items_of(game, at(2, 7), at(3, 7))
     assert item.kind == "statement_refused"
-    assert item.text["zh"] == "总管在祠堂当众讲了桥是怎么坏的。没一个人点头。"
+    assert item.text["zh"] == "总管在祠堂讲了自己查到的经过，在场的街坊听完都没有点头。"
     assert item.text["en"].startswith(
-        "The Manager told the town at the Ancestral Hall how the bridge broke. Nobody"
+        "The Manager spoke at the Ancestral Hall about what happened at the bridge, "
+        "but nobody there agreed."
     )
     state_of(game)["goals"]["flags"]["bridge_fixed"] = at(2, 11)
     state_of(game)["goals"]["flags"]["truth_told"] = at(2, 12)  # a milestone, and the refusal after
@@ -302,16 +306,16 @@ def test_a_showing_of_evidence_is_news_too_and_one_that_moved_nobody_comes_after
     (item,) = items_of(game, at(2, 7), at(3, 7))
     assert item.kind == "evidence"
     assert item.text == {
-        "zh": "总管在祠堂当众拿出了凭据。有人信了。",
+        "zh": "总管在祠堂当众拿出凭据，在场已有街坊信了这一说。",
         "en": "The Manager showed the proof in public at the Ancestral Hall. "
         "Some people believed it.",
     }
     speeches[-1] = [at(2, 18), "p_teahouse", 8, 0, 1, 0, 0]
     (item,) = items_of(game, at(2, 7), at(3, 7))
     assert item.kind == "evidence_refused"
-    assert item.text["zh"] == "总管在茶馆当众拿出了凭据。没一个人信。"
+    assert item.text["zh"] == "总管在茶馆当众拿出凭据，在场的街坊仍无人信这一说。"
     (item,) = items_of(game, at(2, 7), at(2, 21), which="night")
-    assert item.text["zh"] == "你在茶馆当众拿出了凭据。没一个人信。"
+    assert item.text["zh"] == "你在茶馆当众拿出凭据，在场的街坊仍无人信这一说。"
     # a full statement and a showing in the same stretch are two items, the statement first
     speeches.append([at(2, 19), "p_teahouse", 8, 5, 2, 1, 0, []])
     assert kinds_of(game, at(2, 7), at(3, 7)) == ["statement", "evidence_refused"]
@@ -332,7 +336,7 @@ def test_the_deeds_of_the_peace_are_news_a_head_who_stops_accusing_and_the_helpe
         "zh": "周掌柜当着大家的面，不再说李家的不是了。",
         "en": "Shopkeeper Zhou has stopped speaking ill of the Li family in public.",
     }
-    assert items[1].text["en"] == "People of both families worked at the bridge together."
+    assert items[1].text["en"] == "People from both families worked together at the bridge."
     # the peace itself comes before them, and the meal that was seen is no more than the deeds
     state_of(game)["goals"]["flags"]["reconciled"] = at(2, 20)
     assert kinds_of(game, at(2, 7), at(3, 7), journal) == ["reconciled", "stopped", "side_by_side"]
@@ -360,8 +364,8 @@ def test_the_work_at_the_bridge_is_news_when_it_stopped_and_when_it_has_got_on(l
     game = twin(late)
     state_of(game)["social"].pop("aloud", None)  # what the street says is not what this is about
     stopped = next(i for i in items_of(game, at(3, 7), at(4, 7)) if i.kind == "work_stopped")
-    assert stopped.text["en"].startswith("Work at the bridge stopped. ")
-    assert stopped.text["zh"].startswith("桥上的活停了。")
+    assert stopped.text["en"].startswith("Work on the bridge couldn't go on. ")
+    assert stopped.text["zh"].startswith("桥上的活没能接着做。")
     assert board.NO_HANDS["zh"] in stopped.text["zh"]  # the words of the board, the same reason
     assert board.NO_HANDS["en"] in stopped.text["en"]
     monkeypatch.setattr(
@@ -408,14 +412,14 @@ def test_the_sky_of_the_day_before_is_news_when_it_rained_and_of_today_at_night(
     plan[1] = weather.HEAVY_RAIN
     (rain,) = items_of(game, at(2, 7), at(3, 7))
     assert rain.kind == "rain" and rain.text == {
-        "zh": "昨天下了一场大雨。街上没什么人。",
-        "en": "Heavy rain fell yesterday. The streets emptied.",
+        "zh": "昨天雨下得大，街上少见行人。",
+        "en": "Heavy rain fell yesterday, and few people were out on the street.",
     }
     plan[1] = weather.LIGHT_RAIN
     (rain,) = items_of(game, at(2, 7), at(3, 7))
-    assert rain.text == {"zh": "昨天飘了一阵小雨。", "en": "It drizzled yesterday."}
+    assert rain.text == {"zh": "昨天下过一阵小雨。", "en": "It drizzled yesterday."}
     (rain,) = items_of(game, at(2, 7), at(2, 21), which="night")  # the night is of the same day
-    assert rain.text == {"zh": "今天飘了一阵小雨。", "en": "It drizzled today."}
+    assert rain.text == {"zh": "今天下过一阵小雨。", "en": "It drizzled today."}
     plan[1] = weather.CLEAR
     assert kinds_of(game, at(2, 7), at(3, 7)) == ["quiet"]
 
@@ -691,7 +695,7 @@ def test_the_night_has_what_changed_what_is_in_the_way_and_the_step_for_tomorrow
         "text": blocked[0]["text"],
         "blocker": blocked[0]["blocker"],
     }
-    assert night["blocked"]["blocker"]["zh"] == "李家不肯给竹料"
+    assert night["blocked"]["blocker"]["zh"] == "李家不肯借竹料"
     tomorrow = [
         task
         for task in frame["tasks"]

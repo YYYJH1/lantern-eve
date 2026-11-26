@@ -5,7 +5,7 @@ id: stranger
 label: 外乡人
 days: 7
 truth_fixed_at: 0
-summary: 来了个自称扎灯名家的外乡人，周掌柜付了定金，他的来历前后说得不一样。
+summary: 镇上来了一位外乡人，自称是扎灯的名家，周掌柜便付了定金。可是再问起来历，这人前后几次说的不一样。
 
 cast:
   - fam_zhou
@@ -29,10 +29,10 @@ variants:
     label: 骗子，收了定金第六天夜里要跑
     holds: [pr_from_port, pr_flees]
   - id: v_master
-    label: 真名家，但脾气傲，得被敬着才肯帮
+    label: 外乡人确是扎灯名家，礼数尽到了才请得动
     holds: [pr_from_cloud, pr_made_sample, pr_refused]
   - id: v_fugitive
-    label: 邻镇跑出来的人，有人在找他
+    label: 外乡人是从邻镇跑出来的，有人正找上来
     holds: [pr_from_next, pr_made_sample, pr_fled_next, pr_wanted]
 
 shared:
@@ -82,14 +82,14 @@ observations:
     in: all
   - id: obs_sample_fine
     kind: misleading
-    label: 样灯做工精细，看着像名家手笔
+    label: 样灯扎得细致，乍看像是名家做的
     holder: stranger
     shows: [pr_sample_owned]
     toward: [pr_made_sample]
     in: all
   - id: obs_deposit
     kind: misleading
-    label: 周掌柜刚付了定金，他就整天待在客栈不出门
+    label: 周掌柜刚付完定金，外乡人就整日待在客栈
     holder: zhou_zhanggui
     shows: [pr_deposit_paid, pr_stranger_at_inn]
     toward: [pr_flees]
@@ -105,38 +105,38 @@ chains:
 
 evidence:
   - id: e_pedlar_mass
-    label: 货郎的证词：这盏样灯是邻镇集上论斤卖的
-    label_en: "The peddler's word: this sample lantern is sold by weight at the market of the next town"
+    label: 货郎说，这样的样灯是邻镇集市上论斤卖的
+    label_en: "The peddler says the next town's market sells lanterns like this by weight"
     supports: [pr_not_made, pr_pedlar_in_town]
     acquire: {from: huolang, gatekeeper: null, min_trust: 20, daily: [840, 1140], minutes: 30, until: 6480}
   - id: e_ticket
-    label: 老何的证词：外乡人订了第六天夜里的渡船
-    label_en: "Boatman He's word: the stranger booked the ferry for the night of the sixth day"
+    label: 老何接了外乡人的船约，约在第六天夜里
+    label_en: "Boatman He took a booking from the Stranger for the sixth night"
     supports: [pr_flees]
     acquire: {from: old_he, gatekeeper: null, min_trust: 40, daily: [480, 1020], minutes: 30, until: 8000}
   - id: e_craft
-    label: 扎灯师傅验过样灯的手艺：确实是亲手扎的
-    label_en: "The Lantern Maker's check of the sample lantern: it really was made by hand"
+    label: 扎灯师傅验过样灯，说是用手扎出来的
+    label_en: "After looking over the sample lantern, the Lantern Maker says it was made by hand"
     supports: [pr_made_sample, pr_sample_owned]
     acquire: {from: t_sample_lantern, gatekeeper: zhadeng_shifu, min_trust: 25, daily: [480, 1020], minutes: 40}
   - id: e_pedlar_mark
-    label: 货郎的证词：灯上的暗纹是云锦灯坊的印记
-    label_en: "The peddler's word: the faint pattern on the lantern is the mark of the Cloud Brocade Lantern Shop"
+    label: 货郎说，样灯上的暗纹是云锦灯坊的印记
+    label_en: "The peddler says the faint pattern on the lantern is the Cloud Brocade Lantern Shop's mark"
     supports: [pr_from_cloud, pr_made_sample, pr_pedlar_in_town]
     acquire: {from: huolang, gatekeeper: null, min_trust: 20, daily: [840, 1140], minutes: 30, until: 6480}
   - id: e_walkout
-    label: 周掌柜的说法：价钱没谈拢，外乡人甩手就走了
-    label_en: "Shopkeeper Zhou's account: the price was not agreed, and the stranger walked out"
+    label: 周掌柜说，价钱没谈拢，外乡人甩手就走了
+    label_en: "Shopkeeper Zhou says they couldn't agree on a price and the Stranger walked out"
     supports: [pr_refused]
     acquire: {from: zhou_zhanggui, gatekeeper: null, min_trust: 30, daily: [480, 1080], minutes: 30}
   - id: e_pedlar_seen
-    label: 货郎的证词：邻镇有人到处打听一个会扎灯的人
-    label_en: "The peddler's word: people in the next town are asking everywhere for someone who can make lanterns"
+    label: 货郎说，邻镇正有人到处打听一个会扎灯的人
+    label_en: "The peddler says people in the next town have been asking around for someone who makes lanterns"
     supports: [pr_wanted, pr_pedlar_in_town]
     acquire: {from: huolang, gatekeeper: null, min_trust: 20, daily: [840, 1140], minutes: 30, until: 6480}
   - id: e_slip
-    label: 外乡人酒后说漏了嘴：口音是邻镇的
-    label_en: "A slip of the stranger's tongue over wine: the accent is the next town's"
+    label: 外乡人喝过酒一开口，听着有些像邻镇的口音
+    label_en: "When the Stranger spoke after drinking, the accent sounded a little like the next town's"
     supports: [pr_from_next, pr_stranger_at_inn]
     acquire: {from: stranger, gatekeeper: null, min_trust: 40, daily: [1080, 1320], minutes: 45}
 
@@ -163,7 +163,7 @@ lies:
 
 speculation:
   - id: sr_deposit_flee
-    label: 付了定金的外乡人住在客栈里，就推测他拿了钱要跑
+    label: 外乡人收了定金就待在客栈，会不会正等着拿钱走人？
     vars: {W: person, X: person, D: thing, P: place}
     premises:
       - {pred: gave, args: {who: $W, whom: $X, what: $D}}
@@ -172,7 +172,7 @@ speculation:
     hedge: [我猜, 怕是]
     min_suspicion: 50
   - id: sr_wanted_runaway
-    label: 有人到处找他，就推测他是从邻镇跑出来的
+    label: 有人在找外乡人，会不会是从邻镇跑出来的？
     vars: {X: person}
     premises:
       - {pred: wanted, args: {who: $X}}
@@ -180,7 +180,7 @@ speculation:
     hedge: [我猜, 怕是]
     min_suspicion: 30
   - id: sr_proud_master
-    label: 样灯是亲手扎的，又敢拒绝出钱的人，就推测他真是云锦灯坊出来的
+    label: 这人能亲手扎出样灯，也敢回绝买主，会不会真是云锦灯坊出来的？
     vars: {X: person, S: thing, W: person}
     premises:
       - {pred: made, args: {who: $X, what: $S}}

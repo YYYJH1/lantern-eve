@@ -75,19 +75,26 @@ export function TalkStrip(props: TalkStripProps) {
     // The lists stop under the placard, the clock and the slip (its note too, when it is open).
     const bottomOf = (selector: string): number => document.querySelector(selector)?.getBoundingClientRect().bottom ?? 0;
     const ceiling = Math.max(stage.getBoundingClientRect().top, bottomOf(".placard") + 8, bottomOf(".slip") + 8, bottomOf('[data-testid="hud-time"]') + 8);
-    element.style.setProperty("--slips-room", `${Math.max(120, Math.floor(top - ceiling - 24))}px`);
+    const room = Math.max(0, Math.floor(top - ceiling - 10));
+    element.style.setProperty("--slips-room", `${room}px`);
+    element.toggleAttribute("data-tight-slips", room < 120);
     // The strip of the acts around the manager lies where the note of a picked person does: the note stands over it.
     const side = document.querySelector<HTMLElement>("aside.side");
     element.style.setProperty("--side-h", `${side === null || side.offsetParent === null ? 0 : Math.ceil(side.getBoundingClientRect().height) + 12}px`);
   };
   useLayoutEffect(measure);
-  // The slip opens and shuts its note without the page being drawn again: the lists are measured again when it changes its size.
+  // Measure again when the window, task note or conversation changes size.
   useEffect(() => {
     const slip = document.querySelector(".slip");
-    if (slip === null) return;
+    const strip = dock.current?.querySelector(".talk-strip");
     const watch = new ResizeObserver(measure);
-    watch.observe(slip);
-    return () => watch.disconnect();
+    if (slip !== null) watch.observe(slip);
+    if (strip) watch.observe(strip);
+    window.addEventListener("resize", measure);
+    return () => {
+      watch.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, []);
   return (
     <div class="talk-dock" data-testid="talk-dock" data-open={open} ref={dock}>

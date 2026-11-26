@@ -2,13 +2,13 @@
 
 # Models
 
-The rules of the game decide what a townsperson says and how far the manager's words move them. A model, when there is one, only puts that reply into the person's own words. A game with no model plays from the lines written for the townsfolk.
+The game rules determine what a townsperson knows, what they will share and whether they will agree to a request. A model can put a reply in the character's voice. When a player writes their own appeal, a model can also rate the wording. The game weighs that score alongside conditions such as trust and promises. The whole game can be played with written lines and the models switched off.
 
-A game can ask Alibaba Bailian, DeepSeek, a local vLLM or a local Ollama to speak for its townsfolk. In the browser the player picks the provider in the menu. On the server host, `lantern-eve play` calls any service that speaks the OpenAI chat-completions protocol. A provider file says which service and which model answer each tier of a request, what the cloud tiers cost, and how calls are queued and timed.
+Browser players choose a provider in the model source menu. On the server host, `lantern-eve play` supports OpenAI-compatible chat completions, including Alibaba Bailian, DeepSeek, local vLLM and Ollama. The provider file assigns a service and model to each tier and sets cloud prices, queue priorities and timeouts.
 
 ## In the browser
 
-The menu of the page lists the providers below. With none picked, the game plays from written lines and makes no call. A provider that needs a key gets the player's own. The page keeps it in the memory of its worker and sends it only to that provider, and writes it to the browser only when "remember on this device" is ticked. Ollama runs on the player's machine and needs no key.
+Choose a provider below or leave model calls off. Providers that require a key use the player's own key. The worker holds it in memory and sends it only to that provider. The browser saves it when the player checks “remember on this device”. Local Ollama requires no key.
 
 | Provider | Address | The cheap model | The strong model |
 |---|---|---|---|
@@ -16,7 +16,7 @@ The menu of the page lists the providers below. With none picked, the game plays
 | DeepSeek | `https://api.deepseek.com` | `deepseek-flash` | `deepseek-v4-pro` |
 | Ollama | `http://localhost:11434/v1` | the model named in the page (`qwen3.5:4b` at first) | the same |
 
-Requests are streamed `POST {address}/chat/completions` calls. A call that has not finished 8 seconds after it started is given up, and the game says the reply with a written line instead. A game keeps a budget for its model calls, 3 yuan by default. In the browser it is reckoned at the list prices of `qwen-flash` and `qwen-plus` whichever provider is picked, Ollama included. From 70 percent of it the strong model is off, and from 90 percent every model is off, so the townsfolk speak written lines from then on.
+The browser sends streaming `POST {address}/chat/completions` requests. After 8 seconds without a complete reply, the game uses a written line. Each game has a budget of 3 yuan by default. The browser uses the list prices of `qwen-flash` and `qwen-plus` for every provider, including Ollama. At 70% of the budget it disables the strong tier. At 90% it disables all model calls.
 
 Ollama has to let the origin of the page in. Pages on `localhost` and `127.0.0.1` are allowed by default. Any other origin, such as the site at https://yyyjh1.github.io, has to be added with `OLLAMA_ORIGINS` when Ollama starts. A public https page that talks to `http://localhost` is a local network request, which Chrome allows only after the player accepts its permission prompt.
 
@@ -30,7 +30,7 @@ export DASHSCOPE_API_KEY=...        # the key never goes in a file
 uv run lantern-eve play --provider-config configs/providers.toml --open
 ```
 
-`play` prints the address and then one line for each tier: the model, the provider with its address, and the price. A game that was started with a provider file reports `openai` as its transport in the welcome message. `--transport mock` keeps the mock and still takes the prices from the file. Model names and prices change. The game works out its budget from the prices in your provider file, so check them against the provider's pages.
+`play` prints the server address and shows each tier's model, provider, endpoint and price. With a provider file, the `welcome` message reports `openai` as its transport. Pass `--transport mock` to use the mock with prices from the file. Update the file when provider prices change.
 
 A game that uses only a model on this machine needs no key and costs nothing. Put both cloud tiers on the local provider and give them the price 0, since a cloud tier must have a price:
 
@@ -118,11 +118,13 @@ Calls wait in four classes, 1 first and 4 last, which only decide who goes first
 | `[queue.concurrency]` | cheap 8, strong 3, local 2 | calls in flight per tier |
 | `[classes]` | empty | a class from 1 to 4 for each category of request. The example file lists `reply = 1` and `chatter = 3` |
 
-The timeout counts the wait in the queue as well as the call. A request that never left the queue cost nothing and is booked at zero tokens. A call that was out is booked with unknown usage, which the core charges as the whole reservation. It is neither aborted nor tried again on another model. It may finish within `late_s`, and an answer that comes then is reported with its real usage, which the core voids and books as unattributed, without charging it again. A call that fails after its timeout is not reported. The slot of the call stays taken until it ends, so a hanging service fills its slots instead of piling up calls.
+The timeout covers time spent in the queue and in flight. A request still in the queue is recorded at zero tokens. A request already sent is recorded with unknown usage, and the core charges the amount reserved for it.
+
+A timed-out request that is in flight keeps its slot until it ends. It continues running without a retry on another model. If it succeeds within `late_s`, the host reports actual usage. The core records those tokens separately without assigning them to a tier or charging again. The reply is discarded. The host does not report failures that arrive after the timeout.
 
 A cancel from the core closes the connection and reports `cancelled` at once, with zero usage for a request that was still waiting and unknown usage for one that was out. A call that has already finished keeps its answer, which the core voids and still books.
 
-On the server host calls are not streamed: one JSON response per call, and its `usage` is what the core books. The page shows a sentence only after the core has checked it whole, so the words of a call are of no use earlier. The timers run in real time, also while the world is paused. The limits are those of one game, so a server that runs several games at once multiplies them.
+The server host receives one JSON response per call, and the core reads its `usage` for billing. The page shows a reply after the core has checked the whole line. Timeouts use real time and continue during a pause. Each concurrent game has its own limits.
 
 ## What the game is told about the providers
 

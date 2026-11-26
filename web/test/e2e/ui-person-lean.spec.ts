@@ -10,8 +10,8 @@ test.use({ map: true });
 
 /** What the card of Granny Li says in each language when she has said her stand and the other account with it. */
 const WORDS = {
-  en: { label: "Believes:", held: "Li Er broke the bridge railing last night.", by: "Also heard from Shopkeeper Zhou:", account: "Boatman He broke the bridge railing last night, by accident." },
-  zh: { label: "信的是：", held: "李二昨晚把栏杆弄坏了。", by: "也听周掌柜说过：", account: "船夫老何昨晚把栏杆弄坏了，是不小心的。" },
+  en: { label: "Believes", held: "Li Er broke the bridge railing last night.", by: "Also heard from Shopkeeper Zhou", account: "Boatman He broke the bridge railing last night, by accident." },
+  zh: { label: "信的说法", held: "李二昨晚把栏杆弄坏了。", by: "还从周掌柜那儿听到", account: "船夫老何昨晚把栏杆弄坏了，是不小心的。" },
 } as const;
 
 /** The frame's cards with the other account in the stance of Granny Li (the key is there only when she said it). */

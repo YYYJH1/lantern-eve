@@ -148,7 +148,7 @@ def test_a_want_is_on_the_card_only_once_the_player_has_learned_it():
         "id": "w_li_laotai_public",
         "text": {
             "zh": "有人出来把「李二毁桥」这话当众说清",
-            "en": "Someone to set straight, in public, the talk that Li Er wrecked the bridge",
+            "en": "Someone to stand up and set the record straight about Li Er",
         },
     }
     assert state_of(game)["agenda"]["wants"]["w_li_laotai_public"] == out["tick"]
@@ -191,8 +191,8 @@ def test_the_stance_is_the_latest_thing_they_said_to_the_player_about_the_confli
     out = act(game, "ask", topic="li_er")
     stance = by_id(out["frame"])["li_laotai"]["stance"]
     assert stance["text"] == {
-        "zh": "李二昨晚把栏杆弄坏了，是眼红人家出风头。",
-        "en": "Li Er broke the bridge railing last night, out of envy.",
+        "zh": "李二出事那晚把栏杆弄坏了，是眼红人家出风头。",
+        "en": "Li Er broke the bridge railing that night, out of envy.",
     }
     assert (stance["kind"], stance["entry"], stance["tick"]) == ("told", "n1", out["tick"])
     assert stance["how"] == {"zh": "亲口告诉你的", "en": "They told you themselves"}
@@ -220,7 +220,7 @@ def test_the_stance_is_the_latest_and_only_about_the_conflict():
     for _ in range(3):
         cast = by_id(act(game, "ask", topic="li_er")["frame"])
     stance = cast["zhou_huoji"]["stance"]
-    assert stance["text"]["en"] == "Li Er broke the bridge railing last night, on purpose."
+    assert stance["text"]["en"] == "Li Er broke the bridge railing that night, on purpose."
     assert stance["kind"] == "told"  # the second and the third answers were about the bridge
 
 
@@ -232,7 +232,7 @@ def test_a_stance_the_player_overheard_says_so():
     stance = shopkeeper["stance"]
     assert stance["kind"] == "overheard" and stance["entry"] == "n1"
     assert stance["how"] == {"zh": "你在旁边听到的", "en": "You overheard them"}
-    assert stance["text"]["en"] == "Li Er broke the bridge railing last night."
+    assert stance["text"]["en"] == "Li Er broke the bridge railing that night."
     assert set(by_id(out["frame"])) == {"zhou_zhanggui", "zhou_huoji", "li_er"}
 
 

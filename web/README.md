@@ -2,7 +2,7 @@
 
 # web
 
-The web client of Lantern Eve holds the game page and the browser host. The page is a PixiJS map under a Preact interface, in Chinese and English, with a light and a dark theme. The browser host runs the Python core of the world in Pyodide, inside a module Web Worker. The same page can drive the server host instead, which runs the core under CPython. The page fetches nothing from outside its own origin except from the model provider the player picks.
+Lantern Eve's web client uses PixiJS for the map and Preact for the interface. It supports Chinese and English and light and dark themes. By default, a module Web Worker runs the Python core in Pyodide. The same page can connect to the CPython server host. The browser loads assets from the page's origin and sends model requests to the provider the player chooses.
 
 ## Commands
 
@@ -39,7 +39,7 @@ page (main thread)                    host worker (module worker)
                                           IndexedDB     saves
 ```
 
-With `?host=ws` in the URL the page ends its worker before the worker loads anything. `src/page/ws-source.ts` then stands in for the worker: `client.ts` sends it the same messages, and it passes them over a WebSocket to the server host.
+Add `?host=ws` to the URL to stop the worker before it loads resources. `client.ts` sends the same messages to `src/page/ws-source.ts`, which forwards them to the server host over WebSocket.
 
 ```
 page (main thread)                    server host (lantern-eve play)
@@ -50,7 +50,7 @@ page (main thread)                    server host (lantern-eve play)
                                           runs/         replays
 ```
 
-The page knows nothing about Pyodide. `src/shared/` is plain TypeScript that uses no browser globals beyond `fetch`, `AbortController`, `TextDecoder`, `indexedDB`, `performance` and timers, so the unit tests run it in Node against a stand-in `Game`. The server host keeps no saves. When the player picks a model there, the page answers with a notice and sends neither the provider nor the key. The messages between the page and a host are described in the docstring of [`host_server/lantern_eve/protocol.py`](../host_server/lantern_eve/protocol.py) and typed in `src/shared/protocol.ts`.
+The browser host owns Pyodide. The main thread receives frames from the host. The TypeScript in `src/shared/` uses `fetch`, `AbortController`, `TextDecoder`, `indexedDB`, `performance` and timers, so unit tests can use a stand-in `Game` in Node. The server host does not keep saves. When connected to it, the model picker shows a notice because the server configures its own provider and key. Message types live in `src/shared/protocol.ts`. See [`host_server/lantern_eve/protocol.py`](../host_server/lantern_eve/protocol.py) for the protocol.
 
 ## Where things are
 
@@ -66,7 +66,7 @@ The page knows nothing about Pyodide. `src/shared/` is plain TypeScript that use
 
 ## Tests
 
-`npm run test:unit` runs the project `unit`: plain TypeScript in Node, with no browser. `npm run test:e2e` builds the production page and a test build with the hooks the tests use, and runs both projects. The browser project, `chromium`, runs against the test build in `dist-e2e/` (`npm run build:e2e`). Its fixtures start the servers they need on free ports, so nothing has to be running first. Most browser tests drive the page with a fake host that feeds it frames made for the test. The ones that play the real core in Pyodide take longer. Run one file with `npx playwright test --project=chromium test/e2e/<file>`. The browser tests run one at a time by default (`workers: 1`), because some of them time how the page keeps the clock.
+`npm run test:unit` runs the `unit` project in Node. `npm run test:e2e` builds the production page and the page with test hooks, then runs both test projects. The `chromium` project opens the `dist-e2e/` build produced by `npm run build:e2e`. Fixtures start servers on free ports. Most browser tests use a fake host that sends prepared frames. Tests that run the real core in Pyodide take longer. Run one file with `npx playwright test --project=chromium test/e2e/<file>`. The browser project defaults to one worker (`workers: 1`) because some tests check the game clock.
 
 The browser specs are in two lists in `test/groups/`. `fake.txt` holds the specs that drive the page with a fake host, and `real.txt` those that play the real core, which take most of the time. Every spec of `test/e2e/` is in exactly one of them. Each list is cut into parts that take about the same time on the two cores of a CI runner (`fake-1.txt`, `fake-2.txt`, ..., `real-1.txt`, ...), and CI runs one part in each job, with the unit project in the first part of `fake`. The parts of `fake` run two specs at a time, one to a core of the runner, and the parts of `real` one at a time. The specs are not split by count, because the ones that play whole games take many times as long as the rest. To run a list or a part, pass its files to Playwright:
 
@@ -76,7 +76,12 @@ npx playwright test --project=chromium $(sed 's|^|test/e2e/|' test/groups/real-1
 
 A new spec goes into one list and into the part with the least time. Every spec must be in one list, each list must be the sum of its parts, and the workflow must run every part, or `test/unit/groups.spec.ts` fails.
 
-The limits in the tests are those of a development machine. `LANTERN_TIME_SCALE` stretches all of them by one factor, which CI sets (in `.github/workflows/ci.yml`) for its two slower cores: the limit of a test, that of an expectation and of an action, and each limit a test sets for itself with `test.setTimeout`. Apart from that, a test must not depend on the speed of the machine. The game keeps its own pace, so a test cannot count on the page catching up with the game. A test that needs a quiet world turns the hints off (`lantern.hints` in `localStorage`), since the elder comes by when nothing has moved for 600 ticks. A test that needs the world to stand still at a moment that lasts a few seconds lets the host hold it at a tick (`?until=`). A test that walks the manager to a person who is at hand for a few hours of the game runs the game at a pace of 1 or less. A game that is left to run meets the card of its first night after some 2300 ticks, which holds the world and keeps the card of a job waiting behind it. At a pace of 20 that is twelve seconds, so a test that waits for a card of its own runs the game at a pace of 2 or less. What the page shows for a few seconds and then takes away has to be read in one call or kept longer. A show of the camera (a moment of the festival, the festival night) lasts a few seconds of the page's clock too, and a page that draws two frames a second on two cores takes longer than that to answer a step of a test, so a test opens the page with `showclock=manual` and moves the clock of the shows by hand (`advance` in `test/support/festival.ts`). The page folds the note of the slip a few frames after a talk begins, and on two cores a few frames take a second, so a test that needs the note open waits for the frames of the page and not for a number of milliseconds (`openTheNote` in `test/support/note.ts`). A test that looks at the figures of the map at set times sets the clock of the map and draws the map once at each look (`view.clock` and `view.redraw()`), since a page that draws two frames a second shows every figure at the same beat. The words of a note go after five seconds, so a test reads them in both languages in one call (`textsInBothLanguages`). A signal that a hint lights goes out after nine seconds, so a test lights it again before it looks (`relight` in `test/support/slice.ts`). A timer of any other length is stretched (`stretchTimer`). Where the menu is not what is tested, the language and the theme are chosen by a click in the page (`switchLang`, `switchTheme`).
+`LANTERN_TIME_SCALE` applies one multiplier to test, assertion and action timeouts, including overrides set with `test.setTimeout`. The workflow sets it in `.github/workflows/ci.yml` for the slower two-core CI runners. When a test needs a specific game moment, control the relevant clock directly.
+
+- Use `?until=` to stop at a chosen tick. Turn off `lantern.hints` in `localStorage` if the test needs a quiet world. With hints on, the elder comes by after 600 idle ticks.
+- Use a pace of 1 or less to reach a character who is available for only a few game hours. The first night recap appears after about 2300 ticks and holds the game, including later task cards. It arrives in roughly twelve seconds at pace 20. Use pace 2 or less when waiting for a specific card.
+- Camera shows last a few seconds on the page clock. On a two-core runner, the page may draw only two frames per second. Use `showclock=manual` and `advance` from `test/support/festival.ts` to move the show clock. For map figures at a particular time, set `view.clock` and call `view.redraw()`. Use `openTheNote` from `test/support/note.ts` to wait on rendered frames when reading the red slip as a conversation starts.
+- A note disappears after five seconds. Use `textsInBothLanguages` to read both languages in one call. A hint signal expires after nine seconds. Use `relight` from `test/support/slice.ts` just before checking it. Use `stretchTimer` for other timers and `switchLang` or `switchTheme` to set the language or theme when the menu is outside the test's scope.
 
 ## Keys
 

@@ -371,7 +371,7 @@ def test_asking_who_told_them_walks_the_madams_version_back_to_what_the_clerk_sa
     out = act(game, "ask_source", entry="n1")
     first, second = out["frame"]["notebook"]
     assert chain(first) == ["cha_laoban", "zhou_huoji"]  # he says he saw it, and he saw this much
-    assert second["id"] == "n2" and second["text"]["en"] == "Li Er was at the bridge last night."
+    assert second["id"] == "n2" and second["text"]["en"] == "Li Er was at the bridge that night."
     assert first["marks"] == ["unsupported"]  # the tutorial's, and nothing of the madam's words
     out = act(game, "judge", a="n2", b="n1", relation="mismatch")  # until the manager says so
     assert [(r, why) for r, why in acks(out)] == [("applied", None)]
@@ -612,7 +612,7 @@ def test_at_dawn_granny_li_refuses_and_names_the_rumour_and_the_managers_silence
     assert words in voices.variants("li_laotai", RUMOUR_LINE)
     assert words not in voices.variants("li_laotai", "hard_hc_li_bamboo")
     assert any(
-        "一声不吭" in v["zh"] and "老二" in v["zh"]
+        "没替我们说" in v["zh"] and "老二" in v["zh"]
         for v in voices.variants("li_laotai", RUMOUR_LINE)
     )
     assert persuade.refusal(state_of(game), "hc_li_bamboo") == RUMOUR_LINE

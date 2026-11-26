@@ -2,7 +2,7 @@
 
 # web
 
-这是灯会前夕的网页客户端，里面有游戏页面和浏览器宿主。页面是一张 PixiJS 画的地图，上面是 Preact 写的界面，有中英两种语言和深浅两套主题。浏览器宿主在一个模块 Web Worker 里，用 Pyodide 跑 Python 写的世界核心。同一个页面也可以改由服务端宿主来驱动，服务端宿主用 CPython 跑核心。页面只从自己的源取东西，玩家选的模型提供方除外。
+《灯会前夕》的网页客户端用 PixiJS 绘制地图，用 Preact 显示界面，支持中英文和深浅主题。默认宿主是模块 Web Worker，核心由 Pyodide 运行。页面也能连接运行 CPython 的服务端宿主。浏览器从页面所在的源加载资源，模型请求发往玩家选择的提供方。
 
 ## 命令
 
@@ -39,7 +39,7 @@ npm run csp          # 打印内容安全策略
                                           IndexedDB     存档
 ```
 
-地址里带上 `?host=ws`，页面会在 worker 加载任何东西之前把它停掉。这时由 `src/page/ws-source.ts` 顶替 worker。`client.ts` 照旧给它发消息，它再把消息经 WebSocket 转给服务端宿主。
+在地址中加 `?host=ws`，页面会在 worker 加载资源前终止它。`client.ts` 将同样的消息交给 `src/page/ws-source.ts`，再经 WebSocket 发给服务端宿主。
 
 ```
 页面（主线程）                        服务端宿主（lantern-eve play）
@@ -50,7 +50,7 @@ npm run csp          # 打印内容安全策略
                                           runs/         录像
 ```
 
-页面完全不碰 Pyodide。`src/shared/` 是纯 TypeScript，浏览器的全局对象只用 `fetch`、`AbortController`、`TextDecoder`、`indexedDB`、`performance` 和定时器，所以单元测试能在 Node 里拿一个替身 `Game` 来跑它。服务端宿主不存档。在服务端宿主上选模型，页面只回一条提示，提供方和密钥都不会发过去。页面和宿主之间有哪些消息，写在 [`host_server/lantern_eve/protocol.py`](../host_server/lantern_eve/protocol.py) 的文档字符串里，类型定义在 `src/shared/protocol.ts`。
+Pyodide 由浏览器宿主管理，主线程只收宿主的帧。`src/shared/` 使用 TypeScript，所用的浏览器全局对象有 `fetch`、`AbortController`、`TextDecoder`、`indexedDB`、`performance` 和定时器。单元测试在 Node 中用替身 `Game` 运行这部分代码。服务端宿主不保存进度。连接服务端宿主时，页面的模型选择只显示提示，模型提供方和密钥由服务端配置。消息类型见 `src/shared/protocol.ts`，协议说明见 [`host_server/lantern_eve/protocol.py`](../host_server/lantern_eve/protocol.py)。
 
 ## 各目录里有什么
 
@@ -66,7 +66,7 @@ npm run csp          # 打印内容安全策略
 
 ## 测试
 
-`npm run test:unit` 跑 `unit` 项目，也就是在 Node 里跑纯 TypeScript，不开浏览器。`npm run test:e2e` 先构建生产版页面和带测试钩子的测试版，再把两个项目都跑一遍。浏览器项目 `chromium` 跑在 `dist-e2e/` 里的测试版上（`npm run build:e2e`）。它的夹具会在空闲端口上自己起服务器，事先不用开着什么。多数浏览器测试用替身宿主驱动页面，替身宿主喂给页面的是为测试做好的帧。在 Pyodide 里跑真核心的那些测试要久一些。只跑一个文件，用 `npx playwright test --project=chromium test/e2e/<文件>`。浏览器测试默认一次只跑一个（`workers: 1`），因为有些测试要量页面的时钟走得准不准。
+`npm run test:unit` 在 Node 里跑 `unit` 项目。`npm run test:e2e` 构建生产版和带测试钩子的测试版，再跑单元测试和浏览器测试。`chromium` 项目打开 `npm run build:e2e` 构建到 `dist-e2e/` 的页面，测试夹具会自行在空闲端口上启动服务。多数测试用替身宿主发预制帧，另一些通过 Pyodide 跑真实核心，需要更长时间。可以用 `npx playwright test --project=chromium test/e2e/<文件>` 单跑一个文件。部分用例会核对游戏时钟，因此浏览器默认逐个跑用例（`workers: 1`）。
 
 浏览器 spec 分在 `test/groups/` 的两张清单里。`fake.txt` 列的是用替身宿主驱动页面的 spec。`real.txt` 列的是跑真核心的 spec，大部分时间都花在它们身上。`test/e2e/` 里的每个 spec 都在其中一张清单里，而且只在一张里。每张清单又切成几份，每份在 CI 运行机的两个核上用时差不多（`fake-1.txt`、`fake-2.txt`……`real-1.txt`……）。CI 的每个任务跑一份，单元测试跟着 `fake` 的第一份一起跑。`fake` 的每一份一次跑两个 spec，每个核一个。`real` 的每一份一次只跑一个。清单不按个数来切，因为跑整局游戏的 spec 比别的要久好几倍。要跑一张清单或其中一份，就把里面的文件交给 Playwright。
 
@@ -76,7 +76,12 @@ npx playwright test --project=chromium $(sed 's|^|test/e2e/|' test/groups/real-1
 
 新加的 spec 放进一张清单，再放进用时最少的那一份。每个 spec 都得进一张清单，每张清单得正好等于它各份之和，工作流也得把每一份都跑到。有一条没做到，`test/unit/groups.spec.ts` 就会失败。
 
-测试里的时间上限是照开发机定的。`LANTERN_TIME_SCALE` 把这些上限按同一个倍数放宽。CI 的运行机只有两个较慢的核，所以 `.github/workflows/ci.yml` 里设了它。放宽的上限包括一个测试的上限、一次断言的上限、一个动作的上限，以及测试用 `test.setTimeout` 给自己定的上限。除此之外，测试不能靠机器的快慢。游戏按自己的节奏走，测试不能指望页面追得上游戏。测试要是需要世界安安静静，就把提示关掉（`localStorage` 里的 `lantern.hints`），不然 600 拍里什么都没动，族长就会找上门来。有的时刻只持续几秒，测试要在那一刻看，就让宿主把世界停在那一拍（`?until=`）。测试要把总管领到一个人面前，而这个人只在游戏里的几个钟头内找得到，就让游戏以 1 或更慢的节奏跑。放着不管的游戏跑过大约 2300 拍，就到第一夜的夜里小结卡。这张卡把世界停住，一件事办成时的卡要排在它后面。节奏为 20 时这只要十二秒，所以测试要等自己那张卡，就让游戏以 2 或更慢的节奏跑。页面只亮几秒就收走的东西，要么一次读完，要么让它留得更久。镜头的演出（节日里的一个时刻、灯会夜）也只占页面时钟的几秒，而两个核上的页面每秒只画两帧，答复测试的一步就比这更久，所以测试用 `showclock=manual` 打开页面，手动拨动演出的时钟（`test/support/festival.ts` 里的 `advance`）。页面在谈话开始后过几帧才把红签的纸条折起来，两个核上几帧就是一秒，所以测试要纸条开着，就等页面的帧，不等几毫秒（`test/support/note.ts` 里的 `openTheNote`）。测试要在定好的时刻看地图上的人，就自己设地图的时钟，每看一次画一次地图（`view.clock` 和 `view.redraw()`），因为每秒只画两帧的页面会让所有的人在同一拍上变样。便条五秒后消失，所以测试用 `textsInBothLanguages` 一次读出它的两种语言。提示点亮的信号九秒后就熄，所以测试要先把它再点亮一次，再去看（`test/support/slice.ts` 里的 `relight`）。别的长度的计时器用 `stretchTimer` 放长。不是测菜单的地方，语言和主题用页面里的一次点击来选（`switchLang`、`switchTheme`）。
+`LANTERN_TIME_SCALE` 按同一倍数放宽测试、断言、操作和 `test.setTimeout` 的超时上限。`.github/workflows/ci.yml` 为较慢的双核运行机设置了这个值。需要卡在游戏里某个时刻时，直接控制对应的时钟。
+
+- 想停在指定拍，用 `?until=`。用例需要镇上暂时安静时，可关掉 `localStorage` 里的 `lantern.hints`。开启提示时，闲置 600 拍后族长会来问一声。
+- 要找只在几个游戏小时内出现的人，把节奏设为 1 或更慢。第一夜的小结约在 2300 拍出现，会暂停游戏并挡住后续完成卡。节奏为 20 时约十二秒就能到这一拍。等待单独一张任务卡时，可以把节奏降到 2 或更慢。
+- 镜头只在页面上停留几秒。双核运行机有时每秒只画两帧。用 `showclock=manual` 和 `test/support/festival.ts` 的 `advance` 推进演出时钟。要在指定时刻查地图人物，设置 `view.clock` 后调用 `view.redraw()`。谈话刚开始时要读红签，用 `test/support/note.ts` 的 `openTheNote` 等绘制帧。
+- 便条五秒后会消失，可以用 `textsInBothLanguages` 一次读完两种语言。提示信号亮九秒，查之前可以用 `test/support/slice.ts` 的 `relight` 再点亮。其他计时器可用 `stretchTimer` 延长。用例与菜单无关时，可以用 `switchLang`、`switchTheme` 直接在页面上切换语言和主题。
 
 ## 密钥
 

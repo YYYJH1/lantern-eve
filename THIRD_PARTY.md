@@ -2,9 +2,9 @@
 
 # Third-party components
 
-The game is under the MIT licence (`LICENSE`). The built site at https://yyyjh1.github.io/lantern-eve/ also carries the components below, each under its own licence. The site holds their licence texts in `licenses/` (the npm packages, Pyodide and Python) and beside each font (`OFL.txt`). The pictures of the town and the paper edges are drawn by this repository's own tools (`tools/sprite-kit`, `tools/ink_ui`), and the page makes its sounds itself with Web Audio, so the site carries no recording.
+The game is released under the [MIT licence](LICENSE). The website carries the components listed below. Licence files for npm packages, Pyodide and Python are under `licenses/`. Each font has its own `OFL.txt`. The repository's `tools/sprite-kit` and `tools/ink_ui` produce the town art and paper edges. The page synthesizes its sounds with Web Audio.
 
-## Scripts of the page
+## Web dependencies
 
 | Package | Version | Licence | Used for | Source |
 |---|---|---|---|---|
@@ -22,7 +22,7 @@ The game is under the MIT licence (`LICENSE`). The built site at https://yyyjh1.
 | `@types/earcut` | 3.0.0 | MIT | types only, not in the scripts | https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/earcut |
 | `@webgpu/types` | 0.1.74 | BSD-3-Clause | types only, not in the scripts | https://github.com/gpuweb/types |
 
-The versions are the ones pinned in `web/package-lock.json`, and `tests/test_third_party.py` fails when a package that the page depends on is missing from this table or listed with another version. The five packages marked as not in the scripts are installed with PixiJS and left out of the bundle, and their licence texts are in `licenses/npm/` all the same. A few lines of the module preload helper of Vite (MIT) are in the main script, and the other build tools are not part of the site.
+Versions come from `web/package-lock.json` and are checked by `tests/test_third_party.py`. The five optional or type-only packages installed with PixiJS ship with their licences. The main script includes Vite's module preload helper (MIT).
 
 ## Python runtime
 

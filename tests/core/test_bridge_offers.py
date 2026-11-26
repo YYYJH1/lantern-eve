@@ -103,7 +103,7 @@ def test_the_ways_of_telling_offered_for_an_entry_are_those_that_differ_from_the
     label = by_id[f"{heard['id']}:as_seen"]["label"]
     assert label["zh"].startswith("说成我亲眼看见的：")
     assert label["en"].startswith("Say I saw it myself")
-    assert by_id[f"{heard['id']}:faithful"]["label"]["zh"].startswith("照实说：")
+    assert by_id[f"{heard['id']}:faithful"]["label"]["zh"].startswith("照原话说：")
 
 
 def test_the_ways_of_telling_are_named_in_the_list_as_the_page_names_them():

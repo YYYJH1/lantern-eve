@@ -126,7 +126,7 @@ test.describe("a task that cannot be followed", () => {
   test("tells why the followed task is the one it is, for a task that came of the last one finishing, and says nothing for the player's own pick", async ({ lantern }) => {
     const page = lantern.page;
     await fake.openFirstDay(lantern);
-    const reason = { zh: "「借到李家的第一批竹料」办成了，接着办「李二那晚为什么在桥边？」", en: "“Get the first load of bamboo from the Li family” is done. Now on to “Why was Li Er by the bridge that night?”" };
+    const reason = { zh: "「借到李家的第一批竹料」办成了。接着办「李二那晚为什么在桥边？」", en: "“Get the first load of bamboo from the Li family” is done. Next is “Why was Li Er by the bridge that night?”" };
     await fake.feedFrame(page, fake.tasks("t_source"), [{ kind: "task_changed", tick: 7, from: "t_bamboo_first", to: "t_source", cause: "chosen", reason }]);
     await expect(page.getByTestId("task-changed")).toHaveCount(0);
     await fake.feedFrame(page, fake.tasks("t_source"), [{ kind: "task_changed", tick: 8, from: "t_bamboo_first", to: "t_source", cause: "done", reason }]);
@@ -178,15 +178,15 @@ test.describe("a reply that sends the player to somebody", () => {
     const lead = page.getByTestId("lead");
     await expect(lead).toHaveCount(1);
     await expect(lead).toContainText("Zhou Erlang");
-    await expect(lead).toContainText("Granny Li sent you");
+    await expect(lead).toContainText("Suggested by Granny Li");
     // The talk folded the note of the slip, and the player opens it to follow the lead.
     await openTheNote(page);
     await lead.getByTestId("lead-go").click();
     // The player is in a talk, so the walk waits: the button is the same as the card's, and does nothing a talk would refuse.
     await lantern.setLang("zh");
     await expect(page.getByTestId("talk-line").last().getByTestId("pointer")).toHaveText("周家二郎");
-    await expect(lead).toContainText("李老太让你去问");
-    await expect(lead.getByTestId("lead-go")).toHaveText("去找这个人");
+    await expect(lead).toContainText("李老太指的人");
+    await expect(lead.getByTestId("lead-go")).toHaveText("去找");
     // The same person pointed to again is the same lead.
     await page.getByTestId("talk-line").last().getByTestId("pointer").click();
     await expect(page.getByTestId("lead")).toHaveCount(1);

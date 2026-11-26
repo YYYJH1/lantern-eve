@@ -31,7 +31,7 @@ test.describe("the task card", () => {
         await expect(card.locator(".slip-head").getByTestId("task-state")).toHaveText(w.state);
         await expect(card.getByTestId("task-why")).toHaveText(w.why);
         await expect(card.getByTestId("task-next")).toHaveText(w.next);
-        await expect(card.getByTestId("task-blocker")).toHaveText(`${lang === "zh" ? "卡住了，" : "In the way: "}${BLOCKER[lang]}`);
+        await expect(card.getByTestId("task-blocker")).toHaveText(`${lang === "zh" ? "眼下还办不了。" : "On hold. "}${BLOCKER[lang]}`);
         await expect(card.getByTestId("task-window")).toHaveText(w.when);
         await expect(card.getByTestId("task-do")).toHaveText(w.button);
         for (const selector of ['[data-testid="task-text"]', '[data-testid="task-why"]', '[data-testid="task-do"]', '[data-testid="task-blocker"]']) {
@@ -108,10 +108,10 @@ test.describe("the task card", () => {
     await expect(page.getByTestId("task-text")).toHaveText("Get the first load of bamboo from the Li family");
     await expect(page.getByTestId("task-card")).toHaveAttribute("data-id", "t_bamboo_first");
     await fake.feedFrame(page, fake.tasks(null));
-    await expect(page.getByTestId("task-text")).toHaveText("Nothing chosen yet. Pick one of the tasks below.");
+    await expect(page.getByTestId("task-text")).toHaveText("Pick a task below to show it on the red slip.");
     await expect(page.getByTestId("task-more").locator("summary")).toHaveText("4 more");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("task-text")).toHaveText("还没选要办的事，从下面挑一件。");
+    await expect(page.getByTestId("task-text")).toHaveText("在下面选一件事，红签上就会记下这件事。");
   });
 });
 
@@ -154,7 +154,7 @@ test.describe("what was promised to the player", () => {
     await expect(card.getByTestId("commitment-state")).toHaveText("not kept");
     expect(await lantern.textsInBothLanguages("game-note")).toMatchObject({
       en: "Li Da did not keep a promise: Bring 4 poles of bamboo to the Stone Bridge. The heavy rain kept the goods off the road.",
-      zh: "李大失约了，没把四根竹料送到石桥。下大雨，货运不出来。",
+      zh: "李大没按约把四根竹料送到石桥。下大雨，货运不出来。",
     });
     await expect(card).toHaveAttribute("data-state", "broken");
     await expect(card.getByTestId("commitment-reason")).toHaveText("The heavy rain kept the goods off the road");
@@ -378,13 +378,13 @@ test.describe("the card of a person", () => {
     const card = page.getByTestId("person-card");
     await expect(card.getByTestId("person-find").locator("dd")).toHaveText("Teahouse, 09:00 to 20:00");
     await expect(card.getByTestId("card-talk")).toBeVisible();
-    await expect(card.getByTestId("person-task")).toHaveText("Ask Zhou's Clerk who told them");
+    await expect(card.getByTestId("person-task")).toHaveText("Ask Zhou's Clerk who said it");
     await expect(card.getByTestId("person-task")).toHaveAttribute("data-verb", "ask_source");
     await card.getByTestId("person-task").click();
     // The talk is asked for first: the player is far, and walks up.
     await expect.poll(() => page.evaluate(() => window.__lantern.play.state.approach?.npc)).toBe("zhou_huoji");
     await lantern.setLang("zh");
-    await expect(card.getByTestId("person-task")).toHaveText("问周家伙计听谁说的");
+    await expect(card.getByTestId("person-task")).toHaveText("问周家伙计这话是谁说的");
     await lantern.setLang("en");
     // Li Er has no task, no promise and nothing learned: the card is what it was before the slice.
     await pickOnMap(lantern, "li_er");
@@ -405,7 +405,7 @@ test.describe("the card of a person", () => {
     await pickOnMap(lantern, "li_laotai");
     const card = page.getByTestId("person-card");
     await expect(card.getByTestId("person-task")).toHaveCount(2);
-    await expect(card.getByTestId("person-task")).toHaveText(["Ask Granny Li", "Ask Granny Li who told them"]);
+    await expect(card.getByTestId("person-task")).toHaveText(["Ask Granny Li", "Ask Granny Li who said it"]);
     await expect(card.getByTestId("person-task").first()).toHaveAttribute("data-id", "t_bamboo_first");
     // The one button does what the task says.
     await fake.recordSent(page);

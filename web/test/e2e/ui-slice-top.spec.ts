@@ -136,9 +136,9 @@ test.describe("the speed of the day", () => {
     // A new visit has the choice again.
     await lantern.open(fake.TOWN, { menu: true });
     await expect(page.getByTestId("speed-slow")).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByTestId("speed-switch")).toHaveAttribute("title", /three minutes of daylight/);
+    await expect(page.getByTestId("speed-switch")).toHaveAttribute("title", "Daylight lasts about three minutes at normal speed and four at slow speed.");
     await lantern.setLang("zh");
-    await expect(page.getByTestId("speed-switch")).toHaveAttribute("title", /白天大约三分钟/);
+    await expect(page.getByTestId("speed-switch")).toHaveAttribute("title", "常速的白天约三分钟，慢速约四分钟。");
     expect(lantern.pageErrors).toEqual([]);
   });
 });
@@ -159,7 +159,7 @@ test.describe("the budget", () => {
     await page.getByTestId("btn-menu").click();
     await expect(page.getByTestId("budget")).toHaveAttribute("data-stage", "1");
     await expect(page.getByTestId("budget-gauge")).toHaveAttribute("data-used", "73");
-    await expect(page.getByTestId("budget-notes")).toContainText("so the strong model is off");
+    await expect(page.getByTestId("budget-notes")).toContainText("Spending and reservations have reached 70% of the budget.");
     await expect(page.getByTestId("stat-cost")).toContainText("¥2.20");
     // And in Chinese, with the note in Chinese too.
     await page.getByTestId("menu-close").click();

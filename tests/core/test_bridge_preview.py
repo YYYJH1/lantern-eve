@@ -128,8 +128,8 @@ def test_a_preview_works_outside_a_talk_and_says_that_nobody_is_talking():
     game = slice_game()
     got = look(game, verb="entrust", npc="li_laotai", kind="lend")
     assert set(got) == SHAPE
-    assert any("还没说上话" in b["zh"] for b in got["blockers"])
-    assert got["blockers"][0]["en"].startswith("You are not talking to Granny Li")
+    assert any("先和对方说上话" in b["zh"] for b in got["blockers"])
+    assert got["blockers"][0]["en"] == "Start a conversation with Granny Li first"
 
 
 # ------------------------------------------------------------------------------ the shape
@@ -194,15 +194,19 @@ def test_the_first_request_for_the_bamboo_names_the_obstacle_and_gives_low_odds(
     assert got["asks"] == offers.request_label("li_laotai", {"kind": "lend"})
     assert got["asks"]["en"] == "Ask Granny Li to lend the bamboo for the bridge"
     assert got["gives"] is None and got["odds"] == "low"
-    assert [b["en"] for b in got["blockers"]] == ["Granny Li will not give way yet"]
+    assert [b["en"] for b in got["blockers"]] == ["Granny Li won't agree to it yet"]
     # after she has said no, the preview names the obstacle the manager was told of and what to do
     assert acks(act(game, "entrust", kind="lend")) == [("rejected", "hard")]
     again = look(game, verb="entrust", npc="li_laotai", kind="lend")
     assert [b["en"] for b in again["blockers"]] == [
-        "The Li family will not give the bamboo. Find out who started that talk.",
+        "The Li family won't lend the bamboo. Find out what Granny Li heard, "
+        "then follow the story back from person to person.",
         "Granny Li has answered this already",
     ]
-    assert again["blockers"][0]["zh"] == "李家不肯给竹料。问清这话是谁先说的。"
+    assert (
+        again["blockers"][0]["zh"]
+        == "李家不肯借竹料。弄清李老太听到的是哪句话，再顺着传话的人问回去。"
+    )
     assert again["odds"] is None
 
 
@@ -249,7 +253,7 @@ def test_a_promise_the_manager_cannot_keep_is_an_empty_one_and_a_promise_held_is
     held = look(game, verb="promise", npc="li_laotai", op="make", what="stall", item="front")
     assert held["blockers"] == [] and held["odds"] is None and held["reasons"][0]["sign"] == 1
     empty = look(game, verb="promise", npc="li_laotai", op="make", what="wage", amount=999)
-    assert [b["en"] for b in empty["blockers"]] == ["You hold nothing like that to promise"]
+    assert [b["en"] for b in empty["blockers"]] == ["You don't have that to offer"]
     kept = look(game, verb="promise", npc="li_laotai", op="keep", id="k9")
     assert [b["en"] for b in kept["blockers"]] == ["There is no such promise"]
 
@@ -472,11 +476,11 @@ def test_the_version_is_part_of_the_normalized_action_that_a_recording_keeps():
 LI_DA_MATERIAL = {"verb": "entrust", "npc": "li_da", "kind": "material"}
 GAPS_EN = {
     "needs_nod": (
-        "Li Da will not move until Granny Li no longer stands in the way. "
+        "Li Da is waiting for Granny Li's approval. "
         "First set the talk about Li Er straight in public"
     ),
-    "unaware": "Li Da has not heard that it was cleared up in public. Go and tell Li Da",
-    "distrust": "Li Da does not trust you enough to be asked yet",
+    "unaware": ("The rumour was cleared up in public, but Li Da hasn't heard. Go and tell Li Da"),
+    "distrust": "Li Da doesn't trust you enough to agree yet",
 }
 ASKS_EN = "Ask Li Da to bring the bamboo to the bridge"
 SCRIPT_TASK_TEXT = {task["id"]: task["text"] for task in SCRIPT["tasks"]}
@@ -524,8 +528,8 @@ def test_a_blocker_the_manager_can_clear_says_what_to_do_in_the_words_of_the_sli
     game = with_li_da()
     got = look(game, **LI_DA_MATERIAL)["blockers"]
     # the task that sets the talk straight is worded the same: 把李二的事当众说清
-    assert got[0]["zh"] == "李大要等李老太松口才肯答应。先把李二的事当众说清"
-    assert got[1]["zh"] == "李大还没听说那话已经当众说清了。去告诉李大一声"
+    assert got[0]["zh"] == "把李二的事当众说清，等李老太点了头，李大才能答应"
+    assert got[1]["zh"] == "李大没听说那句闲话已经说清了，先把当时讲的话转告李大"
     assert SCRIPT_TASK_TEXT["t_clear_rumour"]["zh"] in got[0]["zh"]
     assert SCRIPT_TASK_TEXT["t_clear_rumour"]["en"].lower() in got[0]["en"].lower()
 
@@ -551,8 +555,8 @@ def test_the_preview_of_the_bamboo_says_when_it_would_come_when_the_goods_are_pr
     before, snapshot = game.hash(), game.snapshot_json()
     got = look(game, **LI_DA_MATERIAL)
     assert got["asks"] == {
-        "zh": "请李大把竹料送到桥边。要是答应，明早07:00前先送四根。",
-        "en": f"{ASKS_EN}. If Li Da agrees, 4 poles come by 7 tomorrow morning.",
+        "zh": "请李大把竹料送到桥边。要是答应了，明早07:00前先送四根。",
+        "en": f"{ASKS_EN}. If Li Da agrees, they'll bring 4 poles by 7 tomorrow morning.",
     }
     assert game.hash() == before and game.snapshot_json() == snapshot  # it only read
     # what it says is what the yes makes: the batch the script gives, due at seven the next morning
@@ -564,8 +568,8 @@ def test_the_preview_of_the_bamboo_says_when_it_would_come_when_the_goods_are_pr
     assert again["asks"]["en"] == ASKS_EN
     assert again["blockers"] == [
         {
-            "zh": "李大已经答应了，明早07:00前送四根竹料",
-            "en": "Li Da has promised already: 4 poles of bamboo, by 7 tomorrow morning",
+            "zh": "李大已经答应明早07:00前送四根竹料",
+            "en": "Li Da has already promised to bring 4 poles of bamboo by 7 tomorrow morning",
         }
     ]
 
@@ -574,8 +578,8 @@ def test_before_three_o_clock_the_goods_would_come_the_same_day():
     game = with_li_da(10, 20)
     let_li_da_be_asked(game)
     got = look(game, **LI_DA_MATERIAL)
-    assert got["asks"]["en"] == f"{ASKS_EN}. If Li Da agrees, 4 poles come by 13:00 today."
-    assert got["asks"]["zh"] == "请李大把竹料送到桥边。要是答应，今天13:00前先送四根。"
+    assert got["asks"]["en"] == f"{ASKS_EN}. If Li Da agrees, they'll bring 4 poles by 13:00 today."
+    assert got["asks"]["zh"] == "请李大把竹料送到桥边。要是答应了，今天13:00前先送四根。"
 
 
 def test_the_goods_would_come_counting_from_the_end_of_the_act_and_so_the_promise_does():
@@ -586,8 +590,8 @@ def test_the_goods_would_come_counting_from_the_end_of_the_act_and_so_the_promis
     now = clock.at(game.tick)
     assert (now.hour, now.minute // 10) == (10, 5) and commitments.due_of(now) == (1, 13)
     got = look(game, **LI_DA_MATERIAL)
-    assert got["asks"]["en"] == f"{ASKS_EN}. If Li Da agrees, 4 poles come by 14:00 today."
-    assert got["asks"]["zh"] == "请李大把竹料送到桥边。要是答应，今天14:00前先送四根。"
+    assert got["asks"]["en"] == f"{ASKS_EN}. If Li Da agrees, they'll bring 4 poles by 14:00 today."
+    assert got["asks"]["zh"] == "请李大把竹料送到桥边。要是答应了，今天14:00前先送四根。"
     before, snapshot = game.hash(), game.snapshot_json()
     look(game, **LI_DA_MATERIAL)
     assert game.hash() == before and game.snapshot_json() == snapshot  # it only read
@@ -603,8 +607,11 @@ def test_a_request_that_is_over_after_three_o_clock_would_bring_the_goods_the_ne
     now = clock.at(game.tick)
     assert (now.hour, now.minute // 10) == (14, 5) and commitments.due_of(now) == (1, 17)
     got = look(game, **LI_DA_MATERIAL)
-    assert got["asks"]["en"] == f"{ASKS_EN}. If Li Da agrees, 4 poles come by 7 tomorrow morning."
-    assert got["asks"]["zh"] == "请李大把竹料送到桥边。要是答应，明早07:00前先送四根。"
+    assert (
+        got["asks"]["en"]
+        == f"{ASKS_EN}. If Li Da agrees, they'll bring 4 poles by 7 tomorrow morning."
+    )
+    assert got["asks"]["zh"] == "请李大把竹料送到桥边。要是答应了，明早07:00前先送四根。"
     assert acks(act(game, "entrust", kind="material")) == [("applied", None)]
     (row,) = state_of(game)[commitments.SECTION]["list"]
     assert row["due"] == {"day": 2, "hour": 7}
@@ -622,7 +629,7 @@ def test_what_is_still_owed_counts_too_when_the_goods_are_asked_for_while_it_is_
     alone = clock.at(game.tick + 2 * pace.minutes("entrust"))
     assert commitments.due_of(alone) == (1, 13)
     got = look(game, **LI_DA_MATERIAL)
-    assert got["asks"]["en"].endswith("4 poles come by 14:00 today.")
+    assert got["asks"]["en"].endswith("they'll bring 4 poles by 14:00 today.")
     assert acks(act(game, "entrust", kind="material")) == [("applied", None)]
     (row,) = state_of(game)[commitments.SECTION]["list"]
     assert row["due"] == {"day": 1, "hour": 14}
@@ -642,4 +649,4 @@ def test_the_timber_is_promised_whole_and_the_preview_of_it_says_so():
     run_to(game, at(1, 18, 20))
     meet(game, "zhou_zhanggui")
     got = look(game, verb="entrust", npc="zhou_zhanggui", kind="material")
-    assert got["asks"]["en"].endswith("agrees, 8 poles come by 7 tomorrow morning.")
+    assert got["asks"]["en"].endswith("agrees, they'll bring 8 poles by 7 tomorrow morning.")

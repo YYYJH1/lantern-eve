@@ -5,7 +5,7 @@ id: broken_bridge
 label: 断桥
 days: 5
 truth_fixed_at: 0
-summary: 秋汛后石桥栏杆塌了一段，游灯路线过不去，李、周两家互相指责。
+summary: 秋汛过去没多久，游灯必经的石桥便塌了一截栏杆。灯会还没开，李、周两家已经吵起来了，都说桥是对方弄坏的。
 
 cast:
   - fam_li
@@ -143,7 +143,7 @@ observations:
     in: all
   - id: obs_watermark
     kind: misleading
-    label: 桥墩上留着高水位的水痕
+    label: 桥墩上留着涨水时的水印
     shows: [pr_flooded]
     toward: [pr_flood_damaged]
     in: all
@@ -234,66 +234,66 @@ evidence:
     supports: [pr_boat_scratched]
     acquire: {from: t_he_boat, gatekeeper: old_he, min_trust: 15, daily: [480, 1020], minutes: 30}
   - id: e_xiaoman_testimony
-    label: 小满说，那晚看见船撞上了栏杆
-    label_en: "Xiaoman's word: a boat struck the railing that night"
+    label: 小满说，那晚看见一条船撞上栏杆
+    label_en: "Xiaoman's account: a boat struck the railing that night"
     supports: [pr_boat_damaged, pr_he_under_bridge, pr_xiaoman_riverbank]
     refutes: [pr_liner_damaged, pr_dalang_damaged]
     acquire: {from: xiao_man, gatekeeper: null, min_trust: 25, daily: [1020, 1260], since: 2880, minutes: 40}
   - id: e_repair_record
-    label: 账房的修船记录
-    label_en: "The accountant's record of the boat repair"
+    label: 账房记下的那笔修船账
+    label_en: "The boat repair entry in the accountant's ledger"
     supports: [pr_he_repaired]
     acquire: {from: t_repair_ledger, gatekeeper: zhangfang, min_trust: 30, daily: [540, 1020], since: 4320, minutes: 60}
   - id: e_flood_debris
-    label: 卡在桥墩上的上游断木
-    label_en: "Upstream driftwood caught on the pier"
+    label: 桥墩上卡着从上游冲下来的断木
+    label_en: "A broken piece of wood from upstream, wedged against the bridge pier"
     supports: [pr_flood_damaged, pr_flooded]
     refutes: [pr_boat_damaged, pr_dalang_damaged]
     acquire: {from: p_under_bridge, gatekeeper: null, min_trust: null, daily: [420, 1080], since: 2880, minutes: 40}
   - id: e_gengfu_flood
-    label: 更夫说，水头打上桥那会儿桥边没有人
-    label_en: "The night watchman's word: a surge of water hit the bridge and nobody was by it"
+    label: 更夫说，水冲上桥时，桥边没人
+    label_en: "The watchman says nobody was near the bridge when the water struck it"
     supports: [pr_flood_damaged, pr_gengfu_round]
     refutes: [pr_dalang_at_bridge, pr_liner_damaged]
     acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [900, 1380], since: 4320, minutes: 30}
   - id: e_gengfu_boat
-    label: 更夫说，桥下有个撑船的黑影
-    label_en: "The night watchman's word: a dark shape poling a boat under the bridge"
+    label: 更夫说，桥下有个影子在撑船
+    label_en: "The watchman says there was a figure with a boat pole under the bridge"
     supports: [pr_he_under_bridge, pr_gengfu_round]
     refutes: [pr_dalang_at_bridge]
     acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [900, 1380], since: 4320, minutes: 30}
   - id: e_he_lamp
     label: 庙祝说，老何家那晚的灯一直亮到半夜
-    label_en: "The temple keeper's word: a lamp burned at Boatman He's house until midnight"
+    label_en: "The temple keeper says a light was on at Boatman He's house until midnight"
     supports: [pr_he_home]
     refutes: [pr_he_under_bridge]
     acquire: {from: miaozhu, gatekeeper: null, min_trust: 20, daily: [480, 1080], since: 4320, minutes: 30}
   - id: e_dalang_home
     label: 周家伙计说，周家大郎那晚一回家就睡到了天亮
-    label_en: "The clerk's word: Zhou Dalang went home and slept until dawn"
+    label_en: "Zhou's Clerk says Zhou Dalang went straight to sleep when he got home and slept until dawn"
     supports: [pr_dalang_at_home]
     refutes: [pr_dalang_at_bridge]
     acquire: {from: zhou_huoji, gatekeeper: zhou_zhanggui, min_trust: 35, daily: [480, 1080], since: 2880, minutes: 45}
   - id: e_gengfu_dalang
     label: 更夫说，看见周家大郎醉醺醺地上了桥
-    label_en: "The night watchman's word: Zhou Dalang, drunk, walked onto the bridge"
+    label_en: "The watchman says Zhou Dalang staggered onto the bridge drunk"
     supports: [pr_dalang_at_bridge, pr_gengfu_round]
     refutes: [pr_he_under_bridge]
     acquire: {from: gengfu, gatekeeper: null, min_trust: 20, daily: [900, 1380], since: 4320, minutes: 30}
   - id: e_footprint
-    label: 断栏边带酒气的鞋印
-    label_en: "A shoeprint smelling of wine by the broken railing"
+    label: 断栏边的鞋印，近处能闻到酒气
+    label_en: "A shoeprint by the broken railing, with a smell of wine nearby"
     supports: [pr_dalang_at_bridge, pr_dalang_damaged]
     acquire: {from: t_rail, gatekeeper: null, min_trust: null, daily: [420, 1080], minutes: 20, until: 2880}
   - id: e_huoji_testimony
-    label: 周家伙计说，自己只讲过看见李二在桥边
-    label_en: "The clerk's word: I only said I saw Li Er by the bridge"
+    label: 周家伙计说，自己只告诉过别人李二在桥边
+    label_en: "Zhou's Clerk says Li Er was at the bridge and that's all the clerk told people"
     supports: [pr_liner_at_bridge, pr_liner_looking]
     refutes: [pr_liner_damaged, pr_li_damaged]
     acquire: {from: zhou_huoji, gatekeeper: zhou_zhanggui, min_trust: 30, daily: [480, 1080], minutes: 30, needs: [e_liner_testimony]}
   - id: e_liner_testimony
     label: 李二说，那晚是在找掉进水里的灯笼
-    label_en: "Li Er's word: I was looking for the lantern I dropped in the water"
+    label_en: "Li Er says he was looking for the lantern he dropped in the water that night"
     supports: [pr_liner_looking, pr_liner_at_bridge]
     refutes: [pr_liner_damaged, pr_li_damaged]
     acquire: {from: li_er, gatekeeper: li_laotai, min_trust: 25, daily: [480, 1080], minutes: 30}
@@ -542,13 +542,13 @@ tasks:
             any:
               - {kind: event, event: objection_withdrawn, where: {npc: li_laotai}}
               - {kind: event, event: entrusted, where: {npc: li_laotai, request: lend, result: agreed}}
-        zh: "李老太松口了。竹料归李大管。"
-        en: "Granny Li has given way. The bamboo is Li Da's to bring."
-      - {zh: "修桥的竹料在李家。", en: "The bamboo for the bridge is with the Li family."}
+        zh: "李老太点了头，接下来得问李大什么时候能把竹料送到桥边。"
+        en: "Granny Li has agreed. Ask Li Da when he can bring the bamboo to the bridge."
+      - {zh: "竹料在李家，得先问李老太肯不肯借。", en: "The Li family has the bamboo. Ask Granny Li if she'll lend it."}
     next:
       - when: [*promised]
-        zh: "按约好的时间去桥边，看竹料送到没有。"
-        en: "Be at the bridge at the agreed time and see the bamboo arrive."
+        zh: "到约好的时间，去桥边看看竹料到了没有。"
+        en: "Check for the bamboo at the bridge when it's due."
       - when: [*no_objection]
         zh: "请李大把第一批竹料送到桥边。"
         en: "Ask Li Da to bring the first load of bamboo to the bridge."
@@ -563,9 +563,9 @@ tasks:
               any:
                 - {kind: event, event: objection_withdrawn, where: {npc: li_laotai}}
                 - {kind: event, event: entrusted, where: {npc: li_laotai, request: lend, result: agreed}}
-        blocker: {zh: 李家不肯给竹料, en: The Li family will not give the bamboo}
-        why: {zh: "镇上都在传李二毁了桥。李老太怪你这个总管一声不吭。", en: "The town is saying Li Er broke the bridge. Granny Li is angry that you, the manager, have said nothing."}
-        next: {zh: "问清这话是谁先说的。", en: "Find out who started that talk."}
+        blocker: {zh: 李家不肯借竹料, en: The Li family won't lend the bamboo}
+        why: {zh: "李老太听见街坊把断栏的事怪到李二头上，想先听听总管怎么说。", en: "Granny Li heard the neighbours blame Li Er for the broken railing. She wants to hear what the Manager has to say first."}
+        next: {zh: "弄清李老太听到的是哪句话，再顺着传话的人问回去。", en: "Find out what Granny Li heard, then follow the story back from person to person."}
         action:
           - {verb: ask_source, npc: $frontier, follow: &rumour [pr_liner_damaged, pr_liner_damaged_on_purpose, pr_liner_damaged_jealous, pr_li_damaged, pr_li_damaged_on_purpose, pr_li_damaged_jealous]}
           - {when: [{not: {kind: note, props: *rumour}}], verb: ask, npc: li_laotai, item: li_er}
@@ -577,7 +577,7 @@ tasks:
                 - {kind: event, event: entrusted, where: {npc: li_laotai, request: lend, result: agreed}}
         blocker: {zh: 李老太还是不肯借竹料, en: Granny Li still will not lend the bamboo}
         why: {zh: "李老太要等李二的事当众说清了，才肯借。", en: "Granny Li will not lend it until the talk about Li Er is set straight in public."}
-        next: {zh: "先查清这句闲话是谁传的，再当众说清。", en: "Find out who spread the rumour, then set it straight in public."}
+        next: {zh: "顺着传话的人往回问，查清各人听见了什么，再当众说。", en: "Follow the story back and find out what each person heard before speaking in public."}
         action:
           - {verb: ask_source, npc: $frontier, follow: *rumour}
           - {when: [{not: {kind: note, props: *rumour}}, {kind: refused, npc: li_laotai, reason: hard_hc_li_bamboo_rumour}], verb: ask, npc: li_laotai, item: li_er}
@@ -588,17 +588,17 @@ tasks:
           - {not: {kind: passed_on, npc: li_da, props: [pr_set_straight]}}
           - {not: *promised}
         blocker: {zh: 李大还不知道那句闲话已经说清了, en: Li Da has not heard that the talk was set straight}
-        why: {zh: "当众说清那会儿李大不在场，事后也没人跟李大提。", en: "Li Da was not there when it was set straight, and nobody has told Li Da since."}
-        next: {zh: "先告诉李大那事已经当众说清了，再请李大送竹料。", en: "Tell Li Da the talk was set straight, then ask Li Da for the bamboo."}
+        why: {zh: "李大那会儿没在场，街坊当时听明白的话，他还没听见。", en: "Li Da wasn't there when the neighbours heard the correction. He hasn't heard it yet."}
+        next: {zh: "跟李大说说当时澄清了什么，再请他把竹料送到桥边。", en: "Tell Li Da what you set straight, then ask him to bring the bamboo to the bridge."}
         action: {verb: tell, npc: li_da, item: pr_set_straight}
       # Li Da weighed the request and said no, and asking again would only get "I have said it already".
       - when:
           - {kind: turned_down, npc: li_da}
         blocker: {zh: 李大这回不肯送竹料, en: Li Da will not send the bamboo yet}
-        why: {zh: "李大还信不过你，或者嫌你上回欠的人情没还。", en: "Li Da does not trust you yet, or feels you still owe a favour."}
+        why: {zh: "李大可能还信不过你，也可能在等你还上回的人情。", en: "Li Da may still have doubts about you or be waiting for you to return a favour."}
         next:
           - when: [{kind: can_promise, npc: li_da}]
-            zh: "先许李大一样东西，再请李大送。"
+            zh: "答应给李大一样东西，再请他送竹料。"
             en: "Promise Li Da something, then ask again."
           - {zh: "等更多人站到你这边，再请李大送。", en: "Ask Li Da again when more of the town is with you."}
         action:
@@ -612,13 +612,13 @@ tasks:
     kind: lead
     job: truth
     priority: 20
-    text: {zh: 是谁说李二毁了桥？, en: "Who said Li Er broke the bridge?"}
-    why: {zh: "就因为这句话，李家不肯给竹料。", en: "Because of that talk, the Li family will not give the bamboo."}
+    text: {zh: 谁说是李二弄坏的栏杆？, en: "Who said Li Er broke the railing?"}
+    why: {zh: "李老太一提起那句怪罪李二的话，就不肯再谈借料。", en: "Once the talk about Li Er comes up, Granny Li won't discuss lending bamboo."}
     next:
       - when: [{kind: note, props: *rumour}]
-        zh: "一个个往回问「你是听谁说的」。"
-        en: "Trace the talk back one person at a time, asking each who told them."
-      - {zh: "问问镇上的人，这话是听谁说的。", en: "Ask around who they heard it from."}
+        zh: "问传这句话的人是听谁说的，再去找那个人核对原话。"
+        en: "Ask who passed it on, then check what that person actually said."
+      - {zh: "从李老太那儿问起，看看这话是怎么传到她耳朵里的。", en: "Start with Granny Li and find out how she came to hear it."}
     action:
       - {verb: ask_source, npc: $frontier, follow: *rumour}
       - {when: [{not: {kind: note, props: *rumour}}], verb: ask, npc: li_laotai, item: li_er}
@@ -633,9 +633,9 @@ tasks:
     kind: lead
     job: truth
     priority: 30
-    text: {zh: 周家伙计看见的，能说明什么？, en: "What does the clerk's word show?"}
-    why: {zh: "周家伙计只说看见李二在桥边。镇上传的却是李二毁了桥。", en: "Zhou's Clerk only says Li Er was at the bridge. The town says Li Er broke it."}
-    next: {zh: "把这两句话摆在一起比一比，看它们是什么关系。", en: "Put the two lines side by side and see how they relate."}
+    text: {zh: 周家伙计看见的，能说明什么？, en: "What does the clerk's account tell you?"}
+    why: {zh: "伙计只见到李二在桥边，传到街上却成了李二弄坏了栏杆。", en: "The clerk saw Li Er by the bridge. By the time the story reached the street, Li Er had supposedly broken the railing."}
+    next: {zh: "在见闻簿里点「比一比」。伙计见过李二，凭这一点能认定是李二弄坏的栏杆吗？", en: "Use Compare in the notebook. The clerk saw Li Er, but does that establish who broke the railing?"}
     action: {verb: judge}
     appears:
       - {kind: note, props: *rumour}
@@ -650,8 +650,8 @@ tasks:
     job: truth
     priority: 35
     text: {zh: 把李二的事当众说清, en: Set the talk about Li Er straight in public}
-    why: {zh: "你一直不吭声，李老太就当你认了这话。竹料也就不借了。", en: "You have kept quiet, and Granny Li takes that to mean you agree. So the bamboo stays where it is."}
-    next: {zh: "拿着你比过的那两句话，去当众说清。", en: "Take the two lines you compared and set it straight in public."}
+    why: {zh: "你已经对过见闻簿里的话，李老太和街坊还得亲耳听一听。", en: "You've compared the accounts in the notebook. Granny Li and the neighbours still need to hear what you found."}
+    next: {zh: "把比过的两句话说给街坊听，再把你比出来的结果说明白。", en: "Tell the room what each account says, then explain what the comparison shows."}
     # The crowd is at the teahouse from half past five to seven (the window, every day), and the people
     # whose word counts are all in the room by six: Li Da, who is Granny Li's son and has the bamboo, the
     # head of the Zhou house, the clerk and the elder. So the card has the manager speak after six, with
@@ -672,8 +672,8 @@ tasks:
     job: truth
     priority: 40
     text: {zh: 今晚去茶馆, en: To the teahouse tonight}
-    why: {zh: "傍晚茶馆里人多，你说的话大家都听得到。", en: "The teahouse fills up in the evening, and everyone there will hear you."}
-    next: {zh: "傍晚去茶馆，当着大家的面说。", en: "Go to the teahouse in the evening and speak in front of everyone."}
+    why: {zh: "街坊傍晚会来茶馆坐坐，去了便有机会当面说。", en: "The neighbours gather at the teahouse in the evening, when you can speak to them in person."}
+    next: {zh: "傍晚到茶馆，等街坊来了再开口。", en: "Go to the teahouse at dusk and speak once the neighbours have arrived."}
     action: {when: [{kind: window, day: 1, from: 16, to: 19}], verb: move, place: p_teahouse}
     window: {day: 1, from: 17, to: 19, place: p_teahouse}
     expected: {from: 1050, to: 1140}
@@ -693,8 +693,8 @@ tasks:
     text: {zh: 李大答应的竹料, en: The bamboo that Li Da promised}
     # The words name no time, as in the task of the bamboo: the window is that of the promise.
     # It follows the newest promise of his for the bamboo, and opens again for each new one.
-    why: {zh: "李大答应按约好的时间送到桥边。", en: "Li Da agreed to bring it to the bridge at the agreed time."}
-    next: {zh: "按约好的时间去桥边，看竹料送到没有。", en: "Be at the bridge at the agreed time and see that it arrives."}
+    why: {zh: "李大答应按约好的时间送到桥边。", en: "Li Da said he'd bring the bamboo to the bridge."}
+    next: {zh: "到约好的时间，去桥边看看竹料到了没有。", en: "Check for the bamboo at the bridge when it's due."}
     again: true
     appears:
       - {kind: commitment, by: li_da, item: bamboo, state: promised, latest: true}
@@ -716,19 +716,19 @@ tasks:
     kind: need
     job: bridge
     priority: 11
-    text: {zh: 凑齐竹料, en: The rest of the bamboo}
+    text: {zh: 凑齐竹料, en: Get the rest of the bamboo}
     why:
       - when:
           - *promised
-        zh: "桥要{bamboo_need}根竹料，已经到了{bamboo_site}根。李大又答应送{bamboo_open}根。"
-        en: "The bridge needs {bamboo_need} poles of bamboo and has {bamboo_site}. Li Da has promised {bamboo_open} more."
-      - zh: "桥要{bamboo_need}根竹料，桥边才有{bamboo_site}根。"
-        en: "The bridge needs {bamboo_need} poles of bamboo and only {bamboo_site} lie there."
+        zh: "修桥要{bamboo_need}根竹料。桥边已有{bamboo_site}根，李大还答应送{bamboo_open}根。"
+        en: "The bridge needs {bamboo_need} bamboo poles. There are {bamboo_site} on site, and Li Da has promised {bamboo_open} more."
+      - zh: "修桥要{bamboo_need}根竹料。桥边只有{bamboo_site}根。"
+        en: "The bridge needs {bamboo_need} bamboo poles. Only {bamboo_site} have arrived."
     next:
       - when:
           - *promised
-        zh: "按约好的时间去桥边，看竹料送到没有。"
-        en: "Be at the bridge at the agreed time and see the bamboo arrive."
+        zh: "到约好的时间，去桥边看看竹料到了没有。"
+        en: "Check for the bamboo at the bridge when it's due."
       - {zh: "再请李大送一批。", en: "Ask Li Da for another batch."}
     action:
       - {when: [{not: *promised}], verb: entrust, npc: li_da, item: bamboo}
@@ -741,10 +741,10 @@ tasks:
       - when:
           - {kind: turned_down, npc: li_da}
         blocker: {zh: 李大这回不肯再送, en: Li Da will not send another batch}
-        why: {zh: "李大还信不过你，或者嫌你上回欠的人情没还。", en: "Li Da does not trust you yet, or feels you still owe a favour."}
+        why: {zh: "李大可能还信不过你，也可能在等你还上回的人情。", en: "Li Da may still have doubts about you or be waiting for you to return a favour."}
         next:
           - when: [{kind: can_promise, npc: li_da}]
-            zh: "先许李大一样东西，再请李大送。"
+            zh: "答应给李大一样东西，再请他送竹料。"
             en: "Promise Li Da something, then ask again."
           - {zh: "等更多人站到你这边，再请李大送。", en: "Ask Li Da again when more of the town is with you."}
         action:
@@ -762,13 +762,13 @@ tasks:
           - &timber_promised {kind: commitment, by: zhou_zhanggui, item: timber, state: promised}
         zh: "周掌柜答应把{timber_open}根木料送到桥边。"
         en: "Shopkeeper Zhou has promised to bring {timber_open} poles of timber to the bridge."
-      - zh: "修桥要{timber_need}根木料，得从周家库里出。"
-        en: "The bridge needs {timber_need} poles of timber, and they have to come from the Zhou store."
+      - zh: "修桥还得从周家的库里调{timber_need}根木料。"
+        en: "The bridge needs {timber_need} poles of timber from the Zhou family's storehouse."
     next:
       - when:
           - *timber_promised
-        zh: "按约好的时间去桥边，看木料送到没有。"
-        en: "Be at the bridge at the agreed time and see the timber arrive."
+        zh: "到约好的时间，去桥边看看木料到了没有。"
+        en: "Check for the timber at the bridge when it's due."
       - {zh: "请周掌柜把木料送到桥边。", en: "Ask Shopkeeper Zhou to bring the timber to the bridge."}
     action:
       - {when: [{not: *timber_promised}], verb: entrust, npc: zhou_zhanggui, item: timber}
@@ -778,7 +778,7 @@ tasks:
       - when:
           - {kind: turned_down, npc: zhou_zhanggui}
         blocker: {zh: 周掌柜不肯出木料, en: Shopkeeper Zhou will not give the timber}
-        why: {zh: "木料是周家的买卖，周掌柜不会白给。", en: "Timber is the Zhou trade, and Shopkeeper Zhou does not give it away."}
+        why: {zh: "周家的木料是拿来做买卖的，周掌柜还没答应拿出来修桥。", en: "The Zhou family sells timber for a living, and Shopkeeper Zhou hasn't agreed to supply the bridge."}
         next:
           - when: [{kind: can_promise, npc: zhou_zhanggui}]
             zh: "先许周掌柜一件事，再请周掌柜送木料。"
@@ -797,13 +797,13 @@ tasks:
     priority: 14
     text: {zh: 找帮手, en: Find helpers}
     why:
-      zh: "修桥要{crew}个帮手，李家、周家至少各出一个。"
-      en: "The bridge takes {crew} helpers, at least one from each family."
+      zh: "桥边得凑够{crew}个人，李家和周家至少各有一个人到场才行。"
+      en: "You'll need {crew} people at the bridge, with at least one from each family."
     next:
       - when:
           - {not: {kind: event, event: rally}}
-        zh: "先召集帮手，愿意的人会自己来。"
-        en: "Call for helpers first, and those who are willing will come."
+        zh: "招呼一声，看看谁肯来桥边帮忙。"
+        en: "Put out a call and see who comes to help at the bridge."
       - when:
           - any:
               - {not: {kind: helpers, at_least: 1, family: fam_li}}
@@ -849,11 +849,11 @@ tasks:
     # (`work_mornings`); the hours are on the board.
     why:
       - when: [{kind: work_short}]
-        zh: "照眼下这几个帮手，期限前桥修不完。"
-        en: "With the helpers you have, the bridge will not be done in time."
-      - zh: "照这几个帮手，再干{work_mornings}桥就修完了。"
-        en: "With these helpers, {work_mornings} and the bridge is done."
-    next: {zh: "早上去桥边，看帮手开工。", en: "Be at the bridge in the morning and see the work begin."}
+        zh: "照眼下的人手，再干下去也来不及，得再请几个人来搭把手。"
+        en: "You'll need more hands to finish the bridge on time."
+      - zh: "这几个人再干{work_mornings}，就能把桥修好。"
+        en: "This crew can finish the bridge in {work_mornings}."
+    next: {zh: "早上去桥边看看开工没有。", en: "Go to the bridge in the morning to check that work has started."}
     action:
       - {when: [{not: {kind: weather, is: heavy_rain}}, {kind: window, day: 3, from: 7, to: 12}], verb: move, place: p_bridge}
     window: {day: 3, from: 8, to: 12, place: p_bridge, unless: [{kind: weather, is: heavy_rain}]}
@@ -865,8 +865,8 @@ tasks:
       - when:
           - {kind: weather, is: heavy_rain}
           - {kind: window, day: 3, from: 6, to: 21}
-        blocker: {zh: 今天下大雨，桥上开不了工, en: "Heavy rain today, so there is no work on the bridge"}
-        why: {zh: "下大雨不开工。剩下的活只能等明早再干。", en: "No work is done in heavy rain. What is left has to wait for tomorrow morning."}
+        blocker: {zh: 大雨误了开工, en: "Heavy rain has halted work"}
+        why: {zh: "这场雨下得没法动工，剩下的活只能留到明早。", en: "The rain's too heavy to work through, so the rest will have to wait until tomorrow morning."}
         next: {zh: "等雨停，明早再来。", en: "Wait for the rain to stop and come again in the morning."}
     done:
       - {kind: work, percent: 100}
@@ -882,17 +882,17 @@ tasks:
     # tomorrow's.
     why:
       - when: [{kind: work_short}, {not: {kind: after, day: 3, hour: 24}}]
-        zh: "明早是最后一个早上。照这几个帮手，明早干不完。"
-        en: "Tomorrow morning is the last one. With these helpers, the work will not be done by then."
+        zh: "只剩明早半天能干活，眼下人手少，恐怕来不及收工。"
+        en: "There's only tomorrow morning left, and the crew may be too small to finish in time."
       - when: [{kind: work_short}]
-        zh: "今天是最后一个早上。照这几个帮手，今天干不完。"
-        en: "This is the last morning. With these helpers, the work will not be done today."
+        zh: "能干活的时间就剩今早了，眼下人手少，恐怕来不及收工。"
+        en: "This is the last morning of work. With so few hands, the job may not get done in time."
       - when: [{not: {kind: after, day: 3, hour: 24}}]
-        zh: "明早是最后一个早上。照这几个帮手，明早就能把桥修完。"
-        en: "Tomorrow morning is the last one. With these helpers, the bridge will be done by then."
-      - zh: "今天是最后一个早上。照这几个帮手，今天就能把桥修完。"
-        en: "This is the last morning. With these helpers, the bridge will be done today."
-    next: {zh: "早上去桥边，看帮手开工。", en: "Be at the bridge in the morning and see the work begin."}
+        zh: "明早是最后一次开工，眼下的人手够把桥修好。"
+        en: "Tomorrow morning is the last chance to work, and this crew can finish in time."
+      - zh: "今天上午是最后一次开工，眼下的人手够把桥修好。"
+        en: "This morning is the last chance to work, and this crew can finish in time."
+    next: {zh: "早上去桥边看看开工没有。", en: "Go to the bridge in the morning to check that work has started."}
     action:
       - {when: [{not: {kind: weather, is: heavy_rain}}, {kind: window, day: 4, from: 7, to: 12}], verb: move, place: p_bridge}
     window: {day: 4, from: 8, to: 12, place: p_bridge, unless: [{kind: weather, is: heavy_rain}]}
@@ -905,9 +905,9 @@ tasks:
       - when:
           - {kind: weather, is: heavy_rain}
           - {kind: window, day: 4, from: 6, to: 21}
-        blocker: {zh: 今天下大雨，桥上开不了工, en: "Heavy rain today, so there is no work on the bridge"}
-        why: {zh: "下大雨不开工。今天又是最后一个早上。", en: "No work is done in heavy rain, and this is the last morning."}
-        next: {zh: "桥修不完了，只能走绕路。", en: "The bridge cannot be finished. Only the detour is left."}
+        blocker: {zh: 大雨误了开工, en: "Heavy rain has halted work"}
+        why: {zh: "这场大雨耽误了最后一次开工。", en: "The rain has cost you the last morning of work."}
+        next: {zh: "桥赶不上灯会了，得着手准备另一条路。", en: "The bridge won't be ready for the festival, so it's time to prepare another route."}
     done:
       - {kind: work, percent: 100}
     stale:
@@ -923,19 +923,19 @@ tasks:
     kind: need
     job: bridge
     priority: 17
-    text: {zh: 备一条绕路, en: Get a detour ready}
+    text: {zh: 准备绕路, en: Get a detour ready}
     why:
       - when:
           - &keeper_agreed {kind: event, event: agreed, where: {npc: miaozhu, what: lane}}
           - {not: {kind: flag, flag: lane_opened}}
-        zh: "庙祝答应开夹道了。还得有三个人沿路挂灯。走绕路也能办灯会，只是算不上圆满。"
-        en: "The temple keeper has agreed to open the lane, and three people still have to hang lanterns along it. The festival can go on by the detour, but the night cannot be perfect."
+        zh: "庙祝肯开门了，等三个人把沿途的灯挂好，游灯队伍就能改走夹道。"
+        en: "The temple keeper will open the gate. Once three people hang the lanterns, the lantern parade can take the lane."
       - when:
           - {kind: flag, flag: lane_opened}
-        zh: "夹道开了。还得有三个人沿路挂灯。走绕路也能办灯会，只是算不上圆满。"
-        en: "The lane is open, and three people still have to hang lanterns along it. The festival can go on by the detour, but the night cannot be perfect."
-      - zh: "桥怕是来不及修好了。走绕路也能办灯会，只是算不上圆满。"
-        en: "The bridge may not be mended in time. The festival can go on by the detour, but the night cannot be perfect."
+        zh: "夹道已经开了，只差三个人沿路挂灯，游灯队伍就能从那儿走。"
+        en: "The lane is open. Once three people hang the lanterns there, the parade can go that way."
+      - zh: "桥怕是来不及修了，游灯队伍可以改走庙后的夹道。"
+        en: "The bridge may not be ready in time. The parade can take the lane behind the temple."
     next:
       - when:
           - *keeper_agreed
@@ -949,8 +949,8 @@ tasks:
         en: "Ask a few more people to help. The helpers hang the lanterns in the afternoon."
       - when:
           - {kind: flag, flag: lane_opened}
-        zh: "帮手们 13:00 到 17:00 沿夹道挂灯。去庙那边看看。"
-        en: "The helpers hang lanterns along the lane from 13:00 to 17:00. Go and look at the temple."
+        zh: "13:00 到 17:00 去庙后看看，帮手会在那几个时辰沿着夹道挂灯。"
+        en: "Go behind the temple between 13:00 and 17:00, when the helpers will be hanging the lanterns along the lane."
       - {zh: "请庙祝打开庙后的夹道。", en: "Ask the temple keeper to open the lane behind the temple."}
     action:
       - {when: [{kind: flag, flag: lane_opened}, {not: {kind: helpers, at_least: 3}}], verb: entrust, request: join, npc: $helper}
@@ -977,7 +977,7 @@ tasks:
       - when:
           - {kind: turned_down, npc: miaozhu, request: lane}
         blocker: {zh: 庙祝还不肯打开夹道, en: The temple keeper will not open the lane yet}
-        why: {zh: "夹道平时锁着，庙祝不轻易开。", en: "The lane is kept locked, and the temple keeper does not open it for just anyone."}
+        why: {zh: "庙后的夹道平日都锁着，能开门的钥匙在庙祝手里。", en: "The temple keeper has the key and usually keeps the lane locked."}
         next:
           - when: [{kind: can_promise, npc: miaozhu}]
             zh: "先许庙祝一件事，再请庙祝打开夹道。"
@@ -1004,7 +1004,7 @@ tasks:
     job: truth
     priority: 55
     text: {zh: 桥到底是怎么坏的？, en: "How did the bridge really break?"}
-    why: {zh: "栏杆是怎么断的，镇上谁也说不准。得找亲眼看见的人问问，再去看看留下了什么。", en: "Nobody in town knows for sure how the railing broke. Find the people who saw it, and look at what was left behind."}
+    why: {zh: "哪种说法对得上桥上留下的痕迹？白天到桥边看看，再去问问那晚到过附近的人。", en: "Which account fits the marks left at the bridge? Look around by day, then ask people who were nearby that night."}
     # The steps are the places and people that hold something in every story, in the order of the days
     # (the script's table of opportunities, above the evidence): the rail and the boat from the second day,
     # the water under the bridge and the child by the river from the third, the night watchman from the
@@ -1019,34 +1019,34 @@ tasks:
           - &daylight {kind: hours, from: 7, to: 17}
           - &rail_missed {not: {kind: looked, items: [e_footprint]}}
           - &rail_there {not: {kind: after, day: 3, hour: 6}}
-        zh: "白天去桥上看看断栏边留下了什么。过了第二天，印子就被踩没了。"
-        en: "Go to the bridge by day and see what was left by the broken railing. After the second day the marks are trodden out."
+        zh: "趁第二天白天到桥边看一看，断栏旁的痕迹再晚些就要被来往的人踩没了。"
+        en: "Look by the broken railing while it's still the second day. People passing through will soon wear away any marks."
       - when:
           - *daylight
           - &day3 {kind: after, day: 3, hour: 6}
           - &water_missed {not: {kind: looked, items: [e_flood_debris]}}
-        zh: "桥墩下的水落下去了，去看看露出了什么。"
-        en: "The water under the bridge has dropped, so go and look at what shows on the pier."
+        zh: "趁水退了，到桥墩下看看有没有露出来的东西。"
+        en: "Now that the water's gone down, look beneath the bridge to see what the river left exposed."
       - when:
           - &ferry_hours {kind: hours, from: 8, to: 16}
           - &boat_missed {not: {kind: looked, items: [e_boat_scratches]}}
           - &boat_barred {kind: turned_down, npc: old_he, request: look}
           - &boat_untalked {not: {kind: talked_today, npc: old_he}}
-        zh: "船主还不让你看船。先去聊几句。"
-        en: "The boat's owner will not let you look yet. Go and talk first."
+        zh: "船主还没答应让你看船，先去打声招呼再说。"
+        en: "The owner hasn't agreed to let you look at the boat, so start by going over for a chat."
       - when:
           - *ferry_hours
           - *boat_missed
           - *boat_barred
           - {kind: can_promise, npc: old_he}
-        zh: "船主还不让你看船。许点好处再来。"
-        en: "The boat's owner will not let you look yet. Promise something and come back."
+        zh: "船主还不肯让你看船，可以先许一件做得到的事，再问一回。"
+        en: "The owner won't let you look at the boat yet. Try making a promise you can keep before you ask again."
       - when: [*ferry_hours, *boat_missed, *boat_barred]
-        zh: "船主还信不过你。明天再去聊聊。"
-        en: "The boat's owner does not trust you yet. Talk again tomorrow."
+        zh: "船主还信不过你。明天再去打个照面。"
+        en: "The boat's owner doesn't trust you yet. Go back for a chat tomorrow."
       - when: [*ferry_hours, *boat_missed]
         zh: "去渡口看看那条船。"
-        en: "Go to the ferry and look at the boat."
+        en: "Look at the boat at the Ferry Landing."
       - when:
           - &watch_hours {kind: hours, from: 15, to: 22}
           - &day4 {kind: after, day: 4, hour: 6}
@@ -1054,21 +1054,21 @@ tasks:
           - &watch_barred {kind: turned_down, npc: gengfu, request: testify}
           - &watch_untalked {not: {kind: talked_today, npc: gengfu}}
         zh: "更夫还不肯开口。先去聊几句。"
-        en: "The night watchman will not speak yet. Go and talk first."
+        en: "The watchman won't say what was seen. Try talking first."
       - when:
           - *watch_hours
           - *day4
           - *watch_missed
           - *watch_barred
           - {kind: can_promise, npc: gengfu}
-        zh: "更夫还不肯开口。许点好处再来问。"
-        en: "The night watchman will not speak yet. Promise something and ask again."
+        zh: "更夫还不肯讲那晚的事。先许一件能做到的事，再开口问。"
+        en: "The watchman won't talk about that night yet. Make a promise you can keep, then ask again."
       - when: [*watch_hours, *day4, *watch_missed, *watch_barred]
         zh: "更夫还信不过你。明天下午再去聊聊。"
         en: "The night watchman does not trust you yet. Talk again tomorrow afternoon."
       - when: [*watch_hours, *day4, *watch_missed]
-        zh: "下午更夫在更铺里。去问问那晚看见了什么。"
-        en: "The night watchman is at the watch post in the afternoon. Ask what was seen that night."
+        zh: "等下午去更铺找更夫，问问巡到桥边时有没有瞧见什么。"
+        en: "Find the watchman at the Watch Post in the afternoon and ask what was seen on the rounds near the bridge that night."
       - when:
           - &evening_hours {kind: hours, from: 17, to: 20}
           - *day3
@@ -1080,38 +1080,38 @@ tasks:
           - &river_barred {kind: turned_down, npc: xiao_man, request: testify}
           - &river_untalked {not: {kind: talked_today, npc: xiao_man}}
         zh: "小满还不肯开口。先去聊几句。"
-        en: "Xiaoman will not speak yet. Go and talk first."
+        en: "Xiaoman won't talk about that night just yet. Start with a chat."
       - when:
           - *evening_hours
           - *day3
           - *river_missed
           - *river_barred
           - {kind: can_promise, npc: xiao_man}
-        zh: "小满还不肯开口。许点好处再来问。"
-        en: "Xiaoman will not speak yet. Promise something and ask again."
+        zh: "小满还不肯讲那晚的事。先许一样东西，再问问。"
+        en: "Xiaoman won't talk about that night yet. Make a promise before you ask again."
       - when: [*evening_hours, *day3, *river_missed, *river_barred]
         zh: "小满还信不过你。明天傍晚再去聊聊。"
         en: "Xiaoman does not trust you yet. Talk again tomorrow evening."
       - when: [*evening_hours, *day3, *river_missed]
-        zh: "小满夜里常在河边钓鱼，傍晚在家。去问问那晚看见了什么。"
-        en: "Xiaoman fishes by the river at night and is home in the evening. Ask what was seen that night."
+        zh: "小满常在夜里去河边钓鱼，傍晚去家里问问，说不定那晚也在附近。"
+        en: "Xiaoman often goes down to the river to fish at night. Call at the house in the evening to ask if Xiaoman was nearby that night."
       - when: [{not: *day3}]
-        zh: "今天能看的都看了。第三天早上水落下去，再去看桥墩。"
-        en: "There is nothing more to see today. On the third morning the water drops and the pier can be seen."
+        zh: "等第三天早上水落下去，再到桥墩下看看。"
+        en: "Come back to the bridge pier on the third morning, once the water has gone down."
       - when: [{not: *day4}, *water_missed]
-        zh: "水落下去了。白天去看桥墩，傍晚去找小满。"
-        en: "The water has dropped. Look at the pier by day and see Xiaoman in the evening."
+        zh: "水退了，白天先看看桥墩下露出了什么，傍晚再去找小满。"
+        en: "The water has dropped. See what it exposed at the pier in daylight, then visit Xiaoman in the evening."
       - when: [{not: *day4}, *river_missed]
         zh: "傍晚去找小满，问问那晚看见了什么。"
         en: "See Xiaoman in the evening and ask what was seen that night."
       - when: [{not: *day4}]
-        zh: "今天能查的都查了。更夫要到第四天下午才肯开口。"
-        en: "You have done all you can today. The night watchman will not speak before the afternoon of the fourth day."
+        zh: "想知道更夫巡到桥边时看见了什么，第四天下午去更铺找人。"
+        en: "Go to the watch post on the fourth afternoon to ask what the watchman saw on the rounds near the bridge."
       - when: [*watch_missed]
         zh: "下午去更铺找更夫，问问那晚看见了什么。"
         en: "Find the night watchman at the watch post in the afternoon and ask what was seen that night."
       - zh: "白天去桥上和渡口看看，傍晚找小满。第四天下午再找更夫。"
-        en: "By day go to the bridge and the ferry, in the evening see Xiaoman, and on the fourth afternoon the night watchman."
+        en: "Check the bridge and Ferry Landing in daylight. Find Xiaoman in the evening. Ask the watchman on the fourth afternoon."
     action:
       - {when: [*daylight, *rail_missed, *rail_there], verb: look, item: t_rail, place: p_bridge}
       - {when: [*daylight, *day3, *water_missed], verb: look, place: p_under_bridge}
@@ -1150,59 +1150,59 @@ tasks:
     # least five named people there, six in ten of them accepting, and the elder accepting).
     why:
       - when: [{kind: told, missed: parts}]
-        zh: "上回有一条没站住。讲稿上标出了是哪一条。"
-        en: "A part did not hold last time. The card marks which one."
+        zh: "上回没说过去的那一条已经在讲稿上标出来了，下回开口前再核对一遍。"
+        en: "The card marks the part of your account that didn't hold up last time. Check it again before you speak."
       - when: [{kind: told, missed: proof}]
-        zh: "上回每一条都对，可你的凭据分不出是哪种说法。大家不服。"
-        en: "Every part held last time, but your proof cannot tell the stories apart. People were not convinced."
+        zh: "你上回拿出的凭据也能解释别的说法，难怪大家听完还没点头。"
+        en: "The evidence you brought last time fit several accounts, so people couldn't tell which one to believe."
       - when: [{kind: told, missed: named}]
         zh: "上回在场的人太少，话传不开。"
         en: "Too few people were there last time, and the word did not carry."
       - when: [{kind: told, missed: accepted}]
-        zh: "上回在场的人，点头的不够多。"
-        en: "Last time too few of those there were convinced."
+        zh: "上回听完这番话，肯点头的人还不够多。"
+        en: "Not enough of the people who heard the account were convinced last time."
       - when: [{kind: told, missed: elder_absent}]
-        zh: "上回族长不在场。族长不点头，说了也不算数。"
-        en: "The elder was not there last time. Without the elder's nod it does not count."
+        zh: "上回族长没到场，还得再当面说一遍，请族长点头。"
+        en: "The elder missed your last statement. Give it again in person so the elder can hear it and agree."
       - when: [{kind: told, missed: elder_refused}]
-        zh: "上回凭据够了，族长也在场。可族长没点头，要么还信着另一种说法，要么还信不过你。"
-        en: "The proof held last time, and the elder was there. But the elder did not nod, either still holding to another account or not trusting you yet."
-      - zh: "桥是怎么坏的，得在公议上一条一条说清楚。这样两家和镇上的人才会信。"
-        en: "How the bridge broke has to be said in public, part by part, before the families and the town will believe it."
+        zh: "上回族长听完了，凭据也够。族长可能还信着另一种说法，也可能信不过你。"
+        en: "The elder heard you out last time, and your evidence held up. The elder may still believe a different account or have doubts about you."
+      - zh: "先把现场的痕迹和各人的话对一遍，再带上凭据去公议，说清栏杆究竟怎么断的。"
+        en: "Check what people said against the marks at the bridge. Then bring your evidence to the public meeting to explain how the railing broke."
     next:
       - when: [{kind: told, missed: parts}]
-        zh: "翻开讲稿，看标出的那一条。再去查、去问，或者换个说法。下回再去说。"
-        en: "Open the card at the marked part. Look and ask more, or choose another account, and speak again next time."
+        zh: "下回当众开口前，先看看讲稿上标的那一条。手里的凭据若对不上，就去找新的，或者把那条说法改过来。"
+        en: "Check the marked part of the card. Find more evidence or revise that part before you speak again."
       - when: [{kind: told, missed: proof}]
-        zh: "凭据还不够。再去几处看看、问问。等凭据分得出是哪种说法，下回再去说。"
-        en: "Your proof is not enough yet. Look and ask in more places. Once it can tell the stories apart, speak again next time."
+        zh: "再去几处看看，也问问知情的人，等找到能分清两种说法的凭据，再当众讲一次。"
+        en: "Check a few more places and ask around. Speak again once you have evidence that can settle which account fits."
       - when: [{kind: told, missed: named}]
-        zh: "等人多的时候再说。傍晚 17:00 到 19:00 茶馆里人最多。也可以上午请族长把族人召集到祠堂。"
-        en: "Speak when more people are there. The teahouse is fullest from 17:00 to 19:00. You can also ask the elder in the morning to call the clan to the hall."
+        zh: "傍晚 17:00 到 19:00 茶馆里人最多，第五天得赶在 18:00 前说。也可以上午请族长把族人召集到祠堂。"
+        en: "The teahouse is fullest from 17:00 to 19:00. On the fifth day, speak before 18:00. You can also ask the elder in the morning to call the clan to the hall."
       - when: [{kind: told, missed: accepted}]
-        zh: "再去几处看看、问问。凭据多了，再当众说一次。"
-        en: "Bring more proof by looking and asking in more places, then speak again."
+        zh: "再去几处找些凭据。有了新凭据，再去当众讲。"
+        en: "Check a few more places for evidence. Bring what you find the next time you speak."
       - when: [{kind: told, missed: elder_absent}]
-        zh: "族长要在场才算数。族长傍晚在茶馆。也可以请族长把族人召集到祠堂。"
-        en: "It only counts with the elder there. The elder is at the teahouse in the evening. You can also ask the elder to call the clan to the hall."
+        zh: "傍晚去茶馆，族长在那儿。也可以请族长在祠堂召集族人。"
+        en: "Find the elder at the teahouse in the evening. Another option is to ask the elder to call a meeting at the Ancestral Hall."
       - when: [{kind: told, missed: elder_refused}]
-        zh: "先去跟族长聊聊，让族长信得过你。许过的事要兑现。再拿着能驳倒另一种说法的凭据，当众说一次。"
-        en: "Talk with the elder until the elder trusts you. Keep the promises you made. Then speak again with the proof that rules out the other account."
+        zh: "先跟族长说说话，把答应过的事办到，再带上能驳倒另一种说法的凭据去公议。"
+        en: "Talk to the elder and keep any promises you've made, then return to the meeting with evidence that rules out the other account."
       - when: [&day4_evening {kind: after, day: 4, hour: 17}, {kind: card_filled}, {not: {kind: stated_today}}, {kind: meeting}]
         zh: "族长把族人召集到祠堂了。去祠堂当众说清楚。"
-        en: "The elder has called the clan to the hall. Go and speak there."
+        en: "The elder has called a meeting at the Ancestral Hall. Go there to speak."
       - when: [*day4_evening, {kind: card_filled}, {not: {kind: stated_today}}]
-        zh: "去茶馆当众说清楚。傍晚 17:00 到 19:00 那儿人最多。也可以上午请族长把族人召集到祠堂。"
-        en: "Speak at the teahouse. It is fullest from 17:00 to 19:00. You can also ask the elder in the morning to call the clan to the hall."
+        zh: "去茶馆当众说清楚。傍晚 17:00 到 19:00 那儿人最多，第五天得赶在 18:00 前说。也可以上午请族长把族人召集到祠堂。"
+        en: "Speak at the teahouse. It is fullest from 17:00 to 19:00. On the fifth day, speak before 18:00. You can also ask the elder in the morning to call the clan to the hall."
       - when: [*day4_evening, {kind: card_filled}]
         zh: "今天已经当众说过了，下回再来。"
         en: "You have spoken in public today. Come again next time."
       - when: [*day4_evening]
-        zh: "讲稿还没写全。先把缺的那几条查清楚，再去说。"
-        en: "The card is not complete yet. Find out what is missing first, then go and speak."
+        zh: "讲稿还有几处没填，等查明那些事再去当众讲。"
+        en: "Find out what belongs in the gaps on the card before you speak in public."
       - when: [{kind: card_filled}]
-        zh: "讲稿写好了。要等第四天傍晚的公议，才能当众说。"
-        en: "The card is filled in. You can speak at the public meeting on the evening of the fourth day."
+        zh: "讲稿已经写好了，等第四天傍晚公议的时候再带去讲。"
+        en: "The card is ready. Bring it to the public meeting on the fourth evening."
       - zh: "先去查、去问，把讲稿写全。第四天傍晚到公议上当众说清楚。"
         en: "Look and ask until the card is complete. Then speak at the public meeting on the evening of the fourth day."
     # The card is opened to fill it in while there is something to choose (`card_fillable`). From the
@@ -1261,37 +1261,37 @@ tasks:
     # names the next deed with the hours and the place.
     why:
       - when: [{kind: grudge, below: 30}]
-        zh: "两家的气消了不少，可还没人亲眼看见两家和好。"
-        en: "The bad blood has eased, but nobody has yet seen the two families make peace."
+        zh: "两家已经没那么僵了，要让这事作数，还得有街坊亲眼看见两家坐下来。"
+        en: "Things have eased between the families. People still need to see them sit down together."
       - when: [{kind: flag, flag: reconcile_seen}]
-        zh: "有人看见两家和好了，可两家当家心里的气还没消。"
-        en: "People saw the families make peace, but the two heads are still angry."
+        zh: "街坊虽见过两家同桌，李老太和周掌柜心里还有气。"
+        en: "The neighbours saw the two families share a table. Granny Li and Shopkeeper Zhou are still angry with each other."
       - when: [{kind: flag, flag: truth_told}]
-        zh: "桥的事说清了。这时候摆一桌，最能消两家当家的气。"
-        en: "The truth about the bridge is out. A meal now does the most to ease the bad blood between the two heads."
+        zh: "大家既然已经听明白栏杆是怎么断的，也到了请两家当家的坐下来谈谈的时候。"
+        en: "Now that the town has heard how the railing broke, it's a good time for Granny Li and Shopkeeper Zhou to sit down together."
       - zh: "两家当家的心里还憋着气，一顿饭解不开。"
         en: "The two heads are still angry with each other, and one meal will not settle it."
     next:
       - when: [{kind: grudge, below: 30}]
-        zh: "傍晚去茶馆摆一桌，请两家当家坐到一起。旁边得有三个以上的人看着。"
-        en: "Seat both heads together at the teahouse in the evening, with at least three others there to see it."
+        zh: "傍晚在茶馆摆一桌饭，请两家当家当着街坊的面坐下来。"
+        en: "Set a table at the teahouse in the evening so the neighbours can see the two family heads sit down together."
       - when: [{kind: flag, flag: reconcile_seen}, {kind: flag, flag: truth_told}]
-        zh: "改天傍晚再摆一桌，请两家当家坐到一起。旁边得有三个以上的人看着。"
-        en: "Lay another table on another evening and seat both heads together, with at least three others there to see it."
+        zh: "另挑一个有街坊在场的傍晚，把两位当家的再请到同一桌。"
+        en: "Pick another evening when the neighbours are there and invite both heads to share a table again."
       - when: [{kind: flag, flag: reconcile_seen}]
         zh: "先把桥的事当众说清楚，改天再摆一桌。"
         en: "Tell the town how the bridge broke first, then lay another table on another day."
       - when: [{kind: flag, flag: truth_told}]
-        zh: "傍晚去茶馆摆一桌，请两家当家坐到一起。旁边得有三个以上的人看着。"
-        en: "Lay a table at the teahouse in the evening and seat both heads together, with at least three others there to see it."
+        zh: "傍晚在茶馆摆一桌饭，请两家当家当着街坊的面坐下来。"
+        en: "Set a table at the teahouse in the evening so the neighbours can see the two family heads sit down together."
       - when:
           - {not: {kind: eased, act: work_together}}
           - {kind: crew}
           - {not: {kind: work, percent: 100}}
-        zh: "08:00 到 12:00 去桥边。两家的帮手一起干活，两家当家的气就能消一些。"
-        en: "Be at the bridge from 08:00 to 12:00. When helpers of both families work side by side, the two heads cool down a little."
-      - zh: "先把桥的事当众说清楚。再去茶馆摆一桌，请两家当家坐到一起。旁边得有三个以上的人看着。"
-        en: "First tell the town how the bridge broke. Then lay a table at the teahouse and seat both heads together. At least three others have to be there to see it."
+        zh: "早上八点到中午到桥边去，两家的人一块儿干了活，当家的也能消点气。"
+        en: "Go to the bridge between eight and noon. When the two households work side by side, their heads have a chance to cool down."
+      - zh: "把断栏的经过当众说清，再去茶馆摆一桌，请两位当家的当着街坊的面坐下来。"
+        en: "Tell the neighbours how the railing broke, then invite both heads to share a table at the teahouse with other people there to see it."
     # The table is laid once the truth is told (a meal before it lowers the grudge less), or when the
     # grudge is low and only the sight of it is missing, or on the last afternoon whatever came of the
     # truth. Until then the card names the next deed, and has nothing for the manager to do but be there.
@@ -1324,8 +1324,8 @@ tasks:
     kind: venue
     priority: 80
     text: {zh: 灯会之夜, en: Festival night}
-    why: {zh: "今晚游灯的队伍要过桥。这一夜成不成，看路通不通，也看三件事办成了几件。", en: "Tonight the lantern parade crosses. How the night goes depends on whether there is a way across, and on how many of the three jobs are done."}
-    next: {zh: "天黑前把没办完的事办完，再到桥边去。", en: "Finish what is left before dark, then be at the bridge."}
+    why: {zh: "今晚的游灯要过河，天黑以前得给李、周两家备好一条能提着灯走过去的路。", en: "Both families will need a way to take their lanterns across the river tonight. Get a route ready before dark."}
+    next: {zh: "天黑前把过河的路安排好，傍晚再到桥边。", en: "Have the crossing ready before dark, then go to the bridge at dusk."}
     action: {when: [{kind: window, day: 5, from: 17, to: 21}], verb: move, place: p_bridge}
     window: {day: 5, from: 18, to: 21, place: p_bridge}
     appears:
@@ -1354,7 +1354,7 @@ tasks:
       - when:
           - {kind: pledge, n: $n, state: open, due: today}
         zh: "你答应给{pledge_to}{pledge_what}，今天就得当面给。"
-        en: "You promised {pledge_to} {pledge_what}. It is due today, in person."
+        en: "You promised {pledge_to} {pledge_what}. Go in person today to make good on it."
       - zh: "你答应给{pledge_to}{pledge_what}，最迟{pledge_due}要当面给。到时不给，{pledge_to}就不信你了。"
         en: "You promised {pledge_to} {pledge_what}, to give in person by {pledge_due}. If you do not, {pledge_to} will trust you less."
     next:
@@ -1363,12 +1363,12 @@ tasks:
         zh: "今天去找{pledge_to}，当面兑现。"
         en: "Go to {pledge_to} today and keep it in person."
       - zh: "{pledge_due}去找{pledge_to}当面兑现，早点去也行。"
-        en: "On {pledge_due}, go to {pledge_to} and keep it in person, or sooner."
+        en: "Make good on your promise to {pledge_to} in person by {pledge_due}."
     action:
       - {when: [{kind: pledge, n: $n, state: open, due: today}], verb: promise, npc: $pledge, kind: keep}
     lapse:
       zh: "你答应最迟{pledge_due}给{pledge_to}的{pledge_what}，没给成。{pledge_to}更不信你了。这事还会在镇上传开。"
-      en: "You promised {pledge_to} {pledge_what} by {pledge_due} and did not keep it. {pledge_to} trusts you less now. Word of it will go round the town."
+      en: "You let {pledge_due} pass without giving {pledge_to} {pledge_what}. {pledge_to} trusts you less, and people around town will hear why."
     appears:
       - {kind: pledge, n: $n}
     done:
@@ -1400,9 +1400,9 @@ tasks:
       - when:
           - &np_cleared {kind: note, props: [pr_set_straight]}
         zh: "桥的事当众说清了，李老太却还没松口。"
-        en: "The matter of the bridge has been cleared in public, and Granny Li has not yet given way."
-      - zh: "李老太要等桥的事当众说清，才肯借竹料。镇上没人在传这事，得你自己去查。"
-        en: "Granny Li lends no bamboo until the matter of the bridge is set straight in public. Nobody in town is talking about it, so look into it yourself."
+        en: "The town has heard what happened at the bridge. Granny Li still won't lend the bamboo."
+      - zh: "李老太说要等桥的事当众讲清，才肯借竹料。镇上没有现成的话头可追，得去桥边看看，再问问知情的人。"
+        en: "Granny Li won't lend the bamboo until the matter is cleared up in public. There are no rumours to follow, so start at the bridge and talk to anyone who might know something."
     next:
       - when:
           - *np_cleared
@@ -1426,28 +1426,28 @@ tasks:
         en: "Look at the water under the bridge."
       - when:
           - &np_clerk_missed {not: {kind: note, props: [pr_liner_at_bridge, pr_liner_looking, pr_set_straight]}}
-        zh: "周家伙计那晚从桥边走过。去问问看见了什么。"
-        en: "Zhou's Clerk passed the bridge that night. Ask what the clerk saw."
+        zh: "周家伙计那晚从桥边走过，值得去问一问当时看见了什么。"
+        en: "Zhou's Clerk passed by the bridge that night, so it's worth asking what the clerk saw."
       - when:
           - &np_ferry_hours {kind: hours, from: 8, to: 16}
           - &np_boat_missed {not: {kind: looked, items: [e_boat_scratches]}}
           - &np_boat_barred {kind: turned_down, npc: old_he, request: look}
           - &np_boat_untalked {not: {kind: talked_today, npc: old_he}}
-        zh: "船主还不让你看船。先去聊几句。"
-        en: "The boat's owner will not let you look yet. Go and talk first."
+        zh: "船主还没答应让你看船，先去打声招呼再说。"
+        en: "The owner hasn't agreed to let you look at the boat, so start by going over for a chat."
       - when:
           - *np_ferry_hours
           - *np_boat_missed
           - *np_boat_barred
           - {kind: can_promise, npc: old_he}
-        zh: "船主还不让你看船。许点好处再来。"
-        en: "The boat's owner will not let you look yet. Promise something and come back."
+        zh: "船主还不肯让你看船，可以先许一件做得到的事，再问一回。"
+        en: "The owner won't let you look at the boat yet. Try making a promise you can keep before you ask again."
       - when: [*np_ferry_hours, *np_boat_missed, *np_boat_barred]
-        zh: "船主还信不过你。明天再去聊聊。"
-        en: "The boat's owner does not trust you yet. Talk again tomorrow."
+        zh: "船主还信不过你。明天再去打个照面。"
+        en: "The boat's owner doesn't trust you yet. Go back for a chat tomorrow."
       - when: [*np_ferry_hours, *np_boat_missed]
         zh: "去渡口看看那条船。"
-        en: "Go to the ferry and look at the boat."
+        en: "Look at the boat at the Ferry Landing."
       - when:
           - &np_evening {kind: hours, from: 17, to: 20}
           - *day3
@@ -1458,33 +1458,33 @@ tasks:
           - &np_river_barred {kind: turned_down, npc: xiao_man, request: testify}
           - &np_river_untalked {not: {kind: talked_today, npc: xiao_man}}
         zh: "小满还不肯开口。先去聊几句。"
-        en: "Xiaoman will not speak yet. Go and talk first."
+        en: "Xiaoman won't talk about that night just yet. Start with a chat."
       - when:
           - *np_evening
           - *day3
           - *np_river_missed
           - *np_river_barred
           - {kind: can_promise, npc: xiao_man}
-        zh: "小满还不肯开口。许点好处再来问。"
-        en: "Xiaoman will not speak yet. Promise something and ask again."
+        zh: "小满还不肯讲那晚的事。先许一样东西，再问问。"
+        en: "Xiaoman won't talk about that night yet. Make a promise before you ask again."
       - when: [*np_evening, *day3, *np_river_missed, *np_river_barred]
         zh: "小满还信不过你。明天傍晚再去聊聊。"
         en: "Xiaoman does not trust you yet. Talk again tomorrow evening."
       - when: [*np_evening, *day3, *np_river_missed]
-        zh: "小满夜里常在河边钓鱼，傍晚在家。去问问那晚看见了什么。"
-        en: "Xiaoman fishes by the river at night and is home in the evening. Ask what was seen that night."
+        zh: "小满常在夜里去河边钓鱼，傍晚去家里问问，说不定那晚也在附近。"
+        en: "Xiaoman often goes down to the river to fish at night. Call at the house in the evening to ask if Xiaoman was nearby that night."
       - when: [*watch_hours, *day4, *watch_missed, *watch_barred, *watch_untalked]
         zh: "更夫还不肯开口。先去聊几句。"
-        en: "The night watchman will not speak yet. Go and talk first."
+        en: "The watchman won't say what was seen. Try talking first."
       - when: [*watch_hours, *day4, *watch_missed, *watch_barred, {kind: can_promise, npc: gengfu}]
-        zh: "更夫还不肯开口。许点好处再来问。"
-        en: "The night watchman will not speak yet. Promise something and ask again."
+        zh: "更夫还不肯讲那晚的事。先许一件能做到的事，再开口问。"
+        en: "The watchman won't talk about that night yet. Make a promise you can keep, then ask again."
       - when: [*watch_hours, *day4, *watch_missed, *watch_barred]
         zh: "更夫还信不过你。明天下午再去聊聊。"
         en: "The night watchman does not trust you yet. Talk again tomorrow afternoon."
       - when: [*watch_hours, *day4, *watch_missed]
-        zh: "下午更夫在更铺里。去问问那晚看见了什么。"
-        en: "The night watchman is at the watch post in the afternoon. Ask what was seen that night."
+        zh: "等下午去更铺找更夫，问问巡到桥边时有没有瞧见什么。"
+        en: "Find the watchman at the Watch Post in the afternoon and ask what was seen on the rounds near the bridge that night."
       - zh: "白天去桥上和渡口看看，傍晚找小满。第四天下午再找更夫。讲稿写全了，就去当众说清楚。"
         en: "By day see the bridge and the ferry, in the evening Xiaoman, and on the fourth afternoon the night watchman. Once the card is complete, go and speak in public."
     action:
@@ -1526,10 +1526,10 @@ tasks:
     kind: venue
     job: truth
     priority: 56
-    text: {zh: 请族长召集族人, en: Have the elder call the clan}
+    text: {zh: 请族长召集族人, en: Ask the elder to call a meeting}
     again: true
-    why: {zh: "族长不会随便召集族人。你手里得有凭据，族长也得信得过你。镇上还得有人站在你这边。", en: "The elder will not call the clan for nothing. You need proof in hand, and the elder has to trust you. Part of the town has to be behind you as well."}
-    next: {zh: "上午去祠堂请族长召集族人，再当着族人的面拿出凭据。", en: "In the morning ask the elder at the hall to call the clan, then show your proof in front of them."}
+    why: {zh: "族长要看你手头有些什么凭据。得让族长信得过你，镇上也得有人肯帮你说话。", en: "The elder wants to see what evidence you have. You'll need the elder's trust and people in town to speak up for you."}
+    next: {zh: "上午去祠堂请族长召集族人，再当着族人的面拿出凭据。", en: "Ask the elder at the Ancestral Hall in the morning to call a meeting. Show your evidence when the clan has gathered."}
     # The card asks once the lead is followed through (the places and the person it names are what a
     # story is told apart by, whichever is true), or on the last morning whatever the manager holds. A
     # call that comes before is a call for a statement that falls short.
@@ -1575,32 +1575,32 @@ tasks:
 wants:
   - id: w_elder_lantern
     person: zuzhang
-    text: {zh: 五天后，让李、周两家一起提灯过桥, en: "In five days, both families crossing the bridge with their lanterns, together"}
+    text: {zh: 五天后，让李、周两家一起提灯过桥, en: "In five days, see both families carry their lanterns across the bridge together"}
   - id: w_li_laotai_public
     person: li_laotai
-    text: {zh: 有人出来把「李二毁桥」这话当众说清, en: "Someone to set straight, in public, the talk that Li Er wrecked the bridge"}
+    text: {zh: 有人出来把「李二毁桥」这话当众说清, en: "Someone to stand up and set the record straight about Li Er"}
     learned:
       - {kind: refused, npc: li_laotai, reason: hard_hc_li_bamboo_rumour}
   # the people who carry the five days (`content/lines`, `world/bridge/roles.py`): what each of them
   # wants, learned in a first talk, or from what the player holds where the want is about that
   - id: w_li_da_nod
     person: li_da
-    text: {zh: 李老太点了头，竹料才能动, en: "Granny Li's nod before any bamboo leaves the store"}
+    text: {zh: 李老太点了头，竹料才能动, en: "Wait for Granny Li's say-so before sending any bamboo"}
     learned:
       - {kind: event, event: talk_start, where: {npc: li_da}}
   - id: w_li_er_name
     person: li_er
-    text: {zh: 洗掉毁桥的闲话，再找回掉进河里的灯笼, en: "To be rid of the talk about the broken railing, and to find the lantern lost in the river"}
+    text: {zh: 把毁桥的闲话说清，再找回掉进河里的灯笼, en: "To be rid of the talk about the broken railing, and to find the lantern lost in the river"}
     learned:
       - {kind: note, props: [pr_liner_looking, pr_set_straight]}
   - id: w_zhou_ledger
     person: zhou_zhanggui
-    text: {zh: 铺子的账要平，木料有人付钱，人情有人还, en: "A ledger that balances, with someone paying for the timber and someone returning the favours"}
+    text: {zh: 木料出了库就得有人结账。人情也得有人还。, en: "Get paid for the timber and call in the favours still owed"}
     learned:
       - {kind: event, event: talk_start, where: {npc: zhou_zhanggui}}
   - id: w_zhou_huoji_blame
     person: zhou_huoji
-    text: {zh: 别再有人把桥的事算到自己头上, en: To be left out of the blame for the bridge}
+    text: {zh: 别再有人把桥的事算到自己头上, en: Stop getting blamed for what happened to the bridge}
     learned:
       - {kind: note_first_hand, props: [pr_liner_at_bridge], by: zhou_huoji}
   - id: w_zhou_dalang_peace
@@ -1677,23 +1677,23 @@ commitments:
   reasons:
     rain: {zh: 下大雨，货运不出来, en: The heavy rain kept the goods off the road}
     failed: {zh: 路上出了岔子，货没能送到, en: Something went wrong and the goods did not get there}
-    late: {zh: 没赶在约好的时间前送到, en: It did not arrive in time}
-    taken_back: {zh: 说是改了主意, en: Word is they changed their mind}
+    late: {zh: 错过了约好的交货时间, en: The delivery missed the agreed time}
+    taken_back: {zh: 送货的人改了主意, en: Word is the delivery was called off}
   # `{manager}` in `clarified` is the manager as the words that carry the line call them: you in the
   # recap and in the summary of the night, the Manager in the Town Gazette (`paper.manager`)
   recap:
     delivery:
       zh: "{who}答应的{amount}根{item}，已经送到{place}。"
-      en: "The {amount} poles of {item} that {who} promised have reached the {place}."
+      en: "{who}'s delivery of {amount} poles of {item} reached the {place}."
     withdrawn:
       zh: "{who}松口了，答应{what}。"
-      en: "{who} has given way on {what}."
+      en: "{who} gave the go-ahead for {what}."
     withdrawn_plain:
       zh: "{who}松口了。"
-      en: "{who} has given way."
+      en: "{who} dropped the objection."
     clarified:
-      zh: "{manager}当众讲明，那话传过了头。{names}听了，改了口。"
-      en: "{manager} told everyone the talk had gone too far. {names} changed their minds."
+      zh: "{manager}当众把两种说法一对，{names}听完改了口。"
+      en: "{manager} compared the two accounts in public. After hearing both, {names} changed their minds."
     promise:
       zh: "{who}答应送来{amount}根{item}。"
       en: "{who} promised to bring {amount} poles of {item}."
@@ -1750,78 +1750,78 @@ paper:
     fresh: 2
   news:
     bridge_mended:
-      zh: 石桥修好了，两岸又通了。
-      en: The Stone Bridge is mended, and the two banks are joined again.
+      zh: 石桥已经修好，两岸居民可以照常过桥。
+      en: The Stone Bridge has reopened after repairs.
     truth_told:
-      zh: 桥是怎么坏的，已经当众说清楚了。
-      en: How the bridge broke has been told in public.
+      zh: 石桥的栏杆是怎么断的，会上已经拿出凭据讲明。
+      en: The evidence presented at a public meeting established how the Stone Bridge railing broke.
     reconciled:
-      zh: 李、周两家的当家坐到了一张桌上。两家和好了。
-      en: The heads of the Li and Zhou families sat at one table. The two families have made peace.
+      zh: 李、周两家的当家一道坐过席，两家如今已经和好。
+      en: The heads of the Li and Zhou families have sat down together, and the families have made peace.
     statement:
-      zh: "{manager}在{place}当众讲了桥是怎么坏的。有人点了头。"
-      en: "{manager} told the town at the {place} how the bridge broke. Some people nodded."
+      zh: "{manager}在{place}当众讲了栏杆断裂的经过，在场有街坊听得点头。"
+      en: "{manager} spoke at the {place} about how the bridge broke, and some of the people there agreed."
     statement_refused:
-      zh: "{manager}在{place}当众讲了桥是怎么坏的。没一个人点头。"
-      en: "{manager} told the town at the {place} how the bridge broke. Nobody nodded."
+      zh: "{manager}在{place}讲了自己查到的经过，在场的街坊听完都没有点头。"
+      en: "{manager} spoke at the {place} about what happened at the bridge, but nobody there agreed."
     evidence:
-      zh: "{manager}在{place}当众拿出了凭据。有人信了。"
+      zh: "{manager}在{place}当众拿出凭据，在场已有街坊信了这一说。"
       en: "{manager} showed the proof in public at the {place}. Some people believed it."
     evidence_refused:
-      zh: "{manager}在{place}当众拿出了凭据。没一个人信。"
+      zh: "{manager}在{place}当众拿出凭据，在场的街坊仍无人信这一说。"
       en: "{manager} showed the proof in public at the {place}. Nobody believed it."
     meal:
-      zh: 两家当家坐在一张桌上吃了顿饭。旁人都看见了。
-      en: The heads of the two families shared a meal. Others saw it.
+      zh: 李、周两家的当家同桌吃饭，街坊也在场。
+      en: The heads of the Li and Zhou families shared a table, with neighbours there to see it.
     stopped:
       zh: "{who}当着大家的面，不再说{other}的不是了。"
       en: "{who} has stopped speaking ill of {other} in public."
     side_by_side:
-      zh: 两家的人一起在桥边干了活。
-      en: People of both families worked at the bridge together.
+      zh: 李、周两家都有人在桥边一起干活。
+      en: People from both families worked together at the bridge.
     helpers:
       zh: "{n}个乡亲答应来桥边帮忙。"
       en: "{n} more people agreed to help at the bridge."
     work_stopped:
-      zh: "桥上的活停了。{why}。"
-      en: "Work at the bridge stopped. {why}."
+      zh: "桥上的活没能接着做。{why}。"
+      en: "Work on the bridge couldn't go on. {why}."
     work:
       zh: "桥上的活{progress}。"
       en: "The work at the bridge {progress}."
     rain_heavy:
-      zh: "{when}下了一场大雨。街上没什么人。"
-      en: "Heavy rain fell {when}. The streets emptied."
+      zh: "{when}雨下得大，街上少见行人。"
+      en: "Heavy rain fell {when}, and few people were out on the street."
     rain_light:
-      zh: "{when}飘了一阵小雨。"
+      zh: "{when}下过一阵小雨。"
       en: "It drizzled {when}."
     quiet:
       zh: "{when}镇上没有什么大事。"
       en: "Nothing much happened in town {when}."
     two_accounts:
-      zh: "街上有两种说法。有人说{first}。也有人说{second}。"
-      en: "The street has two stories. Some say that {first}. Others say that {second}."
+      zh: "有人说{first}，也有人说{second}。"
+      en: "Some say {first}, while others say {second}."
   talk:
     festival_up:
-      zh: 街上盼灯会的人比昨天多了。孩子们追着问什么时候挂灯。
-      en: More people on the street look forward to the festival than yesterday. The children keep asking when the lanterns go up.
+      zh: 盼着灯会的居民比昨天多了，已有孩子在打听什么时候挂灯。
+      en: More people are looking forward to the festival than yesterday. Children are asking when the lanterns go up.
     festival_down:
-      zh: 街上盼灯会的人比昨天少了。茶馆里也没几个人提灯会。
-      en: Fewer people on the street look forward to the festival than yesterday. The teahouse hardly mentions it.
+      zh: 茶馆里已经少有人提起灯会，街上盼着过节的人也比昨天少了。
+      en: Fewer people are looking forward to the festival than yesterday. It hardly comes up at the teahouse.
     festival_warm:
-      zh: 街上都在说灯会。哪家挂几盏灯，已经有人在数了。
-      en: The street talks of little but the festival. People are already counting the lanterns at each door.
+      zh: 街坊议起灯会，已经有人在数各家门前挂几盏灯。
+      en: People in the street are talking about the festival. Some are already counting the lanterns at each door.
     festival_mixed:
       zh: 街上有人盼着灯会，也有人说再看看。
       en: Some on the street look forward to the festival, and others want to wait and see.
     festival_cool:
       zh: 街上没几个人提灯会。有人说，今年怕是没什么兴致。
-      en: Hardly anyone on the street speaks of the festival. Some say there is little heart for it this year.
+      en: Hardly anyone mentions the festival. Some say they don't feel much like celebrating this year.
     peace:
       zh: 街上都在说，李、周两家的当家坐到一张桌上去了。
-      en: The street is saying that the heads of the Li and Zhou families have sat down at one table.
+      en: Word has gone round that the heads of the Li and Zhou families sat down together.
     talked_out:
-      zh: 街上还在说当众说清的那件事。旧话没什么人提了。
-      en: The street is still talking about what was set out in public. The old stories are heard less.
+      zh: 先前的闲话少有人提了，街坊如今说得多的，是那天当众讲明白的经过。
+      en: People are still talking about what they heard in public. The old rumours come up less often.
     li_more:
       zh: 街上向着李家说话的人，比昨天又多了些。
       en: More people on the street than yesterday are speaking up for the Li family.
@@ -1835,8 +1835,8 @@ paper:
       zh: 街上向着周家说话的人多些。
       en: More people on the street speak up for the Zhou family than for the Li family.
     split:
-      zh: 街上分成了两拨，一拨向着李家，一拨向着周家。谁也说不服谁。
-      en: The street has split into two camps, one for the Li family and one for the Zhou family. Neither can win the other over.
+      zh: 街上有的替李家说话，有的替周家说话。说来说去，谁也没说服谁。
+      en: Some people speak up for the Li family, others for the Zhou family. Neither side has changed its mind.
     # who went about the day before, by kind (the errands the people chose in the night, done in
     # public): nothing is said of who, or of what they had in mind
     walk_look:
@@ -1918,13 +1918,13 @@ statement:
           supports: [pr_he_under_bridge, pr_he_repaired, pr_boat_damaged, pr_boat_scratched]
           against: [pr_he_home, pr_flood_damaged, pr_dalang_damaged, pr_dalang_at_bridge]
         - id: flood_night
-          text: {zh: 夜里水头打上桥，把旧榫冲松了。栏杆是自己断的，桥上桥下都没有人, en: "The flood water hit the bridge in the night and loosened the old joints. The railing gave way by itself, with nobody on the bridge or under it"}
+          text: {zh: 出事那晚，水头冲松了桥栏里的旧榫，栏杆就这么断了。当时桥上桥下都没有人, en: "The flood water loosened the old joints that night, and the railing gave way. There was nobody on or beneath the bridge at the time"}
           right: [v_flood]
           claims: [pr_flood_damaged, pr_he_home, pr_dalang_at_home]
           supports: [pr_flood_damaged, pr_flooded, pr_he_home, pr_dalang_at_home]
           against: [pr_he_under_bridge, pr_dalang_at_bridge, pr_boat_damaged, pr_dalang_damaged]
         - id: drunk_night
-          text: {zh: 周家大郎夜里在酒肆喝醉了。晃到桥上，一脚踢断了栏杆, en: "Zhou Dalang got drunk at the tavern in the night, staggered onto the bridge and kicked the railing down"}
+          text: {zh: 周家大郎那晚在酒肆喝醉了酒，摇摇晃晃地走上石桥，一脚踢断了栏杆, en: "Zhou Dalang got drunk at the tavern in the night, staggered onto the bridge and kicked the railing down"}
           right: [v_drunk]
           claims: [pr_dalang_at_bridge, pr_dalang_damaged]
           supports: [pr_dalang_at_bridge, pr_dalang_damaged, pr_dalang_drank, pr_he_home]
@@ -1939,7 +1939,7 @@ statement:
       title: {zh: 大家为什么会误会, en: Why people got it wrong}
       options:
         - id: grew
-          text: {zh: 周家伙计只看见李二在桥边找灯笼。周掌柜记着旧怨，猜是李二弄坏的。话越传越重，又添上了「故意」「眼红」, en: "Zhou's Clerk only saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou, holding an old grudge, guessed that Li Er broke the railing. The story grew as it went round and picked up “on purpose” and “envy”"}
+          text: {zh: 周家伙计看见李二在桥边找灯笼。周掌柜听了，惦记两家的旧怨，就猜是李二弄断的。传到街坊耳朵里，又多出了「故意」和「眼红」, en: "Zhou's Clerk saw Li Er at the bridge looking for a lantern. Shopkeeper Zhou heard that and, remembering the old grudge, guessed that Li Er had broken the railing. By the time the neighbours heard, the story had picked up ‘on purpose’ and ‘envy’"}
           right: [v_boat, v_flood, v_drunk]
           claims: [pr_set_straight]
           supports: [pr_liner_at_bridge, pr_liner_looking, pr_set_straight]

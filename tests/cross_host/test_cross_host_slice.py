@@ -175,7 +175,7 @@ def test_the_bamboo_is_promised_in_the_evening_and_brought_in_the_morning(cpytho
     delivery, withdrawn, made = lines
     assert delivery["events"] == [made["events"][0], delivery["events"][-1]]
     assert len(made["events"]) == 1 and made["events"][0] < delivery["events"][-1]
-    assert withdrawn["text"]["en"] == "Granny Li has given way."
+    assert withdrawn["text"]["en"] == "Granny Li dropped the objection."
     assert len(withdrawn["events"]) == 1 and withdrawn["events"][0] < made["events"][0]
 
 
@@ -190,7 +190,7 @@ def test_the_paper_of_the_morning_and_the_summary_of_the_night_come_once_each(cp
     assert morning[0] == 2190 and morning[2] is None
     paper = morning[1]
     assert paper["day"] == 2 and paper["head"]["kind"] == "delivery"
-    assert paper["head"]["text"]["en"].startswith("The 4 poles of bamboo that Li Da promised")
+    assert paper["head"]["text"]["en"].startswith("Li Da's delivery of 4 poles of bamboo")
     # the two short items: the people who changed their minds, and a head who stopped accusing
     assert [row["kind"] for row in paper["news"]] == ["stance", "stopped"]
     assert paper["today"] is not None and paper["today"]["window"] is not None
@@ -228,7 +228,7 @@ def test_the_run_judges_and_asks_for_a_hint_and_previews_what_it_asks(cpython):
     # the clerk is out with the Zhou carts until the third day, whichever way the bridge broke, so
     # on the first day the answer is that it is not the time and not that he does not trust the
     # manager yet
-    assert summary["blockers"][3] == ["This is not a good hour"]
+    assert summary["blockers"][3] == ["Try again later"]
     assert summary["blockers"][:3] == [[], [], []] and summary["blockers"][4:] == [[], []]
     assert len(summary["previews"]) == 64  # a digest of them, which the hosts must agree on
     # the tellings out of earshot are bubbles without words, and the ones in earshot have them
