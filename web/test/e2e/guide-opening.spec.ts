@@ -1,7 +1,10 @@
+import { readFileSync } from "node:fs";
 import { MIN_WINDOW } from "../../src/page/ui/window.ts";
+import type { Replay } from "../../src/shared/protocol.ts";
+import { validateReplay } from "../../src/shared/replay.ts";
 import { expect, test } from "../support/fixtures.ts";
 import { contrast } from "../support/slice.ts";
-import { byAnotherVersion, tamper } from "../support/stored-saves.ts";
+import { byAnotherVersion, readSaved, tamper, writeSaved } from "../support/stored-saves.ts";
 
 // The opening page is the first thing a player sees. These tests open the test build with no game named in the address, which is
 // how the real page opens, and the game behind the page is the slice that the core names.
@@ -192,6 +195,57 @@ test.describe("the opening page", () => {
     await expect.poll(() => lantern.tick()).toBeGreaterThanOrEqual(saved.tick);
     await expect(page.getByTestId("tutorial-card")).toHaveCount(0);
     await expect(page.getByTestId("status")).toHaveText("running");
+    expect(lantern.pageErrors).toEqual([]);
+  });
+
+  test("continues a saved game from public build 554d871 and can save it again", async ({ lantern }) => {
+    test.setTimeout(150_000);
+    const page = lantern.page;
+    const status = page.getByTestId("status");
+    // A browser save from the public build, with a recorded move and the core's original hashes.
+    const legacy = validateReplay(JSON.parse(readFileSync(new URL("../support/bridge-save-554d871.json", import.meta.url), "utf8")));
+    await page.addInitScript(() => localStorage.setItem("lantern.tutorial", "skipped"));
+
+    async function continueLatest(id: number, replay: Replay): Promise<void> {
+      await page.reload();
+      await lantern.waitReady();
+      const button = page.getByTestId("opening-continue");
+      await expect(button).toBeEnabled({ timeout: 30_000 });
+      await button.click();
+      await expect(page.getByTestId("opening")).toHaveCount(0);
+      await expect.poll(() => page.evaluate(() => window.__lantern.client.state.loaded)).toMatchObject({
+        id,
+        tick: replay.final.tick,
+        hash: replay.final.hash,
+        savedHash: replay.final.hash,
+        match: true,
+        hashesChecked: replay.hashes.length,
+      });
+    }
+
+    await openPage(lantern);
+    await page.getByTestId("opening-start").click();
+    await expect(status).toHaveText("running");
+    await page.evaluate(() => window.__lantern.client.pause());
+    await expect(status).toHaveText("paused");
+    const slot = await page.evaluate(() => window.__lantern.client.save("public build 554d871"));
+    await writeSaved(lantern, slot.id, legacy);
+    await continueLatest(slot.id, legacy);
+
+    const intro = await page.evaluate(() => {
+      const scene = window.__lantern.client.state.scene as { cast: Array<{ id: string; intro: { en: string } }> };
+      return scene.cast.find((person) => person.id === "li_laotai")?.intro.en;
+    });
+    expect(intro).toBe("Mother of Li Da and Li Er, with the final say on family matters.");
+
+    await lantern.waitForTick(legacy.final.tick + 1);
+    await page.evaluate(() => window.__lantern.client.pause());
+    await expect(status).toHaveText("paused");
+    const savedAgain = await page.evaluate(() => window.__lantern.client.save("continued from the public build"));
+    const continued = await readSaved(lantern, savedAgain.id);
+    expect(continued.records.slice(0, legacy.records.length)).toEqual(legacy.records);
+    expect(continued.hashes.slice(0, legacy.hashes.length)).toEqual(legacy.hashes);
+    await continueLatest(savedAgain.id, continued);
     expect(lantern.pageErrors).toEqual([]);
   });
 

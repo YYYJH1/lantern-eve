@@ -1,6 +1,7 @@
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import type { Page } from "@playwright/test";
+import { advance } from "../support/festival.ts";
 import { expect, type LanternPage, replayInCpython, test } from "../support/fixtures.ts";
 import { steady } from "../support/steady.ts";
 
@@ -11,6 +12,7 @@ test.use({ map: true });
 
 /** Where the pictures go, when a folder is named. */
 const SHOTS = process.env.LANTERN_SHOTS_DIR ?? "";
+const TOWN = "scenario=bridge&seed=7&pace=3&config=dev_actions:1&director=on";
 
 const director = (page: Page) => page.getByTestId("director");
 const tick = (page: Page): Promise<number> => page.evaluate(() => window.__lantern.client.state.simTick);
@@ -21,9 +23,9 @@ const frameOf = (page: Page) =>
   });
 
 /** A town of the bridge game with the test actions on and the show controller on, once the map is up and the page has said that it watches the moments. */
-async function opened(lantern: LanternPage): Promise<void> {
+async function opened(lantern: LanternPage, query = TOWN): Promise<void> {
   const page = lantern.page;
-  await lantern.open("scenario=bridge&seed=7&pace=3&config=dev_actions:1&director=on", { menu: false });
+  await lantern.open(query, { menu: false });
   await page.waitForFunction(() => window.__lantern.play.director.port !== null, undefined, { timeout: 120_000 });
   await lantern.waitForTick(60);
   // The controller said, in its first call after the map came up, that it watches the moments: the frames of the game have the keys now.
@@ -38,7 +40,7 @@ test.describe("a moment of the festival, on the real core", () => {
   test("the world is held at the first lantern on the second bank while the show plays, and the recording of it plays again in CPython to the same hashes", async ({ lantern }) => {
     test.setTimeout(300_000);
     const page = lantern.page;
-    await opened(lantern);
+    await opened(lantern, `${TOWN}&showclock=manual`);
 
     // A promise in the house of the Li, on the west bank, and one in the teahouse, on the east bank.
     await promise(page, "li_da");
@@ -53,11 +55,12 @@ test.describe("a moment of the festival, on the real core", () => {
 
     // The world stands still while the words are over the map: no tick for most of a second, whatever the host would do.
     const at = await tick(page);
+    await advance(page, 700);
     await page.waitForTimeout(700);
     expect(await tick(page)).toBe(at);
     await expect(director(page)).toHaveAttribute("data-show", "both_banks");
 
-    // A click on the map goes on. The core is told to, in a player action, and the world runs again.
+    // The show clock waits for this click, even on a slow browser. The core is told to go on in a player action.
     await page.getByTestId("director-veil").click();
     await expect(director(page)).toHaveCount(0);
     await expect.poll(async () => (await frameOf(page)).hold, { timeout: 30_000 }).toEqual([]);

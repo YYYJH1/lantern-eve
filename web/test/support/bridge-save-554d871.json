@@ -1,0 +1,69 @@
+{
+  "header": {
+    "config": {
+      "budget_cap": 3000000,
+      "days": 5,
+      "dev_actions": 0,
+      "fidget_per_mille": 40,
+      "move_day": 2,
+      "move_night": 1,
+      "price_cheap_in": 150000,
+      "price_cheap_out": 1500000,
+      "price_strong_in": 800000,
+      "price_strong_out": 8000000,
+      "reflect": 1,
+      "weather_clear": 50,
+      "weather_heavy": 20,
+      "weather_light": 30
+    },
+    "content_hash": "b15fc24032bd7d6b08c89a44c0b42543fefefc7c6599b692240bb91f656f8123",
+    "core_version": "0.2.0",
+    "format": 1,
+    "scenario": "bridge",
+    "seed": 492
+  },
+  "base": null,
+  "records": [
+    [
+      34,
+      0,
+      "player",
+      {
+        "action_id": "legacy-fixture-move",
+        "place": "p_teahouse",
+        "type": "move"
+      }
+    ],
+    [
+      254,
+      1,
+      "pause",
+      {}
+    ]
+  ],
+  "hashes": [
+    [
+      0,
+      "aae721e04087cdd3075a87e6a9dddce72e12dfe049e7068ff41df1e14e922419"
+    ],
+    [
+      100,
+      "9c6272c7e51f132c29cb5e794bf43290ee8829485b8b28a3e8688cf294e42bf9"
+    ],
+    [
+      200,
+      "3a2d25224b63dd9bafbe3ddbc9bea71a30bd1e9930642abf4c6852c7144e0551"
+    ]
+  ],
+  "snapshots": [],
+  "end_tick": 254,
+  "host": {
+    "name": "browser",
+    "version": "0.2.0",
+    "replayFormat": 1
+  },
+  "final": {
+    "tick": 254,
+    "hash": "9897ea8c6f11b1397811d269b891373d9ecbb81041925c9eeeb3788a5a889193"
+  }
+}

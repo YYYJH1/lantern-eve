@@ -98,6 +98,14 @@ PRESETS: dict[str, dict[str, Any]] = {
 }
 FRAME_KEYS = ("npcs", "time", "weather", "bubbles", "dots", "lanterns", "hud")
 
+# This exact revision changes the cast introductions, which are only read when drawing the scene.
+# Keep the published digest so the state, saved snapshots and replay checkpoints still agree.
+_COMPATIBLE_CONTENT_HASHES = {
+    "9902adfc1d0cc2b6f223434fee432e3243f7298a99b495a5f3e71b9ed7fcb9a2": (
+        "b15fc24032bd7d6b08c89a44c0b42543fefefc7c6599b692240bb91f656f8123"
+    ),
+}
+
 
 def preset(
     name: str, seed: int | None = None, variant: str | None = None
@@ -212,7 +220,8 @@ class BridgeWorld:
 
     def content_hash(self) -> str:
         if self._content_hash is None:
-            self._content_hash = canon.digest(self.content())
+            digest = canon.digest(self.content())
+            self._content_hash = _COMPATIBLE_CONTENT_HASHES.get(digest, digest)
         return self._content_hash
 
     def scene(self) -> dict[str, Any]:

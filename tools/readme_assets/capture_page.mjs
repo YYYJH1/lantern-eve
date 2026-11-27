@@ -202,7 +202,8 @@ async function story(film, grab, keep, { untilNotebook = false, notes = [] } = {
   };
   /** The note of the red slip is folded while a talk is on: it is opened for the button it has. */
   const openSlip = async () => {
-    if ((await page.evaluate(`${q('[data-testid=slip-head]')}?.getAttribute('aria-expanded')`)) === 'false') await film.click('[data-testid=slip-head]');
+    // Check and press together so the page automatically opening the note cannot turn this into a second press.
+    await page.evaluate(`${q('[data-testid=slip-head][aria-expanded=false]')}?.click()`);
     await wait(`${q('[data-testid=slip-head]')}?.getAttribute('aria-expanded') === 'true'`, 'the note of the slip to open');
   };
   /** Waits for the preview of the request on the button of the talk, which a task that names the request has up when the talk begins. */
@@ -259,11 +260,19 @@ async function story(film, grab, keep, { untilNotebook = false, notes = [] } = {
   await openSlip();
   await press('[data-testid=task-do]');
   await wait(there('[data-testid=topic-chips]'), 'the list of questions');
+  if (await page.evaluate(there('[data-testid=talk-dock][data-tight-slips]'))) {
+    // The unfolded red slip can leave the question list too short to show its tags.
+    await film.click('[data-testid=slip-head][aria-expanded=true]');
+    await wait(gone('[data-testid=topic-chips]'), 'the list of questions to close');
+    await film.click('[data-testid=verb-ask]');
+    await wait(there('[data-testid=topic-chips]'), 'the list of questions to reopen');
+  }
   await grab(10);
   await film.ask('li_er', async () => {});
   await grab(14);
   await film.leave();
   const askSource = async (who, every, picture) => {
+    await openSlip();
     await walkToTalk(who, every);
     await wait(there('[data-testid=picker-askSource]'), 'the list of notes to ask the source of');
     if (picture) await grab(10);

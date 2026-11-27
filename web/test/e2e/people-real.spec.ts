@@ -55,7 +55,7 @@ test.describe("meeting people on the real game", () => {
     const granny = cast.find((person) => person.id === "li_laotai");
     await expect(note.getByTestId("meeting-name")).toHaveText(granny?.en ?? "");
     await expect(note.getByTestId("meeting-intro")).toHaveText(granny?.intro.en ?? "");
-    await expect(note.getByTestId("meeting-added")).toHaveText("You can look this person up under People.");
+    await expect(note.getByTestId("meeting-added")).toHaveText("Added to People.");
     // The frame has her known, with the half heart of a first talk and the place and the time the talk began.
     const first = await rowOf(page, "li_laotai");
     expect(first).toMatchObject({ known: true, hearts: 1 });

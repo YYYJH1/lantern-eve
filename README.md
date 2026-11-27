@@ -4,7 +4,7 @@
 <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-en-dark.png">
 <img alt="Lantern Eve, 灯会前夕. A river town hung with lanterns, and a stone bridge with a stretch of its railing fallen. Three people pass a line along, and “Li Er was at the bridge last night” becomes “Li Er broke the bridge railing last night”." src="docs/assets/banner-en-light.png" width="920"></picture></p>
 
-<p align="center">There are five days until the lantern festival, and part of the bridge railing has come down. Someone saw Li Er there that night. A few doorways later, people are saying he broke it.</p>
+<p align="center">Five days before the lantern festival, a stretch of the stone bridge's railing breaks. Someone sees Li Er by the bridge that night. By the time word gets around, people are saying he broke the railing.</p>
 
 <p align="center"><b><a href="https://yyyjh1.github.io/lantern-eve/">Play Lantern Eve in your browser</a></b></p>
 
@@ -17,18 +17,18 @@
 <p align="center"><picture>
 <source media="(prefers-color-scheme: dark)" srcset="docs/assets/play-en-dark.gif">
 <img alt="Animated: the first day, from the opening page to the next morning" src="docs/assets/play-en-light.gif" width="880"></picture><br>
-<sub>The first day in play. Ask Granny Li for bamboo, hear Zhou's clerk give evidence at the teahouse, and see Li Da deliver the bamboo the next morning.</sub></p>
+<sub>On the first day, ask Granny Li for bamboo and hear Zhou's clerk speak at the teahouse that evening. Li Da brings the bamboo to the bridge the next morning.</sub></p>
 
-You're the new festival manager in Chengxi. The elder sends you to borrow bamboo from the Li family. Granny Li wants to know what you plan to tell the neighbours about her younger son. She heard the story from the teahouse keeper, who sends you to Zhou's clerk. The clerk can vouch for what they saw by the bridge.
+You're the new festival manager in Chengxi. The elder sends you to the Li family to borrow bamboo. Granny Li asks what you mean to tell the neighbours about her younger son. She heard the story from the teahouse keeper, who tells you to ask Zhou's clerk. The clerk saw Li Er by the bridge that night.
 
-Put the sighting beside the rumour in your notebook. When the teahouse fills up that evening, bring up the rumour and ask an eyewitness what they saw. If Granny Li gives way, find Li Da to arrange for the bamboo.
+Compare the rumour with the clerk's account in your notebook. When people gather at the teahouse that evening, bring up the rumour. If the clerk is there, ask them to tell the room what they saw. Once Granny Li drops her objection, ask Li Da when he can bring the bamboo.
 
 <p align="center"><picture>
 <source media="(prefers-color-scheme: dark)" srcset="docs/assets/notebook-en-dark.png">
 <img alt="The notebook, a book bound with thread, open at two pages. The left page holds the line set against a claim, the three ways two lines can relate, and the result of the comparison. The right page is the statement card, with none of its blanks filled in." src="docs/assets/notebook-en-light.png" width="880"></picture><br>
-<sub>Compare two accounts on the left. On the right, the strokes of 正 tally how many notes support each answer in your statement.</sub></p>
+<sub>Compare two accounts on the left. On the right, each stroke of 正 marks one note that supports an answer in your statement.</sub></p>
 
-Twenty people live in Chengxi, with errands of their own and stories they've heard. The opening introduces six of them. Once you're in town, anyone you've greeted goes into the people book. In a conversation you can ask around, ask a favour, pass on a piece of news or take your leave. Click the hearts to see how you stand with someone. If you'd like to bring a gift, pick one at the market. You can give one a day.
+Twenty people live in Chengxi, with errands of their own and stories they've heard. The opening introduces six of them. Once you're in town, the people book keeps track of everyone you've talked to. In a conversation you can ask around, ask a favour, pass on a piece of news or take your leave. Click the hearts to see how you stand with someone. If you'd like to bring a gift, pick one at the market. You can give one a day.
 
 Your notebook also holds a draft statement. Use the accounts you've collected to choose how the bridge broke, what happened that night and how the story went astray. From the fourth evening you can give the full statement in public.
 

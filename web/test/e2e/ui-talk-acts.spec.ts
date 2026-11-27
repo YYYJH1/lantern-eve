@@ -1,6 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 import { expect, test } from "../support/fixtures.ts";
 import * as fake from "../support/slice.ts";
+import { scaled } from "../support/time-scale.ts";
 
 // This spec looks at the page with the map on it.
 test.use({ map: true });
@@ -877,25 +878,32 @@ test.describe("a small window", () => {
   const readable = (line: Locator, paper: string): Promise<boolean> =>
     line.evaluate((element, selector) => {
       const box = element.closest(selector)?.getBoundingClientRect();
-      return box !== undefined && element.getBoundingClientRect().bottom <= box.bottom + 1;
+      const row = element.getBoundingClientRect();
+      return box !== undefined && row.top >= box.top - 1 && row.bottom <= box.bottom + 1;
     }, paper);
 
   /** The last line of the paper is under its foot, the phrase at the foot turns it, and then there is no phrase, for the line is in view. */
   async function turns(page: Page, bar: string, last: Locator, paper: string): Promise<void> {
-    await expect(page.getByTestId(bar)).toBeVisible();
+    const footer = page.getByTestId(bar);
+    await expect(footer).toBeVisible();
     expect(await readable(last, paper)).toBe(false);
-    // The phrase turns the paper to the lines that come next, and is pressed until the last line is in view, when there is no phrase.
+    // Continue until the paper has stopped offering another page. A row can enter the
+    // paper's bounds while still covered by the footer, or while the last scroll is moving.
     await expect
       .poll(
         async () => {
-          if (await readable(last, paper)) return true;
-          await page.getByTestId(bar).getByRole("button").click({ timeout: 2000 }).catch(() => undefined);
-          return readable(last, paper);
+          if ((await footer.count()) === 0) return true;
+          try {
+            await footer.getByRole("button").click({ timeout: scaled(2_000) });
+          } catch (error) {
+            if ((await footer.count()) > 0) throw error;
+          }
+          return (await footer.count()) === 0;
         },
-        { timeout: 20_000, intervals: [200] },
+        { timeout: scaled(20_000), intervals: [200] },
       )
       .toBe(true);
-    await expect(page.getByTestId(bar)).toHaveCount(0);
+    await expect.poll(() => readable(last, paper)).toBe(true);
   }
 
   const PEOPLE: ReadonlyArray<[string, string, string]> = [
@@ -921,9 +929,12 @@ test.describe("a small window", () => {
     // At the minimum height, the footer lets the player reach the last request.
     await page.setViewportSize({ width: 1200, height: 600 });
     await talkKeys(page, { asks_more: asks, give: { preferred: WANTS.offer, more: [], ways: [] } });
-    await expect(page.getByTestId("picker-entrust")).toBeVisible();
+    const picker = page.getByTestId("picker-entrust");
+    await expect(picker).toBeVisible();
+    const promise = picker.locator(`[data-testid="picker-option"][data-id="${WANTS.offer.id}"]`);
+    await expect(promise).toBeAttached();
     await expect(page.getByTestId("picker-turn")).toHaveText("More below");
-    await turns(page, "picker-turn", page.getByTestId("picker-entrust").getByTestId("picker-option").last(), ".picker");
+    await turns(page, "picker-turn", promise, ".picker");
     expect(lantern.pageErrors).toEqual([]);
   });
 

@@ -242,7 +242,7 @@ test.describe("what a clarification did", () => {
     await page.getByTestId("clarify-follow").click();
     const evidence = page.getByTestId("clarify-evidence");
     await expect(evidence.locator("strong")).toHaveText("Manager");
-    await expect(evidence).toContainText("Zhou's Clerk said they saw it firsthand.");
+    await expect(evidence).toContainText("Zhou's Clerk said they saw it.");
     await expect(evidence).toContainText("Li Er was at the bridge last night");
   });
 

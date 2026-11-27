@@ -2648,8 +2648,8 @@ _VOICES = r"""
           "zh": "你来借竹，可外头都说桥是老二弄坏的。总管，你连句话都没替我们说，我怎么借？"
         },
         {
-          "en": "The bamboo can wait. Everyone is blaming my youngest. What are you going to tell them, Manager?",
-          "zh": "借竹料的事先放一放。街上都在怪我家老二，你这个总管打算怎么跟大伙儿说？"
+          "en": "The bamboo can wait, Manager. Everyone's blaming my youngest. What will you tell them when they're all there?",
+          "zh": "竹料先缓缓。总管，街坊都在怪我家老二，你打算在大伙儿跟前怎么说？"
         }
       ],
       "hard_other": [
@@ -2701,8 +2701,8 @@ _VOICES = r"""
       ],
       "objection_withdrawn": [
         {
-          "en": "Everyone here heard who said what. You can go and talk to my eldest about the bamboo now.",
-          "zh": "方才大伙儿都在，谁说了什么，也都听见了。借竹料的事，你去跟老大说吧。"
+          "en": "I take your point about my youngest. Talk to my eldest about the bamboo.",
+          "zh": "老二的事，我听明白了。竹料你找老大商量。"
         },
         {
           "en": "Now that it's been said plainly in front of everyone, I won't stand in the way of the loan. Go see my eldest.",

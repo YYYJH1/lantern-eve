@@ -395,8 +395,8 @@ _CAST = r"""
       "home": "p_li_house",
       "id": "li_laotai",
       "intro": {
-        "en": "Granny Li is the mother of Li Da and Li Er. When something important comes up, the Li household waits for Granny Li to decide.",
-        "zh": "李大和李二都是李老太的儿子，李家遇着要紧事，一向等老太太拿定主意才办。"
+        "en": "Mother of Li Da and Li Er, with the final say on family matters.",
+        "zh": "李大、李二的娘。李家有大事，得等老太太拿主意。"
       },
       "likes": ["pastry"],
       "night_shift": false,
@@ -431,8 +431,8 @@ _CAST = r"""
       "home": "p_li_house",
       "id": "li_da",
       "intro": {
-        "en": "Li Da, the eldest son, looks after the family's bamboo grove and stock. Granny Li still has the final say on big decisions.",
-        "zh": "李家长子李大平日管竹林和竹料。碰上家里的大事，还得去问老太太。"
+        "en": "The eldest Li son looks after the family's bamboo grove and supplies. Granny Li still makes the big family decisions.",
+        "zh": "李家长子，平日管竹林和竹料。家里有大事，还得先问老太太。"
       },
       "likes": ["tea", "wine"],
       "night_shift": false,
@@ -467,8 +467,8 @@ _CAST = r"""
       "home": "p_li_house",
       "id": "li_er",
       "intro": {
-        "en": "The second Li son pastes paper onto lanterns at the workshop. The lanterns come out round and bright. Anyone going by the workshop can stop for a word with Li Er.",
-        "zh": "李二是李家的次子，在扎灯坊糊灯，做出来的灯又圆又亮。镇上谁路过坊里，都能同李二聊上几句。"
+        "en": "The younger Li son makes round, bright paper lanterns. Anyone passing the workshop can stop for a word.",
+        "zh": "李家次子，在扎灯坊糊灯，糊出来的灯又圆又亮。街坊路过坊里，都能跟李二聊上两句。"
       },
       "likes": ["lantern_paper"],
       "night_shift": false,
@@ -574,8 +574,8 @@ _CAST = r"""
       "home": "p_zhou_house",
       "id": "zhou_zhanggui",
       "intro": {
-        "en": "Shopkeeper Zhou has spent half a lifetime in the timber trade. Most of the timber needed to mend the bridge would have to come out of the Zhou storehouse.",
-        "zh": "周掌柜做了半辈子木料生意，修桥要用的木料，大半还得从周家库里想办法。"
+        "en": "Half a lifetime in the timber trade. Most of the timber needed to mend the bridge is in the Zhou storehouse.",
+        "zh": "做了半辈子木料买卖。修桥要用的木料，大半得从周家库里出。"
       },
       "likes": ["tea"],
       "night_shift": false,
@@ -717,8 +717,8 @@ _CAST = r"""
       "home": "p_zhou_house",
       "id": "zhou_huoji",
       "intro": {
-        "en": "Zhou's Clerk has worked in the shop for years and is quick with the work. When it comes to making a decision, the answer is still, ‘Ask the shopkeeper.’",
-        "zh": "周家伙计在铺子里做了好些年活，手脚麻利。遇上拿主意的事，还是那句『您问掌柜的去』。"
+        "en": "A quick hand at the Zhou shop for years. When there's a decision to make, the answer is still “Ask the shopkeeper.”",
+        "zh": "在周家铺子干了好些年，手脚麻利。真要拿主意，还是一句「您问掌柜的去」。"
       },
       "likes": ["pastry"],
       "night_shift": false,
@@ -753,8 +753,8 @@ _CAST = r"""
       "home": "p_teahouse",
       "id": "cha_laoban",
       "intro": {
-        "en": "The keeper has had this teahouse by the river for over ten years. When there's news from a household, everybody at the table usually hears it before the tea is gone.",
-        "zh": "河边这间茶馆是老板娘开了十几年的老店。哪家有了新消息，茶还没喝完，桌上往往已经说开了。"
+        "en": "Over ten years running the teahouse by the river. The neighbours usually hear the latest news before the tea is gone.",
+        "zh": "这间茶馆在河边开了十几年。哪家有点新消息，茶还没喝完，桌上往往已经说开了。"
       },
       "likes": ["pastry", "wine"],
       "night_shift": false,
@@ -858,8 +858,8 @@ _CAST = r"""
       "home": "p_clan_hall",
       "id": "zuzhang",
       "intro": {
-        "en": "The elder is the senior figure in Chengxi and presides over matters at the Ancestral Hall. It was the elder who decided to ask an outsider to manage this year's festival.",
-        "zh": "族长是澄溪辈分最高的长辈，祠堂里有什么事，都由族长主理。今年请外乡人当灯会总管，也是族长拿的主意。"
+        "en": "Chengxi's senior elder runs the Ancestral Hall and chose an outsider to manage this year's festival.",
+        "zh": "澄溪辈分最高的长辈，管着祠堂，也拿主意请了个外乡人来办今年的灯会。"
       },
       "likes": ["tea"],
       "night_shift": false,

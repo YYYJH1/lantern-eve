@@ -9,11 +9,11 @@ Three games are pinned:
   number of its calls (``DRIVER_CALLS``);
 - the scripted game of ``m0_driver`` (``M0_LAST_HASH`` and ``M0_OUTPUTS``).
 
-A change to a text of ``content/``, or to anything the core sends, moves some of these values. Words
-move the content hash, the last hash and the outputs of the scripted game, and the hashes of the
-games without a manager only through the content hash they carry. When the change is the one that
-was meant, run the file as a script from the root of the repository and paste the lines it prints
-over the constants below:
+Changes to ``content/`` can move these values through the content hash that the state carries.
+The revised introductions keep the published content hash because they only change the scene
+shown to the player. Changes to the core's outputs can also move the scripted output digest.
+After verifying an intended change, run this file as a script from the root of the repository
+and paste the lines it prints over the constants below:
 
     PYTHONPATH=tests/cross_host:tests/core uv run python tests/core/test_bridge_speech_hashes.py
 

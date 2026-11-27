@@ -460,10 +460,12 @@ def test_the_scenario_is_registered_next_to_m0_and_the_config_has_its_defaults()
         Game(1, "nowhere")
 
 
-def test_the_content_hash_covers_the_town_the_cast_the_script_the_clock_and_the_prompts():
-    world = world_of(bridge(1))
-    assert world.content_hash() == canon.digest(world.content())
-    assert set(world.content()) == {
+def test_the_content_hash_covers_the_town_the_cast_the_script_the_clock_and_the_prompts(
+    monkeypatch,
+):
+    world = BridgeWorld()
+    content = world.content()
+    assert set(content) == {
         "scenario",
         "town",
         "cast",
@@ -473,8 +475,20 @@ def test_the_content_hash_covers_the_town_the_cast_the_script_the_clock_and_the_
         "speech",
         "clock",
     }
-    state = json.loads(bridge(1).snapshot_json())
-    assert state["content_hash"] == world.content_hash()
+    changed = content | {"clock": [*content["clock"][:-1], content["clock"][-1] + 1]}
+    monkeypatch.setattr(world, "content", lambda: changed)
+    assert world.content_hash() == canon.digest(changed)
+
+
+def test_the_revised_introductions_keep_the_published_bridge_save_hash():
+    game = bridge(1)
+    world = world_of(game)
+    published = "b15fc24032bd7d6b08c89a44c0b42543fefefc7c6599b692240bb91f656f8123"
+    assert world.content_hash() == published
+    assert canon.digest(world.content()) != published
+    state = json.loads(game.snapshot_json())
+    assert state["content_hash"] == published
+    assert Kernel.restore(state).hash() == game.hash()
     state["content_hash"] = "0" * 64
     with pytest.raises(ValueError, match="different scenario content"):
         Kernel.restore(state)

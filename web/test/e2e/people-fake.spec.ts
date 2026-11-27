@@ -114,7 +114,7 @@ test.describe("a first meeting", () => {
     await expect(note).toBeVisible();
     await expect(note.getByTestId("meeting-name")).toHaveText("Li Da");
     await expect(note.getByTestId("meeting-intro")).toHaveText(intro?.en ?? "");
-    await expect(note.getByTestId("meeting-added")).toHaveText("You can look this person up under People.");
+    await expect(note.getByTestId("meeting-added")).toHaveText("Added to People.");
     // The same frame again, or another frame of the same talk, says the same.
     await fake.feedFrame(page, { people: rows });
     await expect(note).toBeVisible();
@@ -131,7 +131,7 @@ test.describe("a first meeting", () => {
     await expect(page.getByTestId("talk-strip")).toHaveAttribute("data-talking", "false");
     await fake.startTalk(page, "li_er", { people: other });
     await expect(page.getByTestId("meeting-name")).toHaveText("李二");
-    await expect(page.getByTestId("meeting-added")).toHaveText("以后可以在人物谱里找到这位。");
+    await expect(page.getByTestId("meeting-added")).toHaveText("已记入人物谱。");
     expect(lantern.pageErrors).toEqual([]);
   });
 

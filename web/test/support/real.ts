@@ -4,6 +4,7 @@
  */
 import { expect, type Page } from "@playwright/test";
 import type { LanternPage } from "./fixtures.ts";
+import { scaled } from "./time-scale.ts";
 
 /**
  * Opens the page as a player does (no game named in the address), presses Start and goes on without the tutorial, so that the world
@@ -162,8 +163,16 @@ export const notebookCount = (page: Page): Promise<number> =>
  */
 export async function leaveTalk(page: Page): Promise<void> {
   await closeElder(page);
-  if ((await page.getByTestId("verb-leave").count()) > 0) await page.getByTestId("verb-leave").click({ timeout: 4000 }).catch(() => undefined);
-  await expect(page.getByTestId("talk-area")).toHaveCount(0);
+  const leave = page.getByTestId("verb-leave");
+  const talk = page.getByTestId("talk-area");
+  if ((await leave.count()) > 0) {
+    try {
+      await leave.click({ timeout: scaled(4_000) });
+    } catch (error) {
+      if ((await talk.count()) > 0) throw error;
+    }
+  }
+  await expect(talk).toHaveCount(0);
 }
 
 /**

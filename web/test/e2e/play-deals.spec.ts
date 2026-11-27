@@ -101,7 +101,7 @@ test.describe("the topic tags of a talk", () => {
     await page.getByTestId("ask-more").click();
     await page.locator('[data-testid="topic-chip"][data-id="li_er"]').click();
     await expect(page.getByTestId("talk-line")).toHaveCount(4);
-    await expect(page.getByTestId("talk-line").nth(2)).toHaveText("I wanted to ask about Li Er. What do you know about it?");
+    await expect(page.getByTestId("talk-line").nth(2)).toHaveText("Could you tell me about Li Er?");
     const asked = (await lantern.exportReplay()).records.filter((r) => r[2] === "player").map((r) => r[3]);
     expect(asked.at(-1)).toMatchObject({ type: "ask", topic: "li_er" });
     expect(lantern.pageErrors).toEqual([]);
